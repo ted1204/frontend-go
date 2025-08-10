@@ -1,0 +1,4 @@
+8/5
+處理好根據使用者,顯示他所屬的團體,但是要確定usergroup interface的UID, GID, ... 是否是大寫
+8/8
+要處理app side bar admin的部分, 但是Platfrom-go目前連不上
