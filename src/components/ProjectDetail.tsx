@@ -15,9 +15,9 @@ import {
   CreateConfigFileInput,
   UpdateConfigFileInput,
 } from "../services/configFileService";
-import AddConfigModal from "../components/AddConfigModal";
-import ConfigFileList from "../components/ConfigFileList";
-import EditConfigModal from "../components/EditConfigModal";
+import AddConfigModal from "./AddConfigModal";
+import ConfigFileList from "./ConfigFileList";
+import EditConfigModal from "./EditConfigModal";
 import useWebSocket from "../hooks/useWebSocket";
 import MonitoringPanel from "./MonitoringPanel";
 import { ConfigFile } from "../interfaces/configFile";
