@@ -13,6 +13,7 @@ export const USER_GROUP_BY_USER_URL = `${API_BASE_URL}/user-group/by-user`;
 export const CONFIG_FILES_URL = `${API_BASE_URL}/config-files`;
 export const CONFIG_FILE_BY_ID_URL = (id: number) => `${API_BASE_URL}/config-files/${id}`;
 export const CONFIG_FILE_RESOURCES_URL = (id: number) => `${API_BASE_URL}/config-files/${id}/resources`;
+export const CONFIG_FILES_BY_PROJECT_URL = (id: number) => `${API_BASE_URL}/projects/${id}/config-files`;
 //resources
 export const RESOURCES_URL = `${API_BASE_URL}/resources`;
 export const RESOURCE_BY_ID_URL = (id: number) => `${API_BASE_URL}/resources/${id}`;
@@ -27,9 +28,12 @@ export const PVC_EXPAND_URL = `${API_BASE_URL}/pvc/expand`;
 export const PVC_LIST_URL = (namespace: string) => `${API_BASE_URL}/pvc/list/${namespace}`;
 export const PVC_GET_URL = (namespace: string, name: string) => `${API_BASE_URL}/pvc/${namespace}/${name}`;
 export const PVC_DELETE_URL = (namespace: string, name: string) => `${API_BASE_URL}/pvc/${namespace}/${name}`;
+export const PROJECTS_BY_USER_URL = (id: number) => `/projects/by-user/${id}`;
 // users
 export const USERS_URL = `${API_BASE_URL}/users`;
 export const USER_BY_ID_URL = (id: number) => `${API_BASE_URL}/users/${id}`;
 // instance
 export const INSTANCE_URL = `${API_BASE_URL}/instance`;
 export const INSTANCE_BY_ID_URL = (id: number) => `${INSTANCE_URL}/${id}`;
+// websocket
+export const WEBSOCKET_MONITORING_URL = (namespace: string) => `ws://10.121.124.22:30080/ws/monitoring/${namespace}`; // Adjust protocol if needed

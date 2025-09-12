@@ -1,36 +1,9 @@
-import {
-  PVC_CREATE_URL,
-  PVC_EXPAND_URL,
-  PVC_LIST_URL,
-  PVC_GET_URL,
-  PVC_DELETE_URL,
-} from "../config/url";
+import { PVC_CREATE_URL, PVC_EXPAND_URL, PVC_LIST_URL, PVC_GET_URL, PVC_DELETE_URL } from "../config/url";
+import { ErrorResponse, MessageResponse } from "../response/response";
+import { PVC, PVCRequest } from "../interfaces/pvc";
 
-export interface PVC {
-  name: string;
-  namespace: string;
-  size: string;
-  status: string;
-}
-
-export interface PVCRequest {
-  name: string;
-  namespace: string;
-  size: string;
-  storageClassName: string;
-}
-
-export interface ErrorResponse {
-  error: string;
-}
-
-export interface MessageResponse {
-  message: string;
-}
-
-// 帶認證的 fetch
 const fetchWithAuth = async (url: string, options: RequestInit) => {
-  const token = localStorage.getItem("token"); // 假設 token 存儲在 localStorage
+  const token = localStorage.getItem("token");
   const headers = {
     ...options.headers,
     "Content-Type": "application/x-www-form-urlencoded",
@@ -44,7 +17,6 @@ const fetchWithAuth = async (url: string, options: RequestInit) => {
   return response.json();
 };
 
-// 不帶認證的 fetch
 const fetchWithoutAuth = async (url: string, options: RequestInit) => {
   const headers = {
     ...options.headers,

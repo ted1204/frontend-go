@@ -1,28 +1,6 @@
 import { USERS_URL, USER_BY_ID_URL } from "../config/url";
-
-export interface User {
-  uid: number;
-  username: string;
-  email: string;
-  role?: "admin" | "user";
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface UserRequest {
-  username: string;
-  password: string;
-  email: string;
-  role?: "admin" | "user";
-}
-
-export interface ErrorResponse {
-  error: string;
-}
-
-export interface MessageResponse {
-  message: string;
-}
+import { ErrorResponse, MessageResponse } from "../response/response";
+import { User, UserRequest } from "../interfaces/user";
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
   const token = localStorage.getItem("token"); // 假設 token 存儲在 localStorage
@@ -50,23 +28,23 @@ export const getUsers = async (): Promise<User[]> => {
   }
 };
 
-export const createUser = async (input: UserRequest): Promise<User> => {
-  const formData = new URLSearchParams();
-  formData.append("username", input.username);
-  formData.append("password", input.password);
-  formData.append("email", input.email);
-  if (input.role) formData.append("role", input.role);
+// export const createUser = async (input: UserRequest): Promise<User> => {
+//   const formData = new URLSearchParams();
+//   formData.append("username", input.username);
+//   formData.append("password", input.password);
+//   formData.append("email", input.email);
+//   if (input.role) formData.append("role", input.role);
 
-  try {
-    const response = await fetchWithAuth(USERS_URL, {
-      method: "POST",
-      body: formData,
-    });
-    return response as User;
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to create user.");
-  }
-};
+//   try {
+//     const response = await fetchWithAuth(USERS_URL, {
+//       method: "POST",
+//       body: formData,
+//     });
+//     return response as User;
+//   } catch (error) {
+//     throw new Error(error instanceof Error ? error.message : "Failed to create user.");
+//   }
+// };
 
 export const getUserById = async (id: number): Promise<User> => {
   try {

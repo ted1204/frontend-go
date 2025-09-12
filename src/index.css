@@ -776,3 +776,7 @@ span.flatpickr-weekday,
 .simplebar-scrollbar.simplebar-visible:before {
   @apply opacity-100;
 }
+
+.group-item:hover {
+  background-color: var(--color-gray-800);
+}

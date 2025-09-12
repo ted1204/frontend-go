@@ -21,7 +21,6 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import ProjectList from "../components/projects/ProjectList";
 
 type NavItem = {
   name: string;
@@ -43,8 +42,8 @@ const navItems: NavItem[] = [
   },
   // {
   //   icon: <UserCircleIcon />,
-  //   name: "User Profile",
-  //   path: "/profile",
+  //   name: "User Group Test",
+  //   path: "/user-group-test",
   // },
   {
     icon: <GroupIcon />,
@@ -59,21 +58,21 @@ const navItems: NavItem[] = [
       { name: "Sign Up", path: "/signup", pro: false },
     ],
   },
-  // {
-  //   icon: <GridIcon />,
-  //   name: "Dashboard",
-  //   subItems: [{ name: "Ecommerce", path: "/", pro: false }],
-  // },
-  // {
-  //   name: "Forms",
-  //   icon: <ListIcon />,
-  //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  // },
-  // {
-  //   name: "Tables",
-  //   icon: <TableIcon />,
-  //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  // },
+  {
+    icon: <GridIcon />,
+    name: "Dashboard",
+    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+  },
+  {
+    name: "Forms",
+    icon: <ListIcon />,
+    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+  },
+  {
+    name: "Tables",
+    icon: <TableIcon />,
+    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+  },
   // {
   //   name: "Pages",
   //   icon: <PageIcon />,
@@ -87,12 +86,12 @@ const navItems: NavItem[] = [
 const adminItems: NavItem[] = [
   {
     icon: <TaskIcon />, // 使用 TaskIcon 表示 Manage Projects
-    name: "Manage Projects",
+    name: "Manage_Projects",
     path: "/admin/manage-projects",
   },
   {
     icon: <GroupIcon />, // 使用 GroupIcon 表示 Manage Groups
-    name: "Manage Groups",
+    name: "Manage_Groups",
     path: "/admin/manage-groups",
   },
   // {
@@ -138,14 +137,12 @@ const AppSidebar: React.FC = () => {
   );
 
   useEffect(() => {
-    // 檢查使用者是否為 Admin
     const userData = localStorage.getItem("userData");
     if (userData) {
       const parsedData = JSON.parse(userData);
       setIsAdmin(parsedData.is_super_admin === true);
     }
 
-    // 處理 submenu 邏輯
     let submenuMatched = false;
     ["main", "admin"].forEach((menuType) => {
       const items = menuType === "main" ? navItems : adminItems;
@@ -337,7 +334,7 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link to="/">
+        {/* <Link to="/">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img
@@ -363,7 +360,13 @@ const AppSidebar: React.FC = () => {
               height={32}
             />
           )}
-        </Link>
+        </Link> */}
+        <Link to="/">
+    <div className="overflow-hidden transition-all duration-300" 
+         style={{ width: isExpanded || isHovered || isMobileOpen ? 'auto' : '2ch' }}> {/* 調整 '2ch' 為 "AI" 寬度 */}
+      <span className="text-xl font-bold text-gray-900 dark:text-white whitespace-nowrap">AI platform</span>
+    </div>
+  </Link>
       </div>
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">

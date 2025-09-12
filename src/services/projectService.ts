@@ -1,42 +1,11 @@
 import { PROJECTS_URL, PROJECT_BY_ID_URL, PROJECT_CONFIG_FILES_URL, PROJECT_RESOURCES_URL } from "../config/url";
-
-export interface Project {
-  PID: number;
-  ProjectName: string;
-  Description?: string;
-  GID: number;
-  CreatedAt: string;
-  UpdatedAt: string;
-}
-
-export interface ConfigFile {
-  cfid: number;
-  filename: string;
-  minIOPath: string;
-  projectID: number;
-  createdAt: string;
-}
-
-export interface Resource {
-  r_id: number;
-  cf_id: number;
-  name: string;
-  type: string;
-  description?: string;
-  parsedYAML: object;
-  create_at: string;
-}
-
-export interface ErrorResponse {
-  error: string;
-}
-
-export interface MessageResponse {
-  message: string;
-}
+import { ErrorResponse, MessageResponse } from "../response/response"; // Adjust the import path as necessary
+import { Project } from "../interfaces/project";
+import { ConfigFile } from "../interfaces/configFile"; // Adjust the import path as necessary
+import { Resource } from "../interfaces/resource"; // Adjust the import path as necessary
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
-  const token = localStorage.getItem("token"); // 假設 token 存儲在 localStorage
+  const token = localStorage.getItem("token");
   const headers = {
     ...options.headers,
     // "Content-Type": "multipart/form-data",
@@ -61,27 +30,27 @@ export const getProjects = async (): Promise<Project[]> => {
   }
 };
 
-export interface CreateProjectInput {
+export interface CreateProjectDTO {
   project_name: string;
   description?: string;
   g_id: number;
 }
 
-export const createProject = async (input: CreateProjectInput): Promise<Project> => {
+export const createProject = async (input: CreateProjectDTO): Promise<Project> => {
   const formData = new FormData();
-  formData.append("project_name", input.project_name);
-  if (input.description) formData.append("description", input.description);
-  formData.append("g_id", input.g_id.toString());
-
-  try {
-    const response = await fetchWithAuth(PROJECTS_URL, {
-      method: "POST",
-      body: formData,
-    });
-    return response as Project;
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to create project.");
-  }
+    formData.append("project_name", input.project_name);
+    formData.append("g_id", input.g_id.toString());
+    if (input.description) formData.append("description", input.description);
+  
+    try {
+      const response = await fetchWithAuth(PROJECTS_URL, {
+        method: "POST",
+        body: formData,
+      });
+      return response as Project;
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Failed to create group.");
+    }
 };
 
 export const getProjectById = async (id: number): Promise<Project> => {

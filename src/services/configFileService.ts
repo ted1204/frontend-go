@@ -1,42 +1,32 @@
-import { CONFIG_FILES_URL, CONFIG_FILE_BY_ID_URL, CONFIG_FILE_RESOURCES_URL } from "../config/url";
+import { CONFIG_FILES_URL, CONFIG_FILE_BY_ID_URL, CONFIG_FILE_RESOURCES_URL, CONFIG_FILES_BY_PROJECT_URL, INSTANCE_BY_ID_URL} from "../config/url";
+import { ErrorResponse, MessageResponse } from "../response/response"; // Adjust the import path as necessary
+import { ConfigFile } from "../interfaces/configFile"; // Adjust the import path as necessary
+import { Resource } from "../interfaces/resource"; // Adjust the import path as necessary
 
-export interface ConfigFile {
-  cfid: number;
-  filename: string;
-  minIOPath: string;
-  projectID: number;
-  createdAt: string;
-}
-
-export interface Resource {
-  cf_id: number;
-  r_id: number;
-  name: string;
-  type: string;
-  description?: string;
-  parsedYAML: object;
-  create_at: string;
-}
-
-export interface ErrorResponse {
-  error: string;
-}
-
-export interface MessageResponse {
-  message: string;
-}
-
-const fetchWithAuth = async (url: string, options: RequestInit) => {
-  const token = localStorage.getItem("token"); // 假設 token 存儲在 localStorage
-  const headers = {
+const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
+  const token = localStorage.getItem("token");
+  const headers = new Headers({
     ...options.headers,
-    "Content-Type": "multipart/form-data",
     Authorization: token ? `Bearer ${token}` : "",
-  };
+  });
+  if (!(options.body instanceof FormData)) {
+    headers.set("Content-Type", "application/json");
+  }
   const response = await fetch(url, { ...options, headers });
   if (!response.ok) {
-    const errorData: ErrorResponse = await response.json();
-    throw new Error(errorData.error || `Request failed with status ${response.status}`);
+    let errorData;
+    try {
+      errorData = await response.json() as ErrorResponse;
+    } catch {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+    if (response.status === 401) {
+      // Redirect to login or refresh token
+    }
+    throw new Error(errorData.error || "Unknown error");
+  }
+  if (response.status === 204) {
+    return response
   }
   return response.json();
 };
@@ -112,6 +102,9 @@ export const deleteConfigFile = async (id: number): Promise<MessageResponse> => 
     const response = await fetchWithAuth(CONFIG_FILE_BY_ID_URL(id), {
       method: "DELETE",
     });
+    if (response.status === 204) {
+      return { message: "204" } as MessageResponse;
+    }
     return response as MessageResponse;
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Failed to delete config file.");
@@ -126,5 +119,32 @@ export const getResourcesByConfigFile = async (id: number): Promise<Resource[]> 
     return response as Resource[];
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Failed to fetch resources.");
+  }
+};
+
+export const getConfigFilesByProjectId = async (projectId: number): Promise<ConfigFile[]> => {
+  try {
+    const response = await fetchWithAuth(CONFIG_FILES_BY_PROJECT_URL(projectId), {
+      method: "GET",
+    });
+    return response as ConfigFile[];
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Failed to fetch config files by project ID.");
+  }
+};
+
+export const createInstance = async (id: number): Promise<MessageResponse> => {
+  try {
+    return await fetchWithAuth(INSTANCE_BY_ID_URL(id), { method: "POST" });
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Failed to create instance.");
+  }
+};
+
+export const deleteInstance = async (id: number): Promise<void> => {
+  try {
+    await fetchWithAuth(INSTANCE_BY_ID_URL(id), { method: "DELETE" });
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Failed to delete instance.");
   }
 };

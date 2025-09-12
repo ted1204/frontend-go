@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import PageBreadcrumb from "../components/common/PageBreadCrumb";
 import PageMeta from "../components/common/PageMeta";
-import { getProjects, Project } from "../services/projectService";
+import { Project } from "../interfaces/project";
+import { getProjects} from "../services/projectService";
 import { getGroupsByUser } from "../services/userGroupService";
 import { useNavigate } from "react-router-dom";
 
@@ -28,7 +29,7 @@ export default function Projects() {
 
           if (userId) {
             const userGroups = await getGroupsByUser(userId);
-            const userGroupIds = userGroups.map((ug) => ug.gid);
+            const userGroupIds = userGroups.map((ug) => ug.GID);
             const filteredProjects = allProjects.filter((project) =>
               userGroupIds.includes(project.GID)
             );
@@ -68,10 +69,10 @@ export default function Projects() {
               {projects.map((project) => (
                 <li
                   key={project.PID}
-                  className="border-b py-2 cursor-pointer hover:bg-gray-100"
+                  className="border-b py-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600"
                   onClick={() => handleProjectClick(project.PID)}
                 >
-                  <span className="font-medium">
+                  <span className="font-medium dark:text-white">
                     {project.ProjectName || `Unnamed Project (ID: ${project.PID})`}
                   </span>
                   <span className="text-gray-500 ml-2">
@@ -81,9 +82,9 @@ export default function Projects() {
               ))}
             </ul>
           )}
-          <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+          {/* <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
             Explore projects
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

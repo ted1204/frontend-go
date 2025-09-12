@@ -1,25 +1,9 @@
-import { RESOURCES_URL, RESOURCE_BY_ID_URL } from "../config/url";
-
-export interface Resource {
-  r_id: number;
-  cf_id: number;
-  name: string;
-  type: string;
-  description?: string;
-  parsedYAML: object;
-  create_at: string;
-}
-
-export interface ErrorResponse {
-  error: string;
-}
-
-export interface MessageResponse {
-  message: string;
-}
+import { RESOURCES_URL, RESOURCE_BY_ID_URL, CONFIG_FILE_BY_ID_URL} from "../config/url";
+import { ErrorResponse, MessageResponse } from "../response/response";
+import { Resource } from "../interfaces/resource";
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
-  const token = localStorage.getItem("token"); // 假設 token 存儲在 localStorage
+  const token = localStorage.getItem("token");
   const headers = {
     ...options.headers,
     "Content-Type": "multipart/form-data",
@@ -88,5 +72,16 @@ export const getResources = async (): Promise<Resource[]> => {
     return response as Resource[];
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Failed to fetch resources.");
+  }
+};
+
+export const getResourcesByConfigFile = async (cfId: number): Promise<Resource[]> => {
+  try {
+    const response = await fetchWithAuth(`${CONFIG_FILE_BY_ID_URL(cfId)}/resources`, { // 用你的 base URL 包裝
+      method: "GET",
+    });
+    return response as Resource[];
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Failed to fetch resources by config file.");
   }
 };

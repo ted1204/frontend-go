@@ -1,12 +1,5 @@
 import { INSTANCE_BY_ID_URL } from "../config/url";
-
-export interface ErrorResponse {
-  error: string;
-}
-
-export interface MessageResponse {
-  message: string;
-}
+import { ErrorResponse, MessageResponse } from "../response/response"; // Adjust the import path as necessary
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
   const token = localStorage.getItem("token");

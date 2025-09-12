@@ -20,10 +20,11 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import Groups from "./pages/Groups";
 import Projects from "./pages/Projects";
-import GroupDetail from "./components/groups/GroupDetail";
-import ProjectDetail from "./components/projects/ProjectDetail";
+import GroupDetail from "./components/GroupDetail";
+import ProjectDetail from "./components/ProjectDetail";
 import ManageProjects from "./pages/ManageProjects";
 import ManageGroups from "./pages/ManageGroups";
+// import UserGroupTest from "./components/UserGroupTest";
 export default function App() {
   return (
     <>

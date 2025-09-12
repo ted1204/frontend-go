@@ -1,20 +1,6 @@
 import { GROUPS_URL, GROUP_BY_ID_URL } from "../config/url";
-
-export interface Group {
-  GID: number;
-  GroupName: string;
-  Description?: string;
-  CreatedAt: string;
-  UpdatedAt: string;
-}
-
-export interface ErrorResponse {
-  error: string;
-}
-
-export interface MessageResponse {
-  message: string;
-}
+import { ErrorResponse, MessageResponse } from "../response/response"; // Adjust the import path as necessary
+import { Group } from "../interfaces/group"; // Adjust the import path as necessary
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
   const token = localStorage.getItem("token");
