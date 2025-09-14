@@ -3,13 +3,11 @@ import { ErrorResponse, MessageResponse } from "../response/response";
 import { User, UserRequest } from "../interfaces/user";
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
-  const token = localStorage.getItem("token"); // 假設 token 存儲在 localStorage
   const headers = {
     ...options.headers,
     "Content-Type": "application/x-www-form-urlencoded",
-    Authorization: token ? `Bearer ${token}` : "",
   };
-  const response = await fetch(url, { ...options, headers });
+  const response = await fetch(url, { ...options, headers, credentials: 'include' });
   if (!response.ok) {
     const errorData: ErrorResponse = await response.json();
     throw new Error(errorData.error || `Request failed with status ${response.status}`);

@@ -31,8 +31,7 @@ interface FormData {
 export default function ProjectDetail() {
   const { id } = useParams<{ id?: string }>();
   if (!id) throw new Error("Project ID is required");
-  const token = localStorage.getItem("token") || "";
-  const messages = useWebSocket(id, token);
+  const messages = useWebSocket(id);
   const [project, setProject] = useState<Project | null>(null);
   const [configFiles, setConfigFiles] = useState<ConfigFile[]>([]);
   const [loading, setLoading] = useState(true);

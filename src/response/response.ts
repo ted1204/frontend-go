@@ -5,7 +5,6 @@ export interface MessageResponse {
   message: string;
 }
 export interface LoginResponse {
-  token: string;
   user_id: number;
   username: string;
   is_super_admin: boolean;

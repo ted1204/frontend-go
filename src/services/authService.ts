@@ -14,6 +14,7 @@ export const login = async (username: string, password: string): Promise<LoginRe
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: formData.toString(),
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -21,8 +22,7 @@ export const login = async (username: string, password: string): Promise<LoginRe
       throw new Error(errorData.error || `Login failed with status ${response.status}`);
     }
     const data: LoginResponse = await response.json();
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("username", data.username); // 存儲 username
+    localStorage.setItem("username", data.username);
     return data;
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Login failed, please try again.");
@@ -45,6 +45,7 @@ export const register = async (input: RegisterInput): Promise<MessageResponse> =
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: formData.toString(),
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -59,6 +60,6 @@ export const register = async (input: RegisterInput): Promise<MessageResponse> =
   }
 };
 
-export const getUsernameFromToken = (): string => {
-  return localStorage.getItem("username") || "admin"; // 預設值
+export const getUsername = (): string => {
+  return localStorage.getItem("username") || "null"; // 預設值
 };

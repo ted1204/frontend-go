@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getUsernameFromToken } from "../services/authService";
+import { getUsername } from "../services/authService";
 
 export interface ResourceMessage {
   type: string; // 事件類型，例如 "ADDED", "MODIFIED", "DELETED"
@@ -10,8 +10,8 @@ export interface ResourceMessage {
   age?: string; // 存活時間，例如 "17d" (可選)
 }
 
-const useWebSocket = (projectId: string, token: string) => {
-  const username = getUsernameFromToken(); // 從 Token 獲取當前用戶名
+const useWebSocket = (projectId: string) => {
+  const username = getUsername(); // 獲取當前用戶名
   const namespace = `proj-${projectId}-${username}`; // 動態生成 Namespace
   const [messages, setMessages] = useState<ResourceMessage[]>([]); // 儲存接收到的訊息
 
@@ -24,7 +24,6 @@ const useWebSocket = (projectId: string, token: string) => {
 
       ws.onopen = () => {
         console.log("WebSocket connected to", namespace);
-        // 後端不要求 Token，故不傳送
       };
 
       ws.onmessage = (event) => {
@@ -75,7 +74,7 @@ const useWebSocket = (projectId: string, token: string) => {
 
     // 清理函數，關閉 WebSocket
     return () => ws?.close();
-  }, [projectId, token]); // 當 projectId 或 token 改變時重新連線
+  }, [projectId]); // 當 projectId 改變時重新連線
 
   return messages; // 回傳訊息陣列供組件使用
 };

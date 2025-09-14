@@ -4,15 +4,13 @@ import { ConfigFile } from "../interfaces/configFile"; // Adjust the import path
 import { Resource } from "../interfaces/resource"; // Adjust the import path as necessary
 
 const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-  const token = localStorage.getItem("token");
   const headers = new Headers({
     ...options.headers,
-    Authorization: token ? `Bearer ${token}` : "",
   });
   if (!(options.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
-  const response = await fetch(url, { ...options, headers });
+  const response = await fetch(url, { ...options, headers, credentials: 'include' });
   if (!response.ok) {
     let errorData;
     try {

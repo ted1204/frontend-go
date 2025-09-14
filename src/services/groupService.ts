@@ -3,13 +3,10 @@ import { ErrorResponse, MessageResponse } from "../response/response"; // Adjust
 import { Group } from "../interfaces/group"; // Adjust the import path as necessary
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
-  const token = localStorage.getItem("token");
   const headers = {
     ...options.headers,
-    // "Content-Type": "multipart/form-data",
-    Authorization: token ? `Bearer ${token}` : "",
   };
-  const response = await fetch(url, { ...options, headers });
+  const response = await fetch(url, { ...options, headers, credentials: 'include',  });
   if (!response.ok) {
     const errorData: ErrorResponse = await response.json();
     throw new Error(errorData.error || `Request failed with status ${response.status}`);

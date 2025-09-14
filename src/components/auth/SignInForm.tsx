@@ -19,8 +19,6 @@ export default function SignInForm() {
     e.preventDefault();
     try {
       const data = await login(username, password);
-      // Store token
-      localStorage.setItem("token", data.token);
       localStorage.setItem("userData", JSON.stringify({
         user_id: data.user_id,
         username: data.username,

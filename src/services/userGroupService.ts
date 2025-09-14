@@ -4,18 +4,16 @@ import { GetGroupsByUserResponse, GetUsersByGroupResponse, UserGroup, UserGroupU
 
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
-  const token = localStorage.getItem("token"); // 假設 token 存儲在 localStorage
   const headers = {
     ...options.headers,
     "Content-Type": "application/x-www-form-urlencoded",
-    Authorization: token ? `Bearer ${token}` : "",
   };
   // if JSON
   if (options.body && typeof options.body === "string" && options.body.startsWith("{")) {
     headers["Content-Type"] = "application/json";
   }
 
-  const response = await fetch(url, { ...options, headers });
+  const response = await fetch(url, { ...options, headers, credentials: 'include' });
   if (!response.ok) {
     const errorData: ErrorResponse = await response.json();
     console.error("Error data:", errorData);
