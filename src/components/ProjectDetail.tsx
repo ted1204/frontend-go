@@ -140,8 +140,9 @@ export default function ProjectDetail() {
   };
 
   const handleEdit = (config: ConfigFile) => {
+    console.log(config);
     setSelectedConfig(config);
-    setFormData({ filename: config.Filename, raw_yaml: "" });
+    setFormData({ filename: config.Filename, raw_yaml: config.Content });
     setIsEditModalOpen(true);
   };
 
