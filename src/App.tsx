@@ -13,6 +13,7 @@ import LineChart from "./pages/Charts/LineChart";
 import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
 import BasicTables from "./pages/Tables/BasicTables";
+import PodTables from "./pages/Tables/MonitoringTables";
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
@@ -26,6 +27,7 @@ import ManageProjects from "./pages/ManageProjects";
 import ManageGroups from "./pages/ManageGroups";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
+import TerminalWrapper from "./pages/Terminal/TerminalPage";
 // import UserGroupTest from "./components/UserGroupTest";
 export default function App() {
   return (
@@ -54,6 +56,7 @@ export default function App() {
               <Route path="/admin/manage-groups" element={<ManageGroups />} />
               <Route path="/form-elements" element={<FormElements />} />
               <Route path="/basic-tables" element={<BasicTables />} />
+              <Route path="/pod-tables" element={<PodTables />} />
               <Route path="/alerts" element={<Alerts />} />
               <Route path="/avatars" element={<Avatars />} />
               <Route path="/badge" element={<Badges />} />
@@ -62,6 +65,7 @@ export default function App() {
               <Route path="/videos" element={<Videos />} />
               <Route path="/line-chart" element={<LineChart />} />
               <Route path="/bar-chart" element={<BarChart />} />
+              <Route path="/terminal" element={<TerminalWrapper />} />
             </Route>
           </Route>
 

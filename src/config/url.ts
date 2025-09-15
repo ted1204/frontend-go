@@ -1,4 +1,5 @@
 export const API_BASE_URL = "http://10.121.124.22:30080";
+export const BASE_URL = "10.121.124.22:30080";
 // auth
 export const LOGIN_URL = `${API_BASE_URL}/login`;
 export const REGISTER_URL = `${API_BASE_URL}/register`;
@@ -37,4 +38,5 @@ export const USER_BY_ID_URL = (id: number) => `${API_BASE_URL}/users/${id}`;
 export const INSTANCE_URL = `${API_BASE_URL}/instance`;
 export const INSTANCE_BY_ID_URL = (id: number) => `${INSTANCE_URL}/${id}`;
 // websocket
-export const WEBSOCKET_MONITORING_URL = (namespace: string) => `ws://10.121.124.22:30080/ws/monitoring/${namespace}`; // Adjust protocol if needed
+export const WEBSOCKET_MONITORING_URL = (namespace: string) => `ws://${BASE_URL}/ws/monitoring/${namespace}`; // Adjust protocol if needed
+export const WEBSOCKET_USER_MONITORING_URL = () => `ws://${BASE_URL}/ws/monitoring`; // Adjust protocol if needed
