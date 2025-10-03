@@ -30,6 +30,10 @@ export default function EditConfigModal({
     }
   }, [selectedConfig]);
 
+  const handleChange = (newData: any) => {
+    setFormData({ ...formData, raw_yaml: newData });
+  }
+
   const handleSubmit = () => {
     if (!formData.filename) {
       alert("Filename is required");
@@ -76,7 +80,7 @@ export default function EditConfigModal({
             language="yaml"
             theme={document.documentElement.classList.contains("dark") ? "vs-dark" : "vs-light"}
             value={formData.raw_yaml}
-            onChange={(newValue) => setFormData({ ...formData, raw_yaml: newValue })}
+            onChange={handleChange}
             options={{
               border: "2px solid #3B82F6", // Add border styling to Monaco Editor
               focusBorder: "#2563EB", // Focused border color

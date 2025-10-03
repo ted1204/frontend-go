@@ -81,7 +81,7 @@ export default function ProjectDetail() {
     if (!selectedConfig) return;
     setActionLoading(true);
     try {
-      await updateConfigFile(selectedConfig.CFID, { filename: data.filename || selectedConfig.Filename });
+      await updateConfigFile(selectedConfig.CFID, { filename: data.filename || selectedConfig.Filename, raw_yaml: data.raw_yaml || selectedConfig.Content });
       setIsEditModalOpen(false);
       setSelectedConfig(null);
       setFormData({ filename: "", raw_yaml: "" });
