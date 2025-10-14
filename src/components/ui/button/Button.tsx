@@ -1,56 +1,69 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
+import { twMerge } from 'tailwind-merge';
+import { clsx } from 'clsx';
 
 interface ButtonProps {
-  children: ReactNode; // Button text or content
-  size?: "sm" | "md"; // Button size
-  variant?: "primary" | "outline"; // Button variant
-  startIcon?: ReactNode; // Icon before the text
-  endIcon?: ReactNode; // Icon after the text
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void; // Click handler
-  disabled?: boolean; // Disabled state
-  className?: string; // Disabled state
-  type?: "button" | "submit" | "reset"; // Button type
+  children: ReactNode;
+  size?: 'sm' | 'md';
+  variant?: 'primary' | 'outline';
+  startIcon?: ReactNode;
+  endIcon?: ReactNode;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
+  className?: string; // This will now correctly override base styles
+  type?: 'button' | 'submit' | 'reset';
 }
 
 const Button: React.FC<ButtonProps> = ({
   children,
-  size = "md",
-  variant = "primary",
+  size = 'md',
+  variant = 'primary',
   startIcon,
   endIcon,
   onClick,
-  className = "",
+  className = '',
   disabled = false,
-  type = "button",
+  type = 'button',
 }) => {
-  // Size Classes
+  // Base classes that apply to all variants and sizes
+  const baseClasses =
+    'inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800';
+
+  // Size classes
   const sizeClasses = {
-    sm: "px-4 py-3 text-sm",
-    md: "px-5 py-3.5 text-sm",
+    sm: 'px-3 py-2 text-sm',
+    md: 'px-4 py-2 text-sm',
   };
 
-  // Variant Classes
+  // Variant classes
   const variantClasses = {
     primary:
-      "bg-brand-500 text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-300",
+      'border border-transparent bg-blue-600 text-white shadow-sm hover:bg-blue-700 disabled:bg-blue-300',
     outline:
-      "bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] dark:hover:text-gray-300",
+      'border border-gray-300 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700',
   };
+
+  // ✅ **CORE FIX: Use twMerge and clsx to intelligently combine classes**
+  const combinedClasses = twMerge(
+    clsx(
+      baseClasses,
+      sizeClasses[size],
+      variantClasses[variant],
+      disabled && 'cursor-not-allowed opacity-50', // Conditionally add disabled classes
+      className // This is now the last argument, allowing it to override the defaults
+    )
+  );
 
   return (
     <button
       type={type}
-      className={`inline-flex items-center justify-center gap-2 rounded-lg transition ${className} ${
-        sizeClasses[size]
-      } ${variantClasses[variant]} ${
-        disabled ? "cursor-not-allowed opacity-50" : ""
-      }`}
+      className={combinedClasses} // Use the intelligently merged classes
       onClick={onClick}
       disabled={disabled}
     >
-      {startIcon && <span className="flex items-center">{startIcon}</span>}
+      {startIcon}
       {children}
-      {endIcon && <span className="flex items-center">{endIcon}</span>}
+      {endIcon}
     </button>
   );
 };

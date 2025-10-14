@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { ConfigFile } from "../interfaces/configFile";
-import MonacoEditor from "react-monaco-editor";
+import React, { useState, useEffect } from 'react';
+import { ConfigFile } from '../interfaces/configFile';
+import Button from './ui/button/Button';
+
+// Import Monaco Editor
+import MonacoEditor from 'react-monaco-editor';
 
 interface FormData {
   filename: string;
@@ -22,87 +25,167 @@ export default function EditConfigModal({
   selectedConfig,
   actionLoading,
 }: EditConfigModalProps) {
-  const [formData, setFormData] = useState<FormData>({ filename: "", raw_yaml: "" });
+  const [formData, setFormData] = useState<FormData>({
+    filename: '',
+    raw_yaml: '',
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [editorTheme, setEditorTheme] = useState('vs-light');
 
   useEffect(() => {
     if (selectedConfig) {
-      setFormData({ filename: selectedConfig.Filename, raw_yaml: selectedConfig.Content });
+      setFormData({
+        filename: selectedConfig.Filename,
+        raw_yaml: selectedConfig.Content,
+      });
+      setError(null);
     }
   }, [selectedConfig]);
 
-  const handleChange = (newData: any) => {
-    setFormData({ ...formData, raw_yaml: newData });
-  }
+  useEffect(() => {
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    setEditorTheme(isDarkMode ? 'vs-dark' : 'vs-light');
+    const observer = new MutationObserver(() => {
+      setEditorTheme(
+        document.documentElement.classList.contains('dark')
+          ? 'vs-dark'
+          : 'vs-light'
+      );
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+    return () => observer.disconnect();
+  }, []);
 
   const handleSubmit = () => {
-    if (!formData.filename) {
-      alert("Filename is required");
+    if (!formData.filename.trim()) {
+      setError('Filename is required.');
       return;
     }
-    if (!formData.raw_yaml) {
-      alert("Raw YAML is required");
+    if (!formData.raw_yaml.trim()) {
+      setError('YAML content cannot be empty.');
       return;
     }
+    setError(null);
     onSave(formData);
-    setFormData({ filename: "", raw_yaml: "" }); // Reset form
   };
 
   if (!isOpen || !selectedConfig) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-800 p-10 rounded-lg shadow-xl w-full md:w-4/5 lg:w-3/5 xl:w-2/3">
-        <h3 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">Edit Config File</h3>
-
-        {/* Filename input */}
-        <div className="mb-6">
-          <label htmlFor="filename" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Filename (e.g., nginx.yaml)
-          </label>
-          <input
-            id="filename"
-            type="text"
-            value={formData.filename}
-            placeholder="Enter the filename"
-            className="w-full p-4 border-2 border-blue-500 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-700 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-            onChange={(e) => setFormData({ ...formData, filename: e.target.value })}
-          />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in-0">
+      {/* ✅ 1. Modal is now significantly wider for a better editing experience */}
+      <div className="relative flex h-full max-h-[90vh] w-full max-w-7xl flex-col rounded-xl border border-gray-200 bg-white shadow-2xl animate-in zoom-in-95 dark:border-gray-700 dark:bg-gray-800">
+        {/* Modal Header */}
+        <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 p-4 sm:p-6 dark:border-gray-700">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+            Edit:{' '}
+            <span className="font-mono text-blue-600 dark:text-blue-400">
+              {formData.filename}
+            </span>
+          </h3>
+          <button
+            onClick={onClose}
+            className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
 
-        {/* Raw YAML editor using Monaco Editor */}
-        <div className="mb-6">
-          <label htmlFor="raw_yaml" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Raw YAML content
-          </label>
-          <MonacoEditor
-            width="100%"
-            height="500px"
-            language="yaml"
-            theme={document.documentElement.classList.contains("dark") ? "vs-dark" : "vs-light"}
-            value={formData.raw_yaml}
-            onChange={handleChange}
-            options={{
-              border: "2px solid #3B82F6", // Add border styling to Monaco Editor
-              focusBorder: "#2563EB", // Focused border color
-            }}
-          />
+        {/* Modal Body (scrollable) */}
+        <div className="flex-grow space-y-6 overflow-y-auto p-4 sm:p-6">
+          {/* ✅ 2. A refined grid layout for the filename field to solve the "crowded" issue */}
+          <div className="space-y-2">
+            <label
+              htmlFor="filename"
+              className="block text-sm font-bold text-gray-800 dark:text-gray-200"
+            >
+              Configuration Filename
+            </label>
+            <div className="flex rounded-lg shadow-sm">
+              <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 sm:text-sm">
+                filename:
+              </span>
+              <input
+                id="filename"
+                type="text"
+                value={formData.filename}
+                placeholder="my-deployment.yaml"
+                className="
+                    block w-full flex-1 rounded-none rounded-r-lg   // Shape for grouping
+                    border border-gray-300 px-4 py-3 text-base        // Size and border
+                    text-gray-900 placeholder:text-gray-400         // Colors
+                    focus:border-blue-500 focus:ring-blue-500       // Focus state
+                    dark:border-gray-600 dark:bg-gray-900 dark:text-white
+                    dark:focus:border-blue-500 dark:focus:ring-blue-500
+                  "
+                onChange={(e) =>
+                  setFormData({ ...formData, filename: e.target.value })
+                }
+              />
+            </div>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              Must be a unique name ending with .yaml or .yml.
+            </p>
+          </div>
+          {/* Monaco Editor for YAML content */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              YAML Content
+            </label>
+            <div className="editor-container mt-2 h-[450px] rounded-lg border border-gray-300 p-px shadow-sm focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 dark:border-gray-600">
+              <MonacoEditor
+                width="100%"
+                height="100%"
+                language="yaml"
+                theme={editorTheme}
+                value={formData.raw_yaml}
+                onChange={(newValue) =>
+                  setFormData((prev) => ({ ...prev, raw_yaml: newValue }))
+                }
+                options={{
+                  minimap: { enabled: true },
+                  scrollBeyondLastLine: false,
+                  fontSize: 14,
+                }}
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Action buttons */}
-        <div className="flex justify-end gap-6 mt-6">
-          <button
-            onClick={() => { onClose(); setFormData({ filename: "", raw_yaml: "" }); }}
-            className="px-6 py-3 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            className="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-            disabled={actionLoading}
-          >
-            {actionLoading ? "Saving..." : "Save"}
-          </button>
+        {/* Modal Footer */}
+        <div className="flex flex-shrink-0 flex-col-reverse items-center gap-4 rounded-b-xl border-t border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50 sm:flex-row sm:justify-between">
+          <div className="text-sm text-red-600 dark:text-red-400">
+            {error && `Error: ${error}`}
+          </div>
+          <div className="flex w-full gap-3 sm:w-auto">
+            <Button variant="outline" onClick={onClose} className="w-full">
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleSubmit}
+              disabled={actionLoading}
+              className="w-full"
+            >
+              {actionLoading ? 'Saving...' : 'Save Changes'}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

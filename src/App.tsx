@@ -1,33 +1,33 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router";
-import SignIn from "./pages/AuthPages/SignIn";
-import SignUp from "./pages/AuthPages/SignUp";
-import NotFound from "./pages/OtherPage/NotFound";
-import UserProfiles from "./pages/UserProfiles";
-import Videos from "./pages/UiElements/Videos";
-import Images from "./pages/UiElements/Images";
-import Alerts from "./pages/UiElements/Alerts";
-import Badges from "./pages/UiElements/Badges";
-import Avatars from "./pages/UiElements/Avatars";
-import Buttons from "./pages/UiElements/Buttons";
-import LineChart from "./pages/Charts/LineChart";
-import BarChart from "./pages/Charts/BarChart";
-import Calendar from "./pages/Calendar";
-import BasicTables from "./pages/Tables/BasicTables";
-import PodTables from "./pages/Tables/MonitoringTables";
-import FormElements from "./pages/Forms/FormElements";
-import Blank from "./pages/Blank";
-import AppLayout from "./layout/AppLayout";
-import { ScrollToTop } from "./components/common/ScrollToTop";
-import Home from "./pages/Dashboard/Home";
-import Groups from "./pages/Groups";
-import Projects from "./pages/Projects";
-import GroupDetail from "./components/GroupDetail";
-import ProjectDetail from "./components/ProjectDetail";
-import ManageProjects from "./pages/ManageProjects";
-import ManageGroups from "./pages/ManageGroups";
-import PrivateRoute from "./components/PrivateRoute";
-import PublicRoute from "./components/PublicRoute";
-import TerminalWrapper from "./pages/Terminal/TerminalPage";
+import { BrowserRouter as Router, Routes, Route } from 'react-router';
+import SignIn from './pages/AuthPages/SignIn';
+import SignUp from './pages/AuthPages/SignUp';
+import NotFound from './pages/OtherPage/NotFound';
+import UserProfiles from './pages/UserProfiles';
+import Videos from './pages/UiElements/Videos';
+import Images from './pages/UiElements/Images';
+import Alerts from './pages/UiElements/Alerts';
+import Badges from './pages/UiElements/Badges';
+import Avatars from './pages/UiElements/Avatars';
+import Buttons from './pages/UiElements/Buttons';
+import LineChart from './pages/Charts/LineChart';
+import BarChart from './pages/Charts/BarChart';
+import Calendar from './pages/Calendar';
+import BasicTables from './pages/Tables/BasicTables';
+import PodTables from './pages/Tables/MonitoringTables';
+import FormElements from './pages/Forms/FormElements';
+import Blank from './pages/Blank';
+import AppLayout from './layout/AppLayout';
+import { ScrollToTop } from './components/common/ScrollToTop';
+import Home from './pages/Dashboard/Home';
+import Groups from './pages/Groups';
+import Projects from './pages/Projects';
+import GroupDetail from './components/GroupDetail';
+import ProjectDetail from './components/ProjectDetail';
+import ManageProjects from './pages/ManageProjects';
+import ManageGroups from './pages/ManageGroups';
+import PrivateRoute from './components/PrivateRoute';
+import PublicRoute from './components/PublicRoute';
+import TerminalWrapper from './pages/Terminal/TerminalPage';
 // import UserGroupTest from "./components/UserGroupTest";
 export default function App() {
   return (
@@ -40,7 +40,7 @@ export default function App() {
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
           </Route>
-          
+
           {/* Protected Routes */}
           <Route element={<PrivateRoute />}>
             <Route element={<AppLayout />}>
@@ -52,7 +52,10 @@ export default function App() {
               <Route path="/groups/:id" element={<GroupDetail />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/projects/:id" element={<ProjectDetail />} />
-              <Route path="/admin/manage-projects" element={<ManageProjects />} />
+              <Route
+                path="/admin/manage-projects"
+                element={<ManageProjects />}
+              />
               <Route path="/admin/manage-groups" element={<ManageGroups />} />
               <Route path="/form-elements" element={<FormElements />} />
               <Route path="/basic-tables" element={<BasicTables />} />
