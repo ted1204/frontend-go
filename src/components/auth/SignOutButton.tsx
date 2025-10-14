@@ -1,10 +1,15 @@
 import { useNavigate } from 'react-router-dom';
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { logout } from "../../services/authService"
-export default function SignOutButton({ onClick }) {
+
+interface SignOutButtonProps {
+  onClick?: () => void;
+}
+
+export default function SignOutButton({ onClick }: SignOutButtonProps) {
   const navigate = useNavigate();
 
-  const handleLogout = (e) => {
+  const handleLogout = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
     logout();
     onClick?.();
