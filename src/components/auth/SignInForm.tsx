@@ -1,32 +1,37 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
-import Label from "../form/Label";
-import Input from "../form/input/InputField";
-import Button from "../ui/button/Button";
-import { login } from "../../services/authService";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from '../../icons';
+import Label from '../form/Label';
+import Input from '../form/input/InputFieldDefault';
+import Button from '../ui/button/Button';
+import { login } from '../../services/authService';
 
 export default function SignInForm() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
-    console.log("handleLogin called");
+    console.log('handleLogin called');
     e.preventDefault();
     try {
       const data = await login(username, password);
-      localStorage.setItem("userData", JSON.stringify({
-        user_id: data.user_id,
-        username: data.username,
-        is_super_admin: data.is_super_admin,
-      }));
+      localStorage.setItem(
+        'userData',
+        JSON.stringify({
+          user_id: data.user_id,
+          username: data.username,
+          is_super_admin: data.is_super_admin,
+        })
+      );
       // Redirect to dashboard
-      navigate("/");
+      navigate('/');
     } catch (err) {
-      console.error("Login error:", err);
-      alert(err instanceof Error ? err.message : "Login failed, please try again.");
+      console.error('Login error:', err);
+      alert(
+        err instanceof Error ? err.message : 'Login failed, please try again.'
+      );
     }
   };
 
@@ -122,7 +127,7 @@ export default function SignInForm() {
                   </Label>
                   <div className="relative">
                     <Input
-                      type={showPassword ? "text" : "password"}
+                      type={showPassword ? 'text' : 'password'}
                       placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -148,11 +153,7 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <Button
-                  className="w-full"
-                  size="sm"
-                  type="submit"
-                  >
+                  <Button className="w-full" size="sm" type="submit">
                     Sign in
                   </Button>
                 </div>
@@ -160,7 +161,7 @@ export default function SignInForm() {
             </form>
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Don&apos;t have an account?{" "}
+                Don&apos;t have an account?{' '}
                 <Link
                   to="/signup"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"

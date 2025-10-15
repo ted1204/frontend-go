@@ -1,14 +1,66 @@
-import React from "react";
-import Input from "./form/input/InputField"; // 假設 Input 位於此路徑
-import Button from "./ui/button/Button";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
+
+// Assuming InputField is the component provided above,
+// and that InputFieldDefault is aliased to InputField here.
+import InputField from './form/input/InputField';
+import Button from './ui/button/Button';
+
+// SVG Components (omitted for brevity)
+const SpinnerIcon = ({ className = 'w-4 h-4' }) => (
+  /* ... */ <svg
+    className={`animate-spin ${className}`}
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <circle
+      className="opacity-25"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="4"
+    ></circle>
+    <path
+      className="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+    ></path>
+  </svg>
+);
+const AlertIcon = ({ className = 'w-5 h-5' }) => (
+  /* ... */ <svg
+    className={className}
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.398 16c-.77 1.333.192 3 1.732 3z"
+    />
+  </svg>
+);
+
 interface CreateGroupFormProps {
   groupName: string;
   description: string;
   loading: boolean;
   error: string | null;
-  onGroupNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onDescriptionChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onGroupNameChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onDescriptionChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: (e: FormEvent) => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const CreateGroupForm: React.FC<CreateGroupFormProps> = ({
@@ -19,40 +71,147 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = ({
   onGroupNameChange,
   onDescriptionChange,
   onSubmit,
+  isOpen,
+  onClose,
 }) => {
+  const [shouldRender, setShouldRender] = useState(false);
+  const [animationClass, setAnimationClass] = useState('');
+
+  // Ref to hold the timeout ID
+  const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
+
+  // --- Animation Logic FIX ---
+  useEffect(() => {
+    // 1. CLEAR any existing timeouts to prevent multiple flashes
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
+      animationTimeoutRef.current = null;
+    }
+
+    if (isOpen) {
+      // OPENING:
+      setShouldRender(true);
+      // Use a single, zero-delay setTimeout to apply the class on the NEXT render tick.
+      // This is generally cleaner than requestAnimationFrame for simple class toggles.
+      animationTimeoutRef.current = setTimeout(() => {
+        setAnimationClass('fade-in-0');
+      }, 0);
+    } else if (shouldRender) {
+      // CLOSING:
+      setAnimationClass('fade-out-0');
+
+      // Wait 300ms for the animation to complete before unmounting
+      animationTimeoutRef.current = setTimeout(() => {
+        setShouldRender(false);
+        setAnimationClass('');
+        onClose();
+      }, 300);
+    }
+
+    // Cleanup function: Ensures timers are cleared when the component is unmounted or effect reruns
+    return () => {
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+      }
+    };
+  }, [isOpen, shouldRender, onClose]);
+
+  if (!shouldRender) {
+    return null;
+  }
+  // -----------------------------------------------------------------------
+
   return (
-    <div className="mx-auto w-full max-w-[630px] text-center mb-6">
-      <h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-        Create New Group
-      </h3>
-      <form onSubmit={onSubmit} className="space-y-4">
-        <Input
-          type="text"
-          value={groupName}
-          onChange={onGroupNameChange}
-          placeholder="Group Name"
-          className="w-full"
-          required
-          disabled={loading}
-          error={!!error} // 轉為布林值觸發錯誤樣式
-          hint={error || undefined} // 顯示錯誤訊息作為 hint
-        />
-        <Input
-          type="text"
-          value={description}
-          onChange={onDescriptionChange}
-          placeholder="Description (optional)"
-          className="w-full"
-          disabled={loading}
-        />
-        <Button
-          type="submit"
-          className="w-full bg-brand-500 text-white py-2 rounded-md hover:bg-brand-400 disabled:bg-gray-400"
-          disabled={loading}
-        >
-          {loading ? "Creating..." : "New Group"}
-        </Button>
-      </form>
+    // Modal Backdrop: Apply dynamic animation class
+    <div
+      className={`fixed inset-0 bg-gray-900 bg-opacity-50 dark:bg-opacity-50 flex items-center justify-center z-50 p-4 ${animationClass}`}
+    >
+      {/* Modal Content Card */}
+      <div
+        className="w-full max-w-md bg-gray-50 dark:bg-gray-800 rounded-xl shadow-2xl relative"
+        onClick={(e) => e.stopPropagation()} // Prevent accidental closure
+      >
+        <div className="p-8">
+          {/* Close Button (Top Right X) */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition duration-200"
+            aria-label="Close modal"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+
+          {/* Header Section */}
+          <h3 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100 text-center">
+            Create New Group
+          </h3>
+
+          <form onSubmit={onSubmit} className="space-y-5">
+            {/* Group Name Input */}
+            <InputField
+              type="text"
+              label="Group Name"
+              value={groupName}
+              onChange={onGroupNameChange}
+              placeholder="e.g. Marketing Team"
+              className="w-full"
+              required
+              disabled={loading}
+              aria-invalid={!!error}
+            />
+
+            {/* Description Input */}
+            <InputField
+              type="text"
+              label="Description (Optional)"
+              value={description}
+              onChange={onDescriptionChange}
+              placeholder="Briefly describe the group's purpose"
+              className="w-full"
+              disabled={loading}
+            />
+
+            {/* Submission Button */}
+            <div className="pt-2">
+              <Button
+                type="submit"
+                className="
+                  w-full px-6 py-2.5 text-base font-semibold 
+                  bg-violet-600 text-white rounded-md 
+                  hover:bg-violet-700 transition duration-150 
+                  focus:outline-none focus:ring-4 focus:ring-violet-500 focus:ring-opacity-50 
+                  disabled:bg-gray-400 disabled:cursor-not-allowed
+                "
+                disabled={loading}
+              >
+                {loading ? (
+                  <span className="flex items-center justify-center animate-pulse">
+                    <SpinnerIcon className="w-4 h-4 mr-2 text-white" />
+                    Creating Group...
+                  </span>
+                ) : (
+                  'Create New Group'
+                )}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

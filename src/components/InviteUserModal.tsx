@@ -1,17 +1,17 @@
-// src/components/InviteUserModal.tsx
-
 import React, { useState, Fragment } from 'react';
 import { Dialog, Transition, Combobox, RadioGroup } from '@headlessui/react';
 import {
   CheckIcon as CheckMarkIcon,
   ChevronUpDownIcon,
-} from '@heroicons/react/20/solid'; // Using a better icon library
+} from '@heroicons/react/20/solid';
 
 // --- Interfaces & Data --- //
 
 interface User {
   UID: number;
   Username: string;
+  // Added for avatar display
+  avatar?: string;
 }
 
 export interface FormData {
@@ -35,29 +35,40 @@ const roles = [
   {
     name: 'Manager',
     value: 'manager' as const,
-    description: 'Can manage members.',
+    description: 'Can manage members and content.',
   },
   {
     name: 'User',
     value: 'user' as const,
-    description: 'Can view and interact.',
+    description: 'Can view and interact with content.',
   },
 ];
 
-// --- Helper Component for Role Checkmark --- //
+// --- Helper Components --- //
 
+// Helper component for the checkmark icon in the role selection
 const RoleCheckIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="none" {...props}>
-    <circle cx={12} cy={12} r={12} fill="#fff" opacity="0.2" />
+    <circle cx={12} cy={12} r={12} fill="currentColor" opacity="0.2" />
     <path
       d="M7 13l3 3 7-7"
-      stroke="#fff"
+      stroke="currentColor"
       strokeWidth={1.5}
       strokeLinecap="round"
       strokeLinejoin="round"
     />
   </svg>
 );
+
+// Helper to generate a consistent background color for avatars based on username
+const generateAvatarBgColor = (name: string) => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const color = `hsl(${hash % 360}, 50%, 70%)`;
+  return color;
+};
 
 // --- Main Component --- //
 
@@ -76,6 +87,8 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // --- Derived State --- //
+  // Filter users based on the search query
   const filteredUsers =
     query === ''
       ? users
@@ -85,7 +98,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
             .includes(query.toLowerCase().replace(/\s+/g, ''))
         );
 
-  // --- Handlers --- //
+  // --- Event Handlers --- //
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedUser) {
@@ -96,14 +109,17 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
     setError(null);
     try {
       await onSubmit({ uid: selectedUser.UID, role: selectedRole });
-      handleClose();
+      handleClose(); // Close and reset on success
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to invite user.');
+      setError(
+        err instanceof Error ? err.message : 'An unknown error occurred.'
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Resets all state fields when the modal is closed
   const handleClose = () => {
     setSelectedUser(null);
     setSelectedRole('user');
@@ -116,7 +132,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={handleClose}>
-        {/* Backdrop */}
+        {/* Modal Backdrop */}
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -126,7 +142,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
         </Transition.Child>
 
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
@@ -142,20 +158,21 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
             <Dialog.Panel
               as="form"
               onSubmit={handleSubmit}
-              className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-gray-800"
+              // Increased modal width from max-w-md to max-w-lg
+              className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-gray-800"
             >
               <Dialog.Title
                 as="h3"
-                className="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
+                className="text-xl font-semibold leading-6 text-gray-900 dark:text-white"
               >
                 Invite a New Member
               </Dialog.Title>
-              <Dialog.Description className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Select a user and assign them a role within the group.
+              <Dialog.Description className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                Select a user and assign them a role.
               </Dialog.Description>
 
               {/* User Selection Combobox */}
-              <div className="mt-4">
+              <div className="relative mt-4">
                 <Combobox value={selectedUser} onChange={setSelectedUser}>
                   <Combobox.Label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     User <span className="text-red-500">*</span>
@@ -174,7 +191,6 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                       />
                     </Combobox.Button>
                   </div>
-                  {/* CORE FIX: The Transition MUST wrap Combobox.Options */}
                   <Transition
                     as={Fragment}
                     leave="transition ease-in duration-100"
@@ -182,7 +198,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                     leaveTo="opacity-0"
                     afterLeave={() => setQuery('')}
                   >
-                    <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full max-w-md overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm dark:bg-gray-700">
+                    <Combobox.Options className="absolute z-10 mt-1 max-h-52 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm dark:bg-gray-700">
                       {filteredUsers.length === 0 && query !== '' ? (
                         <div className="relative cursor-default select-none px-4 py-2 text-gray-700 dark:text-gray-300">
                           Nothing found.
@@ -193,27 +209,40 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                             key={user.UID}
                             value={user}
                             className={({ active }) =>
-                              `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white'}`
+                              `relative cursor-pointer select-none py-2 pl-4 pr-4 ${active ? 'bg-blue-600 text-white' : 'text-gray-900 dark:text-white'}`
                             }
                           >
                             {({ selected, active }) => (
-                              <>
-                                <span
-                                  className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
-                                >
-                                  {user.Username}
-                                </span>
-                                {selected ? (
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  {/* [NEW] User Avatar */}
+                                  <div
+                                    style={{
+                                      backgroundColor: generateAvatarBgColor(
+                                        user.Username
+                                      ),
+                                    }}
+                                    className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white"
+                                  >
+                                    {user.Username.charAt(0).toUpperCase()}
+                                  </div>
                                   <span
-                                    className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? 'text-white' : 'text-blue-600'}`}
+                                    className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}
+                                  >
+                                    {user.Username}
+                                  </span>
+                                </div>
+                                {selected && (
+                                  <span
+                                    className={`flex items-center ${active ? 'text-white' : 'text-blue-600'}`}
                                   >
                                     <CheckMarkIcon
                                       className="h-5 w-5"
                                       aria-hidden="true"
                                     />
                                   </span>
-                                ) : null}
-                              </>
+                                )}
+                              </div>
                             )}
                           </Combobox.Option>
                         ))
@@ -224,44 +253,42 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
               </div>
 
               {/* Role Selection RadioGroup */}
-              <div className="mt-4">
+              <div className="mt-5">
                 <RadioGroup value={selectedRole} onChange={setSelectedRole}>
                   <RadioGroup.Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Role <span className="text-red-500">*</span>
                   </RadioGroup.Label>
-                  <div className="mt-1 space-y-2">
+                  <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
                     {roles.map((role) => (
                       <RadioGroup.Option
                         key={role.name}
                         value={role.value}
                         className={({ active, checked }) =>
-                          `${active ? 'ring-2 ring-white/60 ring-offset-2 ring-offset-sky-300' : ''} ${checked ? 'bg-sky-600 text-white' : 'bg-white dark:bg-gray-900/75'} relative flex cursor-pointer rounded-lg px-5 py-3 shadow-md focus:outline-none transition`
+                          `${active ? 'ring-2 ring-white/60 ring-offset-2 ring-offset-blue-400' : ''} ${checked ? 'bg-blue-600 text-white' : 'bg-white dark:bg-gray-900/75'} relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none transition`
                         }
                       >
                         {({ checked }) => (
-                          <>
-                            <div className="flex w-full items-center justify-between">
-                              <div className="text-sm">
-                                <RadioGroup.Label
-                                  as="p"
-                                  className={`font-medium ${checked ? 'text-white' : 'text-gray-900 dark:text-gray-100'}`}
-                                >
-                                  {role.name}
-                                </RadioGroup.Label>
-                                <RadioGroup.Description
-                                  as="span"
-                                  className={`inline ${checked ? 'text-sky-100' : 'text-gray-500 dark:text-gray-400'}`}
-                                >
-                                  {role.description}
-                                </RadioGroup.Description>
-                              </div>
-                              {checked && (
-                                <div className="flex-shrink-0 text-white">
-                                  <RoleCheckIcon className="h-6 w-6" />
-                                </div>
-                              )}
+                          <div className="flex w-full items-start">
+                            <div className="text-sm">
+                              <RadioGroup.Label
+                                as="p"
+                                className={`font-semibold ${checked ? 'text-white' : 'text-gray-900 dark:text-gray-100'}`}
+                              >
+                                {role.name}
+                              </RadioGroup.Label>
+                              <RadioGroup.Description
+                                as="span"
+                                className={`inline ${checked ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}`}
+                              >
+                                {role.description}
+                              </RadioGroup.Description>
                             </div>
-                          </>
+                            {checked && (
+                              <div className="ml-auto flex-shrink-0 text-white">
+                                <RoleCheckIcon className="h-6 w-6" />
+                              </div>
+                            )}
+                          </div>
                         )}
                       </RadioGroup.Option>
                     ))}
@@ -269,24 +296,26 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                 </RadioGroup>
               </div>
 
+              {/* Error Message Display */}
               {error && (
-                <p className="mt-3 text-sm text-red-600 dark:text-red-400">
+                <p className="mt-4 text-center text-sm text-red-600 dark:text-red-400">
                   {error}
                 </p>
               )}
 
-              <div className="mt-6 flex justify-end gap-3">
+              {/* Action Buttons */}
+              <div className="mt-8 flex justify-end gap-4">
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500 dark:ring-0"
+                  className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500 dark:ring-0"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="inline-flex justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting || !selectedUser}
+                  className="inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isSubmitting ? 'Inviting...' : 'Invite Member'}
                 </button>

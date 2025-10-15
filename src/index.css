@@ -37,6 +37,42 @@ layer(base);
   }
 }
 
+.xterm .xterm-viewport {
+  /* xterm.js 預設是 scroll，我們將其改回 auto */
+  overflow-y: auto !important;
+
+  /* 確保其背景與外部容器一致，避免白邊 */
+  background-color: #1f2937 !important;
+}
+
+/* 2. 隱藏常駐的滾動條軌道 (達到溢出才顯示的效果) */
+/* 僅在內容溢出時，瀏覽器才會顯示滑塊 */
+
+/* Webkit (Chrome, Safari) */
+.xterm .xterm-viewport::-webkit-scrollbar {
+  width: 8px; /* 設置一個寬度 */
+  height: 8px;
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar-track {
+  /* 當內容不足時，軌道背景設為透明/與終端機背景色一致，使其不可見 */
+  background: #1f2937;
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar-thumb {
+  /* 滑塊顏色，只有內容溢出時會顯示 */
+  background-color: #4b5563; /* Tailwind gray-600 */
+  border-radius: 4px;
+  border: 2px solid #1f2937; /* 軌道邊界 */
+}
+
+/* Firefox */
+.xterm .xterm-viewport {
+  /* 這是 Firefox 的滾動條樣式，使其變細並透明化 */
+  scrollbar-width: thin;
+  scrollbar-color: #4b5563 #1f2937; /* 滑塊顏色 軌道顏色 */
+}
+
 @theme {
   --font-*: initial;
   --font-outfit: Outfit, sans-serif;

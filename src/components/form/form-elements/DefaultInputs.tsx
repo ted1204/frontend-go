@@ -1,20 +1,19 @@
-import { useState } from "react";
-import ComponentCard from "../../common/ComponentCard.tsx";
-import Label from "../Label.tsx";
-import Input from "../input/InputField.tsx";
-import Select from "../Select.tsx";
-import { EyeCloseIcon, EyeIcon, TimeIcon } from "../../../icons/index.ts";
-import DatePicker from "../date-picker.tsx";
+import { useState } from 'react';
+import ComponentCard from '../../common/ComponentCard.tsx';
+import Label from '../Label.tsx';
+import Input from '../input/InputFieldDefault.tsx';
+import Select from '../Select.tsx';
+import { EyeCloseIcon, EyeIcon, TimeIcon } from '../../../icons/index.ts';
+import DatePicker from '../date-picker.tsx';
 
 export default function DefaultInputs() {
   const [showPassword, setShowPassword] = useState(false);
   const options = [
-    { value: "marketing", label: "Marketing" },
-    { value: "template", label: "Template" },
-    { value: "development", label: "Development" },
+    { value: 'marketing', label: 'Marketing' },
+    { value: 'template', label: 'Template' },
+    { value: 'development', label: 'Development' },
   ];
-  const handleSelectChange = (value: string) => {
-  };
+  const handleSelectChange = (value: string) => {};
 
   return (
     <ComponentCard title="Default Inputs">
@@ -40,7 +39,7 @@ export default function DefaultInputs() {
           <Label>Password Input</Label>
           <div className="relative">
             <Input
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? 'text' : 'password'}
               placeholder="Enter your password"
             />
             <button

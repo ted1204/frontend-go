@@ -1,85 +1,76 @@
-import type React from "react";
-import type { FC } from "react";
+import React, { InputHTMLAttributes } from 'react';
 
-interface InputProps {
-  type?: "text" | "number" | "email" | "password" | "date" | "time" | string;
-  id?: string;
-  name?: string;
-  placeholder?: string;
-  value?: string | number;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+/**
+ * Props for the InputField component. Extends standard HTMLInputElement attributes
+ * to allow passing any native input property.
+ */
+interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+  /** The text displayed as the label above the input field. */
+  label: string;
+  /** Optional class names applied to the outermost wrapper <div> for layout control. */
   className?: string;
-  min?: string;
-  max?: string;
-  step?: number;
-  disabled?: boolean;
-  success?: boolean;
-  error?: boolean;
-  hint?: string;
-  required?: boolean;
+  // NOTE: Other common props like type, value, onChange, disabled are inherited.
 }
 
-const Input: FC<InputProps> = ({
-  type = "text",
-  id,
-  name,
-  placeholder,
+const InputField: React.FC<InputFieldProps> = ({
+  label,
+  className = '',
+  // Destructure standard props used directly in the component logic
+  type = 'text',
   value,
   onChange,
-  className = "",
-  min,
-  max,
-  step,
-  disabled = false,
-  success = false,
-  error = false,
-  hint,
+  placeholder,
   required,
+  disabled,
+  // Collect all other native HTML input props
+  ...rest
 }) => {
-  let inputClasses = ` h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 ${className}`;
-
-  if (disabled) {
-    inputClasses += ` text-gray-500 border-gray-300 opacity-40 bg-gray-100 cursor-not-allowed dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 opacity-40`;
-  } else if (error) {
-    inputClasses += `  border-error-500 focus:border-error-300 focus:ring-error-500/20 dark:text-error-400 dark:border-error-500 dark:focus:border-error-800`;
-  } else if (success) {
-    inputClasses += `  border-success-500 focus:border-success-300 focus:ring-success-500/20 dark:text-success-400 dark:border-success-500 dark:focus:border-success-800`;
-  } else {
-    inputClasses += ` bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90  dark:focus:border-brand-800`;
-  }
+  // Use React.useId for robust accessibility linkage between label and input.
+  const id = React.useId();
 
   return (
-    <div className="relative">
+    // Outer Wrapper Div: Applies layout classes and any custom parent classNames.
+    <div className={`space-y-1.5 text-left ${className}`}>
+      {/* Label Element: Increased spacing to 'space-y-1.5' for cleaner look */}
+      <label
+        htmlFor={id}
+        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+      >
+        {label}
+        {/* Required Indicator: Subtle red asterisk */}
+        {required && <span className="text-red-500 ml-1 leading-none">*</span>}
+      </label>
+
+      {/* Input Element */}
       <input
-        type={type}
         id={id}
-        name={name}
-        placeholder={placeholder}
+        type={type}
         value={value}
         onChange={onChange}
-        min={min}
-        max={max}
-        step={step}
-        disabled={disabled}
-        className={inputClasses}
+        placeholder={placeholder}
         required={required}
+        disabled={disabled}
+        // Tailwind CSS Styling: Consolidated into a single, clean template literal string.
+        className={`
+          w-full 
+          px-3 py-2 
+          border border-gray-300 dark:border-gray-600 
+          bg-white dark:bg-gray-700 dark:text-white 
+          rounded-md 
+          shadow-inner-sm // Used a more subtle inner shadow for depth
+          
+          transition duration-150 ease-in-out
+          
+          focus:outline-none 
+          focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 // Clear focus state
+          
+          disabled:bg-gray-100 dark:disabled:bg-gray-700/50
+          disabled:cursor-not-allowed
+        `}
+        {...rest} // Spread any remaining HTML props
       />
-
-      {hint && (
-        <p
-          className={`mt-1.5 text-xs ${
-            error
-              ? "text-error-500"
-              : success
-              ? "text-success-500"
-              : "text-gray-500"
-          }`}
-        >
-          {hint}
-        </p>
-      )}
     </div>
   );
 };
 
-export default Input;
+export default InputField;

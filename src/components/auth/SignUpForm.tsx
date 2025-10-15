@@ -1,18 +1,18 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
-import Label from "../form/Label";
-import Input from "../form/input/InputField";
-import Checkbox from "../form/input/Checkbox";
-import Button from "../ui/button/Button";
-import { register } from "../../services/authService";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from '../../icons';
+import Label from '../form/Label';
+import Input from '../form/input/InputFieldDefault';
+import Checkbox from '../form/input/Checkbox';
+import Button from '../ui/button/Button';
+import { register } from '../../services/authService';
 
 export default function SignUpForm() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [fname, setFname] = useState('');
+  const [lname, setLname] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function SignUpForm() {
 
     // Basic validation
     if (!username || !password) {
-      alert("Please fill in the Username and Password fields.");
+      alert('Please fill in the Username and Password fields.');
       return;
     }
 
@@ -34,14 +34,18 @@ export default function SignUpForm() {
         password,
         email,
         full_name,
-        type: "origin", // Default to 'origin' as per Swagger enum
-        status: "online", // Default to 'online' as per Swagger enum
+        type: 'origin', // Default to 'origin' as per Swagger enum
+        status: 'online', // Default to 'online' as per Swagger enum
       });
-      alert(data.message || "Registration successful! Please sign in.");
-      navigate("/signin");
+      alert(data.message || 'Registration successful! Please sign in.');
+      navigate('/signin');
     } catch (err) {
-      console.error("Registration error:", err);
-      alert(err instanceof Error ? err.message : "Registration failed, please try again.");
+      console.error('Registration error:', err);
+      alert(
+        err instanceof Error
+          ? err.message
+          : 'Registration failed, please try again.'
+      );
     }
   };
 
@@ -187,7 +191,7 @@ export default function SignUpForm() {
                   <div className="relative">
                     <Input
                       placeholder="Enter your password"
-                      type={showPassword ? "text" : "password"}
+                      type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
@@ -223,11 +227,7 @@ export default function SignUpForm() {
                 </div> */}
                 {/* Button */}
                 <div>
-                  <Button
-                    className="w-full"
-                    size="sm"
-                    type="submit"
-                    >
+                  <Button className="w-full" size="sm" type="submit">
                     Sign Up
                   </Button>
                 </div>
@@ -235,7 +235,7 @@ export default function SignUpForm() {
             </form>
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Already have an account?{" "}
+                Already have an account?{' '}
                 <Link
                   to="/signin"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
