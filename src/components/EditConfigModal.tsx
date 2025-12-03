@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ConfigFile } from '../interfaces/configFile';
 import Button from './ui/button/Button';
 
@@ -61,11 +61,11 @@ export default function EditConfigModal({
 
   const handleSubmit = () => {
     if (!formData.filename.trim()) {
-      setError('Filename is required.');
+      setError('檔名為必填。');
       return;
     }
     if (!formData.raw_yaml.trim()) {
-      setError('YAML content cannot be empty.');
+      setError('YAML 內容不能為空。');
       return;
     }
     setError(null);
@@ -81,7 +81,7 @@ export default function EditConfigModal({
         {/* Modal Header */}
         <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 p-4 sm:p-6 dark:border-gray-700">
           <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-            Edit:{' '}
+            編輯:{' '}
             <span className="font-mono text-blue-600 dark:text-blue-400">
               {formData.filename}
             </span>
@@ -115,11 +115,11 @@ export default function EditConfigModal({
               htmlFor="filename"
               className="block text-sm font-bold text-gray-800 dark:text-gray-200"
             >
-              Configuration Filename
+              設定檔名稱
             </label>
             <div className="flex rounded-lg shadow-sm">
               <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 sm:text-sm">
-                filename:
+                檔名:
               </span>
               <input
                 id="filename"
@@ -140,13 +140,13 @@ export default function EditConfigModal({
               />
             </div>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              Must be a unique name ending with .yaml or .yml.
+              必須是唯一的名稱，且以 .yaml 或 .yml 結尾。
             </p>
           </div>
           {/* Monaco Editor for YAML content */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              YAML Content
+              YAML 內容
             </label>
             <div className="editor-container mt-2 h-[450px] rounded-lg border border-gray-300 p-px shadow-sm focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 dark:border-gray-600">
               <MonacoEditor
@@ -171,11 +171,11 @@ export default function EditConfigModal({
         {/* Modal Footer */}
         <div className="flex flex-shrink-0 flex-col-reverse items-center gap-4 rounded-b-xl border-t border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50 sm:flex-row sm:justify-between">
           <div className="text-sm text-red-600 dark:text-red-400">
-            {error && `Error: ${error}`}
+            {error && `錯誤: ${error}`}
           </div>
           <div className="flex w-full gap-3 sm:w-auto">
             <Button variant="outline" onClick={onClose} className="w-full">
-              Cancel
+              取消
             </Button>
             <Button
               variant="primary"
@@ -183,7 +183,7 @@ export default function EditConfigModal({
               disabled={actionLoading}
               className="w-full"
             >
-              {actionLoading ? 'Saving...' : 'Save Changes'}
+              {actionLoading ? '儲存中...' : '儲存變更'}
             </Button>
           </div>
         </div>

@@ -1,19 +1,8 @@
 import { USERS_URL, USER_BY_ID_URL } from "../config/url";
-import { ErrorResponse, MessageResponse } from "../response/response";
+import { MessageResponse } from "../response/response";
 import { User, UserRequest } from "../interfaces/user";
+import { fetchWithAuth } from "../utils/api";
 
-const fetchWithAuth = async (url: string, options: RequestInit) => {
-  const headers = {
-    ...options.headers,
-    "Content-Type": "application/x-www-form-urlencoded",
-  };
-  const response = await fetch(url, { ...options, headers, credentials: 'include' });
-  if (!response.ok) {
-    const errorData: ErrorResponse = await response.json();
-    throw new Error(errorData.error || `Request failed with status ${response.status}`);
-  }
-  return response.json();
-};
 
 export const getUsers = async (): Promise<User[]> => {
   try {

@@ -37,7 +37,7 @@ export default function SignOutButton({ onClick }: SignOutButtonProps) {
           fill=""
         />
       </svg>
-      Sign out
+      登出
     </Link>
   );
 }

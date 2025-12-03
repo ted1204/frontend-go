@@ -3,25 +3,14 @@ import { Link, useLocation } from 'react-router';
 
 // Assume these icons are imported from an icon library
 import {
-  BoxCubeIcon,
   BoxIcon,
-  CalenderIcon,
   ChevronDownIcon,
-  DocsIcon,
-  FileIcon,
   GridIcon,
   GroupIcon,
   HorizontaLDots,
-  ListIcon,
-  PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  TableIcon,
   TaskIcon,
-  UserCircleIcon,
 } from '../icons';
 import { useSidebar } from '../context/SidebarContext';
-import SidebarWidget from './SidebarWidget';
 
 type NavItem = {
   name: string;
@@ -31,82 +20,59 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: "Calendar",
-  //   path: "/calendar",
-  // },
   {
     icon: <TaskIcon />,
-    name: 'Projects',
+    name: '專案列表',
     path: '/projects',
   },
   {
     icon: <GroupIcon />,
-    name: 'Groups',
+    name: '群組列表',
     path: '/groups',
   },
   {
     icon: <BoxIcon />,
-    name: 'Pods',
+    name: 'Pods 列表',
     path: '/pod-tables',
   },
   {
-    icon: <GridIcon />,
-    name: 'Dashboard',
-    subItems: [{ name: 'Ecommerce', path: '/', pro: false }],
+    icon: <TaskIcon />,
+    name: '檔案瀏覽器',
+    path: '/file-browser',
   },
-  // {
-  //   name: "Forms",
-  //   icon: <ListIcon />,
-  //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  // },
-  // {
-  //   name: 'Tables',
-  //   icon: <TableIcon />,
-  //   subItems: [{ name: 'Basic Tables', path: '/pod-tables', pro: false }],
-  // },
-  // {
-  //   name: "Pages",
-  //   icon: <PageIcon />,
-  //   subItems: [
-  //     { name: "Blank Page", path: "/blank", pro: false },
-  //     { name: "404 Error", path: "/error-404", pro: false },
-  //   ],
-  // },
+  {
+    icon: <GridIcon />,
+    name: '儀表板',
+    subItems: [{ name: '電子商務', path: '/', pro: false }],
+  },
+  {
+    icon: <BoxIcon />,
+    name: '我的電子申請表單',
+    path: '/my-tickets',
+  },
 ];
 
 const adminItems: NavItem[] = [
   {
-    icon: <TaskIcon />, // 使用 TaskIcon 表示 Manage Projects
-    name: 'Manage_Projects',
+    icon: <GridIcon />,
+    name: '儀表板',
+    path: '/admin',
+  },
+  {
+    icon: <TaskIcon />, // Use TaskIcon for Manage Projects
+    name: '專案管理',
     path: '/admin/manage-projects',
   },
   {
-    icon: <GroupIcon />, // 使用 GroupIcon 表示 Manage Groups
-    name: 'Manage_Groups',
+    icon: <GroupIcon />, // Use GroupIcon for Manage Groups
+    name: '群組管理',
     path: '/admin/manage-groups',
   },
-  // {
-  //   icon: <PieChartIcon />,
-  //   name: "Charts",
-  //   subItems: [
-  //     { name: "Line Chart", path: "/line-chart", pro: false },
-  //     { name: "Bar Chart", path: "/bar-chart", pro: false },
-  //   ],
-  // },
-  // {
-  //   icon: <BoxCubeIcon />,
-  //   name: "UI Elements",
-  //   subItems: [
-  //     { name: "Alerts", path: "/alerts", pro: false },
-  //     { name: "Avatar", path: "/avatars", pro: false },
-  //     { name: "Badge", path: "/badge", pro: false },
-  //     { name: "Buttons", path: "/buttons", pro: false },
-  //     { name: "Images", path: "/images", pro: false },
-  //     { name: "Videos", path: "/videos", pro: false },
-  //   ],
-  // },
+  {
+    icon: <BoxIcon />,
+    name: '電子申請表單管理',
+    path: '/admin/tickets',
+  },
 ];
 
 const AppSidebar: React.FC = () => {
@@ -122,6 +88,7 @@ const AppSidebar: React.FC = () => {
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [isAdmin, setIsAdmin] = useState(false);
+  const [viewMode, setViewMode] = useState<'user' | 'admin'>('user');
 
   // const isActive = (path: string) => location.pathname === path;
   const isActive = useCallback(
@@ -133,11 +100,20 @@ const AppSidebar: React.FC = () => {
     const userData = localStorage.getItem('userData');
     if (userData) {
       const parsedData = JSON.parse(userData);
-      setIsAdmin(parsedData.is_super_admin === true);
+      const isSuperAdmin = parsedData.is_super_admin === true;
+      setIsAdmin(isSuperAdmin);
+      // If user is admin and on an admin route, switch to admin view automatically
+      if (isSuperAdmin && location.pathname.startsWith('/admin')) {
+        setViewMode('admin');
+      }
     }
 
     let submenuMatched = false;
     ['main', 'admin'].forEach((menuType) => {
+      // Only check the active menu type
+      if (menuType === 'main' && viewMode === 'admin') return;
+      if (menuType === 'admin' && viewMode === 'user') return;
+
       const items = menuType === 'main' ? navItems : adminItems;
       items.forEach((nav, index) => {
         if (nav.subItems) {
@@ -148,7 +124,7 @@ const AppSidebar: React.FC = () => {
             }
           });
         } else if (nav.path && isActive(nav.path)) {
-          setOpenSubmenu(null); // 如果是單獨路徑，關閉 submenu
+          setOpenSubmenu(null); // If it's a single path, close submenu
           submenuMatched = true;
         }
       });
@@ -281,7 +257,7 @@ const AppSidebar: React.FC = () => {
                                 : 'menu-dropdown-badge-inactive'
                             } menu-dropdown-badge`}
                           >
-                            new
+                            新
                           </span>
                         )}
                         {subItem.pro && (
@@ -292,7 +268,7 @@ const AppSidebar: React.FC = () => {
                                 : 'menu-dropdown-badge-inactive'
                             } menu-dropdown-badge`}
                           >
-                            pro
+                            專業
                           </span>
                         )}
                       </span>
@@ -362,9 +338,9 @@ const AppSidebar: React.FC = () => {
             }}
           >
             {' '}
-            {/* 調整 '2ch' 為 "AI" 寬度 */}
+            {/* Adjust '2ch' to "AI" width */}
             <span className="text-xl font-bold text-gray-900 dark:text-white whitespace-nowrap">
-              AI platform
+              AI 平台
             </span>
           </div>
         </Link>
@@ -372,23 +348,25 @@ const AppSidebar: React.FC = () => {
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">
-            <div>
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? 'lg:justify-center'
-                    : 'justify-start'
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  'Menu'
-                ) : (
-                  <HorizontaLDots className="size-6" />
-                )}
-              </h2>
-              {renderMenuItems(navItems, 'main')}
-            </div>
-            {isAdmin && (
+            {viewMode === 'user' && (
+              <div>
+                <h2
+                  className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                    !isExpanded && !isHovered
+                      ? 'lg:justify-center'
+                      : 'justify-start'
+                  }`}
+                >
+                  {isExpanded || isHovered || isMobileOpen ? (
+                    '選單'
+                  ) : (
+                    <HorizontaLDots className="size-6" />
+                  )}
+                </h2>
+                {renderMenuItems(navItems, 'main')}
+              </div>
+            )}
+            {isAdmin && viewMode === 'admin' && (
               <div className="">
                 <h2
                   className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
@@ -398,7 +376,7 @@ const AppSidebar: React.FC = () => {
                   }`}
                 >
                   {isExpanded || isHovered || isMobileOpen ? (
-                    'Admin'
+                    '管理員'
                   ) : (
                     <HorizontaLDots />
                   )}
@@ -408,7 +386,26 @@ const AppSidebar: React.FC = () => {
             )}
           </div>
         </nav>
-        {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}
+        {isAdmin && (isExpanded || isHovered || isMobileOpen) && (
+          <div className="mt-auto px-6 pb-6">
+            <button
+              onClick={() => setViewMode(viewMode === 'user' ? 'admin' : 'user')}
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              {viewMode === 'user' ? (
+                <>
+                  <TaskIcon className="h-4 w-4" />
+                  <span>切換至管理員</span>
+                </>
+              ) : (
+                <>
+                  <GroupIcon className="h-4 w-4" />
+                  <span>切換至使用者</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </div>
     </aside>
   );

@@ -1,9 +1,8 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { isAuthenticated } from "../utils/auth";
 
 const PublicRoute = () => {
-  const username = localStorage.getItem("username");
-
-  if (username) {
+  if (isAuthenticated()) {
     return <Navigate to="/" replace />;
   }
 

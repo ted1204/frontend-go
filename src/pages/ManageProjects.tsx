@@ -110,7 +110,7 @@ export default function ManageProjects() {
         setAvailableGroups(groups);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : 'Failed to fetch initial data'
+          err instanceof Error ? err.message : '無法取得初始資料'
         );
       } finally {
         setLoading(false);
@@ -145,7 +145,7 @@ export default function ManageProjects() {
     e.preventDefault();
 
     if (groupId === 0) {
-      setError('Please select a valid Group Name before submitting.');
+      setError('提交前請選擇有效的群組名稱。');
       return;
     }
 
@@ -166,11 +166,11 @@ export default function ManageProjects() {
         handleCloseModal();
       } else {
         setError(
-          'Invalid project data received from server or creation failed.'
+          '從伺服器接收到無效的專案資料或建立失敗。'
         );
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create project');
+      setError(err instanceof Error ? err.message : '無法建立專案');
     } finally {
       setActionLoading(false);
     }
@@ -202,14 +202,14 @@ export default function ManageProjects() {
         // 更新列表
         setAllProjects((prev) => prev.filter((p) => p.PID !== projectId));
       } else {
-        setError(res.message || 'Failed to delete project.');
+        setError(res.message || '無法刪除專案。');
         console.error('Deletion failed:', res.message);
       }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : 'An error occurred during deletion.'
+          : '刪除時發生錯誤。'
       );
     } finally {
       setActionLoading(false);
@@ -239,7 +239,7 @@ export default function ManageProjects() {
                       "
           >
             <PlusIcon className="w-5 h-5" />
-            <span>New Project</span>
+            <span>新專案</span>
           </Button>
         </div>
 

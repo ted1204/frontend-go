@@ -82,5 +82,5 @@ export const register = async (input: RegisterInput): Promise<MessageResponse> =
 };
 
 export const getUsername = (): string => {
-  return localStorage.getItem("username") || "null"; // 預設值
+  return localStorage.getItem("username") || "null"; // Default value
 };

@@ -128,19 +128,19 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
                   className="text-lg leading-6 font-bold text-gray-900 dark:text-white"
                   id="modal-title"
                 >
-                  Delete {itemType}
+                  刪除 {itemType}
                 </h3>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Are you sure you want to permanently delete the {itemType}:
+                    您確定要永久刪除 {itemType}：
                     <span className="font-semibold text-gray-700 dark:text-gray-200">
                       {' '}
                       "{itemName}"
                     </span>
-                    ? This action cannot be undone.
+                    ? 此動作無法復原。
                   </p>
                   <p className="mt-2 text-xs font-medium text-red-600 dark:text-red-500">
-                    All associated data may be lost.
+                    所有相關資料可能會遺失。
                   </p>
                 </div>
               </div>
@@ -159,7 +159,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
                           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm
                           disabled:opacity-50 disabled:cursor-not-allowed transition duration-150"
             >
-              {loading ? 'Deleting...' : `Delete ${itemType}`}
+              {loading ? '刪除中...' : `刪除 ${itemType}`}
             </Button>
 
             {/* Cancel Button (Secondary action) */}
@@ -172,7 +172,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
                           dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600
                           disabled:opacity-50 disabled:cursor-not-allowed transition duration-150"
             >
-              Cancel
+              取消
             </Button>
           </div>
         </div>

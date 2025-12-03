@@ -1,7 +1,8 @@
 // src/components/GroupList.tsx
 
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState, useEffect } from 'react';
 import { Group } from '../interfaces/group'; // Adjust import based on your structure
+import Pagination from './common/Pagination';
 
 // --- SVG Icons --- //
 
@@ -83,7 +84,7 @@ const LoadingSpinner: React.FC = () => (
         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
       ></path>
     </svg>
-    <span>Fetching groups...</span>
+    <span>正在取得群組...</span>
   </div>
 );
 
@@ -92,7 +93,7 @@ const ErrorDisplay: React.FC<{ message: string }> = ({ message }) => (
     className="bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg"
     role="alert"
   >
-    <strong className="font-bold mr-1">Error:</strong>
+    <strong className="font-bold mr-1">錯誤:</strong>
     <span className="block sm:inline">{message}</span>
   </div>
 );
@@ -101,12 +102,12 @@ const EmptyState: React.FC<{ isFiltering: boolean }> = ({ isFiltering }) => (
   <div className="text-center py-12 px-6 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
     <GroupIcon className="mx-auto h-10 w-10 text-gray-400" />
     <h3 className="mt-4 text-lg font-semibold text-gray-800 dark:text-white">
-      {isFiltering ? 'No Groups Match Your Search' : 'No Active Groups'}
+      {isFiltering ? '沒有符合搜尋條件的群組' : '沒有使用中的群組'}
     </h3>
     <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
       {isFiltering
-        ? 'Try adjusting your search term.'
-        : 'Create a new group to start organizing your teams.'}
+        ? '請嘗試調整您的搜尋關鍵字。'
+        : '建立新群組以開始組織您的團隊。'}
     </p>
   </div>
 );
@@ -140,6 +141,19 @@ const GroupList: React.FC<GroupListProps> = ({
 }) => {
   // FIX: Defensive check for searchTerm to prevent TypeError on initial render
   const isFiltering = (searchTerm || '').length > 0;
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Reset page when search changes (groups prop changes)
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [groups]);
+
+  const totalPages = Math.ceil(groups.length / itemsPerPage);
+  const paginatedGroups = groups.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const renderContent = () => {
     if (loading) {
@@ -154,57 +168,64 @@ const GroupList: React.FC<GroupListProps> = ({
     }
 
     return (
-      <ul className="space-y-4">
-        {groups.map((group) => (
-          <li
-            key={group.GID}
-            // Aesthetic card styling with hover feedback
-            className="group flex justify-between items-center 
-                        bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl 
-                        shadow-md transition-all duration-200 
-                        hover:shadow-lg hover:border-violet-400 dark:hover:border-violet-500"
-          >
-            {/* Group details and navigation area */}
-            <div
-              onClick={() => onGroupClick(group.GID)}
-              className="flex-grow cursor-pointer px-4 py-3"
+      <>
+        <ul className="space-y-4">
+          {paginatedGroups.map((group) => (
+            <li
+              key={group.GID}
+              // Aesthetic card styling with hover feedback
+              className="group flex justify-between items-center 
+                          bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl 
+                          shadow-md transition-all duration-200 
+                          hover:shadow-lg hover:border-violet-400 dark:hover:border-violet-500"
             >
-              <div className="flex items-center gap-4">
-                {/* Decorative Icon (Violet accent color) */}
-                <div className="h-10 w-10 flex-shrink-0 flex items-center justify-center rounded-full bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 shadow-sm">
-                  <GroupIcon className="h-6 w-6" />
-                </div>
+              {/* Group details and navigation area */}
+              <div
+                onClick={() => onGroupClick(group.GID)}
+                className="flex-grow cursor-pointer px-4 py-3"
+              >
+                <div className="flex items-center gap-4">
+                  {/* Decorative Icon (Violet accent color) */}
+                  <div className="h-10 w-10 flex-shrink-0 flex items-center justify-center rounded-full bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 shadow-sm">
+                    <GroupIcon className="h-6 w-6" />
+                  </div>
 
-                {/* Text Details */}
-                <div>
-                  <p className="font-bold text-lg text-gray-800 dark:text-white truncate">
-                    {group.GroupName}
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 truncate mt-0.5">
-                    {group.Description || `Group ID: ${group.GID}`}
-                  </p>
+                  {/* Text Details */}
+                  <div>
+                    <p className="font-bold text-lg text-gray-800 dark:text-white truncate">
+                      {group.GroupName}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                      {group.Description || `群組 ID: ${group.GID}`}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Delete button (Icon-only) */}
-            <div className="px-4 flex-shrink-0">
-              <button
-                // FIX: Pass the whole group object instead of just the ID
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent onGroupClick from firing
-                  onDeleteGroup(group);
-                }}
-                className="p-2 rounded-full text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
-                aria-label="Delete group"
-                // disabled={isActionLoading} // Uncomment if adding isActionLoading
-              >
-                <TrashIcon className="h-5 w-5" />
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+              {/* Delete button (Icon-only) */}
+              <div className="px-4 flex-shrink-0">
+                <button
+                  // FIX: Pass the whole group object instead of just the ID
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent onGroupClick from firing
+                    onDeleteGroup(group);
+                  }}
+                  className="p-2 rounded-full text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
+                  aria-label="刪除群組"
+                  // disabled={isActionLoading} // Uncomment if adding isActionLoading
+                >
+                  <TrashIcon className="h-5 w-5" />
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <Pagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      </>
     );
   };
 
@@ -213,10 +234,10 @@ const GroupList: React.FC<GroupListProps> = ({
       {/* Header (Structural Context) */}
       <div className="mb-6">
         <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-          Manage Organizational Groups
+          管理組織群組
         </h2>
         <p className="mt-1 text-base text-gray-600 dark:text-gray-400">
-          View, select, and manage all defined groups and their associated IDs.
+          檢視、選擇和管理所有已定義的群組及其相關 ID。
         </p>
       </div>
 
@@ -225,7 +246,7 @@ const GroupList: React.FC<GroupListProps> = ({
         <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
         <input
           type="text"
-          placeholder="Search groups by name, description, or ID..."
+          placeholder="依名稱、描述或 ID 搜尋群組..."
           value={searchTerm}
           onChange={onSearchChange}
           className="

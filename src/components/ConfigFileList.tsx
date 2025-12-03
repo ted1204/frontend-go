@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ConfigFile } from '../interfaces/configFile';
 import { Resource } from '../interfaces/resource';
 import { getResourcesByConfigFile } from '../services/resourceService';
@@ -72,7 +72,7 @@ const MoreActionsButton = ({
             }}
             className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
           >
-            Edit File
+            編輯檔案
           </button>
           <button
             onClick={() => {
@@ -81,7 +81,7 @@ const MoreActionsButton = ({
             }}
             className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
           >
-            Destruct Instance
+            銷毀實例
           </button>
           <div className="my-1 h-px bg-gray-100 dark:bg-gray-700" />
           <button
@@ -91,7 +91,7 @@ const MoreActionsButton = ({
             }}
             className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/50"
           >
-            Delete File
+            刪除檔案
           </button>
         </div>
       )}
@@ -143,10 +143,10 @@ export default function ConfigFileList({
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center dark:border-gray-600">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
-          No Configuration Files Found
+          找不到設定檔
         </h3>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Click "Add Config File" to get started.
+          點擊「新增設定檔」以開始。
         </p>
       </div>
     );
@@ -174,7 +174,7 @@ export default function ConfigFileList({
                 {cf.Filename}
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                ID: <span className="font-mono">{cf.CFID}</span> | Created:{' '}
+                ID: <span className="font-mono">{cf.CFID}</span> | 建立時間:{' '}
                 {new Date(cf.CreatedAt).toLocaleDateString()}
               </p>
             </div>
@@ -186,9 +186,9 @@ export default function ConfigFileList({
                 onClick={() => onCreateInstance(cf.CFID)}
                 disabled={actionLoading}
                 className="text-sm font-semibold text-blue-600 transition-colors hover:text-blue-800 disabled:cursor-not-allowed disabled:opacity-50 dark:text-blue-500 dark:hover:text-blue-400"
-                title="Deploy Instance"
+                title="部署實例"
               >
-                Deploy
+                部署
               </button>
 
               {/* Secondary Actions in a Dropdown */}
@@ -220,7 +220,7 @@ export default function ConfigFileList({
               ) : resources[cf.CFID]?.length ? (
                 <div>
                   <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    Associated Resources
+                    關聯資源
                   </h4>
                   <ul className="space-y-2">
                     {resources[cf.CFID].map((r) => (
@@ -255,10 +255,10 @@ export default function ConfigFileList({
                     />
                   </svg>
                   <p className="mt-2 text-sm font-semibold text-gray-600 dark:text-gray-300">
-                    No Associated Resources
+                    無關聯資源
                   </p>
                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    This configuration file has not been deployed yet.
+                    此設定檔尚未部署。
                   </p>
                 </div>
               )}

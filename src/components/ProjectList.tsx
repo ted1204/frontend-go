@@ -1,5 +1,6 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState, useEffect } from 'react';
 import { Project } from '../interfaces/project';
+import Pagination from './common/Pagination';
 
 // SVG Icon for a simple Loading Spinner
 const SpinnerIcon = ({ className = 'w-5 h-5' }) => (
@@ -89,13 +90,26 @@ const ProjectList: React.FC<ProjectListProps> = ({
 }) => {
   // Determine if filtering is active to show the correct empty state message
   const isFiltering = searchTerm.length > 0;
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Reset page when search changes (projects prop changes)
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [projects]);
+
+  const totalPages = Math.ceil(projects.length / itemsPerPage);
+  const paginatedProjects = projects.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="text-left">
       {/* List Title Section: Subdued, clean heading with a separator line */}
       <div className="mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
         <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
-          Project List
+          專案列表
         </h3>
       </div>
 
@@ -104,7 +118,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
         <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
         <input
           type="text"
-          placeholder="Search projects by name, description, or ID..."
+          placeholder="依名稱、描述或 ID 搜尋專案..."
           value={searchTerm}
           onChange={onSearchChange}
           className="
@@ -124,87 +138,94 @@ const ProjectList: React.FC<ProjectListProps> = ({
         <div className="flex items-center justify-center p-8 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <SpinnerIcon className="w-5 h-5 mr-3 text-gray-600 dark:text-gray-300" />
           <p className="text-gray-600 dark:text-gray-300">
-            Loading projects...
+            載入專案中...
           </p>
         </div>
       ) : error ? (
         // Error State: Visually distinct alert box
         <p className="p-4 bg-red-100 border border-red-400 text-red-700 dark:bg-red-900/30 dark:border-red-600 dark:text-red-300 rounded-lg">
-          Error: {error}
+          錯誤: {error}
         </p>
       ) : projects.length === 0 ? (
         // Empty State: Dynamic message based on whether the user is searching
         <p className="p-4 bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg border border-dashed border-gray-300 dark:border-gray-600">
           {isFiltering
-            ? `No projects match "${searchTerm}". Try a different term.`
-            : `No projects found. Create a new project to get started.`}
+            ? `沒有專案符合 "${searchTerm}"。請嘗試其他關鍵字。`
+            : `找不到專案。建立新專案以開始使用。`}
         </p>
       ) : (
         /* --- Main Project List Body --- */
-        <ul className="space-y-3">
-          {projects.map((project) => (
-            <li
-              key={project.PID}
-              // Item Card Styling: Clean card appearance with enhanced hover effects
-              className="
-                flex justify-between items-center 
-                p-4 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm 
-                bg-white dark:bg-gray-800 
-                hover:shadow-md hover:border-violet-300 dark:hover:border-violet-500 
-                transition duration-150 ease-in-out
-              "
-            >
-              {/* Clickable Area - Project Information */}
-              <div
-                onClick={() => onProjectClick(project.PID)}
-                className="cursor-pointer flex-grow pr-4"
+        <>
+          <ul className="space-y-3">
+            {paginatedProjects.map((project) => (
+              <li
+                key={project.PID}
+                // Item Card Styling: Clean card appearance with enhanced hover effects
+                className="
+                  flex justify-between items-center 
+                  p-4 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm 
+                  bg-white dark:bg-gray-800 
+                  hover:shadow-md hover:border-violet-300 dark:hover:border-violet-500 
+                  transition duration-150 ease-in-out
+                "
               >
-                <div className="flex items-baseline mb-1">
-                  {/* Project Name: Primary content, bold text */}
-                  <span className="text-lg font-semibold text-gray-800 dark:text-white truncate">
-                    {project.ProjectName ||
-                      `Unnamed Project (ID: ${project.PID})`}
-                  </span>
-                  {/* Project ID: Secondary metadata */}
-                  {project.PID && (
-                    <span className="text-xs text-gray-400 dark:text-gray-500 ml-3 flex-shrink-0">
-                      ID: {project.PID}
+                {/* Clickable Area - Project Information */}
+                <div
+                  onClick={() => onProjectClick(project.PID)}
+                  className="cursor-pointer flex-grow pr-4"
+                >
+                  <div className="flex items-baseline mb-1">
+                    {/* Project Name: Primary content, bold text */}
+                    <span className="text-lg font-semibold text-gray-800 dark:text-white truncate">
+                      {project.ProjectName ||
+                        `未命名專案 (ID: ${project.PID})`}
                     </span>
+                    {/* Project ID: Secondary metadata */}
+                    {project.PID && (
+                      <span className="text-xs text-gray-400 dark:text-gray-500 ml-3 flex-shrink-0">
+                        ID: {project.PID}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Description: Subdued text, clamped to one line */}
+                  {project.Description && (
+                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
+                      {project.Description}
+                    </p>
                   )}
                 </div>
 
-                {/* Description: Subdued text, clamped to one line */}
-                {project.Description && (
-                  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
-                    {project.Description}
-                  </p>
-                )}
-              </div>
-
-              {/* Delete Button (Icon) */}
-              <button
-                // Apply action loading state to disable the button
-                disabled={isActionLoading}
-                className="
-                  flex items-center justify-center w-8 h-8 rounded-full 
-                  text-red-500 hover:text-white 
-                  bg-transparent hover:bg-red-500 
-                  transition duration-150 flex-shrink-0
-                  // Disabled styles
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                "
-                aria-label={`Delete project ${project.ProjectName}`}
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent navigation click
-                  // Pass the entire project object to the handler
-                  onDeleteProject(project);
-                }}
-              >
-                <TrashIcon className="w-4 h-4" />
-              </button>
-            </li>
-          ))}
-        </ul>
+                {/* Delete Button (Icon) */}
+                <button
+                  // Apply action loading state to disable the button
+                  disabled={isActionLoading}
+                  className="
+                    flex items-center justify-center w-8 h-8 rounded-full 
+                    text-red-500 hover:text-white 
+                    bg-transparent hover:bg-red-500 
+                    transition duration-150 flex-shrink-0
+                    // Disabled styles
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  "
+                  aria-label={`刪除專案 ${project.ProjectName}`}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent navigation click
+                    // Pass the entire project object to the handler
+                    onDeleteProject(project);
+                  }}
+                >
+                  <TrashIcon className="w-4 h-4" />
+                </button>
+              </li>
+            ))}
+          </ul>
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </>
       )}
     </div>
   );

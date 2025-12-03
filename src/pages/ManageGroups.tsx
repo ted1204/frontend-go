@@ -1,6 +1,6 @@
 // ManageGroups.tsx (Final Component Implementation)
 
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import PageBreadcrumb from '../components/common/PageBreadCrumb';
 import PageMeta from '../components/common/PageMeta';
 import {
@@ -96,7 +96,7 @@ export default function ManageGroups() {
         setAllGroups(fetchedGroups);
         setFilteredGroups(fetchedGroups); // Initialize filtered list
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch groups');
+        setError(err instanceof Error ? err.message : '無法取得群組');
       } finally {
         setLoading(false);
       }
@@ -141,7 +141,7 @@ export default function ManageGroups() {
       setAllGroups((prev) => [...prev, newGroup]);
       handleCloseModal(); // Creation successful, close modal
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create group');
+      setError(err instanceof Error ? err.message : '無法建立群組');
     } finally {
       setFormLoading(false); // Unlock form fields
     }
@@ -176,14 +176,14 @@ export default function ManageGroups() {
         setAllGroups((prev) => prev.filter((g) => g.GID !== groupId));
       } else {
         // Display error from API response
-        setError(res.message || 'Failed to delete group.');
+        setError(res.message || '無法刪除群組。');
         console.error('Deletion failed:', res.message);
       }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : 'An error occurred during deletion.'
+          : '刪除時發生錯誤。'
       );
     } finally {
       setFormLoading(false);
@@ -193,10 +193,10 @@ export default function ManageGroups() {
   return (
     <div className="relative">
       <PageMeta
-        title="Manage Groups"
-        description="Admin panel to manage organizational groups."
+        title="管理群組"
+        description="管理組織群組的管理面板。"
       />
-      <PageBreadcrumb pageTitle="Manage Groups" />
+      <PageBreadcrumb pageTitle="管理群組" />
 
       {/* Main Content Container: Enhanced styling for dashboard view */}
       <div className="min-h-screen rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 xl:p-10">
@@ -217,7 +217,7 @@ export default function ManageGroups() {
                       "
           >
             <PlusIcon className="w-5 h-5" />
-            <span>New Group</span>
+            <span>新群組</span>
           </Button>
         </div>
 

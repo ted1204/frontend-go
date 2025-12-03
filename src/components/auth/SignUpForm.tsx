@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from '../../icons';
 import Label from '../form/Label';
 import Input from '../form/input/InputFieldDefault';
-import Checkbox from '../form/input/Checkbox';
 import Button from '../ui/button/Button';
 import { register } from '../../services/authService';
 
@@ -14,7 +13,6 @@ export default function SignUpForm() {
   const [fname, setFname] = useState('');
   const [lname, setLname] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -22,7 +20,7 @@ export default function SignUpForm() {
 
     // Basic validation
     if (!username || !password) {
-      alert('Please fill in the Username and Password fields.');
+      alert('請填寫使用者名稱和密碼欄位。');
       return;
     }
 
@@ -37,14 +35,14 @@ export default function SignUpForm() {
         type: 'origin', // Default to 'origin' as per Swagger enum
         status: 'online', // Default to 'online' as per Swagger enum
       });
-      alert(data.message || 'Registration successful! Please sign in.');
+      alert(data.message || '註冊成功！請登入。');
       navigate('/signin');
     } catch (err) {
       console.error('Registration error:', err);
       alert(
         err instanceof Error
           ? err.message
-          : 'Registration failed, please try again.'
+          : '註冊失敗，請重試。'
       );
     }
   };
@@ -57,17 +55,17 @@ export default function SignUpForm() {
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <ChevronLeftIcon className="size-5" />
-          Back to dashboard
+          返回儀表板
         </Link>
       </div>
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              Sign Up
+              註冊
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and password to sign up!
+              輸入您的電子郵件和密碼以註冊！
             </p>
           </div>
           <div>
@@ -129,13 +127,13 @@ export default function SignUpForm() {
                   {/* First Name */}
                   <div className="sm:col-span-1">
                     <Label>
-                      First Name<span className="text-error-500"></span>
+                      名字<span className="text-error-500"></span>
                     </Label>
                     <Input
                       type="text"
                       id="fname"
                       name="fname"
-                      placeholder="Enter your first name"
+                      placeholder="輸入您的名字"
                       value={fname}
                       onChange={(e) => setFname(e.target.value)}
                     />
@@ -143,13 +141,13 @@ export default function SignUpForm() {
                   {/* Last Name */}
                   <div className="sm:col-span-1">
                     <Label>
-                      Last Name<span className="text-error-500"></span>
+                      姓氏<span className="text-error-500"></span>
                     </Label>
                     <Input
                       type="text"
                       id="lname"
                       name="lname"
-                      placeholder="Enter your last name"
+                      placeholder="輸入您的姓氏"
                       value={lname}
                       onChange={(e) => setLname(e.target.value)}
                     />
@@ -158,13 +156,13 @@ export default function SignUpForm() {
                 {/* Username */}
                 <div>
                   <Label>
-                    Username<span className="text-error-500">*</span>
+                    使用者名稱<span className="text-error-500">*</span>
                   </Label>
                   <Input
                     type="text"
                     id="username"
                     name="username"
-                    placeholder="Enter your username"
+                    placeholder="輸入您的使用者名稱"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                   />
@@ -172,13 +170,13 @@ export default function SignUpForm() {
                 {/* Email */}
                 <div>
                   <Label>
-                    Email<span className="text-error-500"></span>
+                    電子郵件<span className="text-error-500"></span>
                   </Label>
                   <Input
                     type="email"
                     id="email"
                     name="email"
-                    placeholder="Enter your email"
+                    placeholder="輸入您的電子郵件"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -186,11 +184,11 @@ export default function SignUpForm() {
                 {/* Password */}
                 <div>
                   <Label>
-                    Password<span className="text-error-500">*</span>
+                    密碼<span className="text-error-500">*</span>
                   </Label>
                   <div className="relative">
                     <Input
-                      placeholder="Enter your password"
+                      placeholder="輸入您的密碼"
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -228,19 +226,19 @@ export default function SignUpForm() {
                 {/* Button */}
                 <div>
                   <Button className="w-full" size="sm" type="submit">
-                    Sign Up
+                    註冊
                   </Button>
                 </div>
               </div>
             </form>
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Already have an account?{' '}
+                已經有帳號？{' '}
                 <Link
                   to="/signin"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
                 >
-                  Sign In
+                  登入
                 </Link>
               </p>
             </div>

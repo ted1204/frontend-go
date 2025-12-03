@@ -1,0 +1,154 @@
+import React, { useState, useEffect } from 'react';
+import { UserGroupUser } from '../interfaces/userGroup';
+import { getUsersByGroup, getGroupsByUser, createUserGroup } from '../services/userGroupService';
+import { getUsers } from '../services/userService';
+import InviteUserModal, { FormData } from './InviteUserModal';
+import { User } from '../interfaces/user';
+
+interface ProjectMembersProps {
+  groupId: number;
+}
+
+const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
+  const [members, setMembers] = useState<UserGroupUser[]>([]);
+  const [availableUsers, setAvailableUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [canManage, setCanManage] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const fetchMembers = async () => {
+    try {
+      setLoading(true);
+      const users = await getUsersByGroup(groupId);
+      setMembers(users);
+
+      // Check permissions
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        const { user_id: userId } = JSON.parse(userData);
+        const userGroups = await getGroupsByUser(userId);
+        const currentGroup = userGroups.find((g) => g.GID === groupId);
+        if (
+          currentGroup &&
+          (currentGroup.Role === 'admin' || currentGroup.Role === 'manager')
+        ) {
+          setCanManage(true);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch members:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAvailableUsers = async () => {
+    try {
+      const allUsers = await getUsers();
+      // Filter out users who are already members
+      const memberIds = members.map((m) => m.UID);
+      const filtered = allUsers.filter((u) => !memberIds.includes(u.UID));
+      setAvailableUsers(filtered);
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMembers();
+  }, [groupId]);
+
+  useEffect(() => {
+    if (isInviteModalOpen) {
+      fetchAvailableUsers();
+    }
+  }, [isInviteModalOpen, members]);
+
+  const handleInvite = async (data: FormData) => {
+    await createUserGroup({
+      u_id: data.uid,
+      g_id: groupId,
+      role: data.role,
+    });
+    setIsInviteModalOpen(false);
+    fetchMembers();
+  };
+
+  const filteredMembers = members.filter((member) =>
+    member.Username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (loading) {
+    return <div className="animate-pulse h-20 bg-gray-200 rounded-lg"></div>;
+  }
+
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
+      <div className="flex flex-col gap-4 border-b border-gray-200 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6 dark:border-gray-600">
+        <div>
+          <h3 className="text-lg font-bold leading-6 text-gray-900 dark:text-white">
+            專案成員
+          </h3>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
+            擁有此專案存取權限的使用者 (透過群組 ID: {groupId})。
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="搜尋成員..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+          />
+          {canManage && (
+            <button
+              onClick={() => setIsInviteModalOpen(true)}
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+            >
+              新增成員
+            </button>
+          )}
+        </div>
+      </div>
+      <div className="p-4 sm:p-6">
+        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+          {filteredMembers.map((member) => (
+            <li key={member.UID} className="py-3 flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold">
+                  {member.Username.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    {member.Username}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    角色: {member.Role}
+                  </p>
+                </div>
+              </div>
+            </li>
+          ))}
+          {filteredMembers.length === 0 && (
+            <li className="py-4 text-center text-gray-500 dark:text-gray-400">
+              {members.length === 0 ? '找不到成員。' : '沒有符合搜尋條件的成員。'}
+            </li>
+          )}
+        </ul>
+      </div>
+
+      {canManage && (
+        <InviteUserModal
+          isOpen={isInviteModalOpen}
+          onClose={() => setIsInviteModalOpen(false)}
+          users={availableUsers}
+          onSubmit={handleInvite}
+        />
+      )}
+    </div>
+  );
+};
+
+export default ProjectMembers;

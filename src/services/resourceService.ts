@@ -1,19 +1,8 @@
 import { RESOURCES_URL, RESOURCE_BY_ID_URL, CONFIG_FILE_BY_ID_URL} from "../config/url";
-import { ErrorResponse, MessageResponse } from "../response/response";
+import { MessageResponse } from "../response/response";
 import { Resource } from "../interfaces/resource";
+import { fetchWithAuth } from "../utils/api";
 
-const fetchWithAuth = async (url: string, options: RequestInit) => {
-  const headers = {
-    ...options.headers,
-    "Content-Type": "multipart/form-data",
-  };
-  const response = await fetch(url, { ...options, headers, credentials: 'include' });
-  if (!response.ok) {
-    const errorData: ErrorResponse = await response.json();
-    throw new Error(errorData.error || `Request failed with status ${response.status}`);
-  }
-  return response.json();
-};
 
 export const getResourceById = async (id: number): Promise<Resource> => {
   try {

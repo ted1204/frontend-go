@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, Fragment } from 'react';
-import { WEBSOCKET_USER_MONITORING_URL } from '../../config/url';
-import { connectWebSocket } from '../../utils/websocket';
+import { useEffect, useState, Fragment } from 'react';
+import { useGlobalWebSocket } from '../../context/WebSocketContext';
+import Pagination from '../../components/common/Pagination';
 
 // --- Type Definitions --- //
 
@@ -40,7 +40,7 @@ const ChevronDownIcon = (props: React.SVGProps<SVGSVGElement>) => (
   >
     <path
       fillRule="evenodd"
-      d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 M11.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z"
+      d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
       clipRule="evenodd"
     />
   </svg>
@@ -58,6 +58,19 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({
   pods,
 }) => {
   const [expandedPods, setExpandedPods] = useState<Record<string, boolean>>({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Reset page when pods change
+  useEffect(() => {
+      setCurrentPage(1);
+  }, [pods]);
+
+  const totalPages = Math.ceil(pods.length / itemsPerPage);
+  const paginatedPods = pods.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   // Toggles the expanded state for a specific pod
   const togglePodExpand = (podName: string) => {
@@ -95,21 +108,21 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({
         <thead className="text-xs text-gray-500 uppercase bg-gray-50 dark:bg-gray-700/50 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3 w-2/5">
-              Pod Name
+              Pod 名稱
             </th>
             <th scope="col" className="px-6 py-3 w-1/5">
-              Namespace
+              命名空間
             </th>
             <th scope="col" className="px-6 py-3 w-1/5">
-              Status
+              狀態
             </th>
             <th scope="col" className="px-6 py-3 w-1/5 text-right">
-              Actions
+              操作
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-          {pods.map((pod) => {
+          {paginatedPods.map((pod) => {
             const podKey = `${namespace}-${pod.name}`;
             const isExpanded = !!expandedPods[podKey];
 
@@ -156,7 +169,7 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({
                           className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         >
                           <TerminalIcon className="w-4 h-4" />
-                          Connect
+                          連線
                         </button>
                       </td>
                     </tr>
@@ -166,48 +179,35 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({
           })}
         </tbody>
       </table>
+      <Pagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 };
 
 export default function PodTablesPage() {
+  const { messages } = useGlobalWebSocket();
   const [podsData, setPodsData] = useState<NamespacePods>({});
-  const wsRef = useRef<{ close: () => void } | null>(null);
 
-  // Effect for WebSocket connection
   useEffect(() => {
-    // Establish connection only if it doesn't exist
-    if (!wsRef.current) {
-      wsRef.current = connectWebSocket(
-        WEBSOCKET_USER_MONITORING_URL(),
-        (data: any) => {
-          if (data.kind === 'Pod') {
-            setPodsData((prevData) => {
-              const currentNsPods = prevData[data.ns] || [];
-              const podMap = new Map(currentNsPods.map((p) => [p.name, p]));
-
-              // Add or update the pod
-              podMap.set(data.name, {
-                name: data.name,
-                containers: data.containers,
-                status: data.status,
-              });
-
-              return { ...prevData, [data.ns]: Array.from(podMap.values()) };
+    const newPodsData: NamespacePods = {};
+    messages.forEach(msg => {
+        if (msg.kind === 'Pod') {
+            if (!newPodsData[msg.ns]) {
+                newPodsData[msg.ns] = [];
+            }
+            newPodsData[msg.ns].push({
+                name: msg.name,
+                containers: msg.containers || [],
+                status: msg.status || 'Unknown',
             });
-          }
         }
-      );
-    }
-
-    // Cleanup on component unmount
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-        wsRef.current = null; // Corrected the typo here
-      }
-    };
-  }, []); // Empty dependency array ensures this runs only once
+    });
+    setPodsData(newPodsData);
+  }, [messages]);
 
   return (
     <div className="space-y-8">
@@ -224,7 +224,7 @@ export default function PodTablesPage() {
           >
             <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
               <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-                Namespace:{' '}
+                命名空間:{' '}
                 <span className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md text-blue-600 dark:text-blue-400">
                   {ns}
                 </span>

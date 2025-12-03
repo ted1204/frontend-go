@@ -79,7 +79,7 @@ const TerminalPage: React.FC<TerminalProps> = ({
 
     // 3. Handle WebSocket Events.
     socket.current.onopen = () => {
-      term.current?.writeln('\x1b[38;5;154m[Connected to Pod shell]\x1b[0m');
+      term.current?.writeln('\x1b[38;5;154m[已連線至 Pod Shell]\x1b[0m');
 
       fitAddon.current.fit();
 
@@ -103,11 +103,11 @@ const TerminalPage: React.FC<TerminalProps> = ({
     };
 
     socket.current.onerror = () => {
-      term.current?.writeln('\x1b[31m[WebSocket Error]\x1b[0m');
+      term.current?.writeln('\x1b[31m[WebSocket 錯誤]\x1b[0m');
     };
 
     socket.current.onclose = () => {
-      term.current?.writeln('\n\x1b[38;5;220m[Disconnected]\x1b[0m');
+      term.current?.writeln('\n\x1b[38;5;220m[已斷線]\x1b[0m');
     };
 
     // 4. Handle xterm.js Events.

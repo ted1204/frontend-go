@@ -42,7 +42,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, onClick }) => {
             {group.GroupName}
           </h3>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-            {group.Description || 'No description available.'}
+            {group.Description || '無描述。'}
           </p>
         </div>
       </div>

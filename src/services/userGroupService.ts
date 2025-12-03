@@ -1,10 +1,11 @@
 import { USER_GROUP_URL, USER_GROUP_BY_GROUP_URL, USER_GROUP_BY_USER_URL } from "../config/url";
-import { ErrorResponse, MessageResponse } from "../response/response";
+import { MessageResponse } from "../response/response";
 import { GetGroupsByUserResponse, GetUsersByGroupResponse, UserGroup, UserGroupUser, UserGroupGroup } from "../interfaces/userGroup";
+import { fetchWithAuth as baseFetchWithAuth } from "../utils/api";
 
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
-  const headers = {
+  const headers: any = {
     ...options.headers,
     "Content-Type": "application/x-www-form-urlencoded",
   };
@@ -13,17 +14,9 @@ const fetchWithAuth = async (url: string, options: RequestInit) => {
     headers["Content-Type"] = "application/json";
   }
 
-  const response = await fetch(url, { ...options, headers, credentials: 'include' });
-  if (!response.ok) {
-    const errorData: ErrorResponse = await response.json();
-    console.error("Error data:", errorData);
-    throw new Error(errorData.error || `Request failed with status ${response.status}`);
-  }
-  if (response.status === 204) {
-    return response
-  }
-  return response.json();
+  return baseFetchWithAuth(url, { ...options, headers });
 };
+
 
 export const getUserGroup = async (u_id: number, g_id: number): Promise<UserGroup> => {
   try {

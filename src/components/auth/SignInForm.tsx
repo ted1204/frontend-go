@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from '../../icons';
 import Label from '../form/Label';
 import Input from '../form/input/InputFieldDefault';
@@ -11,6 +11,8 @@ export default function SignInForm() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const handleLogin = async (e: React.FormEvent) => {
     console.log('handleLogin called');
@@ -25,12 +27,12 @@ export default function SignInForm() {
           is_super_admin: data.is_super_admin,
         })
       );
-      // Redirect to dashboard
-      navigate('/projects');
+      // Redirect to the page the user was trying to access, or default to home
+      navigate(from, { replace: true });
     } catch (err) {
       console.error('Login error:', err);
       alert(
-        err instanceof Error ? err.message : 'Login failed, please try again.'
+        err instanceof Error ? err.message : '登入失敗，請重試。'
       );
     }
   };
@@ -43,17 +45,17 @@ export default function SignInForm() {
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <ChevronLeftIcon className="size-5" />
-          Back to dashboard
+          返回儀表板
         </Link>
       </div>
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              Sign In
+              登入
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your username and password to sign in!
+              輸入您的使用者名稱和密碼以登入！
             </p>
           </div>
           <div>
@@ -113,22 +115,22 @@ export default function SignInForm() {
               <div className="space-y-6">
                 <div>
                   <Label>
-                    Username <span className="text-error-500">*</span>
+                    使用者名稱 <span className="text-error-500">*</span>
                   </Label>
                   <Input
-                    placeholder="Enter your username"
+                    placeholder="輸入您的使用者名稱"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
                 <div>
                   <Label>
-                    Password <span className="text-error-500">*</span>
+                    密碼 <span className="text-error-500">*</span>
                   </Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter your password"
+                      placeholder="輸入您的密碼"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
@@ -149,24 +151,24 @@ export default function SignInForm() {
                     to="/reset-password"
                     className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                   >
-                    Forgot password?
+                    忘記密碼？
                   </Link>
                 </div>
                 <div>
                   <Button className="w-full" size="sm" type="submit">
-                    Sign in
+                    登入
                   </Button>
                 </div>
               </div>
             </form>
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Don&apos;t have an account?{' '}
+                還沒有帳號？{' '}
                 <Link
                   to="/signup"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
                 >
-                  Sign Up
+                  註冊
                 </Link>
               </p>
             </div>

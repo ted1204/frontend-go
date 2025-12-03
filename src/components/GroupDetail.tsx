@@ -1,6 +1,6 @@
 // src/pages/GroupDetail.tsx
 
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { Group } from '../interfaces/group';
 import { User } from '../interfaces/user';
@@ -25,7 +25,6 @@ import {
   TagIcon,
   ChatBubbleLeftRightIcon,
   CalendarDaysIcon,
-  UserPlusIcon,
 } from '@heroicons/react/24/outline';
 
 // --- Helper UI Components --- //
@@ -60,22 +59,22 @@ const GroupDetailCard = ({ group }: { group: Group }) => {
       icon: IdentificationIcon,
     },
     {
-      label: 'Name',
+      label: '名稱',
       value: group.GroupName,
       icon: TagIcon,
     },
     {
-      label: 'Description',
+      label: '描述',
       value: group.Description || 'N/A',
       icon: ChatBubbleLeftRightIcon,
     },
     {
-      label: 'Created At',
+      label: '建立時間',
       value: new Date(group.CreatedAt).toLocaleString(),
       icon: CalendarDaysIcon,
     },
     {
-      label: 'Updated At',
+      label: '更新時間',
       value: new Date(group.UpdatedAt).toLocaleString(),
       icon: CalendarDaysIcon,
     },
@@ -84,10 +83,10 @@ const GroupDetailCard = ({ group }: { group: Group }) => {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-        Group Information
+        群組資訊
       </h3>
       <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-        Core details and metadata for this group.
+        此群組的核心詳細資訊和中繼資料。
       </p>
       <div className="mt-6 space-y-6 border-t border-gray-200 pt-6 dark:border-gray-700">
         {details.map((item) => (
@@ -165,14 +164,14 @@ export default function GroupDetail() {
       const userGroupsData = await getUsersByGroup(parseInt(id));
       setGroupUsers(userGroupsData);
     } catch (err) {
-      setError('Failed to refresh group members.');
+      setError('無法重新整理群組成員。');
     }
   }, [id]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
       if (!id) {
-        setError('Group ID is missing.');
+        setError('缺少群組 ID。');
         setLoading(false);
         return;
       }
@@ -188,7 +187,7 @@ export default function GroupDetail() {
         await refetchGroupUsers(); // Fetch initial members
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : 'Failed to fetch group data'
+          err instanceof Error ? err.message : '無法取得群組資料'
         );
       } finally {
         setLoading(false);
@@ -202,7 +201,7 @@ export default function GroupDetail() {
   const handleInviteSubmit = async (formData: FormData) => {
     const { uid, role } = formData;
     if (uid <= 0 || !id) {
-      throw new Error('A valid user must be selected.');
+      throw new Error('必須選擇有效的使用者。');
     }
     await createUserGroup({ u_id: uid, g_id: parseInt(id), role });
     await refetchGroupUsers(); // Refresh member list
@@ -232,13 +231,13 @@ export default function GroupDetail() {
 
   if (loading) return <LoadingSkeleton />;
   if (error) return <p className="text-red-500">{error}</p>; // Replace with a proper ErrorDisplay component
-  if (!group) return <p className="text-gray-500">Group not found.</p>;
+  if (!group) return <p className="text-gray-500">找不到群組。</p>;
 
   return (
     <>
       <PageMeta
-        title={`Group: ${group.GroupName} | AppName`}
-        description={`Details and members of group ${group.GroupName}`}
+        title={`群組: ${group.GroupName} | AppName`}
+        description={`群組 ${group.GroupName} 的詳細資訊和成員`}
       />
 
       {/* Header */}
@@ -254,7 +253,7 @@ export default function GroupDetail() {
             >
               <path d="M11 5a3 3 0 11-6 0 3 3 0 016 0zM2.5 12.5a.75.75 0 000 1.5h15a.75.75 0 000-1.5h-15zM11 12.5a.75.75 0 000 1.5h.75a2.25 2.25 0 012.25 2.25v.75a.75.75 0 001.5 0v-.75a3.75 3.75 0 00-3.75-3.75h-.75zM5 12.5a.75.75 0 01.75.75v.75a3.75 3.75 0 01-3.75 3.75H1.25a.75.75 0 010-1.5h.75a2.25 2.25 0 002.25-2.25v-.75A.75.75 0 015 12.5z" />
             </svg>
-            Invite User
+            邀請使用者
           </Button>
         </div>
 
@@ -270,10 +269,10 @@ export default function GroupDetail() {
             <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
               <div className="border-b border-gray-200 p-4 dark:border-gray-700 sm:p-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Group Members
+                  群組成員
                 </h3>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  {groupUsers.length} member(s) in this group.
+                  {groupUsers.length} 位成員在此群組中。
                 </p>
               </div>
               {groupUsers.length > 0 ? (
@@ -284,16 +283,16 @@ export default function GroupDetail() {
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
                       >
-                        Name
+                        名稱
                       </th>
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
                       >
-                        Role
+                        角色
                       </th>
                       <th scope="col" className="relative px-6 py-3">
-                        <span className="sr-only">Actions</span>
+                        <span className="sr-only">動作</span>
                       </th>
                     </tr>
                   </thead>
@@ -316,13 +315,13 @@ export default function GroupDetail() {
                             onClick={() => setSelectedUserToEdit(user)}
                             className="mr-4 text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                           >
-                            Edit
+                            編輯
                           </button>
                           <button
                             onClick={() => handleDeleteUser(user.UID)}
                             className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                           >
-                            Remove
+                            移除
                           </button>
                         </td>
                       </tr>
@@ -331,7 +330,7 @@ export default function GroupDetail() {
                 </table>
               ) : (
                 <p className="p-6 text-center text-sm text-gray-500 dark:text-gray-400">
-                  No members have been invited to this group yet.
+                  尚未邀請任何成員加入此群組。
                 </p>
               )}
             </div>

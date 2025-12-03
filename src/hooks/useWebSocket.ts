@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getUsername } from '../services/authService';
+import { WEBSOCKET_MONITORING_URL } from '../config/url';
 
 /**
  * Interface defining the structure of a resource message received from the WebSocket.
@@ -20,6 +21,7 @@ export interface ResourceMessage {
   externalIPs?: string[]; // New field for the array of external IPs
   nodePorts?: number[]; // K8s nodePorts are typically numbers
   serviceType?: string; // Used to store the Service 'type' (e.g., NodePort, LoadBalancer) to avoid conflict with the event 'type'
+  containers?: string[]; // List of container names for Pods
 }
 
 /**
@@ -35,7 +37,7 @@ const useWebSocket = (projectId: string) => {
   useEffect(() => {
     let ws: WebSocket; // WebSocket instance
     const connect = () => {
-      const wsUrl = `ws://10.121.124.22:30080/ws/monitoring/${namespace}`; // Backend WebSocket URL
+      const wsUrl = WEBSOCKET_MONITORING_URL(namespace);
       console.log('Attempting to connect to:', wsUrl);
       ws = new WebSocket(wsUrl);
 

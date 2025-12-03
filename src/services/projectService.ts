@@ -1,20 +1,10 @@
 import { PROJECTS_URL, PROJECT_BY_ID_URL, PROJECT_CONFIG_FILES_URL, PROJECT_RESOURCES_URL } from "../config/url";
-import { ErrorResponse, MessageResponse } from "../response/response"; // Adjust the import path as necessary
+import { MessageResponse } from "../response/response"; // Adjust the import path as necessary
 import { Project } from "../interfaces/project";
 import { ConfigFile } from "../interfaces/configFile"; // Adjust the import path as necessary
 import { Resource } from "../interfaces/resource"; // Adjust the import path as necessary
+import { fetchWithAuth } from "../utils/api";
 
-const fetchWithAuth = async (url: string, options: RequestInit) => {
-  const headers = {
-    ...options.headers,
-  };
-  const response = await fetch(url, { ...options, headers, credentials: 'include' });
-  if (!response.ok) {
-    const errorData: ErrorResponse = await response.json();
-    throw new Error(errorData.error || `Request failed with status ${response.status}`);
-  }
-  return response.json();
-};
 
 export const getProjects = async (): Promise<Project[]> => {
   try {

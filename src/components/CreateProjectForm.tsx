@@ -227,7 +227,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
           </button>
 
           <h3 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white text-center">
-            Create New Project
+            建立新專案
           </h3>
 
           {error && (
@@ -241,10 +241,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
             {/* 1. Project Name Input */}
             <InputField
               type="text"
-              label="Project Name"
+              label="專案名稱"
               value={projectName}
               onChange={onProjectNameChange}
-              placeholder="e.g. Website Relaunch Q3"
+              placeholder="例如：網站改版 Q3"
               className="w-full"
               required
               disabled={loading}
@@ -256,14 +256,14 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                 htmlFor="description-textarea"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >
-                Description (Optional)
+                描述 (選填)
               </label>
               <textarea
                 id="description-textarea"
                 value={description}
                 onChange={onDescriptionChange}
                 rows={4}
-                placeholder="Brief description of the project goals..."
+                placeholder="簡述專案目標..."
                 className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white rounded-md shadow-sm resize-y focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 disabled:bg-gray-100 dark:disabled:bg-gray-700/50 disabled:cursor-not-allowed"
                 disabled={loading}
               />
@@ -275,11 +275,11 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
               <InputField
                 type="text"
                 id="group-search"
-                label="Group Name" // FIX: Label is now mandatory
+                label="群組名稱" // FIX: Label is now mandatory
                 value={searchTerm}
                 onChange={handleSearchInputChange}
                 onFocus={() => setIsDropdownOpen(true)}
-                placeholder="Search or select a group..."
+                placeholder="搜尋或選擇群組..."
                 className="w-full"
                 required
                 disabled={loading}
@@ -306,7 +306,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                     ))
                   ) : (
                     <li className="px-4 py-2 text-gray-500 dark:text-gray-400">
-                      No groups found.
+                      找不到群組。
                     </li>
                   )}
                 </ul>
@@ -315,7 +315,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
               {/* Display currently selected Group ID as hint */}
               {groupId > 0 && (
                 <p className="mt-1 text-sm text-green-600 dark:text-green-400">
-                  Selected ID: {groupId}
+                  已選擇 ID: {groupId}
                 </p>
               )}
             </div>
@@ -330,10 +330,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                 {loading ? (
                   <span className="flex items-center justify-center animate-pulse">
                     <SpinnerIcon className="w-4 h-4 mr-2 text-white" />
-                    Creating New Project...
+                    建立新專案中...
                   </span>
                 ) : (
-                  'Create New Project'
+                  '建立新專案'
                 )}
               </Button>
             </div>

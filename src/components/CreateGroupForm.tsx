@@ -34,22 +34,6 @@ const SpinnerIcon = ({ className = 'w-4 h-4' }) => (
     ></path>
   </svg>
 );
-const AlertIcon = ({ className = 'w-5 h-5' }) => (
-  /* ... */ <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.398 16c-.77 1.333.192 3 1.732 3z"
-    />
-  </svg>
-);
 
 interface CreateGroupFormProps {
   groupName: string;
@@ -158,17 +142,17 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = ({
 
           {/* Header Section */}
           <h3 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100 text-center">
-            Create New Group
+            建立新群組
           </h3>
 
           <form onSubmit={onSubmit} className="space-y-5">
             {/* Group Name Input */}
             <InputField
               type="text"
-              label="Group Name"
+              label="群組名稱"
               value={groupName}
               onChange={onGroupNameChange}
-              placeholder="e.g. Marketing Team"
+              placeholder="例如：行銷團隊"
               className="w-full"
               required
               disabled={loading}
@@ -178,10 +162,10 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = ({
             {/* Description Input */}
             <InputField
               type="text"
-              label="Description (Optional)"
+              label="描述 (選填)"
               value={description}
               onChange={onDescriptionChange}
-              placeholder="Briefly describe the group's purpose"
+              placeholder="簡述群組的用途"
               className="w-full"
               disabled={loading}
             />
@@ -202,10 +186,10 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = ({
                 {loading ? (
                   <span className="flex items-center justify-center animate-pulse">
                     <SpinnerIcon className="w-4 h-4 mr-2 text-white" />
-                    Creating Group...
+                    建立群組中...
                   </span>
                 ) : (
-                  'Create New Group'
+                  '建立新群組'
                 )}
               </Button>
             </div>

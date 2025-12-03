@@ -1,18 +1,8 @@
 import { GROUPS_URL, GROUP_BY_ID_URL } from "../config/url";
-import { ErrorResponse, MessageResponse } from "../response/response"; // Adjust the import path as necessary
+import { MessageResponse } from "../response/response"; // Adjust the import path as necessary
 import { Group } from "../interfaces/group"; // Adjust the import path as necessary
+import { fetchWithAuth } from "../utils/api";
 
-const fetchWithAuth = async (url: string, options: RequestInit) => {
-  const headers = {
-    ...options.headers,
-  };
-  const response = await fetch(url, { ...options, headers, credentials: 'include',  });
-  if (!response.ok) {
-    const errorData: ErrorResponse = await response.json();
-    throw new Error(errorData.error || `Request failed with status ${response.status}`);
-  }
-  return response.json();
-};
 
 export const getGroups = async (): Promise<Group[]> => {
   try {

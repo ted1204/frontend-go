@@ -1,33 +1,19 @@
 import { CONFIG_FILES_URL, CONFIG_FILE_BY_ID_URL, CONFIG_FILE_RESOURCES_URL, CONFIG_FILES_BY_PROJECT_URL, INSTANCE_BY_ID_URL} from "../config/url";
-import { ErrorResponse, MessageResponse } from "../response/response"; // Adjust the import path as necessary
+import { MessageResponse } from "../response/response"; // Adjust the import path as necessary
 import { ConfigFile } from "../interfaces/configFile"; // Adjust the import path as necessary
 import { Resource } from "../interfaces/resource"; // Adjust the import path as necessary
+import { fetchWithAuth as baseFetchWithAuth } from "../utils/api";
 
 const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-  const headers = new Headers({
+  const headers: any = {
     ...options.headers,
-  });
+  };
   if (!(options.body instanceof FormData)) {
-    headers.set("Content-Type", "application/json");
+    headers["Content-Type"] = "application/json";
   }
-  const response = await fetch(url, { ...options, headers, credentials: 'include' });
-  if (!response.ok) {
-    let errorData;
-    try {
-      errorData = await response.json() as ErrorResponse;
-    } catch {
-      throw new Error(`Request failed with status ${response.status}`);
-    }
-    if (response.status === 401) {
-      // Redirect to login or refresh token
-    }
-    throw new Error(errorData.error || "Unknown error");
-  }
-  if (response.status === 204) {
-    return response
-  }
-  return response.json();
+  return baseFetchWithAuth(url, { ...options, headers });
 };
+
 
 export const getConfigFiles = async (): Promise<ConfigFile[]> => {
   try {

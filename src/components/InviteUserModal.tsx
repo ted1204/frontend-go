@@ -28,19 +28,19 @@ interface InviteUserModalProps {
 
 const roles = [
   {
-    name: 'Admin',
+    name: '管理員',
     value: 'admin' as const,
-    description: 'Full access to all settings.',
+    description: '擁有所有設定的完整權限。',
   },
   {
-    name: 'Manager',
+    name: '經理',
     value: 'manager' as const,
-    description: 'Can manage members and content.',
+    description: '可以管理成員和內容。',
   },
   {
-    name: 'User',
+    name: '一般使用者',
     value: 'user' as const,
-    description: 'Can view and interact with content.',
+    description: '可以檢視和互動內容。',
   },
 ];
 
@@ -102,7 +102,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedUser) {
-      setError('Please select a user to invite.');
+      setError('請選擇要邀請的使用者。');
       return;
     }
     setIsSubmitting(true);
@@ -112,7 +112,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
       handleClose(); // Close and reset on success
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'An unknown error occurred.'
+        err instanceof Error ? err.message : '發生未知錯誤。'
       );
     } finally {
       setIsSubmitting(false);
@@ -165,24 +165,24 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                 as="h3"
                 className="text-xl font-semibold leading-6 text-gray-900 dark:text-white"
               >
-                Invite a New Member
+                邀請新成員
               </Dialog.Title>
               <Dialog.Description className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                Select a user and assign them a role.
+                選擇使用者並指派角色。
               </Dialog.Description>
 
               {/* User Selection Combobox */}
               <div className="relative mt-4">
                 <Combobox value={selectedUser} onChange={setSelectedUser}>
                   <Combobox.Label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    User <span className="text-red-500">*</span>
+                    使用者 <span className="text-red-500">*</span>
                   </Combobox.Label>
                   <div className="relative mt-1">
                     <Combobox.Input
                       className="w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                       displayValue={(user: User | null) => user?.Username || ''}
                       onChange={(event) => setQuery(event.target.value)}
-                      placeholder="Search for a user..."
+                      placeholder="搜尋使用者..."
                     />
                     <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                       <ChevronUpDownIcon
@@ -201,7 +201,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                     <Combobox.Options className="absolute z-10 mt-1 max-h-52 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm dark:bg-gray-700">
                       {filteredUsers.length === 0 && query !== '' ? (
                         <div className="relative cursor-default select-none px-4 py-2 text-gray-700 dark:text-gray-300">
-                          Nothing found.
+                          找不到結果。
                         </div>
                       ) : (
                         filteredUsers.map((user) => (
@@ -256,7 +256,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
               <div className="mt-5">
                 <RadioGroup value={selectedRole} onChange={setSelectedRole}>
                   <RadioGroup.Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Role <span className="text-red-500">*</span>
+                    角色 <span className="text-red-500">*</span>
                   </RadioGroup.Label>
                   <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
                     {roles.map((role) => (
@@ -310,14 +310,14 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                   onClick={handleClose}
                   className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500 dark:ring-0"
                 >
-                  Cancel
+                  取消
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || !selectedUser}
                   className="inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Inviting...' : 'Invite Member'}
+                  {isSubmitting ? '邀請中...' : '邀請成員'}
                 </button>
               </div>
             </Dialog.Panel>
