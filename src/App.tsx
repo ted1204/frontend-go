@@ -20,7 +20,6 @@ import AdminTicketDashboard from './pages/AdminTicketDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import UserTicketDashboard from './pages/UserTicketDashboard';
 
-// Main App Component
 export default function App() {
   return (
     <>
