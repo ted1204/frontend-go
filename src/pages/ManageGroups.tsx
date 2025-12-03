@@ -1,3 +1,5 @@
+// ManageGroups.tsx (Final Component Implementation)
+
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import PageBreadcrumb from '../components/common/PageBreadCrumb';
 import PageMeta from '../components/common/PageMeta';
@@ -11,7 +13,9 @@ import { Group } from '../interfaces/group';
 import { useNavigate } from 'react-router-dom';
 import GroupList from '../components/GroupList';
 import CreateGroupForm from '../components/CreateGroupForm';
-import Button from '../components/ui/button/Button'; // Import Button
+import Button from '../components/ui/button/Button';
+// Ensure this import path is correct
+import DeleteConfirmationModal from '../components/ui/modal/DeleteConfirmationModal';
 
 // SVG Icon for the New Group button
 const PlusIcon = ({ className = 'w-5 h-5' }) => (
@@ -39,9 +43,14 @@ export default function ManageGroups() {
 
   // UI/API States
   const [loading, setLoading] = useState(true); // Used for initial data fetch
-  const [formLoading, setFormLoading] = useState(false); // Used ONLY for form submission
+  const [formLoading, setFormLoading] = useState(false); // Used ONLY for form submission (Creation/Deletion)
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal control
+  const [isModalOpen, setIsModalOpen] = useState(false); // Create Modal control
+
+  // DELETE CONFIRMATION STATES
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [groupToDelete, setGroupToDelete] = useState<Group | null>(null);
+  // -------------------------
 
   // Search State
   const [searchTerm, setSearchTerm] = useState('');
@@ -67,6 +76,15 @@ export default function ManageGroups() {
     setGroupName('');
     setDescription('');
     setError(null); // Clear error on close
+  };
+
+  /**
+   * Closes the delete modal and resets temporary state.
+   */
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setGroupToDelete(null);
+    setError(null);
   };
 
   // --- Data Fetching Effect ---
@@ -130,15 +148,34 @@ export default function ManageGroups() {
   };
 
   /**
-   * Handles group deletion.
+   * Opens the delete confirmation modal, setting the group to be deleted.
    */
-  const handleDeleteGroup = async (groupId: number) => {
+  const handleDeleteClick = (group: Group) => {
+    // Only allow deletion if no other action is currently processing
+    if (formLoading) return;
+    setGroupToDelete(group);
+    setIsDeleteModalOpen(true);
+  };
+
+  /**
+   * Executes the deletion API call after user confirmation in the modal.
+   */
+  const handleConfirmDelete = async () => {
+    if (!groupToDelete) return;
+
+    const groupId = groupToDelete.GID;
+
+    // Set loading state for delete operation and immediately close the modal
+    setFormLoading(true);
+    handleCloseDeleteModal();
+
     try {
       const res = await deleteGroup(groupId);
       if (res.message === 'Group deleted') {
-        // Update the master list; filter will update automatically
+        // Optimistically update the UI list
         setAllGroups((prev) => prev.filter((g) => g.GID !== groupId));
       } else {
+        // Display error from API response
         setError(res.message || 'Failed to delete group.');
         console.error('Deletion failed:', res.message);
       }
@@ -148,6 +185,8 @@ export default function ManageGroups() {
           ? err.message
           : 'An error occurred during deletion.'
       );
+    } finally {
+      setFormLoading(false);
     }
   };
 
@@ -166,13 +205,16 @@ export default function ManageGroups() {
           <Button
             type="button"
             onClick={() => setIsModalOpen(true)}
+            // Disable create button if any other action (creation/deletion) is loading
+            disabled={formLoading}
             // Consistent violet styling
             className="
-                            flex items-center space-x-2 px-4 py-2 text-sm font-semibold 
-                            bg-violet-600 text-white rounded-lg shadow-md
-                            hover:bg-violet-700 transition duration-150 
-                            focus:outline-none focus:ring-4 focus:ring-violet-500 focus:ring-opacity-50
-                        "
+                          flex items-center space-x-2 px-4 py-2 text-sm font-semibold 
+                          bg-violet-600 text-white rounded-lg shadow-md
+                          hover:bg-violet-700 transition duration-150 
+                          focus:outline-none focus:ring-4 focus:ring-violet-500 focus:ring-opacity-50
+                          disabled:opacity-50 disabled:cursor-not-allowed
+                      "
           >
             <PlusIcon className="w-5 h-5" />
             <span>New Group</span>
@@ -185,9 +227,12 @@ export default function ManageGroups() {
           loading={loading}
           error={error}
           onGroupClick={handleGroupClick}
-          onDeleteGroup={handleDeleteGroup}
+          // Pass the handler to open the modal (which expects a Group object)
+          onDeleteGroup={handleDeleteClick}
           searchTerm={searchTerm}
           onSearchChange={handleSearchChange}
+          // Pass formLoading state to GroupList to disable delete buttons
+          isActionLoading={formLoading}
         />
       </div>
 
@@ -204,11 +249,21 @@ export default function ManageGroups() {
         onGroupNameChange={(e: ChangeEvent<HTMLInputElement>) =>
           setGroupName(e.target.value)
         }
-        // Assuming description uses an input field or similar change event
         onDescriptionChange={(e: ChangeEvent<HTMLInputElement>) =>
           setDescription(e.target.value)
         }
         onSubmit={handleCreateGroup}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        item={groupToDelete}
+        itemType="Group" // Specifies the type of item being deleted
+        loading={formLoading} // Pass loading state to disable modal buttons during API call
+        // Note: DeleteConfirmationModal must be designed to handle the 'item' prop being null initially
       />
     </div>
   );

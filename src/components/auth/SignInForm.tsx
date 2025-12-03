@@ -26,7 +26,7 @@ export default function SignInForm() {
         })
       );
       // Redirect to dashboard
-      navigate('/');
+      navigate('/projects');
     } catch (err) {
       console.error('Login error:', err);
       alert(

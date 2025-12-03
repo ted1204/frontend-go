@@ -118,10 +118,14 @@ interface GroupListProps {
   loading: boolean;
   error: string | null;
   onGroupClick: (groupId: number) => void;
-  onDeleteGroup: (groupId: number) => void;
+  // FIX: Update onDeleteGroup to accept the entire Group object
+  onDeleteGroup: (group: Group) => void;
   // Props for the search functionality
   searchTerm: string;
   onSearchChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  // NOTE: If you want to disable delete buttons during an API operation (optional but recommended), add:
+  // isActionLoading?: boolean;
+  isActionLoading: boolean;
 }
 
 const GroupList: React.FC<GroupListProps> = ({
@@ -132,6 +136,7 @@ const GroupList: React.FC<GroupListProps> = ({
   onDeleteGroup,
   searchTerm,
   onSearchChange,
+  // isActionLoading = false, // Uncomment if adding isActionLoading
 }) => {
   // FIX: Defensive check for searchTerm to prevent TypeError on initial render
   const isFiltering = (searchTerm || '').length > 0;
@@ -155,9 +160,9 @@ const GroupList: React.FC<GroupListProps> = ({
             key={group.GID}
             // Aesthetic card styling with hover feedback
             className="group flex justify-between items-center 
-                       bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl 
-                       shadow-md transition-all duration-200 
-                       hover:shadow-lg hover:border-violet-400 dark:hover:border-violet-500"
+                        bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl 
+                        shadow-md transition-all duration-200 
+                        hover:shadow-lg hover:border-violet-400 dark:hover:border-violet-500"
           >
             {/* Group details and navigation area */}
             <div
@@ -185,12 +190,14 @@ const GroupList: React.FC<GroupListProps> = ({
             {/* Delete button (Icon-only) */}
             <div className="px-4 flex-shrink-0">
               <button
+                // FIX: Pass the whole group object instead of just the ID
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent onGroupClick from firing
-                  onDeleteGroup(group.GID);
+                  onDeleteGroup(group);
                 }}
                 className="p-2 rounded-full text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
                 aria-label="Delete group"
+                // disabled={isActionLoading} // Uncomment if adding isActionLoading
               >
                 <TrashIcon className="h-5 w-5" />
               </button>

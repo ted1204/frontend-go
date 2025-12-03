@@ -95,11 +95,11 @@ export default function AddConfigModal({
   return (
     //  4. Conditionally apply enter/exit animation classes based on the isOpen prop
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm 
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4 backdrop-blur-sm 
                  ${isOpen ? 'animate-in fade-in-0' : 'animate-out fade-out-0'}`}
     >
       <div
-        className={`relative flex h-full max-h-[90vh] w-full max-w-7xl flex-col rounded-xl border border-gray-200 bg-white shadow-2xl 
+        className={`relative flex h-full max-h-[95vh] w-full max-w-7xl flex-col rounded-xl border border-gray-200 bg-white shadow-2xl 
                        ${
                          isOpen
                            ? 'animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-12 duration-300'

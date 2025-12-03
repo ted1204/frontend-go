@@ -66,8 +66,12 @@ interface ProjectListProps {
   loading: boolean;
   error: string | null;
   onProjectClick: (projectId: number) => void;
-  onDeleteProject: (projectId: number) => void;
-  // Props for the new search functionality
+  // Change parameter type to Project object
+  onDeleteProject: (project: Project) => void;
+  // Prop to indicate if a global action is running (e.g., delete API call)
+  isActionLoading: boolean;
+
+  // Props for the search functionality
   searchTerm: string;
   onSearchChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
@@ -80,6 +84,8 @@ const ProjectList: React.FC<ProjectListProps> = ({
   onDeleteProject,
   searchTerm,
   onSearchChange,
+  // Destructure the action loading prop
+  isActionLoading,
 }) => {
   // Determine if filtering is active to show the correct empty state message
   const isFiltering = searchTerm.length > 0;
@@ -177,16 +183,21 @@ const ProjectList: React.FC<ProjectListProps> = ({
 
               {/* Delete Button (Icon) */}
               <button
+                // Apply action loading state to disable the button
+                disabled={isActionLoading}
                 className="
                   flex items-center justify-center w-8 h-8 rounded-full 
                   text-red-500 hover:text-white 
                   bg-transparent hover:bg-red-500 
                   transition duration-150 flex-shrink-0
+                  // Disabled styles
+                  disabled:opacity-50 disabled:cursor-not-allowed
                 "
                 aria-label={`Delete project ${project.ProjectName}`}
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent navigation click
-                  onDeleteProject(project.PID);
+                  // Pass the entire project object to the handler
+                  onDeleteProject(project);
                 }}
               >
                 <TrashIcon className="w-4 h-4" />
