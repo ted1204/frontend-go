@@ -3,6 +3,10 @@ export interface Project {
   ProjectName: string;
   Description?: string;
   GID: number;
+  GPUQuota: number;
+  GPUAccess: string;
+  MPSLimit?: number;
+  MPSMemory?: number;
   CreatedAt: string;
   UpdatedAt: string;
 }

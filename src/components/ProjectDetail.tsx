@@ -343,6 +343,34 @@ const PageSkeleton = () => (
                     </div>
                     <div className="flex items-start gap-3">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                      <div>
+                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">GPU 資源</dt>
+                        <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                          <div className="flex flex-col gap-1">
+                            <span>配額: {project.GPUQuota} (單位)</span>
+                            <span>存取模式: {project.GPUAccess}</span>
+                          </div>
+                        </dd>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <div>
+                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">MPS 設定</dt>
+                        <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                          <div className="flex flex-col gap-1">
+                            <span>執行緒限制: {project.MPSLimit ? `${project.MPSLimit}%` : '無限制'}</span>
+                            <span>記憶體限制: {project.MPSMemory ? `${project.MPSMemory} MB` : '無限制'}</span>
+                          </div>
+                        </dd>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                       <div>

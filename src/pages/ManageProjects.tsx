@@ -45,6 +45,10 @@ export default function ManageProjects() {
   const [selectedGroupName, setSelectedGroupName] = useState(''); // Name for dropdown display
   const [projectName, setProjectName] = useState('');
   const [description, setDescription] = useState('');
+  const [gpuQuota, setGpuQuota] = useState<number>(0);
+  const [gpuAccess, setGpuAccess] = useState<string[]>(['shared']);
+  const [mpsLimit, setMpsLimit] = useState<number>(100);
+  const [mpsMemory, setMpsMemory] = useState<number>(0);
   const [groupId, setGroupId] = useState<number>(0); // Group ID to submit
 
   // UI/API States
@@ -83,6 +87,10 @@ export default function ManageProjects() {
     setIsModalOpen(false);
     setProjectName('');
     setDescription('');
+    setGpuQuota(0);
+    setGpuAccess(['shared']);
+    setMpsLimit(100);
+    setMpsMemory(0);
     setGroupId(0);
     setSelectedGroupName('');
     setError(null);
@@ -145,15 +153,19 @@ export default function ManageProjects() {
     e.preventDefault();
 
     if (groupId === 0) {
-      setError('提交前請選擇有效的群組名稱。');
-      return;
-    }
-
     const input: CreateProjectDTO = {
       project_name: projectName,
       description,
       g_id: groupId,
+      gpu_quota: gpuQuota,
+      gpu_access: gpuAccess.join(','),
+      mps_limit: mpsLimit,
+      mps_memory: mpsMemory,
+    };mps_limit: mpsLimit,
+      mps_memory: mpsMemory,
     };
+
+    try {
 
     try {
       setActionLoading(true); // 使用 actionLoading 鎖定按鈕
@@ -252,17 +264,15 @@ export default function ManageProjects() {
           // 🚨 傳遞新的 handler，它接受 Project 物件
           onDeleteProject={handleDeleteClick}
           searchTerm={searchTerm}
-          onSearchChange={handleSearchChange}
-          // 🚨 傳遞 action loading 狀態給列表，禁用刪除按鈕
-          isActionLoading={actionLoading}
-        />
-      </div>
-
       {/* Project Creation Modal (Conditional Rendering) */}
       <CreateProjectForm
         projectName={projectName}
         description={description}
         groupId={groupId}
+        gpuQuota={gpuQuota}
+        gpuAccess={gpuAccess}
+        mpsLimit={mpsLimit}
+        mpsMemory={mpsMemory}
         // 🚨 這裡使用 actionLoading 來控制表單提交的載入狀態
         loading={actionLoading}
         error={error}
@@ -274,12 +284,36 @@ export default function ManageProjects() {
         onDescriptionChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
           setDescription(e.target.value)
         }
+        onGpuQuotaChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setGpuQuota(Number(e.target.value))
+        }
+        onGpuAccessChange={(access: string) => {
+          setGpuAccess((prev) => {
+            if (prev.includes(access)) {
+              return prev.filter((a) => a !== access);
+            } else {
+              return [...prev, access];
+            }
+          });
+        }}
+        onMpsLimitChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setMpsLimit(Number(e.target.value))
+        }
+        onMpsMemoryChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setMpsMemory(Number(e.target.value))
+        }
         onGroupIdChange={() => {
           /* No operation */
         }}
         onSubmit={handleCreateProject}
         availableGroups={availableGroups}
         selectedGroupName={selectedGroupName}
+        onSelectedGroupChange={handleSelectedGroupChange}
+      />onSubmit={handleCreateProject}
+        availableGroups={availableGroups}
+        selectedGroupName={selectedGroupName}
+        onSelectedGroupChange={handleSelectedGroupChange}
+      />selectedGroupName={selectedGroupName}
         onSelectedGroupChange={handleSelectedGroupChange}
       />
 

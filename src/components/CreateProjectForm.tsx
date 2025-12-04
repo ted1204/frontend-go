@@ -63,12 +63,20 @@ interface CreateProjectFormProps {
   projectName: string;
   description: string;
   groupId: number;
+  gpuQuota: number;
+  gpuAccess: string[];
+  mpsLimit: number;
+  mpsMemory: number;
   loading: boolean;
   error: string | null;
   isOpen: boolean;
   onClose: () => void;
   onProjectNameChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onDescriptionChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+  onGpuQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onGpuAccessChange: (access: string) => void;
+  onMpsLimitChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onMpsMemoryChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onGroupIdChange: (e: ChangeEvent<HTMLInputElement>) => void; // Kept for compatibility
   onSubmit: (e: FormEvent) => void;
 
@@ -82,12 +90,20 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
   projectName,
   description,
   groupId,
+  gpuQuota,
+  gpuAccess,
+  mpsLimit,
+  mpsMemory,
   loading,
   error,
   isOpen,
   onClose,
   onProjectNameChange,
   onDescriptionChange,
+  onGpuQuotaChange,
+  onGpuAccessChange,
+  onMpsLimitChange,
+  onMpsMemoryChange,
   onSubmit,
 
   availableGroups,
@@ -242,14 +258,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
             <InputField
               type="text"
               label="專案名稱"
-              value={projectName}
-              onChange={onProjectNameChange}
-              placeholder="例如：網站改版 Q3"
-              className="w-full"
-              required
-              disabled={loading}
-            />
-
             {/* 2. Description (Textarea Field) */}
             <div className="space-y-1.5 text-left">
               <label
@@ -266,6 +274,85 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                 placeholder="簡述專案目標..."
                 className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white rounded-md shadow-sm resize-y focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 disabled:bg-gray-100 dark:disabled:bg-gray-700/50 disabled:cursor-not-allowed"
                 disabled={loading}
+              />
+            </div>
+
+            {/* 2.1 GPU Quota */}
+            <InputField
+              type="number"
+              label="GPU 配額 (單位: 1/10 GPU)"
+              value={gpuQuota}
+              onChange={onGpuQuotaChange}
+              placeholder="例如: 10 (代表 1 張完整 GPU)"
+              className="w-full"
+              min="0"
+              disabled={loading}
+            />
+
+            {/* 2.2 GPU Access Mode */}
+            <div className="space-y-1.5 text-left">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                GPU 存取模式
+              </label>
+              <div className="flex gap-4">
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={gpuAccess.includes('shared')}
+                    onChange={() => onGpuAccessChange('shared')}
+                    className="form-checkbox h-5 w-5 text-violet-600 rounded border-gray-300 focus:ring-violet-500 dark:border-gray-600 dark:bg-gray-700"
+                    disabled={loading}
+                  />
+                  <span className="text-gray-700 dark:text-gray-300">Shared (共享)</span>
+                </label>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={gpuAccess.includes('dedicated')}
+                    onChange={() => onGpuAccessChange('dedicated')}
+                    className="form-checkbox h-5 w-5 text-violet-600 rounded border-gray-300 focus:ring-violet-500 dark:border-gray-600 dark:bg-gray-700"
+                    disabled={loading}
+                  />
+                  <span className="text-gray-700 dark:text-gray-300">Dedicated (專用)</span>
+                </label>
+              </div>
+            </div>
+
+            {/* 2.5 MPS Settings (Only if Shared is selected) */}
+            {gpuAccess.includes('shared') && (
+              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="col-span-2 text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                  MPS 設定 (僅適用於 Shared 模式)
+                </div>
+                <InputField
+                  type="number"
+                  label="MPS 執行緒限制 (%)"
+                  value={mpsLimit}
+                  onChange={onMpsLimitChange}
+                  placeholder="100"
+                  className="w-full"
+                  min="0"
+                  max="100"
+                  disabled={loading}
+                />
+                <InputField
+                  type="number"
+                  label="MPS 記憶體限制 (MB)"
+                  value={mpsMemory}
+                  onChange={onMpsMemoryChange}
+                  placeholder="0 (無限制)"
+                  className="w-full"
+                  min="0"
+                  disabled={loading}
+                />
+              </div>
+            )}
+
+            {/* 3. GROUP SEARCH-SELECT REPLACEMENT */}
+              />
+            </div>
+
+            {/* 3. GROUP SEARCH-SELECT REPLACEMENT */}
               />
             </div>
 

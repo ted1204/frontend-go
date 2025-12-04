@@ -21,6 +21,10 @@ export interface CreateProjectDTO {
   project_name: string;
   description?: string;
   g_id: number;
+  gpu_quota?: number;
+  gpu_access?: string;
+  mps_limit?: number;
+  mps_memory?: number;
 }
 
 export const createProject = async (input: CreateProjectDTO): Promise<Project> => {
@@ -28,6 +32,10 @@ export const createProject = async (input: CreateProjectDTO): Promise<Project> =
     formData.append("project_name", input.project_name);
     formData.append("g_id", input.g_id.toString());
     if (input.description) formData.append("description", input.description);
+    if (input.gpu_quota !== undefined) formData.append("gpu_quota", input.gpu_quota.toString());
+    if (input.gpu_access) formData.append("gpu_access", input.gpu_access);
+    if (input.mps_limit) formData.append("mps_limit", input.mps_limit.toString());
+    if (input.mps_memory) formData.append("mps_memory", input.mps_memory.toString());
   
     try {
       const response = await fetchWithAuth(PROJECTS_URL, {
@@ -55,6 +63,10 @@ export interface UpdateProjectInput {
   project_name?: string;
   description?: string;
   g_id?: number;
+  gpu_quota?: number;
+  gpu_access?: string;
+  mps_limit?: number;
+  mps_memory?: number;
 }
 
 export const updateProject = async (id: number, input: UpdateProjectInput): Promise<Project> => {
@@ -62,6 +74,10 @@ export const updateProject = async (id: number, input: UpdateProjectInput): Prom
   if (input.project_name) formData.append("project_name", input.project_name);
   if (input.description) formData.append("description", input.description);
   if (input.g_id) formData.append("g_id", input.g_id.toString());
+  if (input.gpu_quota !== undefined) formData.append("gpu_quota", input.gpu_quota.toString());
+  if (input.gpu_access) formData.append("gpu_access", input.gpu_access);
+  if (input.mps_limit) formData.append("mps_limit", input.mps_limit.toString());
+  if (input.mps_memory) formData.append("mps_memory", input.mps_memory.toString());
 
   try {
     const response = await fetchWithAuth(PROJECT_BY_ID_URL(id), {
