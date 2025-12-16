@@ -39,11 +39,7 @@ export default function SignUpForm() {
       navigate('/signin');
     } catch (err) {
       console.error('Registration error:', err);
-      alert(
-        err instanceof Error
-          ? err.message
-          : '註冊失敗，請重試。'
-      );
+      alert(err instanceof Error ? err.message : '註冊失敗，請重試。');
     }
   };
 

@@ -6,6 +6,7 @@ import { PVC } from '../interfaces/pvc';
 
 // Import Monaco Editor and its assets
 import MonacoEditor from 'react-monaco-editor';
+import useTranslation from '../hooks/useTranslation';
 
 interface FormData {
   filename: string;
@@ -34,6 +35,7 @@ export default function AddConfigModal({
   const [error, setError] = useState<string | null>(null);
   const [editorTheme, setEditorTheme] = useState('vs-light');
   const [activeTab, setActiveTab] = useState<'wizard' | 'yaml'>('wizard');
+  const { t } = useTranslation();
 
   // Wizard State
   const [wizardData, setWizardData] = useState({
@@ -141,10 +143,16 @@ spec:
 `;
 
     if (command) {
-      yaml += `      command: [${command.split(' ').map(c => `"${c}"`).join(', ')}]\n`;
+      yaml += `      command: [${command
+        .split(' ')
+        .map((c) => `"${c}"`)
+        .join(', ')}]\n`;
     }
     if (args) {
-      yaml += `      args: [${args.split(' ').map(a => `"${a}"`).join(', ')}]\n`;
+      yaml += `      args: [${args
+        .split(' ')
+        .map((a) => `"${a}"`)
+        .join(', ')}]\n`;
     }
 
     if (pvcName) {
@@ -160,7 +168,7 @@ spec:
       // Close containers list if no volumes
       yaml += `\n`;
     }
-    
+
     return yaml;
   };
 
@@ -170,7 +178,7 @@ spec:
       // Only auto-generate if YAML is empty or we want to overwrite?
       // Let's overwrite if it's empty or looks like a previous generation
       if (!formData.raw_yaml || formData.raw_yaml.trim() === '') {
-         setFormData(prev => ({ ...prev, raw_yaml: generateYAML() }));
+        setFormData((prev) => ({ ...prev, raw_yaml: generateYAML() }));
       }
     }
   }, [activeTab, wizardData]);
@@ -178,24 +186,24 @@ spec:
   const handleSubmit = () => {
     // Validation logic remains the same
     if (!formData.filename.trim()) {
-      setError('檔名為必填。');
+      setError(t('config.error.filenameRequired'));
       return;
     }
     if (
       !formData.filename.endsWith('.yaml') &&
       !formData.filename.endsWith('.yml')
     ) {
-      setError('檔名必須以 .yaml 或 .yml 結尾');
+      setError(t('config.error.filenameSuffix'));
       return;
     }
-    
+
     let finalYaml = formData.raw_yaml;
     if (activeTab === 'wizard') {
       finalYaml = generateYAML();
     }
 
     if (!finalYaml.trim()) {
-      setError('YAML 內容不能為空。');
+      setError(t('config.error.yamlEmpty'));
       return;
     }
     setError(null);
@@ -223,10 +231,10 @@ spec:
         <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 p-4 sm:p-6 dark:border-gray-700">
           <div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-              建立新設定檔
+              {t('config.createTitle')}
             </h3>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              使用精靈建立設定或直接編輯 YAML。
+              {t('config.createSubtitle')}
             </p>
           </div>
           <button
@@ -264,7 +272,7 @@ spec:
                 }
               `}
             >
-              精靈模式
+              {t('config.tab.wizard')}
             </button>
             <button
               onClick={() => setActiveTab('yaml')}
@@ -277,7 +285,7 @@ spec:
                 }
               `}
             >
-              原始 YAML
+              {t('config.tab.yaml')}
             </button>
           </nav>
         </div>
@@ -290,11 +298,11 @@ spec:
               htmlFor="filename"
               className="block text-sm font-bold text-gray-800 dark:text-gray-200"
             >
-              設定檔名稱
+              {t('config.filename.label')}
             </label>
             <div className="flex rounded-lg shadow-sm">
               <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 sm:text-sm">
-                檔名:
+                {t('config.filename.prefix')}
               </span>
               <input
                 id="filename"
@@ -308,7 +316,7 @@ spec:
               />
             </div>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              必須是唯一的名稱，且以 .yaml 或 .yml 結尾。
+              {t('config.filename.note')}
             </p>
           </div>
 
@@ -319,29 +327,38 @@ spec:
                 {/* Image Input */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    容器映像檔
+                    {t('config.wizard.imageLabel')}
                   </label>
                   {/* [Backend Requirement] Replace with a dropdown fetching from /api/images */}
                   <input
                     type="text"
                     placeholder="e.g., nginx:latest"
                     value={wizardData.image}
-                    onChange={(e) => setWizardData({ ...wizardData, image: e.target.value })}
+                    onChange={(e) =>
+                      setWizardData({ ...wizardData, image: e.target.value })
+                    }
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   />
-                  <p className="text-xs text-gray-500">輸入 Docker 映像檔名稱。</p>
+                  <p className="text-xs text-gray-500">
+                    {t('config.wizard.imageNote')}
+                  </p>
                 </div>
 
                 {/* GPU Input */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    GPU 數量
+                    {t('config.wizard.gpuLabel')}
                   </label>
                   <input
                     type="number"
                     min="0"
                     value={wizardData.gpu}
-                    onChange={(e) => setWizardData({ ...wizardData, gpu: parseInt(e.target.value) || 0 })}
+                    onChange={(e) =>
+                      setWizardData({
+                        ...wizardData,
+                        gpu: parseInt(e.target.value) || 0,
+                      })
+                    }
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   />
                 </div>
@@ -351,16 +368,18 @@ spec:
                 {/* PVC Selection */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    掛載 PVC (選填)
+                    {t('config.wizard.pvcLabel')}
                   </label>
                   <select
                     value={wizardData.pvcName}
-                    onChange={(e) => setWizardData({ ...wizardData, pvcName: e.target.value })}
+                    onChange={(e) =>
+                      setWizardData({ ...wizardData, pvcName: e.target.value })
+                    }
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   >
-                    <option value="">-- 選擇 PVC --</option>
+                    <option value="">{t('config.pvc.placeholder')}</option>
                     {loadingPvcs ? (
-                      <option disabled>載入 PVC 中...</option>
+                      <option disabled>{t('config.pvc.loading')}</option>
                     ) : (
                       pvcs.map((pvc) => (
                         <option key={pvc.name} value={pvc.name}>
@@ -369,19 +388,26 @@ spec:
                       ))
                     )}
                   </select>
-                  <p className="text-xs text-gray-500">選擇要掛載的 Persistent Volume Claim。</p>
+                  <p className="text-xs text-gray-500">
+                    {t('config.pvc.note')}
+                  </p>
                 </div>
 
                 {/* Mount Path */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    掛載路徑
+                    {t('config.mountPath')}
                   </label>
                   <input
                     type="text"
                     placeholder="/data"
                     value={wizardData.mountPath}
-                    onChange={(e) => setWizardData({ ...wizardData, mountPath: e.target.value })}
+                    onChange={(e) =>
+                      setWizardData({
+                        ...wizardData,
+                        mountPath: e.target.value,
+                      })
+                    }
                     disabled={!wizardData.pvcName}
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   />
@@ -391,25 +417,29 @@ spec:
               {/* Command & Args */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  指令 (選填)
+                  {t('config.commandLabel')}
                 </label>
                 <input
                   type="text"
                   placeholder="e.g., /bin/sh -c"
                   value={wizardData.command}
-                  onChange={(e) => setWizardData({ ...wizardData, command: e.target.value })}
+                  onChange={(e) =>
+                    setWizardData({ ...wizardData, command: e.target.value })
+                  }
                   className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                 />
               </div>
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  參數 (選填)
+                  {t('config.argsLabel')}
                 </label>
                 <input
                   type="text"
                   placeholder="e.g., echo hello"
                   value={wizardData.args}
-                  onChange={(e) => setWizardData({ ...wizardData, args: e.target.value })}
+                  onChange={(e) =>
+                    setWizardData({ ...wizardData, args: e.target.value })
+                  }
                   className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                 />
               </div>
@@ -420,7 +450,7 @@ spec:
           {activeTab === 'yaml' && (
             <div>
               <label className="block text-sm font-bold text-gray-800 dark:text-gray-200">
-                YAML 內容
+                {t('config.yamlContentLabel')}
               </label>
               <div className="editor-container mt-2 h-[450px] rounded-lg border border-gray-300 p-px shadow-sm focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 dark:border-gray-600">
                 <MonacoEditor
@@ -446,11 +476,11 @@ spec:
         {/* Modal Footer */}
         <div className="flex flex-shrink-0 flex-col-reverse items-center gap-4 rounded-b-xl border-t border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50 sm:flex-row sm:justify-between">
           <div className="text-sm text-red-600 dark:text-red-400">
-            {error && `錯誤: ${error}`}
+            {error && `${t('label.error')}: ${error}`}
           </div>
           <div className="flex w-full gap-3 sm:w-auto">
             <Button variant="outline" onClick={onClose} className="w-full">
-              取消
+              {t('form.cancel')}
             </Button>
             <Button
               variant="primary"
@@ -458,7 +488,7 @@ spec:
               disabled={actionLoading}
               className="w-full"
             >
-              {actionLoading ? '建立中...' : '建立設定檔'}
+              {actionLoading ? t('config.creating') : t('config.createButton')}
             </Button>
           </div>
         </div>

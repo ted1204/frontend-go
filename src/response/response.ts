@@ -9,4 +9,3 @@ export interface LoginResponse {
   username: string;
   is_super_admin: boolean;
 }
-

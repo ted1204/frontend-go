@@ -16,9 +16,9 @@ import PrivateRoute from './components/PrivateRoute';
 import PublicRoute from './components/PublicRoute';
 import TerminalWrapper from './pages/Terminal/TerminalPage';
 import FileBrowser from './pages/FileBrowser';
-import AdminTicketDashboard from './pages/AdminTicketDashboard';
+import AdminFormDashboard from './pages/AdminFormDashboard';
 import AdminDashboard from './pages/AdminDashboard';
-import UserTicketDashboard from './pages/UserTicketDashboard';
+import UserFormDashboard from './pages/UserFormDashboard';
 
 export default function App() {
   return (
@@ -46,8 +46,8 @@ export default function App() {
                 element={<ManageProjects />}
               />
               <Route path="/admin/manage-groups" element={<ManageGroups />} />
-              <Route path="/admin/tickets" element={<AdminTicketDashboard />} />
-              <Route path="/my-tickets" element={<UserTicketDashboard />} />
+              <Route path="/admin/forms" element={<AdminFormDashboard />} />
+              <Route path="/my-forms" element={<UserFormDashboard />} />
               <Route path="/pod-tables" element={<PodTables />} />
               <Route path="/terminal" element={<TerminalWrapper />} />
               <Route path="/file-browser" element={<FileBrowser />} />

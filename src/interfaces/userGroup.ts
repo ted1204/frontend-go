@@ -1,4 +1,3 @@
-
 export interface GetGroupsByUserResponse {
   code: number;
   message: string;
@@ -34,11 +33,11 @@ export interface UserGroup {
 export interface UserGroupUser {
   UID: number;
   Username: string;
-  Role: "admin" | "manager" | "user";
+  Role: 'admin' | 'manager' | 'user';
 }
 
 export interface UserGroupGroup {
   GID: number;
   GroupName: string;
-  Role: "admin" | "manager" | "user";
+  Role: 'admin' | 'manager' | 'user';
 }

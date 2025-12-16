@@ -1,5 +1,6 @@
 import React from 'react';
 import { Project } from '../interfaces/project';
+import useTranslation from '../hooks/useTranslation';
 import { useGlobalWebSocket } from '../context/WebSocketContext';
 import { getUsername } from '../services/authService';
 
@@ -38,6 +39,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
     (msg) => msg.kind === 'Pod' && msg.status === 'Running'
   );
   const isRunning = runningPods.length > 0;
+  const { t } = useTranslation();
 
   return (
     <div
@@ -51,19 +53,19 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
           }`}
         ></span>
         <span className="text-xs text-gray-500 dark:text-gray-400">
-          {isRunning ? '活躍' : '閒置'}
+          {isRunning ? t('status.active') : t('status.idle')}
         </span>
       </div>
 
       <FolderIcon />
       <h4 className="mb-2 text-xl font-bold text-gray-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
-        {project.ProjectName || `未命名專案`}
+        {project.ProjectName || t('project.untitled')}
       </h4>
       <p className="h-20 text-sm text-gray-600 dark:text-gray-400 line-clamp-4">
-        {project.Description || '未提供描述。'}
+        {project.Description || t('project.noDescription')}
       </p>
       <span className="mt-4 inline-block text-xs font-medium text-gray-400 dark:text-gray-500">
-        專案 ID: {project.PID}
+        {t('project.idLabel', { id: project.PID })}
       </span>
     </div>
   );

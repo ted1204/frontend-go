@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
+import useTranslation from '../hooks/useTranslation';
+import { LocaleKey } from '../i18n';
 
 // Assume these icons are imported from an icon library
 import {
@@ -13,71 +15,72 @@ import {
 import { useSidebar } from '../context/SidebarContext';
 
 type NavItem = {
-  name: string;
+  name: LocaleKey;
   icon: React.ReactNode;
   path?: string;
-  subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  subItems?: { name: LocaleKey; path: string; pro?: boolean; new?: boolean }[];
 };
 
 const navItems: NavItem[] = [
   {
     icon: <TaskIcon />,
-    name: '專案列表',
+    name: 'sidebar.projects',
     path: '/projects',
   },
   {
     icon: <GroupIcon />,
-    name: '群組列表',
+    name: 'sidebar.groups',
     path: '/groups',
   },
   {
     icon: <BoxIcon />,
-    name: 'Pods 列表',
+    name: 'sidebar.pods',
     path: '/pod-tables',
   },
   {
     icon: <TaskIcon />,
-    name: '檔案瀏覽器',
+    name: 'sidebar.fileBrowser',
     path: '/file-browser',
   },
   {
     icon: <GridIcon />,
-    name: '儀表板',
-    subItems: [{ name: '電子商務', path: '/', pro: false }],
+    name: 'sidebar.dashboard',
+    subItems: [{ name: 'sidebar.ecommerce', path: '/', pro: false }],
   },
   {
     icon: <BoxIcon />,
-    name: '我的電子申請表單',
-    path: '/my-tickets',
+    name: 'sidebar.myForms',
+    path: '/my-forms',
   },
 ];
 
 const adminItems: NavItem[] = [
   {
     icon: <GridIcon />,
-    name: '儀表板',
+    name: 'admin.dashboard',
     path: '/admin',
   },
   {
     icon: <TaskIcon />, // Use TaskIcon for Manage Projects
-    name: '專案管理',
+    name: 'admin.manageProjects',
     path: '/admin/manage-projects',
   },
   {
     icon: <GroupIcon />, // Use GroupIcon for Manage Groups
-    name: '群組管理',
+    name: 'admin.manageGroups',
     path: '/admin/manage-groups',
   },
   {
     icon: <BoxIcon />,
-    name: '電子申請表單管理',
-    path: '/admin/tickets',
+    name: 'admin.forms',
+    path: '/admin/forms',
   },
 ];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: 'main' | 'admin';
@@ -187,7 +190,7 @@ const AppSidebar: React.FC = () => {
                 {nav.icon}
               </span>
               {(isExpanded || isHovered || isMobileOpen) && (
-                <span className="menu-item-text">{nav.name}</span>
+                <span className="menu-item-text">{t(nav.name)}</span>
               )}
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDownIcon
@@ -218,7 +221,7 @@ const AppSidebar: React.FC = () => {
                   {nav.icon}
                 </span>
                 {(isExpanded || isHovered || isMobileOpen) && (
-                  <span className="menu-item-text">{nav.name}</span>
+                  <span className="menu-item-text">{t(nav.name)}</span>
                 )}
               </Link>
             )
@@ -247,7 +250,7 @@ const AppSidebar: React.FC = () => {
                           : 'menu-dropdown-item-inactive'
                       }`}
                     >
-                      {subItem.name}
+                      {t(subItem.name)}
                       <span className="flex items-center gap-1 ml-auto">
                         {subItem.new && (
                           <span
@@ -257,7 +260,7 @@ const AppSidebar: React.FC = () => {
                                 : 'menu-dropdown-badge-inactive'
                             } menu-dropdown-badge`}
                           >
-                            新
+                            {t('badge.new')}
                           </span>
                         )}
                         {subItem.pro && (
@@ -268,7 +271,7 @@ const AppSidebar: React.FC = () => {
                                 : 'menu-dropdown-badge-inactive'
                             } menu-dropdown-badge`}
                           >
-                            專業
+                            {t('badge.pro')}
                           </span>
                         )}
                       </span>
@@ -340,7 +343,7 @@ const AppSidebar: React.FC = () => {
             {' '}
             {/* Adjust '2ch' to "AI" width */}
             <span className="text-xl font-bold text-gray-900 dark:text-white whitespace-nowrap">
-              AI 平台
+              {t('brand.name')}
             </span>
           </div>
         </Link>
@@ -358,7 +361,7 @@ const AppSidebar: React.FC = () => {
                   }`}
                 >
                   {isExpanded || isHovered || isMobileOpen ? (
-                    '選單'
+                    t('sidebar.menu')
                   ) : (
                     <HorizontaLDots className="size-6" />
                   )}
@@ -376,7 +379,7 @@ const AppSidebar: React.FC = () => {
                   }`}
                 >
                   {isExpanded || isHovered || isMobileOpen ? (
-                    '管理員'
+                    t('sidebar.admin')
                   ) : (
                     <HorizontaLDots />
                   )}
@@ -389,18 +392,20 @@ const AppSidebar: React.FC = () => {
         {isAdmin && (isExpanded || isHovered || isMobileOpen) && (
           <div className="mt-auto px-6 pb-6">
             <button
-              onClick={() => setViewMode(viewMode === 'user' ? 'admin' : 'user')}
+              onClick={() =>
+                setViewMode(viewMode === 'user' ? 'admin' : 'user')
+              }
               className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
             >
               {viewMode === 'user' ? (
                 <>
                   <TaskIcon className="h-4 w-4" />
-                  <span>切換至管理員</span>
+                  <span>{t('view.toggleToAdmin')}</span>
                 </>
               ) : (
                 <>
                   <GroupIcon className="h-4 w-4" />
-                  <span>切換至使用者</span>
+                  <span>{t('view.toggleToUser')}</span>
                 </>
               )}
             </button>

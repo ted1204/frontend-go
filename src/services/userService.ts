@@ -1,17 +1,18 @@
-import { USERS_URL, USER_BY_ID_URL } from "../config/url";
-import { MessageResponse } from "../response/response";
-import { User, UserRequest } from "../interfaces/user";
-import { fetchWithAuth } from "../utils/api";
-
+import { USERS_URL, USER_BY_ID_URL } from '../config/url';
+import { MessageResponse } from '../response/response';
+import { User, UserRequest } from '../interfaces/user';
+import { fetchWithAuth } from '../utils/api';
 
 export const getUsers = async (): Promise<User[]> => {
   try {
     const response = await fetchWithAuth(USERS_URL, {
-      method: "GET",
+      method: 'GET',
     });
     return response as User[];
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to fetch users.");
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed to fetch users.'
+    );
   }
 };
 
@@ -36,39 +37,48 @@ export const getUsers = async (): Promise<User[]> => {
 export const getUserById = async (id: number): Promise<User> => {
   try {
     const response = await fetchWithAuth(USER_BY_ID_URL(id), {
-      method: "GET",
+      method: 'GET',
     });
     return response as User;
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to fetch user.");
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed to fetch user.'
+    );
   }
 };
 
-export const updateUser = async (id: number, input: Partial<UserRequest>): Promise<User> => {
+export const updateUser = async (
+  id: number,
+  input: Partial<UserRequest>
+): Promise<User> => {
   const formData = new URLSearchParams();
-  if (input.username) formData.append("username", input.username);
-  if (input.password) formData.append("password", input.password);
-  if (input.email) formData.append("email", input.email);
-  if (input.role) formData.append("role", input.role);
+  if (input.username) formData.append('username', input.username);
+  if (input.password) formData.append('password', input.password);
+  if (input.email) formData.append('email', input.email);
+  if (input.role) formData.append('role', input.role);
 
   try {
     const response = await fetchWithAuth(USER_BY_ID_URL(id), {
-      method: "PUT",
+      method: 'PUT',
       body: formData,
     });
     return response as User;
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to update user.");
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed to update user.'
+    );
   }
 };
 
 export const deleteUser = async (id: number): Promise<MessageResponse> => {
   try {
     const response = await fetchWithAuth(USER_BY_ID_URL(id), {
-      method: "DELETE",
+      method: 'DELETE',
     });
     return response as MessageResponse;
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to delete user.");
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed to delete user.'
+    );
   }
 };

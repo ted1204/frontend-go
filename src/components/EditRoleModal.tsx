@@ -13,7 +13,7 @@ const roles = [
     description: '擁有所有資源和設定的完整權限。',
   },
   {
-    name: '經理',
+    name: '專案管理者',
     value: 'manager' as const,
     description: '可以管理成員和特定資源。',
   },

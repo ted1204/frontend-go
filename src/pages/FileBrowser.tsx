@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
-import PageBreadcrumb from "../components/common/PageBreadCrumb";
-import PageMeta from "../components/common/PageMeta";
-import { Project } from "../interfaces/project";
-import { getProjects } from "../services/projectService";
-import { getGroupsByUser } from "../services/userGroupService";
-import { getPVCListByProject } from "../services/pvcService";
-import { PVC } from "../interfaces/pvc";
-import PVCList from "../components/PVCList";
-import { useGlobalWebSocket } from "../context/WebSocketContext";
-import { getUsername } from "../services/authService";
-
+import { useState, useEffect } from 'react';
+import PageBreadcrumb from '../components/common/PageBreadCrumb';
+import PageMeta from '../components/common/PageMeta';
+import useTranslation from '../hooks/useTranslation';
+import { Project } from '../interfaces/project';
+import { getProjects } from '../services/projectService';
+import { getGroupsByUser } from '../services/userGroupService';
+import { getPVCListByProject } from '../services/pvcService';
+import { PVC } from '../interfaces/pvc';
+import PVCList from '../components/PVCList';
+import { useGlobalWebSocket } from '../context/WebSocketContext';
+import { getUsername } from '../services/authService';
 
 const FolderIcon = () => (
   <svg
@@ -29,29 +29,34 @@ const FolderIcon = () => (
 );
 
 export default function FileBrowser() {
+  const { t } = useTranslation();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [expandedProjectId, setExpandedProjectId] = useState<number | null>(null);
+  const [expandedProjectId, setExpandedProjectId] = useState<number | null>(
+    null
+  );
   const [projectPvcs, setProjectPvcs] = useState<Record<number, PVC[]>>({});
   const [loadingPvcs, setLoadingPvcs] = useState<Record<number, boolean>>({});
 
   // Use Global WebSocket
   const { getProjectMessages } = useGlobalWebSocket();
-  
+
   // Derive messages for the expanded project
-  const expandedProject = projects.find(p => p.PID === expandedProjectId);
+  const expandedProject = projects.find((p) => p.PID === expandedProjectId);
   const username = getUsername();
-  const namespace = expandedProject ? `proj-${expandedProject.PID}-${username}` : "";
+  const namespace = expandedProject
+    ? `proj-${expandedProject.PID}-${username}`
+    : '';
   const messages = expandedProject ? getProjectMessages(namespace) : [];
 
   useEffect(() => {
     const fetchAndFilterProjects = async () => {
       setLoading(true);
       try {
-        const userData = localStorage.getItem("userData");
+        const userData = localStorage.getItem('userData');
         if (!userData) {
-          throw new Error("使用者未登入。");
+          throw new Error(t('groups.error.userNotLogged'));
         }
         const { user_id: userId } = JSON.parse(userData);
 
@@ -67,7 +72,7 @@ export default function FileBrowser() {
 
         setProjects(filteredProjects);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "無法取得資料");
+        setError(err instanceof Error ? err.message : t('error.initData'));
       } finally {
         setLoading(false);
       }
@@ -115,23 +120,25 @@ export default function FileBrowser() {
   return (
     <div>
       <PageMeta
-        title="檔案瀏覽器 | AI 平台"
-        description="瀏覽專案中的檔案。"
+        title={t('fileBrowser.title')}
+        description={t('fileBrowser.description')}
       />
-      <PageBreadcrumb pageTitle="檔案瀏覽器" />
+      <PageBreadcrumb pageTitle={t('fileBrowser.title')} />
 
       <div className="rounded-2xl p-4 md:p-6 2xl:p-10">
         <h3 className="mb-6 text-2xl font-bold text-gray-800 dark:text-white">
-          選擇專案
+          {t('fileBrowser.selectProject')}
         </h3>
 
         <div className="grid grid-cols-1 gap-6">
           {loading ? (
             [...Array(3)].map((_, i) => <SkeletonCard key={i} />)
           ) : error ? (
-            <StateDisplay message={`錯誤: ${error}`} />
+            <StateDisplay
+              message={`${t('label.error') || 'Error'}: ${error}`}
+            />
           ) : projects.length === 0 ? (
-            <StateDisplay message="找不到專案。" />
+            <StateDisplay message={t('fileBrowser.noProjects')} />
           ) : (
             projects.map((project) => (
               <div
@@ -156,7 +163,7 @@ export default function FileBrowser() {
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className={`h-6 w-6 text-gray-400 transition-transform duration-200 ${
-                      expandedProjectId === project.PID ? "rotate-180" : ""
+                      expandedProjectId === project.PID ? 'rotate-180' : ''
                     }`}
                     fill="none"
                     viewBox="0 0 24 24"

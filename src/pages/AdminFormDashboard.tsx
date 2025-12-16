@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { getAllTickets, updateTicketStatus } from '../services/ticketService';
-import { Ticket, TicketStatus } from '../interfaces/ticket';
+import { getAllForms, updateFormStatus } from '../services/formService';
+import { Form, FormStatus } from '../interfaces/form';
 import PageMeta from '../components/common/PageMeta';
 import PageBreadcrumb from '../components/common/PageBreadCrumb';
+import useTranslation from '../hooks/useTranslation';
 
-export default function AdminTicketDashboard() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+export default function AdminFormDashboard() {
+  const { t } = useTranslation();
+  const [tickets, setTickets] = useState<Form[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,63 +18,74 @@ export default function AdminTicketDashboard() {
   const fetchTickets = async () => {
     try {
       setLoading(true);
-      const data = await getAllTickets();
+      const data = await getAllForms();
       setTickets(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '無法取得工單');
+      setError(err instanceof Error ? err.message : t('error.initData'));
     } finally {
       setLoading(false);
     }
   };
 
-  const handleStatusChange = async (id: number, newStatus: TicketStatus) => {
+  const handleStatusChange = async (id: number, newStatus: FormStatus) => {
     try {
-      await updateTicketStatus(id, newStatus);
+      await updateFormStatus(id, newStatus);
       setTickets((prev) =>
         prev.map((t) => (t.ID === id ? { ...t, status: newStatus } : t))
       );
     } catch (err) {
-      alert('無法更新狀態: ' + (err instanceof Error ? err.message : String(err)));
+      alert(
+        (t('form.createFailed') || 'Unable to update status: ') +
+          (err instanceof Error ? err.message : String(err))
+      );
     }
   };
 
-  const getStatusColor = (status: TicketStatus) => {
+  const getStatusColor = (status: FormStatus) => {
     switch (status) {
-      case TicketStatus.Pending:
+      case FormStatus.Pending:
         return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
-      case TicketStatus.Processing:
+      case FormStatus.Processing:
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300';
-      case TicketStatus.Completed:
+      case FormStatus.Completed:
         return 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
-      case TicketStatus.Rejected:
+      case FormStatus.Rejected:
         return 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300';
       default:
         return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getStatusText = (status: TicketStatus) => {
+  const getStatusText = (status: FormStatus) => {
     switch (status) {
-      case TicketStatus.Pending:
-        return '待處理';
-      case TicketStatus.Processing:
-        return '處理中';
-      case TicketStatus.Completed:
-        return '已完成';
-      case TicketStatus.Rejected:
-        return '已駁回';
+      case FormStatus.Pending:
+        return t('form.status.pending') || 'Pending';
+      case FormStatus.Processing:
+        return t('form.status.processing') || 'Processing';
+      case FormStatus.Completed:
+        return t('form.status.completed') || 'Completed';
+      case FormStatus.Rejected:
+        return t('form.status.rejected') || 'Rejected';
       default:
         return status;
     }
   };
 
-  if (loading) return <div className="p-6 text-center">載入工單中...</div>;
+  if (loading)
+    return (
+      <div className="p-6 text-center">
+        {t('loading.forms') || 'Loading forms...'}
+      </div>
+    );
   if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
 
   return (
     <div>
-      <PageMeta title="工單儀表板" description="管理使用者支援請求" />
-      <PageBreadcrumb pageTitle="支援工單" />
+      <PageMeta
+        title={t('page.adminForm.title') || 'Forms Dashboard'}
+        description={t('page.adminForm.description') || ''}
+      />
+      <PageBreadcrumb pageTitle={t('admin.forms') || 'Forms'} />
 
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <div className="overflow-x-auto">
@@ -83,19 +96,22 @@ export default function AdminTicketDashboard() {
                   ID
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  使用者
+                  {t('table.id') || 'ID'}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  專案
+                  {t('table.user') || 'User'}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  標題 / 描述
+                  {t('table.project') || 'Project'}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  狀態
+                  {t('table.titleDesc') || 'Title / Description'}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  操作
+                  {t('table.status') || 'Status'}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  {t('table.actions') || 'Actions'}
                 </th>
               </tr>
             </thead>
@@ -110,7 +126,9 @@ export default function AdminTicketDashboard() {
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {ticket.project ? (
-                      <span className="font-mono">{ticket.project.ProjectName}</span>
+                      <span className="font-mono">
+                        {ticket.project.ProjectName}
+                      </span>
                     ) : (
                       '-'
                     )}
@@ -134,28 +152,37 @@ export default function AdminTicketDashboard() {
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
                     <div className="flex gap-2">
-                      {ticket.status === TicketStatus.Pending && (
+                      {ticket.status === FormStatus.Pending && (
                         <>
                           <button
-                            onClick={() => handleStatusChange(ticket.ID, TicketStatus.Processing)}
+                            onClick={() =>
+                              handleStatusChange(
+                                ticket.ID,
+                                FormStatus.Processing
+                              )
+                            }
                             className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                           >
-                            處理
+                            {t('form.action.process')}
                           </button>
                           <button
-                            onClick={() => handleStatusChange(ticket.ID, TicketStatus.Rejected)}
+                            onClick={() =>
+                              handleStatusChange(ticket.ID, FormStatus.Rejected)
+                            }
                             className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                           >
-                            駁回
+                            {t('form.action.reject')}
                           </button>
                         </>
                       )}
-                      {ticket.status === TicketStatus.Processing && (
+                      {ticket.status === FormStatus.Processing && (
                         <button
-                          onClick={() => handleStatusChange(ticket.ID, TicketStatus.Completed)}
+                          onClick={() =>
+                            handleStatusChange(ticket.ID, FormStatus.Completed)
+                          }
                           className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
                         >
-                          完成
+                          {t('form.action.complete')}
                         </button>
                       )}
                     </div>

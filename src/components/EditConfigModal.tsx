@@ -76,7 +76,7 @@ export default function EditConfigModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in-0">
-      {/* ✅ 1. Modal is now significantly wider for a better editing experience */}
+      {/* Modal is now significantly wider for a better editing experience */}
       <div className="relative flex h-full max-h-[95vh] w-full max-w-7xl flex-col rounded-xl border border-gray-200 bg-white shadow-2xl animate-in zoom-in-95 dark:border-gray-700 dark:bg-gray-800">
         {/* Modal Header */}
         <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 p-4 sm:p-6 dark:border-gray-700">
@@ -109,7 +109,7 @@ export default function EditConfigModal({
 
         {/* Modal Body (scrollable) */}
         <div className="flex-grow space-y-6 overflow-y-auto p-4 sm:p-6">
-          {/* ✅ 2. A refined grid layout for the filename field to solve the "crowded" issue */}
+          {/* A refined grid layout for the filename field to solve the "crowded" issue */}
           <div className="space-y-2">
             <label
               htmlFor="filename"

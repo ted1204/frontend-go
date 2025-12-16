@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { UserGroupUser } from '../interfaces/userGroup';
-import { getUsersByGroup, getGroupsByUser, createUserGroup } from '../services/userGroupService';
+import {
+  getUsersByGroup,
+  getGroupsByUser,
+  createUserGroup,
+} from '../services/userGroupService';
 import { getUsers } from '../services/userService';
 import InviteUserModal, { FormData } from './InviteUserModal';
 import { User } from '../interfaces/user';
+import useTranslation from '../hooks/useTranslation';
 
 interface ProjectMembersProps {
   groupId: number;
@@ -16,6 +21,7 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
   const [canManage, setCanManage] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const { t } = useTranslation();
 
   const fetchMembers = async () => {
     try {
@@ -88,16 +94,16 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
       <div className="flex flex-col gap-4 border-b border-gray-200 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6 dark:border-gray-600">
         <div>
           <h3 className="text-lg font-bold leading-6 text-gray-900 dark:text-white">
-            專案成員
+            {t('project.members.title')}
           </h3>
           <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-            擁有此專案存取權限的使用者 (透過群組 ID: {groupId})。
+            {t('project.members.description', { groupId })}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <input
             type="text"
-            placeholder="搜尋成員..."
+            placeholder={t('project.members.searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
@@ -107,7 +113,7 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
               onClick={() => setIsInviteModalOpen(true)}
               className="inline-flex items-center justify-center gap-2 rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
             >
-              新增成員
+              {t('project.members.addMember')}
             </button>
           )}
         </div>
@@ -115,7 +121,10 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
       <div className="p-4 sm:p-6">
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
           {filteredMembers.map((member) => (
-            <li key={member.UID} className="py-3 flex justify-between items-center">
+            <li
+              key={member.UID}
+              className="py-3 flex justify-between items-center"
+            >
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold">
                   {member.Username.charAt(0).toUpperCase()}
@@ -125,7 +134,7 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
                     {member.Username}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    角色: {member.Role}
+                    {t('role.label', { role: member.Role })}
                   </p>
                 </div>
               </div>
@@ -133,7 +142,9 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
           ))}
           {filteredMembers.length === 0 && (
             <li className="py-4 text-center text-gray-500 dark:text-gray-400">
-              {members.length === 0 ? '找不到成員。' : '沒有符合搜尋條件的成員。'}
+              {members.length === 0
+                ? t('members.noneFound')
+                : t('members.noMatch')}
             </li>
           )}
         </ul>

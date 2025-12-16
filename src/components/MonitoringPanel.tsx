@@ -1,5 +1,6 @@
 import { ResourceMessage } from '../hooks/useWebSocket';
 import { SYSTEM_POD_PREFIXES } from '../config/constants';
+import useTranslation from '../hooks/useTranslation';
 
 /**
  * Helper component to display a colored badge based on status or event type.
@@ -17,48 +18,59 @@ const StatusBadge = ({ status }: { status: string | undefined }) => {
 
   switch (safeStatus) {
     case 'running':
-      colorClasses = 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
-      displayText = '執行中';
+      colorClasses =
+        'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
+      displayText = t('monitor.status.running');
       break;
     case 'active':
-      colorClasses = 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
-      displayText = '活躍';
+      colorClasses =
+        'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
+      displayText = t('monitor.status.active');
       break;
     case 'completed':
-      colorClasses = 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
-      displayText = '已完成';
+      colorClasses =
+        'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
+      displayText = t('monitor.status.completed');
       break;
     case 'succeeded':
-      colorClasses = 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
-      displayText = '成功';
+      colorClasses =
+        'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
+      displayText = t('monitor.status.succeeded');
       break;
     case 'added': // Event: Added
-      colorClasses = 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
-      displayText = '已新增';
+      colorClasses =
+        'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
+      displayText = t('monitor.status.added');
       break;
     case 'pending':
-      colorClasses = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
-      displayText = '等待中';
+      colorClasses =
+        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
+      displayText = t('monitor.status.pending');
       break;
     case 'creating':
-      colorClasses = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
-      displayText = '建立中';
+      colorClasses =
+        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
+      displayText = t('monitor.status.creating');
       break;
     case 'modified': // Event: Modified
-      colorClasses = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
-      displayText = '已修改';
+      colorClasses =
+        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
+      displayText = t('monitor.status.modified');
       break;
     case 'failed':
-      colorClasses = 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300';
-      displayText = '失敗';
+      colorClasses =
+        'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300';
+      displayText = t('monitor.status.failed');
       break;
     case 'error':
-      colorClasses = 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300';
-      displayText = '錯誤';
+      colorClasses =
+        'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300';
+      displayText = t('monitor.status.error');
       break;
     case 'deleted': // Event: Deleted
-      colorClasses = 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300';
-      displayText = '已刪除';
+      colorClasses =
+        'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300';
+      displayText = t('monitor.status.deleted');
       break;
   }
 
@@ -73,6 +85,7 @@ const StatusBadge = ({ status }: { status: string | undefined }) => {
  * @param {ResourceMessage[]} messages - Array of resource events.
  */
 const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
+  const { t } = useTranslation();
   const filteredMessages = messages.filter((msg) => {
     return !SYSTEM_POD_PREFIXES.some((prefix) => msg.name.startsWith(prefix));
   });
@@ -85,19 +98,19 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
             <thead className="text-xs text-gray-500 uppercase dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-6 py-3 text-left">
-                  事件類型
+                  {t('monitor.col.eventType')}
                 </th>
                 <th scope="col" className="px-6 py-3 text-left">
-                  種類
+                  {t('monitor.col.kind')}
                 </th>
                 <th scope="col" className="px-6 py-3 text-left">
-                  名稱
+                  {t('monitor.col.name')}
                 </th>
                 <th scope="col" className="px-6 py-3 text-left">
-                  端點/IP
+                  {t('monitor.col.endpoint')}
                 </th>
                 <th scope="col" className="px-6 py-3 text-right">
-                  狀態
+                  {t('monitor.col.status')}
                 </th>
               </tr>
             </thead>
@@ -116,7 +129,7 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
                       endpoint = `NodePort: ${msg.nodePorts.join(', ')}`;
                     }
                   } else if (msg.age) {
-                    endpoint = `存在時間: ${msg.age}`; // Display age for other resources like Pods
+                    endpoint = `${t('monitor.agePrefix')} ${msg.age}`; // Display age for other resources like Pods
                   }
 
                   return (
@@ -165,7 +178,7 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
                         />
                       </svg>
                       <p className="mt-2 font-semibold">
-                        等待事件中...
+                        {t('monitor.waiting')}
                       </p>
                     </div>
                   </td>

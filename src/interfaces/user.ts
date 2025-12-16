@@ -5,7 +5,7 @@ export interface User {
   CreatedAt: string;
   UpdatedAt: string;
   FullName?: string;
-  IsSuperAdmin: boolean,
+  IsSuperAdmin: boolean;
   Status: string;
   Type: string;
 }
@@ -14,5 +14,5 @@ export interface UserRequest {
   username: string;
   password: string;
   email: string;
-  role?: "admin" | "user";
+  role?: 'admin' | 'user';
 }

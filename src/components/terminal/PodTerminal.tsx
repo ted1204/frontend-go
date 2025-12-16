@@ -3,6 +3,7 @@ import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { BASE_URL } from '../../config/url';
 import 'xterm/css/xterm.css';
+import useTranslation from '../../hooks/useTranslation';
 
 // Define the message structure for communication with the backend.
 interface TerminalMessage {
@@ -33,6 +34,8 @@ const TerminalPage: React.FC<TerminalProps> = ({
   const fitAddon = useRef(new FitAddon());
 
   useEffect(() => {
+    const { t } = useTranslation();
+    // t is used inside websocket event handlers below
     if (!terminalRef.current) return;
     // 1. Initialize the Terminal with a modern, dark theme.
     term.current = new Terminal({
@@ -79,7 +82,9 @@ const TerminalPage: React.FC<TerminalProps> = ({
 
     // 3. Handle WebSocket Events.
     socket.current.onopen = () => {
-      term.current?.writeln('\x1b[38;5;154m[已連線至 Pod Shell]\x1b[0m');
+      term.current?.writeln(
+        `\x1b[38;5;154m[${t('terminal.connected')}]\x1b[0m`
+      );
 
       fitAddon.current.fit();
 
@@ -103,11 +108,13 @@ const TerminalPage: React.FC<TerminalProps> = ({
     };
 
     socket.current.onerror = () => {
-      term.current?.writeln('\x1b[31m[WebSocket 錯誤]\x1b[0m');
+      term.current?.writeln(`\x1b[31m[${t('terminal.websocketError')}]\x1b[0m`);
     };
 
     socket.current.onclose = () => {
-      term.current?.writeln('\n\x1b[38;5;220m[已斷線]\x1b[0m');
+      term.current?.writeln(
+        `\n\x1b[38;5;220m[${t('terminal.disconnected')}]\x1b[0m`
+      );
     };
 
     // 4. Handle xterm.js Events.

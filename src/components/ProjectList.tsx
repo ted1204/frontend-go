@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useState, useEffect } from 'react';
+import useTranslation from '../hooks/useTranslation';
 import { Project } from '../interfaces/project';
 import Pagination from './common/Pagination';
 
@@ -104,12 +105,14 @@ const ProjectList: React.FC<ProjectListProps> = ({
     currentPage * itemsPerPage
   );
 
+  const { t } = useTranslation();
+
   return (
     <div className="text-left">
       {/* List Title Section: Subdued, clean heading with a separator line */}
       <div className="mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
         <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
-          專案列表
+          {t('projectList.title')}
         </h3>
       </div>
 
@@ -118,7 +121,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
         <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
         <input
           type="text"
-          placeholder="依名稱、描述或 ID 搜尋專案..."
+          placeholder={t('projectList.searchPlaceholder')}
           value={searchTerm}
           onChange={onSearchChange}
           className="
@@ -138,20 +141,20 @@ const ProjectList: React.FC<ProjectListProps> = ({
         <div className="flex items-center justify-center p-8 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <SpinnerIcon className="w-5 h-5 mr-3 text-gray-600 dark:text-gray-300" />
           <p className="text-gray-600 dark:text-gray-300">
-            載入專案中...
+            {t('projectList.loading')}
           </p>
         </div>
       ) : error ? (
         // Error State: Visually distinct alert box
         <p className="p-4 bg-red-100 border border-red-400 text-red-700 dark:bg-red-900/30 dark:border-red-600 dark:text-red-300 rounded-lg">
-          錯誤: {error}
+          {t('projectList.errorPrefix')} {error}
         </p>
       ) : projects.length === 0 ? (
         // Empty State: Dynamic message based on whether the user is searching
         <p className="p-4 bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg border border-dashed border-gray-300 dark:border-gray-600">
           {isFiltering
-            ? `沒有專案符合 "${searchTerm}"。請嘗試其他關鍵字。`
-            : `找不到專案。建立新專案以開始使用。`}
+            ? t('projectList.empty.filter', { term: searchTerm })
+            : t('projectList.empty.noProjects')}
         </p>
       ) : (
         /* --- Main Project List Body --- */
@@ -178,7 +181,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
                     {/* Project Name: Primary content, bold text */}
                     <span className="text-lg font-semibold text-gray-800 dark:text-white truncate">
                       {project.ProjectName ||
-                        `未命名專案 (ID: ${project.PID})`}
+                        `${t('project.untitled')} (ID: ${project.PID})`}
                     </span>
                     {/* Project ID: Secondary metadata */}
                     {project.PID && (
@@ -208,7 +211,11 @@ const ProjectList: React.FC<ProjectListProps> = ({
                     // Disabled styles
                     disabled:opacity-50 disabled:cursor-not-allowed
                   "
-                  aria-label={`刪除專案 ${project.ProjectName}`}
+                  aria-label={t('project.delete', {
+                    name:
+                      project.ProjectName ||
+                      `${t('project.untitled')} (ID: ${project.PID})`,
+                  })}
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent navigation click
                     // Pass the entire project object to the handler
@@ -220,7 +227,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
               </li>
             ))}
           </ul>
-          <Pagination 
+          <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}

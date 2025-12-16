@@ -12,9 +12,12 @@ import {
 import { useNavigate } from 'react-router-dom';
 import CreateProjectForm from '../components/CreateProjectForm';
 import Button from '../components/ui/button/Button';
-import DeleteConfirmationModal from '../components/ui/modal/DeleteConfirmationModal'; // 🚨 1. 引入 Modal
+import DeleteConfirmationModal from '../components/ui/modal/DeleteConfirmationModal';
 
 import { getGroups } from '../services/groupService';
+import PageMeta from '../components/common/PageMeta';
+import PageBreadcrumb from '../components/common/PageBreadCrumb';
+import useTranslation from '../hooks/useTranslation';
 // --- Conceptual Group Interfaces (Must be defined in your app) ---
 interface GroupOption {
   GID: number;
@@ -36,6 +39,7 @@ const PlusIcon = ({ className = 'w-5 h-5' }) => (
 );
 
 export default function ManageProjects() {
+  const { t } = useTranslation();
   // Project States
   const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
@@ -53,12 +57,12 @@ export default function ManageProjects() {
 
   // UI/API States
   const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(false); // 🚨 2. 新增專門的 action loading state
+  const [actionLoading, setActionLoading] = useState(false); // 2. Add dedicated action loading state
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // 🚨 3. 新增刪除確認相關 States
+  // 3. Add delete confirmation related states
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
 
@@ -96,7 +100,7 @@ export default function ManageProjects() {
     setError(null);
   };
 
-  // 🚨 4. 處理關閉刪除 Modal
+  // 4. Handle closing delete modal
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
     setProjectToDelete(null);
@@ -117,9 +121,7 @@ export default function ManageProjects() {
         const groups = await getGroups();
         setAvailableGroups(groups);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : '無法取得初始資料'
-        );
+        setError(err instanceof Error ? err.message : t('error.initData'));
       } finally {
         setLoading(false);
       }
@@ -153,6 +155,9 @@ export default function ManageProjects() {
     e.preventDefault();
 
     if (groupId === 0) {
+      setError(t('error.selectGroup'));
+      return;
+    }
     const input: CreateProjectDTO = {
       project_name: projectName,
       description,
@@ -161,14 +166,10 @@ export default function ManageProjects() {
       gpu_access: gpuAccess.join(','),
       mps_limit: mpsLimit,
       mps_memory: mpsMemory,
-    };mps_limit: mpsLimit,
-      mps_memory: mpsMemory,
     };
 
     try {
-
-    try {
-      setActionLoading(true); // 使用 actionLoading 鎖定按鈕
+      setActionLoading(true); // Use actionLoading to lock button
       setError(null);
 
       const newProject = await createProject(input);
@@ -177,62 +178,56 @@ export default function ManageProjects() {
         setAllProjects((prev) => [...prev, newProject]);
         handleCloseModal();
       } else {
-        setError(
-          '從伺服器接收到無效的專案資料或建立失敗。'
-        );
+        setError(t('error.invalidProjectData'));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : '無法建立專案');
+      setError(err instanceof Error ? err.message : t('error.createProject'));
     } finally {
       setActionLoading(false);
     }
   };
 
-  // 🚨 5. 處理點擊刪除按鈕 (開啟 Modal)
+  // 5. Handle delete button click (open modal)
   const handleDeleteClick = (project: Project) => {
-    // 如果有其他操作正在執行 (actionLoading)，則不響應點擊
+    // If other operations are in progress (actionLoading), do not respond to click
     if (actionLoading || loading) return;
     setProjectToDelete(project);
     setIsDeleteModalOpen(true);
   };
 
   /**
-   * 🚨 6. 處理確認刪除 (執行 API)
+   * 6. 處理確認刪除 (執行 API)
    */
   const handleConfirmDelete = async () => {
     if (!projectToDelete) return;
 
     const projectId = projectToDelete.PID;
 
-    // 鎖定操作並立即關閉 Modal
+    // Lock operation and close modal immediately
     setActionLoading(true);
     handleCloseDeleteModal();
 
     try {
       const res = await deleteProject(projectId);
       if (res.message === 'project deleted') {
-        // 更新列表
+        // Update list
         setAllProjects((prev) => prev.filter((p) => p.PID !== projectId));
       } else {
-        setError(res.message || '無法刪除專案。');
+        setError(res.message || t('error.deleteProject'));
         console.error('Deletion failed:', res.message);
       }
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : '刪除時發生錯誤。'
-      );
+      setError(err instanceof Error ? err.message : t('error.deleteFailed'));
     } finally {
       setActionLoading(false);
     }
   };
 
-  // ⚠️ 原本的 handleDeleteProject 被刪除，請確保 ProjectList 改為呼叫 handleDeleteClick
+  // Original handleDeleteProject removed, ensure ProjectList calls handleDeleteClick
 
   return (
     <div className="relative">
-      {/* 假設 PageMeta 和 PageBreadcrumb 在這裡 */}
+      {/* Assume PageMeta and PageBreadcrumb here */}
 
       <div className="min-h-screen rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 xl:p-10">
         {/* Top Action Bar: Create Button */}
@@ -240,18 +235,12 @@ export default function ManageProjects() {
           <Button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            // 禁用按鈕如果正在載入或執行其他動作
+            // Disable button if loading or performing other actions
             disabled={loading || actionLoading}
-            className="
-                          flex items-center space-x-2 px-4 py-2 text-sm font-semibold 
-                          bg-violet-600 text-white rounded-lg shadow-md
-                          hover:bg-violet-700 transition duration-150 
-                          focus:outline-none focus:ring-4 focus:ring-violet-500 focus:ring-opacity-50
-                          disabled:opacity-50 disabled:cursor-not-allowed
-                      "
+            className="flex items-center space-x-2 px-4 py-2 text-sm font-semibold bg-violet-600 text-white rounded-lg shadow-md hover:bg-violet-700 transition duration-150 focus:outline-none focus:ring-4 focus:ring-violet-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <PlusIcon className="w-5 h-5" />
-            <span>新專案</span>
+            <span>{t('button.newProject')}</span>
           </Button>
         </div>
 
@@ -261,9 +250,13 @@ export default function ManageProjects() {
           loading={loading}
           error={error}
           onProjectClick={handleProjectClick}
-          // 🚨 傳遞新的 handler，它接受 Project 物件
+          // Pass new handler that accepts Project object
           onDeleteProject={handleDeleteClick}
           searchTerm={searchTerm}
+          isActionLoading={actionLoading}
+          onSearchChange={handleSearchChange}
+        />
+      </div>
       {/* Project Creation Modal (Conditional Rendering) */}
       <CreateProjectForm
         projectName={projectName}
@@ -273,7 +266,7 @@ export default function ManageProjects() {
         gpuAccess={gpuAccess}
         mpsLimit={mpsLimit}
         mpsMemory={mpsMemory}
-        // 🚨 這裡使用 actionLoading 來控制表單提交的載入狀態
+        // Use actionLoading to control form submission loading state
         loading={actionLoading}
         error={error}
         isOpen={isModalOpen}
@@ -309,22 +302,16 @@ export default function ManageProjects() {
         availableGroups={availableGroups}
         selectedGroupName={selectedGroupName}
         onSelectedGroupChange={handleSelectedGroupChange}
-      />onSubmit={handleCreateProject}
-        availableGroups={availableGroups}
-        selectedGroupName={selectedGroupName}
-        onSelectedGroupChange={handleSelectedGroupChange}
-      />selectedGroupName={selectedGroupName}
-        onSelectedGroupChange={handleSelectedGroupChange}
       />
 
-      {/* 🚨 7. 渲染 Delete Confirmation Modal */}
+      {/* 7. Render Delete Confirmation Modal */}
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
         item={projectToDelete}
         itemType="Project"
-        loading={actionLoading} // 使用 actionLoading 鎖定 Modal 內部的按鈕
+        loading={actionLoading} // Use actionLoading to lock buttons inside modal
       />
     </div>
   );

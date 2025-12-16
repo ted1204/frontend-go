@@ -11,6 +11,7 @@ import {
 } from '../services/groupService';
 import { Group } from '../interfaces/group';
 import { useNavigate } from 'react-router-dom';
+import useTranslation from '../hooks/useTranslation';
 import GroupList from '../components/GroupList';
 import CreateGroupForm from '../components/CreateGroupForm';
 import Button from '../components/ui/button/Button';
@@ -56,6 +57,7 @@ export default function ManageGroups() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleGroupClick = (groupId: number) => {
     navigate(`/groups/${groupId}`);
@@ -96,7 +98,7 @@ export default function ManageGroups() {
         setAllGroups(fetchedGroups);
         setFilteredGroups(fetchedGroups); // Initialize filtered list
       } catch (err) {
-        setError(err instanceof Error ? err.message : '無法取得群組');
+        setError(err instanceof Error ? err.message : t('error.fetchGroups'));
       } finally {
         setLoading(false);
       }
@@ -141,7 +143,7 @@ export default function ManageGroups() {
       setAllGroups((prev) => [...prev, newGroup]);
       handleCloseModal(); // Creation successful, close modal
     } catch (err) {
-      setError(err instanceof Error ? err.message : '無法建立群組');
+      setError(err instanceof Error ? err.message : t('error.createGroup'));
     } finally {
       setFormLoading(false); // Unlock form fields
     }
@@ -176,15 +178,11 @@ export default function ManageGroups() {
         setAllGroups((prev) => prev.filter((g) => g.GID !== groupId));
       } else {
         // Display error from API response
-        setError(res.message || '無法刪除群組。');
+        setError(res.message || t('error.deleteGroup'));
         console.error('Deletion failed:', res.message);
       }
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : '刪除時發生錯誤。'
-      );
+      setError(err instanceof Error ? err.message : t('error.deleteFailed'));
     } finally {
       setFormLoading(false);
     }
@@ -193,10 +191,10 @@ export default function ManageGroups() {
   return (
     <div className="relative">
       <PageMeta
-        title="管理群組"
-        description="管理組織群組的管理面板。"
+        title={t('page.manageGroups.title')}
+        description={t('page.manageGroups.description')}
       />
-      <PageBreadcrumb pageTitle="管理群組" />
+      <PageBreadcrumb pageTitle={t('page.manageGroups.title')} />
 
       {/* Main Content Container: Enhanced styling for dashboard view */}
       <div className="min-h-screen rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 xl:p-10">
@@ -217,7 +215,7 @@ export default function ManageGroups() {
                       "
           >
             <PlusIcon className="w-5 h-5" />
-            <span>新群組</span>
+            <span>{t('button.newGroup')}</span>
           </Button>
         </div>
 

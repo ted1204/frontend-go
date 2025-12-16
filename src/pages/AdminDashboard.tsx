@@ -1,16 +1,18 @@
 import { Link } from 'react-router-dom';
 import PageMeta from '../components/common/PageMeta';
 import PageBreadcrumb from '../components/common/PageBreadCrumb';
+import useTranslation from '../hooks/useTranslation';
 import { GroupIcon, TaskIcon } from '../icons';
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
   return (
     <div>
       <PageMeta
-        title="管理員儀表板 | TailAdmin"
-        description="管理任務的中心樞紐。"
+        title={t('page.admin.title') || 'Admin'}
+        description={t('page.admin.description') || ''}
       />
-      <PageBreadcrumb pageTitle="管理員儀表板" />
+      <PageBreadcrumb pageTitle={t('admin.dashboard') || 'Admin Dashboard'} />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Manage Projects Card */}
@@ -24,10 +26,10 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                管理專案
+                {t('admin.manageProjects')}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                監督所有專案與資源。
+                {t('page.admin.description')}
               </p>
             </div>
           </div>
@@ -44,10 +46,10 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
-                管理群組
+                {t('admin.manageGroups')}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                控制使用者群組與權限。
+                {t('admin.manageGroups')}
               </p>
             </div>
           </div>
@@ -55,7 +57,7 @@ export default function AdminDashboard() {
 
         {/* Support Tickets Card */}
         <Link
-          to="/admin/tickets"
+          to="/admin/forms"
           className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
         >
           <div className="flex items-center gap-4">
@@ -77,10 +79,10 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400">
-                支援工單
+                {t('admin.forms')}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                處理電子表單請求。
+                {t('admin.forms')}
               </p>
             </div>
           </div>

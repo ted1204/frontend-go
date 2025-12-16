@@ -1,17 +1,22 @@
-import { RESOURCES_URL, RESOURCE_BY_ID_URL, CONFIG_FILE_BY_ID_URL} from "../config/url";
-import { MessageResponse } from "../response/response";
-import { Resource } from "../interfaces/resource";
-import { fetchWithAuth } from "../utils/api";
-
+import {
+  RESOURCES_URL,
+  RESOURCE_BY_ID_URL,
+  CONFIG_FILE_BY_ID_URL,
+} from '../config/url';
+import { MessageResponse } from '../response/response';
+import { Resource } from '../interfaces/resource';
+import { fetchWithAuth } from '../utils/api';
 
 export const getResourceById = async (id: number): Promise<Resource> => {
   try {
     const response = await fetchWithAuth(RESOURCE_BY_ID_URL(id), {
-      method: "GET",
+      method: 'GET',
     });
     return response as Resource;
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to fetch resource.");
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed to fetch resource.'
+    );
   }
 };
 
@@ -22,53 +27,72 @@ export interface UpdateResourceInput {
   description?: string;
 }
 
-export const updateResource = async (id: number, input: UpdateResourceInput): Promise<Resource> => {
+export const updateResource = async (
+  id: number,
+  input: UpdateResourceInput
+): Promise<Resource> => {
   const formData = new FormData();
-  if (input.name) formData.append("name", input.name);
-  if (input.type) formData.append("type", input.type);
-  if (input.parsed_yaml) formData.append("parsed_yaml", input.parsed_yaml);
-  if (input.description) formData.append("description", input.description);
+  if (input.name) formData.append('name', input.name);
+  if (input.type) formData.append('type', input.type);
+  if (input.parsed_yaml) formData.append('parsed_yaml', input.parsed_yaml);
+  if (input.description) formData.append('description', input.description);
 
   try {
     const response = await fetchWithAuth(RESOURCE_BY_ID_URL(id), {
-      method: "PUT",
+      method: 'PUT',
       body: formData,
     });
     return response as Resource;
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to update resource.");
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed to update resource.'
+    );
   }
 };
 
 export const deleteResource = async (id: number): Promise<MessageResponse> => {
   try {
     const response = await fetchWithAuth(RESOURCE_BY_ID_URL(id), {
-      method: "DELETE",
+      method: 'DELETE',
     });
     return response as MessageResponse;
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to delete resource.");
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed to delete resource.'
+    );
   }
 };
 
 export const getResources = async (): Promise<Resource[]> => {
   try {
     const response = await fetchWithAuth(RESOURCES_URL, {
-      method: "GET",
+      method: 'GET',
     });
     return response as Resource[];
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to fetch resources.");
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed to fetch resources.'
+    );
   }
 };
 
-export const getResourcesByConfigFile = async (cfId: number): Promise<Resource[]> => {
+export const getResourcesByConfigFile = async (
+  cfId: number
+): Promise<Resource[]> => {
   try {
-    const response = await fetchWithAuth(`${CONFIG_FILE_BY_ID_URL(cfId)}/resources`, { // 用你的 base URL 包裝
-      method: "GET",
-    });
+    const response = await fetchWithAuth(
+      `${CONFIG_FILE_BY_ID_URL(cfId)}/resources`,
+      {
+        // 用你的 base URL 包裝
+        method: 'GET',
+      }
+    );
     return response as Resource[];
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to fetch resources by config file.");
+    throw new Error(
+      error instanceof Error
+        ? error.message
+        : 'Failed to fetch resources by config file.'
+    );
   }
 };

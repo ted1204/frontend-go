@@ -258,6 +258,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
             <InputField
               type="text"
               label="專案名稱"
+              value={projectName}
+              onChange={onProjectNameChange}
+              required
+              placeholder="輸入專案名稱"
+              className="w-full"
+              disabled={loading}
+            />
             {/* 2. Description (Textarea Field) */}
             <div className="space-y-1.5 text-left">
               <label
@@ -303,7 +310,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                     className="form-checkbox h-5 w-5 text-violet-600 rounded border-gray-300 focus:ring-violet-500 dark:border-gray-600 dark:bg-gray-700"
                     disabled={loading}
                   />
-                  <span className="text-gray-700 dark:text-gray-300">Shared (共享)</span>
+                  <span className="text-gray-700 dark:text-gray-300">
+                    Shared (共享)
+                  </span>
                 </label>
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input
@@ -313,7 +322,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                     className="form-checkbox h-5 w-5 text-violet-600 rounded border-gray-300 focus:ring-violet-500 dark:border-gray-600 dark:bg-gray-700"
                     disabled={loading}
                   />
-                  <span className="text-gray-700 dark:text-gray-300">Dedicated (專用)</span>
+                  <span className="text-gray-700 dark:text-gray-300">
+                    Dedicated (專用)
+                  </span>
                 </label>
               </div>
             </div>
@@ -347,14 +358,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                 />
               </div>
             )}
-
-            {/* 3. GROUP SEARCH-SELECT REPLACEMENT */}
-              />
-            </div>
-
-            {/* 3. GROUP SEARCH-SELECT REPLACEMENT */}
-              />
-            </div>
 
             {/* 3. GROUP SEARCH-SELECT REPLACEMENT */}
             <div className="space-y-1.5 text-left relative" ref={dropdownRef}>

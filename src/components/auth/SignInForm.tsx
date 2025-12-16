@@ -12,7 +12,7 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname || '/';
 
   const handleLogin = async (e: React.FormEvent) => {
     console.log('handleLogin called');
@@ -31,9 +31,7 @@ export default function SignInForm() {
       navigate(from, { replace: true });
     } catch (err) {
       console.error('Login error:', err);
-      alert(
-        err instanceof Error ? err.message : '登入失敗，請重試。'
-      );
+      alert(err instanceof Error ? err.message : '登入失敗，請重試。');
     }
   };
 

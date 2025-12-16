@@ -1,4 +1,5 @@
 import React, { useState, Fragment } from 'react';
+import useTranslation from '../hooks/useTranslation';
 import { Dialog, Transition, Combobox, RadioGroup } from '@headlessui/react';
 import {
   CheckIcon as CheckMarkIcon,
@@ -28,19 +29,19 @@ interface InviteUserModalProps {
 
 const roles = [
   {
-    name: '管理員',
+    nameKey: 'role.admin.name',
     value: 'admin' as const,
-    description: '擁有所有設定的完整權限。',
+    descKey: 'role.admin.desc',
   },
   {
-    name: '經理',
+    nameKey: 'role.manager.name',
     value: 'manager' as const,
-    description: '可以管理成員和內容。',
+    descKey: 'role.manager.desc',
   },
   {
-    name: '一般使用者',
+    nameKey: 'role.user.name',
     value: 'user' as const,
-    description: '可以檢視和互動內容。',
+    descKey: 'role.user.desc',
   },
 ];
 
@@ -86,6 +87,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
   const [query, setQuery] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   // --- Derived State --- //
   // Filter users based on the search query
@@ -102,7 +104,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedUser) {
-      setError('請選擇要邀請的使用者。');
+      setError(t('invite.selectUserError'));
       return;
     }
     setIsSubmitting(true);
@@ -111,9 +113,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
       await onSubmit({ uid: selectedUser.UID, role: selectedRole });
       handleClose(); // Close and reset on success
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : '發生未知錯誤。'
-      );
+      setError(err instanceof Error ? err.message : t('invite.unknownError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -165,24 +165,25 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                 as="h3"
                 className="text-xl font-semibold leading-6 text-gray-900 dark:text-white"
               >
-                邀請新成員
+                {t('invite.title')}
               </Dialog.Title>
               <Dialog.Description className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                選擇使用者並指派角色。
+                {t('invite.description')}
               </Dialog.Description>
 
               {/* User Selection Combobox */}
               <div className="relative mt-4">
                 <Combobox value={selectedUser} onChange={setSelectedUser}>
                   <Combobox.Label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    使用者 <span className="text-red-500">*</span>
+                    {t('invite.userLabel')}{' '}
+                    <span className="text-red-500">*</span>
                   </Combobox.Label>
                   <div className="relative mt-1">
                     <Combobox.Input
                       className="w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                       displayValue={(user: User | null) => user?.Username || ''}
                       onChange={(event) => setQuery(event.target.value)}
-                      placeholder="搜尋使用者..."
+                      placeholder={t('invite.userSearchPlaceholder')}
                     />
                     <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                       <ChevronUpDownIcon
@@ -201,7 +202,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                     <Combobox.Options className="absolute z-10 mt-1 max-h-52 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm dark:bg-gray-700">
                       {filteredUsers.length === 0 && query !== '' ? (
                         <div className="relative cursor-default select-none px-4 py-2 text-gray-700 dark:text-gray-300">
-                          找不到結果。
+                          {t('invite.noResults')}
                         </div>
                       ) : (
                         filteredUsers.map((user) => (
@@ -274,13 +275,13 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                                 as="p"
                                 className={`font-semibold ${checked ? 'text-white' : 'text-gray-900 dark:text-gray-100'}`}
                               >
-                                {role.name}
+                                {t(role.nameKey)}
                               </RadioGroup.Label>
                               <RadioGroup.Description
                                 as="span"
                                 className={`inline ${checked ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}`}
                               >
-                                {role.description}
+                                {t(role.descKey)}
                               </RadioGroup.Description>
                             </div>
                             {checked && (

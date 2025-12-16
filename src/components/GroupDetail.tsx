@@ -186,9 +186,7 @@ export default function GroupDetail() {
         setAllUsers(usersData);
         await refetchGroupUsers(); // Fetch initial members
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : '無法取得群組資料'
-        );
+        setError(err instanceof Error ? err.message : '無法取得群組資料');
       } finally {
         setLoading(false);
       }

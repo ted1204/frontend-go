@@ -3,6 +3,6 @@ export interface RegisterInput {
   password: string;
   email?: string;
   full_name?: string;
-  type?: "origin" | "oauth2";
-  status?: "online" | "offline" | "delete";
+  type?: 'origin' | 'oauth2';
+  status?: 'online' | 'offline' | 'delete';
 }

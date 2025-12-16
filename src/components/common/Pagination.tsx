@@ -1,4 +1,5 @@
 import React from 'react';
+import useTranslation from '../../hooks/useTranslation';
 
 interface PaginationProps {
   currentPage: number;
@@ -11,6 +12,7 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
+  const { t } = useTranslation();
   if (totalPages <= 1) return null;
 
   return (
@@ -21,17 +23,17 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={currentPage === 1}
           className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50 dark:border-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
-          上一頁
+          {t('pagination.prev')}
         </button>
         <span className="text-sm text-gray-600 dark:text-gray-400">
-          第 {currentPage} 頁，共 {totalPages} 頁
+          {t('pagination.pageOf', { current: currentPage, total: totalPages })}
         </span>
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50 dark:border-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
-          下一頁
+          {t('pagination.next')}
         </button>
       </nav>
     </div>

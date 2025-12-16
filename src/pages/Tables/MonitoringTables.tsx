@@ -1,6 +1,7 @@
 import { useEffect, useState, Fragment } from 'react';
 import { useGlobalWebSocket } from '../../context/WebSocketContext';
 import Pagination from '../../components/common/Pagination';
+import useTranslation from '../../hooks/useTranslation';
 
 // --- Type Definitions --- //
 
@@ -57,13 +58,14 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({
   namespace,
   pods,
 }) => {
+  const { t } = useTranslation();
   const [expandedPods, setExpandedPods] = useState<Record<string, boolean>>({});
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   // Reset page when pods change
   useEffect(() => {
-      setCurrentPage(1);
+    setCurrentPage(1);
   }, [pods]);
 
   const totalPages = Math.ceil(pods.length / itemsPerPage);
@@ -108,16 +110,16 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({
         <thead className="text-xs text-gray-500 uppercase bg-gray-50 dark:bg-gray-700/50 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3 w-2/5">
-              Pod 名稱
+              {t('monitor.table.podName')}
             </th>
             <th scope="col" className="px-6 py-3 w-1/5">
-              命名空間
+              {t('monitor.table.namespace')}
             </th>
             <th scope="col" className="px-6 py-3 w-1/5">
-              狀態
+              {t('monitor.table.status')}
             </th>
             <th scope="col" className="px-6 py-3 w-1/5 text-right">
-              操作
+              {t('monitor.table.actions')}
             </th>
           </tr>
         </thead>
@@ -169,7 +171,7 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({
                           className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         >
                           <TerminalIcon className="w-4 h-4" />
-                          連線
+                          {t('monitor.button.connect')}
                         </button>
                       </td>
                     </tr>
@@ -179,7 +181,7 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({
           })}
         </tbody>
       </table>
-      <Pagination 
+      <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
@@ -194,17 +196,17 @@ export default function PodTablesPage() {
 
   useEffect(() => {
     const newPodsData: NamespacePods = {};
-    messages.forEach(msg => {
-        if (msg.kind === 'Pod') {
-            if (!newPodsData[msg.ns]) {
-                newPodsData[msg.ns] = [];
-            }
-            newPodsData[msg.ns].push({
-                name: msg.name,
-                containers: msg.containers || [],
-                status: msg.status || 'Unknown',
-            });
+    messages.forEach((msg) => {
+      if (msg.kind === 'Pod') {
+        if (!newPodsData[msg.ns]) {
+          newPodsData[msg.ns] = [];
         }
+        newPodsData[msg.ns].push({
+          name: msg.name,
+          containers: msg.containers || [],
+          status: msg.status || 'Unknown',
+        });
+      }
     });
     setPodsData(newPodsData);
   }, [messages]);
@@ -224,7 +226,7 @@ export default function PodTablesPage() {
           >
             <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
               <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-                命名空間:{' '}
+                {t('monitor.table.namespace')}:{' '}
                 <span className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md text-blue-600 dark:text-blue-400">
                   {ns}
                 </span>

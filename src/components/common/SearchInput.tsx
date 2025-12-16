@@ -1,4 +1,5 @@
 import React from 'react';
+import useTranslation from '../../hooks/useTranslation';
 
 interface SearchInputProps {
   value: string;
@@ -6,14 +7,20 @@ interface SearchInputProps {
   placeholder?: string;
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, placeholder = "搜尋..." }) => {
+const SearchInput: React.FC<SearchInputProps> = ({
+  value,
+  onChange,
+  placeholder,
+}) => {
+  const { t } = useTranslation();
+  const ph = placeholder ?? t('search.placeholder');
   return (
     <div className="relative w-full sm:w-64">
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
+        placeholder={ph}
         className="w-full rounded-lg border border-gray-300 bg-transparent py-2 pl-10 pr-4 text-gray-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:text-white dark:focus:border-blue-500"
       />
       <svg

@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
+import useTranslation from '../hooks/useTranslation';
 
 // Assuming InputField is the component provided above,
 // and that InputFieldDefault is aliased to InputField here.
@@ -58,6 +59,7 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = ({
   isOpen,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const [shouldRender, setShouldRender] = useState(false);
   const [animationClass, setAnimationClass] = useState('');
 
@@ -142,17 +144,17 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = ({
 
           {/* Header Section */}
           <h3 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100 text-center">
-            建立新群組
+            {t('groups.form.title')}
           </h3>
 
           <form onSubmit={onSubmit} className="space-y-5">
             {/* Group Name Input */}
             <InputField
               type="text"
-              label="群組名稱"
+              label={t('groups.nameLabel')}
               value={groupName}
               onChange={onGroupNameChange}
-              placeholder="例如：行銷團隊"
+              placeholder={t('groups.namePlaceholder')}
               className="w-full"
               required
               disabled={loading}
@@ -162,10 +164,10 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = ({
             {/* Description Input */}
             <InputField
               type="text"
-              label="描述 (選填)"
+              label={t('groups.descriptionLabel')}
               value={description}
               onChange={onDescriptionChange}
-              placeholder="簡述群組的用途"
+              placeholder={t('groups.descriptionPlaceholder')}
               className="w-full"
               disabled={loading}
             />
@@ -186,10 +188,10 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = ({
                 {loading ? (
                   <span className="flex items-center justify-center animate-pulse">
                     <SpinnerIcon className="w-4 h-4 mr-2 text-white" />
-                    建立群組中...
+                    {t('groups.creating')}
                   </span>
                 ) : (
-                  '建立新群組'
+                  t('groups.createButton')
                 )}
               </Button>
             </div>

@@ -220,7 +220,7 @@ const GroupList: React.FC<GroupListProps> = ({
             </li>
           ))}
         </ul>
-        <Pagination 
+        <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={setCurrentPage}
