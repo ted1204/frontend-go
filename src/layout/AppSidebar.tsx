@@ -28,6 +28,11 @@ const navItems: NavItem[] = [
     path: '/projects',
   },
   {
+    icon: <TaskIcon />,
+    name: 'sidebar.jobs',
+    path: '/jobs',
+  },
+  {
     icon: <GroupIcon />,
     name: 'sidebar.groups',
     path: '/groups',

@@ -364,32 +364,6 @@ layer(base);
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .group-item:hover {
   background-color: var(--color-gray-800);
 }

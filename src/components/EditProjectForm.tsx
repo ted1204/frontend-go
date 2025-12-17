@@ -1,5 +1,3 @@
-// src/components/CreateProjectForm.tsx
-
 import React, {
   ChangeEvent,
   FormEvent,
@@ -8,19 +6,9 @@ import React, {
   useRef,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-
-// Assuming InputField and Button are properly defined components
 import InputField from './form/input/InputField';
 import Button from './ui/button/Button';
 
-// --- Conceptual Interface for Group Data (Must be defined in your app) ---
-interface GroupOption {
-  GID: number;
-  GroupName: string;
-}
-// ------------------------------------------------------------------------
-
-// SVG Components (Used for consistency and minimal style)
 const SpinnerIcon = ({ className = 'w-4 h-4' }) => (
   <svg
     className={`animate-spin ${className}`}
@@ -43,6 +31,7 @@ const SpinnerIcon = ({ className = 'w-4 h-4' }) => (
     ></path>
   </svg>
 );
+
 const AlertIcon = ({ className = 'w-5 h-5' }) => (
   <svg
     className={className}
@@ -60,10 +49,9 @@ const AlertIcon = ({ className = 'w-5 h-5' }) => (
   </svg>
 );
 
-interface CreateProjectFormProps {
+interface EditProjectFormProps {
   projectName: string;
   description: string;
-  groupId: number;
   gpuQuota: number;
   gpuAccess: string[];
   mpsLimit: number;
@@ -78,19 +66,12 @@ interface CreateProjectFormProps {
   onGpuAccessChange: (access: string) => void;
   onMpsLimitChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onMpsMemoryChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onGroupIdChange: (e: ChangeEvent<HTMLInputElement>) => void; // Kept for compatibility
   onSubmit: (e: FormEvent) => void;
-
-  // NEW SEARCH-SELECT PROPS
-  availableGroups: GroupOption[];
-  selectedGroupName: string;
-  onSelectedGroupChange: (groupId: number, groupName: string) => void;
 }
 
-const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
+const EditProjectForm: React.FC<EditProjectFormProps> = ({
   projectName,
   description,
-  groupId,
   gpuQuota,
   gpuAccess,
   mpsLimit,
@@ -106,67 +87,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
   onMpsLimitChange,
   onMpsMemoryChange,
   onSubmit,
-
-  availableGroups,
-  selectedGroupName,
-  onSelectedGroupChange,
 }) => {
   const { t } = useTranslation();
-  // --- Local State for Search Dropdown ---
-  const [searchTerm, setSearchTerm] = useState(selectedGroupName);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // FIX: Defensive initialization of availableGroups
-  const safeGroups = availableGroups || [];
-
-  // Filter logic runs whenever local search term changes
-  const filteredGroups = safeGroups.filter((group) =>
-    group.GroupName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Synchronize local search term with external selectedGroupName
-  useEffect(() => {
-    setSearchTerm(selectedGroupName);
-  }, [selectedGroupName]);
-
-  // Handles group selection from the dropdown
-  const handleSelectGroup = (group: GroupOption) => {
-    onSelectedGroupChange(group.GID, group.GroupName);
-    setIsDropdownOpen(false);
-  };
-
-  // Handles input change in the search field
-  const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-    setIsDropdownOpen(true);
-
-    // Clear selected group in parent if user starts typing a new name
-    if (value !== selectedGroupName) {
-      onSelectedGroupChange(0, value); // Pass 0 for ID and the new text for name
-    }
-  };
-
-  // Logic to close dropdown when clicking outside of the search area
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-        // If nothing was selected, reset search input to the selected name
-        setSearchTerm(selectedGroupName);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [selectedGroupName]);
-
-  // --- Modal Animation Logic (FIXED: Eliminates flash by using dedicated render state) ---
   const [shouldRender, setShouldRender] = useState(false);
   const [animationClass, setAnimationClass] = useState('');
   const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
@@ -181,7 +103,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
 
     if (isOpen) {
       setShouldRender(true);
-      // Use requestAnimationFrame to safely apply fade-in class on the next tick
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setAnimationClass('fade-in-0');
@@ -189,8 +110,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
       });
     } else if (shouldRender) {
       setAnimationClass('fade-out-0');
-
-      // Wait 300ms for the animation to complete before unmounting
       animationTimeoutRef.current = setTimeout(() => {
         setShouldRender(false);
         setAnimationClass('');
@@ -198,7 +117,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
       }, 300);
     }
 
-    // Cleanup function: Ensures timers are cleared when the component is unmounted or effect reruns
     return () => {
       if (animationTimeoutRef.current) {
         clearTimeout(animationTimeoutRef.current);
@@ -209,20 +127,16 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
   if (!shouldRender) {
     return null;
   }
-  // -----------------------------------------------------------------------
 
   return (
-    // Modal Backdrop: Apply dynamic animation class directly. No click-to-close on background.
     <div
       className={`fixed inset-0 bg-gray-900 bg-opacity-50 dark:bg-opacity-50 flex items-center justify-center z-50 p-4 ${animationClass}`}
     >
-      {/* Modal Content Card: Main form container. */}
       <div
         className="w-full max-w-lg bg-white dark:bg-gray-800 rounded-xl shadow-2xl relative"
-        onClick={(e) => e.stopPropagation()} // Prevent accidental closure
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="p-8">
-          {/* Close Button (Top Right X) */}
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-gray-500 hover:text-gray-900 dark:hover:text-white transition duration-200"
@@ -245,7 +159,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
           </button>
 
           <h3 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white text-center">
-            {t('project.create.title')}
+            {t('project.edit.title', 'Edit Project')}
           </h3>
 
           {error && (
@@ -258,7 +172,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
           )}
 
           <form onSubmit={onSubmit} className="space-y-5">
-            {/* 1. Project Name Input */}
             <InputField
               type="text"
               label={t('project.create.name')}
@@ -269,7 +182,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
               className="w-full"
               disabled={loading}
             />
-            {/* 2. Description (Textarea Field) */}
             <div className="space-y-1.5 text-left">
               <label
                 htmlFor="description-textarea"
@@ -288,7 +200,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
               />
             </div>
 
-            {/* 2.1 GPU Quota */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <InputField
                 type="number"
@@ -323,7 +234,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
               />
             </div>
 
-            {/* 2.2 GPU Access Mode */}
             <div className="space-y-1.5 text-left">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('project.create.gpuAccessMode')}
@@ -356,7 +266,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
               </div>
             </div>
 
-            {/* 2.5 MPS Settings (Only if Shared is selected) */}
             {gpuAccess.includes('shared') && (
               <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700">
                 <div className="col-span-2 text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
@@ -386,63 +295,11 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
               </div>
             )}
 
-            {/* 3. GROUP SEARCH-SELECT REPLACEMENT */}
-            <div className="space-y-1.5 text-left relative" ref={dropdownRef}>
-              {/* Search Input Field */}
-              <InputField
-                type="text"
-                id="group-search"
-                label={t('project.create.group')} // FIX: Label is now mandatory
-                value={searchTerm}
-                onChange={handleSearchInputChange}
-                onFocus={() => setIsDropdownOpen(true)}
-                placeholder={t('project.create.groupPlaceholder')}
-                className="w-full"
-                required
-                disabled={loading}
-                // Visually indicate selection success
-                style={{ borderColor: groupId > 0 ? '#4f46e5' : undefined }}
-              />
-
-              {/* Dropdown List */}
-              {isDropdownOpen && (
-                <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                  {filteredGroups.length > 0 ? (
-                    filteredGroups.map((group) => (
-                      <li
-                        key={group.GID}
-                        onClick={() => handleSelectGroup(group)}
-                        className="px-4 py-2 cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-violet-100 dark:hover:bg-violet-800 transition duration-100"
-                      >
-                        {group.GroupName}
-                        <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                          {' '}
-                          (ID: {group.GID})
-                        </span>
-                      </li>
-                    ))
-                  ) : (
-                    <li className="px-4 py-2 text-gray-500 dark:text-gray-400">
-                      {t('project.create.noGroupsFound')}
-                    </li>
-                  )}
-                </ul>
-              )}
-
-              {/* Display currently selected Group ID as hint */}
-              {groupId > 0 && (
-                <p className="mt-1 text-sm text-green-600 dark:text-green-400">
-                  {t('project.create.selectedId')} {groupId}
-                </p>
-              )}
-            </div>
-
-            {/* 4. Submission Button */}
             <div className="pt-2">
               <Button
                 type="submit"
                 className="w-full px-6 py-2.5 text-base font-semibold bg-violet-600 text-white rounded-md hover:bg-violet-700 transition duration-150 focus:outline-none focus:ring-4 focus:ring-violet-500 focus:ring-opacity-50 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                disabled={loading || groupId === 0} // Disable if no group is selected (groupId === 0)
+                disabled={loading}
               >
                 {loading ? (
                   <span className="flex items-center justify-center animate-pulse">
@@ -461,4 +318,4 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
   );
 };
 
-export default CreateProjectForm;
+export default EditProjectForm;

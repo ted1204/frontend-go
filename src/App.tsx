@@ -19,6 +19,7 @@ import FileBrowser from './pages/FileBrowser';
 import AdminFormDashboard from './pages/AdminFormDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import UserFormDashboard from './pages/UserFormDashboard';
+import Jobs from './pages/Jobs';
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
               <Route path="/groups/:id" element={<GroupDetail />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/projects/:id" element={<ProjectDetail />} />
+              <Route path="/jobs" element={<Jobs />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route
                 path="/admin/manage-projects"

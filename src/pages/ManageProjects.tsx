@@ -10,9 +10,10 @@ import {
   CreateProjectDTO,
 } from '../services/projectService';
 import { useNavigate } from 'react-router-dom';
-import CreateProjectForm from '../components/CreateProjectForm';
+import EditProjectForm from '../components/EditProjectForm';
 import Button from '../components/ui/button/Button';
 import DeleteConfirmationModal from '../components/ui/modal/DeleteConfirmationModal';
+import { updateProject, UpdateProjectDTO } from '../services/projectService';
 
 import { getGroups } from '../services/groupService';
 import PageMeta from '../components/common/PageMeta';
@@ -66,10 +67,67 @@ export default function ManageProjects() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
 
+  // Edit Modal States
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
+
   const navigate = useNavigate();
 
   const handleProjectClick = (projectId: number) => {
-    navigate(`/projects/${projectId}`);
+    // Instead of navigating, open edit modal
+    const project = allProjects.find((p) => p.PID === projectId);
+    if (project) {
+      setProjectToEdit(project);
+      setProjectName(project.ProjectName);
+      setDescription(project.Description || '');
+      setGpuQuota(project.GPUQuota || 0);
+      setGpuAccess(
+        project.GPUAccess ? project.GPUAccess.split(',') : ['shared']
+      );
+      setMpsLimit(project.MPSLimit || 100);
+      setMpsMemory(project.MPSMemory || 0);
+      setIsEditModalOpen(true);
+    }
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setProjectToEdit(null);
+    setProjectName('');
+    setDescription('');
+    setGpuQuota(0);
+    setGpuAccess(['shared']);
+    setMpsLimit(100);
+    setMpsMemory(0);
+    setError(null);
+  };
+
+  const handleUpdateProject = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!projectToEdit) return;
+
+    const input: UpdateProjectDTO = {
+      project_name: projectName,
+      description,
+      gpu_quota: gpuQuota,
+      gpu_access: gpuAccess.join(','),
+      mps_limit: mpsLimit,
+      mps_memory: mpsMemory,
+    };
+
+    try {
+      setActionLoading(true);
+      setError(null);
+      const updatedProject = await updateProject(projectToEdit.PID, input);
+      setAllProjects((prev) =>
+        prev.map((p) => (p.PID === updatedProject.PID ? updatedProject : p))
+      );
+      handleCloseEditModal();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update project');
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -302,6 +360,44 @@ export default function ManageProjects() {
         availableGroups={availableGroups}
         selectedGroupName={selectedGroupName}
         onSelectedGroupChange={handleSelectedGroupChange}
+      />
+
+      <EditProjectForm
+        projectName={projectName}
+        description={description}
+        gpuQuota={gpuQuota}
+        gpuAccess={gpuAccess}
+        mpsLimit={mpsLimit}
+        mpsMemory={mpsMemory}
+        loading={actionLoading}
+        error={error}
+        isOpen={isEditModalOpen}
+        onClose={handleCloseEditModal}
+        onProjectNameChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setProjectName(e.target.value)
+        }
+        onDescriptionChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+          setDescription(e.target.value)
+        }
+        onGpuQuotaChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setGpuQuota(Number(e.target.value))
+        }
+        onGpuAccessChange={(access: string) => {
+          setGpuAccess((prev) => {
+            if (prev.includes(access)) {
+              return prev.filter((a) => a !== access);
+            } else {
+              return [...prev, access];
+            }
+          });
+        }}
+        onMpsLimitChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setMpsLimit(Number(e.target.value))
+        }
+        onMpsMemoryChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setMpsMemory(Number(e.target.value))
+        }
+        onSubmit={handleUpdateProject}
       />
 
       {/* 7. Render Delete Confirmation Modal */}
