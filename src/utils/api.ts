@@ -27,12 +27,10 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
     let errorData: ErrorResponse | undefined;
     try {
       errorData = await response.json();
-    } catch (e) {
-      // If response is not JSON, ignore
+    } catch (err) {
+      console.debug('Non-JSON response while parsing error body', err);
     }
-    throw new Error(
-      errorData?.error || `Request failed with status ${response.status}`
-    );
+    throw new Error(errorData?.error || `Request failed with status ${response.status}`);
   }
 
   if (response.status === 204) {

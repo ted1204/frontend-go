@@ -27,9 +27,7 @@ const fetchWithAuthForm = async (url: string, options: RequestInit) => {
   return baseFetchWithAuth(url, { ...options, headers });
 };
 
-export const createPVC = async (
-  input: PVCRequest
-): Promise<{ [key: string]: string }> => {
+export const createPVC = async (input: PVCRequest): Promise<{ [key: string]: string }> => {
   const formData = new URLSearchParams();
   formData.append('name', input.name);
   formData.append('namespace', input.namespace);
@@ -43,15 +41,11 @@ export const createPVC = async (
     });
     return response as { [key: string]: string };
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to create PVC.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to create PVC.');
   }
 };
 
-export const expandPVC = async (
-  input: PVCRequest
-): Promise<{ [key: string]: string }> => {
+export const expandPVC = async (input: PVCRequest): Promise<{ [key: string]: string }> => {
   const formData = new URLSearchParams();
   formData.append('name', input.name);
   formData.append('namespace', input.namespace);
@@ -65,9 +59,7 @@ export const expandPVC = async (
     });
     return response as { [key: string]: string };
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to expand PVC.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to expand PVC.');
   }
 };
 
@@ -78,9 +70,7 @@ export const getPVCList = async (namespace: string): Promise<PVC[]> => {
     });
     return response.data as PVC[];
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch PVC list.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch PVC list.');
   }
 };
 
@@ -91,9 +81,7 @@ export const getPVCListByProject = async (pid: number): Promise<PVC[]> => {
     });
     return response.data as PVC[];
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch PVC list.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch PVC list.');
   }
 };
 
@@ -104,15 +92,13 @@ export const getPVC = async (namespace: string, name: string): Promise<PVC> => {
     });
     return response.data as PVC;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch PVC.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch PVC.');
   }
 };
 
 export const deletePVC = async (
   namespace: string,
-  name: string
+  name: string,
 ): Promise<{ [key: string]: string }> => {
   try {
     const response = await fetchWithAuthForm(PVC_DELETE_URL(namespace, name), {
@@ -120,15 +106,13 @@ export const deletePVC = async (
     });
     return response as { [key: string]: string };
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to delete PVC.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to delete PVC.');
   }
 };
 
 export const startFileBrowser = async (
   namespace: string,
-  pvcName: string
+  pvcName: string,
 ): Promise<{ nodePort: number }> => {
   try {
     const response = await fetchWithAuth(PVC_FILEBROWSER_START_URL, {
@@ -137,24 +121,17 @@ export const startFileBrowser = async (
     });
     return response.data as { nodePort: number };
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to start file browser.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to start file browser.');
   }
 };
 
-export const stopFileBrowser = async (
-  namespace: string,
-  pvcName: string
-): Promise<void> => {
+export const stopFileBrowser = async (namespace: string, pvcName: string): Promise<void> => {
   try {
     await fetchWithAuth(PVC_FILEBROWSER_STOP_URL, {
       method: 'POST',
       body: JSON.stringify({ namespace, pvc_name: pvcName }),
     });
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to stop file browser.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to stop file browser.');
   }
 };

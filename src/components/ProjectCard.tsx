@@ -35,9 +35,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
 
   // Determine status based on messages
   // If we have any running pods, we consider the project "Active"
-  const runningPods = messages.filter(
-    (msg) => msg.kind === 'Pod' && msg.status === 'Running'
-  );
+  const runningPods = messages.filter((msg) => msg.kind === 'Pod' && msg.status === 'Running');
   const isRunning = runningPods.length > 0;
   const { t } = useTranslation();
 

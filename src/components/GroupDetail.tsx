@@ -35,8 +35,7 @@ import {
 const RoleBadge = ({ role }: { role: string }) => {
   const roleStyles: { [key: string]: string } = {
     admin: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
-    manager:
-      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+    manager: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
     user: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
   };
   return (
@@ -82,9 +81,7 @@ const GroupDetailCard = ({ group }: { group: Group }) => {
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-        群組資訊
-      </h3>
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">群組資訊</h3>
       <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
         此群組的核心詳細資訊和中繼資料。
       </p>
@@ -95,9 +92,7 @@ const GroupDetailCard = ({ group }: { group: Group }) => {
               <item.icon className="h-6 w-6" aria-hidden="true" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                {item.label}
-              </p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{item.label}</p>
               <p className="mt-1 text-base font-semibold text-gray-900 dark:text-white">
                 {item.value}
               </p>
@@ -152,8 +147,7 @@ export default function GroupDetail() {
   const [error, setError] = useState<string | null>(null);
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
-  const [selectedUserToEdit, setSelectedUserToEdit] =
-    useState<UserGroupUser | null>(null);
+  const [selectedUserToEdit, setSelectedUserToEdit] = useState<UserGroupUser | null>(null);
 
   // --- Data Fetching --- //
 
@@ -165,6 +159,7 @@ export default function GroupDetail() {
       setGroupUsers(userGroupsData);
     } catch (err) {
       setError('無法重新整理群組成員。');
+      console.warn('refetchGroupUsers error', err);
     }
   }, [id]);
 
@@ -178,10 +173,7 @@ export default function GroupDetail() {
       try {
         setLoading(true);
         // Fetch group details and all system users concurrently.
-        const [groupData, usersData] = await Promise.all([
-          getGroupById(parseInt(id)),
-          getUsers(),
-        ]);
+        const [groupData, usersData] = await Promise.all([getGroupById(parseInt(id)), getUsers()]);
         setGroup(groupData);
         setAllUsers(usersData);
         await refetchGroupUsers(); // Fetch initial members
@@ -266,9 +258,7 @@ export default function GroupDetail() {
           <div className="lg:col-span-2">
             <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
               <div className="border-b border-gray-200 p-4 dark:border-gray-700 sm:p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  群組成員
-                </h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">群組成員</h3>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                   {groupUsers.length} 位成員在此群組中。
                 </p>
@@ -339,9 +329,7 @@ export default function GroupDetail() {
         <InviteUserModal
           isOpen={isInviteModalOpen}
           onClose={() => setIsInviteModalOpen(false)}
-          users={allUsers.filter(
-            (u) => !groupUsers.some((gu) => gu.UID === u.UID)
-          )} // Only show users not already in the group
+          users={allUsers.filter((u) => !groupUsers.some((gu) => gu.UID === u.UID))} // Only show users not already in the group
           onSubmit={handleInviteSubmit}
         />
         {selectedUserToEdit && (

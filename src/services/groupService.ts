@@ -10,9 +10,7 @@ export const getGroups = async (): Promise<Group[]> => {
     });
     return response as Group[];
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch groups.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch groups.');
   }
 };
 
@@ -33,9 +31,7 @@ export const createGroup = async (input: CreateGroupInput): Promise<Group> => {
     });
     return response as Group;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to create group.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to create group.');
   }
 };
 
@@ -46,16 +42,11 @@ export const getGroupById = async (id: number): Promise<Group> => {
     });
     return response as Group;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch group.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch group.');
   }
 };
 
-export const updateGroup = async (
-  id: number,
-  input: CreateGroupInput
-): Promise<Group> => {
+export const updateGroup = async (id: number, input: CreateGroupInput): Promise<Group> => {
   const formData = new FormData();
   formData.append('group_name', input.group_name);
   if (input.description) formData.append('description', input.description);
@@ -67,9 +58,7 @@ export const updateGroup = async (
     });
     return response as Group;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to update group.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to update group.');
   }
 };
 
@@ -80,8 +69,6 @@ export const deleteGroup = async (id: number): Promise<MessageResponse> => {
     });
     return response as MessageResponse;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to delete group.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to delete group.');
   }
 };

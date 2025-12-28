@@ -7,9 +7,7 @@ import Pagination from './common/Pagination';
 // --- SVG Icons --- //
 
 /** SVG Icon for Deletion (Trash Can) */
-const TrashIcon: React.FC<{ className?: string }> = ({
-  className = 'h-5 w-5',
-}) => (
+const TrashIcon: React.FC<{ className?: string }> = ({ className = 'h-5 w-5' }) => (
   <svg
     className={className}
     xmlns="http://www.w3.org/2000/svg"
@@ -27,9 +25,7 @@ const TrashIcon: React.FC<{ className?: string }> = ({
 );
 
 /** SVG Icon for Group/Team */
-const GroupIcon: React.FC<{ className?: string }> = ({
-  className = 'h-5 w-5',
-}) => (
+const GroupIcon: React.FC<{ className?: string }> = ({ className = 'h-5 w-5' }) => (
   <svg
     className={className}
     xmlns="http://www.w3.org/2000/svg"
@@ -41,9 +37,7 @@ const GroupIcon: React.FC<{ className?: string }> = ({
 );
 
 /** SVG Icon for Search */
-const SearchIcon: React.FC<{ className?: string }> = ({
-  className = 'w-5 h-5',
-}) => (
+const SearchIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
   <svg
     className={className}
     xmlns="http://www.w3.org/2000/svg"
@@ -105,9 +99,7 @@ const EmptyState: React.FC<{ isFiltering: boolean }> = ({ isFiltering }) => (
       {isFiltering ? '沒有符合搜尋條件的群組' : '沒有使用中的群組'}
     </h3>
     <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-      {isFiltering
-        ? '請嘗試調整您的搜尋關鍵字。'
-        : '建立新群組以開始組織您的團隊。'}
+      {isFiltering ? '請嘗試調整您的搜尋關鍵字。' : '建立新群組以開始組織您的團隊。'}
     </p>
   </div>
 );
@@ -152,7 +144,7 @@ const GroupList: React.FC<GroupListProps> = ({
   const totalPages = Math.ceil(groups.length / itemsPerPage);
   const paginatedGroups = groups.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const renderContent = () => {

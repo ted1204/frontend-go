@@ -15,11 +15,7 @@ interface CreateGroupModalProps {
  * A modal dialog for creating a new group.
  * It contains a form and handles the submission logic.
  */
-const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
-  isOpen,
-  onClose,
-  onGroupCreated,
-}) => {
+const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ isOpen, onClose, onGroupCreated }) => {
   // --- State for form inputs and submission status --- //
   const [groupName, setGroupName] = useState('');
   const [description, setDescription] = useState('');
@@ -74,10 +70,7 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm"
-            aria-hidden="true"
-          />
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
         </Transition.Child>
 
         {/* Full-screen container to center the panel */}
@@ -139,11 +132,7 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
               </div>
 
               {/* Error Message */}
-              {error && (
-                <p className="mt-3 text-sm text-red-600 dark:text-red-400">
-                  {error}
-                </p>
-              )}
+              {error && <p className="mt-3 text-sm text-red-600 dark:text-red-400">{error}</p>}
 
               {/* Action Buttons */}
               <div className="mt-6 flex justify-end gap-3">

@@ -83,16 +83,8 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
           </button>
 
           <Link to="/" className="lg:hidden">
-            <img
-              className="dark:hidden"
-              src="./images/logo/logo.svg"
-              alt="Logo"
-            />
-            <img
-              className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
-              alt="Logo"
-            />
+            <img className="dark:hidden" src="./images/logo/logo.svg" alt="Logo" />
+            <img className="hidden dark:block" src="./images/logo/logo-dark.svg" alt="Logo" />
           </Link>
 
           {/* Visible language toggle for all screen sizes (duplicate of the tool area) */}
@@ -100,11 +92,7 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
             onClick={() => toggleLanguage()}
             className="ml-2 rounded px-2 py-1 border border-gray-200 text-sm text-gray-700 dark:text-gray-300"
             aria-label={t('language.aria')}
-            title={
-              language === 'zh'
-                ? t('language.switchToEn')
-                : t('language.switchToZh')
-            }
+            title={language === 'zh' ? t('language.switchToEn') : t('language.switchToZh')}
           >
             {t('language.short')}
           </button>
@@ -183,11 +171,7 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
               onClick={() => toggleLanguage()}
               className="ml-3 inline-flex items-center gap-2 rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-blue-500"
               aria-label={t('language.aria')}
-              title={
-                language === 'zh'
-                  ? t('language.switchToEn')
-                  : t('language.switchToZh')
-              }
+              title={language === 'zh' ? t('language.switchToEn') : t('language.switchToZh')}
             >
               🌐 {t('language.switchLabel')}
             </button>

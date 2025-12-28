@@ -17,10 +17,10 @@ export interface Job {
 
 export const getJobs = async (): Promise<Job[]> => {
   const response = await axios.get(API_URL);
-  return response.data.data;
+  return Array.isArray(response.data) ? response.data : [];
 };
 
 export const getJob = async (id: number): Promise<Job> => {
   const response = await axios.get(`${API_URL}/${id}`);
-  return response.data.data;
+  return response.data;
 };

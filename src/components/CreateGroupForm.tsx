@@ -1,10 +1,4 @@
-import React, {
-  ChangeEvent,
-  FormEvent,
-  useState,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { ChangeEvent, FormEvent, useState, useEffect, useRef } from 'react';
 import useTranslation from '../hooks/useTranslation';
 
 // Assuming InputField is the component provided above,
@@ -64,9 +58,7 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = ({
   const [animationClass, setAnimationClass] = useState('');
 
   // Ref to hold the timeout ID
-  const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
+  const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // --- Animation Logic FIX ---
   useEffect(() => {

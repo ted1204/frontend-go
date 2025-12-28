@@ -61,17 +61,9 @@ const PageSkeleton = () => (
 );
 
 // Helper for displaying error or not found states
-const StateDisplay = ({
-  title,
-  message,
-}: {
-  title: string;
-  message: string;
-}) => (
+const StateDisplay = ({ title, message }: { title: string; message: string }) => (
   <div className="flex h-96 flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50 text-center dark:border-gray-700 dark:bg-gray-800">
-    <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
-      {title}
-    </h3>
+    <h3 className="text-xl font-semibold text-gray-800 dark:text-white">{title}</h3>
     <p className="mt-2 text-gray-500 dark:text-gray-400">{message}</p>
   </div>
 );
@@ -214,10 +206,7 @@ export default function ProjectDetail() {
   if (loading) return <PageSkeleton />;
 
   // Render error or not found states
-  if (error)
-    return (
-      <StateDisplay title={t('projectDetail.errorTitle')} message={error} />
-    );
+  if (error) return <StateDisplay title={t('projectDetail.errorTitle')} message={error} />;
   if (!project)
     return (
       <StateDisplay
@@ -430,16 +419,10 @@ export default function ProjectDetail() {
                       <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                         <div className="flex flex-col gap-1">
                           <span>
-                            執行緒限制:{' '}
-                            {project.MPSLimit
-                              ? `${project.MPSLimit}%`
-                              : '無限制'}
+                            執行緒限制: {project.MPSLimit ? `${project.MPSLimit}%` : '無限制'}
                           </span>
                           <span>
-                            記憶體限制:{' '}
-                            {project.MPSMemory
-                              ? `${project.MPSMemory} MB`
-                              : '無限制'}
+                            記憶體限制: {project.MPSMemory ? `${project.MPSMemory} MB` : '無限制'}
                           </span>
                         </div>
                       </dd>

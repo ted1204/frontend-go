@@ -72,9 +72,7 @@ const useWebSocket = (projectId: string) => {
             setMessages((prev) => {
               // Define a unique key (name + namespace)
               const key = `${parsedData.name}-${parsedData.ns}`; // Check if the resource already exists in the state
-              const existingIndex = prev.findIndex(
-                (msg) => `${msg.name}-${msg.ns}` === key
-              );
+              const existingIndex = prev.findIndex((msg) => `${msg.name}-${msg.ns}` === key);
               if (existingIndex >= 0) {
                 // If exists, update the existing entry by merging new data
                 const updatedMessages = [...prev];
@@ -105,7 +103,7 @@ const useWebSocket = (projectId: string) => {
           'Code:',
           event.code,
           'Reason:',
-          event.reason
+          event.reason,
         );
         if (event.code === 1006) {
           // Abnormal closure (e.g., server disconnect), attempt to reconnect

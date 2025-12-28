@@ -50,8 +50,8 @@ const Button: React.FC<ButtonProps> = ({
       sizeClasses[size],
       variantClasses[variant],
       disabled && 'cursor-not-allowed opacity-50', // Conditionally add disabled classes
-      className // This is now the last argument, allowing it to override the defaults
-    )
+      className, // This is now the last argument, allowing it to override the defaults
+    ),
   );
 
   return (

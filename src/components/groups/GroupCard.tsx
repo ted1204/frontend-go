@@ -38,9 +38,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, onClick }) => {
         </div>
         {/* Text content */}
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            {group.GroupName}
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{group.GroupName}</h3>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
             {group.Description || '無描述。'}
           </p>

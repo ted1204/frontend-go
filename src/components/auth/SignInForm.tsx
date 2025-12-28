@@ -25,7 +25,7 @@ export default function SignInForm() {
           user_id: data.user_id,
           username: data.username,
           is_super_admin: data.is_super_admin,
-        })
+        }),
       );
       // Redirect to the page the user was trying to access, or default to home
       navigate(from, { replace: true });

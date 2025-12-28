@@ -1,10 +1,4 @@
-import React, {
-  ChangeEvent,
-  FormEvent,
-  useState,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { ChangeEvent, FormEvent, useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import InputField from './form/input/InputField';
 import Button from './ui/button/Button';
@@ -91,9 +85,7 @@ const EditProjectForm: React.FC<EditProjectFormProps> = ({
   const { t } = useTranslation();
   const [shouldRender, setShouldRender] = useState(false);
   const [animationClass, setAnimationClass] = useState('');
-  const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
+  const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (animationTimeoutRef.current) {

@@ -4,14 +4,7 @@ import useTranslation from '../hooks/useTranslation';
 import { LocaleKey } from '../i18n';
 
 // Assume these icons are imported from an icon library
-import {
-  BoxIcon,
-  ChevronDownIcon,
-  GridIcon,
-  GroupIcon,
-  HorizontaLDots,
-  TaskIcon,
-} from '../icons';
+import { BoxIcon, ChevronDownIcon, GridIcon, GroupIcon, HorizontaLDots, TaskIcon } from '../icons';
 import { useSidebar } from '../context/SidebarContext';
 
 type NavItem = {
@@ -91,18 +84,13 @@ const AppSidebar: React.FC = () => {
     type: 'main' | 'admin';
     index: number;
   } | null>(null);
-  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
-    {}
-  );
+  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>({});
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [isAdmin, setIsAdmin] = useState(false);
   const [viewMode, setViewMode] = useState<'user' | 'admin'>('user');
 
   // const isActive = (path: string) => location.pathname === path;
-  const isActive = useCallback(
-    (path: string) => location.pathname === path,
-    [location.pathname]
-  );
+  const isActive = useCallback((path: string) => location.pathname === path, [location.pathname]);
 
   useEffect(() => {
     const userData = localStorage.getItem('userData');
@@ -157,11 +145,7 @@ const AppSidebar: React.FC = () => {
 
   const handleSubmenuToggle = (index: number, menuType: 'main' | 'admin') => {
     setOpenSubmenu((prevOpenSubmenu) => {
-      if (
-        prevOpenSubmenu &&
-        prevOpenSubmenu.type === menuType &&
-        prevOpenSubmenu.index === index
-      ) {
+      if (prevOpenSubmenu && prevOpenSubmenu.type === menuType && prevOpenSubmenu.index === index) {
         return null;
       }
       return { type: menuType, index };
@@ -180,9 +164,7 @@ const AppSidebar: React.FC = () => {
                   ? 'menu-item-active'
                   : 'menu-item-inactive'
               } cursor-pointer ${
-                !isExpanded && !isHovered
-                  ? 'lg:justify-center'
-                  : 'lg:justify-start'
+                !isExpanded && !isHovered ? 'lg:justify-center' : 'lg:justify-start'
               }`}
             >
               <span
@@ -200,8 +182,7 @@ const AppSidebar: React.FC = () => {
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDownIcon
                   className={`ml-auto w-5 h-5 transition-transform duration-200 ${
-                    openSubmenu?.type === menuType &&
-                    openSubmenu?.index === index
+                    openSubmenu?.type === menuType && openSubmenu?.index === index
                       ? 'rotate-180 text-brand-500'
                       : ''
                   }`}
@@ -218,9 +199,7 @@ const AppSidebar: React.FC = () => {
               >
                 <span
                   className={`menu-item-icon-size ${
-                    isActive(nav.path)
-                      ? 'menu-item-icon-active'
-                      : 'menu-item-icon-inactive'
+                    isActive(nav.path) ? 'menu-item-icon-active' : 'menu-item-icon-inactive'
                   }`}
                 >
                   {nav.icon}
@@ -294,22 +273,14 @@ const AppSidebar: React.FC = () => {
   return (
     <aside
       className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
-        ${
-          isExpanded || isMobileOpen
-            ? 'w-[290px]'
-            : isHovered
-              ? 'w-[290px]'
-              : 'w-[90px]'
-        }
+        ${isExpanded || isMobileOpen ? 'w-[290px]' : isHovered ? 'w-[290px]' : 'w-[90px]'}
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`py-8 flex ${
-          !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start'
-        }`}
+        className={`py-8 flex ${!isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start'}`}
       >
         {/* <Link to="/">
           {isExpanded || isHovered || isMobileOpen ? (
@@ -360,9 +331,7 @@ const AppSidebar: React.FC = () => {
               <div>
                 <h2
                   className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                    !isExpanded && !isHovered
-                      ? 'lg:justify-center'
-                      : 'justify-start'
+                    !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start'
                   }`}
                 >
                   {isExpanded || isHovered || isMobileOpen ? (
@@ -378,9 +347,7 @@ const AppSidebar: React.FC = () => {
               <div className="">
                 <h2
                   className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                    !isExpanded && !isHovered
-                      ? 'lg:justify-center'
-                      : 'justify-start'
+                    !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start'
                   }`}
                 >
                   {isExpanded || isHovered || isMobileOpen ? (
@@ -397,9 +364,7 @@ const AppSidebar: React.FC = () => {
         {isAdmin && (isExpanded || isHovered || isMobileOpen) && (
           <div className="mt-auto px-6 pb-6">
             <button
-              onClick={() =>
-                setViewMode(viewMode === 'user' ? 'admin' : 'user')
-              }
+              onClick={() => setViewMode(viewMode === 'user' ? 'admin' : 'user')}
               className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
             >
               {viewMode === 'user' ? (

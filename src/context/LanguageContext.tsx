@@ -8,16 +8,16 @@ interface LanguageContextValue {
   setLanguage: (l: Language) => void;
 }
 
-const LanguageContext = createContext<LanguageContextValue | undefined>(
-  undefined
-);
+const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const initial = ((): Language => {
     try {
       const v = localStorage.getItem('app_language');
       if (v === 'zh' || v === 'en') return v;
-    } catch (e) {}
+    } catch (error) {
+      console.warn('Language init error', error);
+    }
     return 'zh';
   })();
 
@@ -27,7 +27,9 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     setLanguageState(l);
     try {
       localStorage.setItem('app_language', l);
-    } catch (e) {}
+    } catch (error) {
+      console.warn('Language set error', error);
+    }
   };
 
   const toggleLanguage = () => setLanguage(language === 'zh' ? 'en' : 'zh');

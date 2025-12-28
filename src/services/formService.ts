@@ -32,10 +32,7 @@ export const getAllForms = async (): Promise<Form[]> => {
   return response.data;
 };
 
-export const updateFormStatus = async (
-  id: number,
-  status: string
-): Promise<Form> => {
+export const updateFormStatus = async (id: number, status: string): Promise<Form> => {
   const response = await fetchWithAuth(`${API_BASE_URL}/forms/${id}/status`, {
     method: 'PUT',
     body: JSON.stringify({ status }),

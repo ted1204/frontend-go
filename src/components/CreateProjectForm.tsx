@@ -1,12 +1,6 @@
 // src/components/CreateProjectForm.tsx
 
-import React, {
-  ChangeEvent,
-  FormEvent,
-  useState,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { ChangeEvent, FormEvent, useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 // Assuming InputField and Button are properly defined components
@@ -122,7 +116,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
 
   // Filter logic runs whenever local search term changes
   const filteredGroups = safeGroups.filter((group) =>
-    group.GroupName.toLowerCase().includes(searchTerm.toLowerCase())
+    group.GroupName.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Synchronize local search term with external selectedGroupName
@@ -151,10 +145,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
   // Logic to close dropdown when clicking outside of the search area
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
         // If nothing was selected, reset search input to the selected name
         setSearchTerm(selectedGroupName);
@@ -169,9 +160,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
   // --- Modal Animation Logic (FIXED: Eliminates flash by using dedicated render state) ---
   const [shouldRender, setShouldRender] = useState(false);
   const [animationClass, setAnimationClass] = useState('');
-  const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
+  const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (animationTimeoutRef.current) {

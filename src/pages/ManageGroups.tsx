@@ -3,12 +3,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import PageBreadcrumb from '../components/common/PageBreadCrumb';
 import PageMeta from '../components/common/PageMeta';
-import {
-  getGroups,
-  createGroup,
-  CreateGroupInput,
-  deleteGroup,
-} from '../services/groupService';
+import { getGroups, createGroup, CreateGroupInput, deleteGroup } from '../services/groupService';
 import { Group } from '../interfaces/group';
 import { useNavigate } from 'react-router-dom';
 import useTranslation from '../hooks/useTranslation';
@@ -244,12 +239,8 @@ export default function ManageGroups() {
         isOpen={isModalOpen} // Modal control
         onClose={handleCloseModal} // Close handler
         // Handlers
-        onGroupNameChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setGroupName(e.target.value)
-        }
-        onDescriptionChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setDescription(e.target.value)
-        }
+        onGroupNameChange={(e: ChangeEvent<HTMLInputElement>) => setGroupName(e.target.value)}
+        onDescriptionChange={(e: ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
         onSubmit={handleCreateGroup}
       />
 

@@ -142,12 +142,8 @@ export default function ConfigFileList({
   if (configFiles.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center dark:border-gray-600">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
-          找不到設定檔
-        </h3>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          點擊「新增設定檔」以開始。
-        </p>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">找不到設定檔</h3>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">點擊「新增設定檔」以開始。</p>
       </div>
     );
   }
@@ -170,9 +166,7 @@ export default function ConfigFileList({
 
             {/* File Info */}
             <div className="flex-grow">
-              <p className="font-semibold text-gray-900 dark:text-white">
-                {cf.Filename}
-              </p>
+              <p className="font-semibold text-gray-900 dark:text-white">{cf.Filename}</p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 ID: <span className="font-mono">{cf.CFID}</span> | 建立時間:{' '}
                 {new Date(cf.CreatedAt).toLocaleDateString()}
@@ -208,10 +202,7 @@ export default function ConfigFileList({
               {loading[cf.CFID] ? (
                 <div className="space-y-3">
                   {[...Array(3)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="animate-pulse flex items-center justify-between"
-                    >
+                    <div key={i} className="animate-pulse flex items-center justify-between">
                       <div className="h-4 w-2/5 rounded-md bg-gray-200 dark:bg-gray-700"></div>
                       <div className="h-5 w-1/5 rounded-full bg-gray-200 dark:bg-gray-700"></div>
                     </div>
@@ -224,10 +215,7 @@ export default function ConfigFileList({
                   </h4>
                   <ul className="space-y-2">
                     {resources[cf.CFID].map((r) => (
-                      <li
-                        key={r.RID}
-                        className="flex items-center justify-between text-sm"
-                      >
+                      <li key={r.RID} className="flex items-center justify-between text-sm">
                         <span className="font-medium text-gray-800 dark:text-gray-200">
                           {r.Name}
                         </span>

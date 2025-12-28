@@ -9,15 +9,13 @@ import {
   deleteProject,
   CreateProjectDTO,
 } from '../services/projectService';
-import { useNavigate } from 'react-router-dom';
+// removed unused import: useNavigate
 import EditProjectForm from '../components/EditProjectForm';
 import Button from '../components/ui/button/Button';
 import DeleteConfirmationModal from '../components/ui/modal/DeleteConfirmationModal';
 import { updateProject, UpdateProjectDTO } from '../services/projectService';
 
 import { getGroups } from '../services/groupService';
-import PageMeta from '../components/common/PageMeta';
-import PageBreadcrumb from '../components/common/PageBreadCrumb';
 import useTranslation from '../hooks/useTranslation';
 // --- Conceptual Group Interfaces (Must be defined in your app) ---
 interface GroupOption {
@@ -71,7 +69,7 @@ export default function ManageProjects() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
 
-  const navigate = useNavigate();
+  // navigation not used currently
 
   const handleProjectClick = (projectId: number) => {
     // Instead of navigating, open edit modal
@@ -81,9 +79,7 @@ export default function ManageProjects() {
       setProjectName(project.ProjectName);
       setDescription(project.Description || '');
       setGpuQuota(project.GPUQuota || 0);
-      setGpuAccess(
-        project.GPUAccess ? project.GPUAccess.split(',') : ['shared']
-      );
+      setGpuAccess(project.GPUAccess ? project.GPUAccess.split(',') : ['shared']);
       setMpsLimit(project.MPSLimit || 100);
       setMpsMemory(project.MPSMemory || 0);
       setIsEditModalOpen(true);
@@ -120,7 +116,7 @@ export default function ManageProjects() {
       setError(null);
       const updatedProject = await updateProject(projectToEdit.PID, input);
       setAllProjects((prev) =>
-        prev.map((p) => (p.PID === updatedProject.PID ? updatedProject : p))
+        prev.map((p) => (p.PID === updatedProject.PID ? updatedProject : p)),
       );
       handleCloseEditModal();
     } catch (err) {
@@ -329,15 +325,11 @@ export default function ManageProjects() {
         error={error}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        onProjectNameChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setProjectName(e.target.value)
-        }
+        onProjectNameChange={(e: ChangeEvent<HTMLInputElement>) => setProjectName(e.target.value)}
         onDescriptionChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
           setDescription(e.target.value)
         }
-        onGpuQuotaChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setGpuQuota(Number(e.target.value))
-        }
+        onGpuQuotaChange={(e: ChangeEvent<HTMLInputElement>) => setGpuQuota(Number(e.target.value))}
         onGpuAccessChange={(access: string) => {
           setGpuAccess((prev) => {
             if (prev.includes(access)) {
@@ -347,9 +339,7 @@ export default function ManageProjects() {
             }
           });
         }}
-        onMpsLimitChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setMpsLimit(Number(e.target.value))
-        }
+        onMpsLimitChange={(e: ChangeEvent<HTMLInputElement>) => setMpsLimit(Number(e.target.value))}
         onMpsMemoryChange={(e: ChangeEvent<HTMLInputElement>) =>
           setMpsMemory(Number(e.target.value))
         }
@@ -373,15 +363,11 @@ export default function ManageProjects() {
         error={error}
         isOpen={isEditModalOpen}
         onClose={handleCloseEditModal}
-        onProjectNameChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setProjectName(e.target.value)
-        }
+        onProjectNameChange={(e: ChangeEvent<HTMLInputElement>) => setProjectName(e.target.value)}
         onDescriptionChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
           setDescription(e.target.value)
         }
-        onGpuQuotaChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setGpuQuota(Number(e.target.value))
-        }
+        onGpuQuotaChange={(e: ChangeEvent<HTMLInputElement>) => setGpuQuota(Number(e.target.value))}
         onGpuAccessChange={(access: string) => {
           setGpuAccess((prev) => {
             if (prev.includes(access)) {
@@ -391,9 +377,7 @@ export default function ManageProjects() {
             }
           });
         }}
-        onMpsLimitChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setMpsLimit(Number(e.target.value))
-        }
+        onMpsLimitChange={(e: ChangeEvent<HTMLInputElement>) => setMpsLimit(Number(e.target.value))}
         onMpsMemoryChange={(e: ChangeEvent<HTMLInputElement>) =>
           setMpsMemory(Number(e.target.value))
         }

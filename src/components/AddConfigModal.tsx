@@ -112,11 +112,7 @@ export default function AddConfigModal({
     const isDarkMode = document.documentElement.classList.contains('dark');
     setEditorTheme(isDarkMode ? 'vs-dark' : 'vs-light');
     const observer = new MutationObserver(() => {
-      setEditorTheme(
-        document.documentElement.classList.contains('dark')
-          ? 'vs-dark'
-          : 'vs-light'
-      );
+      setEditorTheme(document.documentElement.classList.contains('dark') ? 'vs-dark' : 'vs-light');
     });
     observer.observe(document.documentElement, {
       attributes: true,
@@ -189,10 +185,7 @@ spec:
       setError(t('config.error.filenameRequired'));
       return;
     }
-    if (
-      !formData.filename.endsWith('.yaml') &&
-      !formData.filename.endsWith('.yml')
-    ) {
+    if (!formData.filename.endsWith('.yaml') && !formData.filename.endsWith('.yml')) {
       setError(t('config.error.filenameSuffix'));
       return;
     }
@@ -249,11 +242,7 @@ spec:
               stroke="currentColor"
               strokeWidth={2}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
@@ -310,9 +299,7 @@ spec:
                 value={formData.filename}
                 placeholder="my-new-deployment.yaml"
                 className="block w-full flex-1 rounded-none rounded-r-lg border border-gray-300 px-4 py-3 text-base text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                onChange={(e) =>
-                  setFormData({ ...formData, filename: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, filename: e.target.value })}
               />
             </div>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -334,14 +321,10 @@ spec:
                     type="text"
                     placeholder="e.g., nginx:latest"
                     value={wizardData.image}
-                    onChange={(e) =>
-                      setWizardData({ ...wizardData, image: e.target.value })
-                    }
+                    onChange={(e) => setWizardData({ ...wizardData, image: e.target.value })}
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   />
-                  <p className="text-xs text-gray-500">
-                    {t('config.wizard.imageNote')}
-                  </p>
+                  <p className="text-xs text-gray-500">{t('config.wizard.imageNote')}</p>
                 </div>
 
                 {/* GPU Input */}
@@ -372,9 +355,7 @@ spec:
                   </label>
                   <select
                     value={wizardData.pvcName}
-                    onChange={(e) =>
-                      setWizardData({ ...wizardData, pvcName: e.target.value })
-                    }
+                    onChange={(e) => setWizardData({ ...wizardData, pvcName: e.target.value })}
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   >
                     <option value="">{t('config.pvc.placeholder')}</option>
@@ -388,9 +369,7 @@ spec:
                       ))
                     )}
                   </select>
-                  <p className="text-xs text-gray-500">
-                    {t('config.pvc.note')}
-                  </p>
+                  <p className="text-xs text-gray-500">{t('config.pvc.note')}</p>
                 </div>
 
                 {/* Mount Path */}
@@ -423,9 +402,7 @@ spec:
                   type="text"
                   placeholder="e.g., /bin/sh -c"
                   value={wizardData.command}
-                  onChange={(e) =>
-                    setWizardData({ ...wizardData, command: e.target.value })
-                  }
+                  onChange={(e) => setWizardData({ ...wizardData, command: e.target.value })}
                   className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                 />
               </div>
@@ -437,9 +414,7 @@ spec:
                   type="text"
                   placeholder="e.g., echo hello"
                   value={wizardData.args}
-                  onChange={(e) =>
-                    setWizardData({ ...wizardData, args: e.target.value })
-                  }
+                  onChange={(e) => setWizardData({ ...wizardData, args: e.target.value })}
                   className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                 />
               </div>
@@ -459,9 +434,7 @@ spec:
                   language="yaml"
                   theme={editorTheme}
                   value={formData.raw_yaml}
-                  onChange={(newValue) =>
-                    setFormData((prev) => ({ ...prev, raw_yaml: newValue }))
-                  }
+                  onChange={(newValue) => setFormData((prev) => ({ ...prev, raw_yaml: newValue }))}
                   options={{
                     minimap: { enabled: true },
                     scrollBeyondLastLine: false,

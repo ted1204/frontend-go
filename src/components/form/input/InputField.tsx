@@ -32,10 +32,7 @@ const InputField: React.FC<InputFieldProps> = ({
     // Outer Wrapper Div: Applies layout classes and any custom parent classNames.
     <div className={`space-y-1.5 text-left ${className}`}>
       {/* Label Element: Increased spacing to 'space-y-1.5' for cleaner look */}
-      <label
-        htmlFor={id}
-        className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-      >
+      <label htmlFor={id} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
         {label}
         {/* Required Indicator: Subtle red asterisk */}
         {required && <span className="text-red-500 ml-1 leading-none">*</span>}

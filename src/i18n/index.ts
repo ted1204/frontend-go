@@ -1,5 +1,9 @@
 const translations = {
   zh: {
+    'form.history.title': '歷史紀錄',
+    'form.history.loading': '載入中...',
+    'form.history.empty': '目前沒有紀錄',
+    'monitor.empty.noPods': '目前沒有 Pod。',
     'brand.name': 'AI 平台',
     'sidebar.menu': '選單',
     'sidebar.admin': '管理員',
@@ -40,8 +44,7 @@ const translations = {
     'project.noDescription': '未提供描述。',
     'project.idLabel': '專案 ID: {id}',
     'project.members.title': '專案成員',
-    'project.members.description':
-      '擁有此專案存取權限的使用者 (透過群組 ID: {groupId})。',
+    'project.members.description': '擁有此專案存取權限的使用者 (透過群組 ID: {groupId})。',
     'project.members.searchPlaceholder': '搜尋成員...',
     'project.members.addMember': '新增成員',
     'role.label': '角色: {role}',
@@ -268,6 +271,10 @@ const translations = {
     'page.notFound.back': '返回首頁',
   },
   en: {
+    'form.history.title': 'History',
+    'form.history.loading': 'Loading...',
+    'form.history.empty': 'No records yet',
+    'monitor.empty.noPods': 'No pods found.',
     'brand.name': 'AI Platform',
     'sidebar.menu': 'Menu',
     'sidebar.admin': 'Admin',
@@ -363,8 +370,7 @@ const translations = {
     'project.create.name': 'Project Name',
     'project.create.namePlaceholder': 'Enter project name',
     'project.create.description': 'Description (Optional)',
-    'project.create.descriptionPlaceholder':
-      'Briefly describe the project goal...',
+    'project.create.descriptionPlaceholder': 'Briefly describe the project goal...',
     'project.create.gpuQuota': 'GPU Quota (Unit: 1/10 GPU)',
     'project.create.gpuQuotaPlaceholder': 'e.g., 10 (represents 1 full GPU)',
     'project.create.gpuThreadLimit': 'GPU Thread Limit (%)',
@@ -387,10 +393,8 @@ const translations = {
     'project.create.success': 'Project created successfully!',
     'project.create.error': 'Failed to create project',
     'projectList.errorPrefix': 'Error:',
-    'projectList.empty.filter':
-      'No projects match "{term}". Try other keywords.',
-    'projectList.empty.noProjects':
-      'No projects found. Create a new project to get started.',
+    'projectList.empty.filter': 'No projects match "{term}". Try other keywords.',
+    'projectList.empty.noProjects': 'No projects found. Create a new project to get started.',
     'pagination.prev': 'Previous',
     'pagination.next': 'Next',
     'pagination.pageOf': 'Page {current} of {total}',
@@ -412,8 +416,7 @@ const translations = {
     'groups.page.title': 'My Groups | AI Platform',
     'groups.page.description': 'View and manage your groups.',
     'groups.myGroups': 'My Groups',
-    'groups.subtitle':
-      'Access your project groups and collaborate with your team.',
+    'groups.subtitle': 'Access your project groups and collaborate with your team.',
     'groups.searchPlaceholder': 'Search groups...',
     'groups.createNew': 'Create new group',
     'groups.error.userNotLogged': 'User not logged in.',
@@ -455,8 +458,7 @@ const translations = {
     'form.label.title': 'Title',
     'form.placeholder.title': 'Enter a short title for the issue',
     'form.label.description': 'Description',
-    'form.placeholder.description.long':
-      'Describe the issue or request you encountered',
+    'form.placeholder.description.long': 'Describe the issue or request you encountered',
     'page.adminForm.title': 'Forms Dashboard',
     'page.adminForm.description': 'Manage user submitted forms',
     'form.status.pending': 'Pending',
@@ -496,13 +498,11 @@ const translations = {
     'button.newProject': 'New Project',
     'error.initData': 'Unable to fetch initial data',
     'error.selectGroup': 'Please select a group first',
-    'error.invalidProjectData':
-      'Invalid project data received from server or creation failed.',
+    'error.invalidProjectData': 'Invalid project data received from server or creation failed.',
     'error.createProject': 'Unable to create project',
     'error.deleteProject': 'Unable to delete project.',
     'config.createTitle': 'Create new configuration',
-    'config.createSubtitle':
-      'Use the wizard to create a config or edit YAML directly.',
+    'config.createSubtitle': 'Use the wizard to create a config or edit YAML directly.',
     'config.tab.wizard': 'Wizard',
     'config.tab.yaml': 'Raw YAML',
     'config.filename.label': 'Config name',
@@ -529,17 +529,10 @@ const translations = {
 
 export type LocaleKey = keyof (typeof translations)['zh'];
 
-export const t = (
-  lang: 'zh' | 'en',
-  key: LocaleKey,
-  vars?: Record<string, string | number>
-) => {
+export const t = (lang: 'zh' | 'en', key: LocaleKey, vars?: Record<string, string | number>) => {
   const str = translations[lang][key] || key;
   if (!vars) return str;
-  return Object.keys(vars).reduce(
-    (s, k) => s.replace(`{${k}}`, String(vars[k])),
-    str
-  );
+  return Object.keys(vars).reduce((s, k) => s.replace(`{${k}}`, String(vars[k])), str);
 };
 
 export default translations;

@@ -33,8 +33,9 @@ const TerminalPage: React.FC<TerminalProps> = ({
   const socket = useRef<WebSocket | null>(null);
   const fitAddon = useRef(new FitAddon());
 
+  const { t } = useTranslation();
+
   useEffect(() => {
-    const { t } = useTranslation();
     // t is used inside websocket event handlers below
     if (!terminalRef.current) return;
     // 1. Initialize the Terminal with a modern, dark theme.
@@ -73,18 +74,16 @@ const TerminalPage: React.FC<TerminalProps> = ({
 
     // 2. Establish the WebSocket Connection.
     const wsUrl = `ws://${BASE_URL}/ws/exec?namespace=${encodeURIComponent(
-      namespace
+      namespace,
     )}&pod=${encodeURIComponent(pod)}&container=${encodeURIComponent(
-      container
+      container,
     )}&command=${encodeURIComponent(command)}&tty=${tty}`;
 
     socket.current = new WebSocket(wsUrl);
 
     // 3. Handle WebSocket Events.
     socket.current.onopen = () => {
-      term.current?.writeln(
-        `\x1b[38;5;154m[${t('terminal.connected')}]\x1b[0m`
-      );
+      term.current?.writeln(`\x1b[38;5;154m[${t('terminal.connected')}]\x1b[0m`);
 
       fitAddon.current.fit();
 
@@ -112,9 +111,7 @@ const TerminalPage: React.FC<TerminalProps> = ({
     };
 
     socket.current.onclose = () => {
-      term.current?.writeln(
-        `\n\x1b[38;5;220m[${t('terminal.disconnected')}]\x1b[0m`
-      );
+      term.current?.writeln(`\n\x1b[38;5;220m[${t('terminal.disconnected')}]\x1b[0m`);
     };
 
     // 4. Handle xterm.js Events.

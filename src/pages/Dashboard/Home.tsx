@@ -14,9 +14,7 @@ export default function Home() {
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
             {t('home.welcome')}
           </h2>
-          <p className="mt-2 text-gray-500 dark:text-gray-400">
-            {t('home.subtitle')}
-          </p>
+          <p className="mt-2 text-gray-500 dark:text-gray-400">{t('home.subtitle')}</p>
         </div>
       </div>
     </>

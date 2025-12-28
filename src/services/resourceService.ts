@@ -1,8 +1,4 @@
-import {
-  RESOURCES_URL,
-  RESOURCE_BY_ID_URL,
-  CONFIG_FILE_BY_ID_URL,
-} from '../config/url';
+import { RESOURCES_URL, RESOURCE_BY_ID_URL, CONFIG_FILE_BY_ID_URL } from '../config/url';
 import { MessageResponse } from '../response/response';
 import { Resource } from '../interfaces/resource';
 import { fetchWithAuth } from '../utils/api';
@@ -14,9 +10,7 @@ export const getResourceById = async (id: number): Promise<Resource> => {
     });
     return response as Resource;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch resource.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch resource.');
   }
 };
 
@@ -27,10 +21,7 @@ export interface UpdateResourceInput {
   description?: string;
 }
 
-export const updateResource = async (
-  id: number,
-  input: UpdateResourceInput
-): Promise<Resource> => {
+export const updateResource = async (id: number, input: UpdateResourceInput): Promise<Resource> => {
   const formData = new FormData();
   if (input.name) formData.append('name', input.name);
   if (input.type) formData.append('type', input.type);
@@ -44,9 +35,7 @@ export const updateResource = async (
     });
     return response as Resource;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to update resource.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to update resource.');
   }
 };
 
@@ -57,9 +46,7 @@ export const deleteResource = async (id: number): Promise<MessageResponse> => {
     });
     return response as MessageResponse;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to delete resource.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to delete resource.');
   }
 };
 
@@ -70,29 +57,20 @@ export const getResources = async (): Promise<Resource[]> => {
     });
     return response as Resource[];
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch resources.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch resources.');
   }
 };
 
-export const getResourcesByConfigFile = async (
-  cfId: number
-): Promise<Resource[]> => {
+export const getResourcesByConfigFile = async (cfId: number): Promise<Resource[]> => {
   try {
-    const response = await fetchWithAuth(
-      `${CONFIG_FILE_BY_ID_URL(cfId)}/resources`,
-      {
-        // 用你的 base URL 包裝
-        method: 'GET',
-      }
-    );
+    const response = await fetchWithAuth(`${CONFIG_FILE_BY_ID_URL(cfId)}/resources`, {
+      // 用你的 base URL 包裝
+      method: 'GET',
+    });
     return response as Resource[];
   } catch (error) {
     throw new Error(
-      error instanceof Error
-        ? error.message
-        : 'Failed to fetch resources by config file.'
+      error instanceof Error ? error.message : 'Failed to fetch resources by config file.',
     );
   }
 };

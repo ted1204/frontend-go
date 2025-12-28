@@ -11,8 +11,8 @@ import { Resource } from '../interfaces/resource'; // Adjust the import path as 
 import { fetchWithAuth as baseFetchWithAuth } from '../utils/api';
 
 const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-  const headers: any = {
-    ...options.headers,
+  const headers: Record<string, string> = {
+    ...(options.headers as Record<string, string>),
   };
   if (!(options.body instanceof FormData)) {
     headers['Content-Type'] = 'application/json';
@@ -27,9 +27,7 @@ export const getConfigFiles = async (): Promise<ConfigFile[]> => {
     });
     return response as ConfigFile[];
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch config files.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch config files.');
   }
 };
 
@@ -39,9 +37,7 @@ export interface CreateConfigFileInput {
   project_id: number;
 }
 
-export const createConfigFile = async (
-  input: CreateConfigFileInput
-): Promise<ConfigFile> => {
+export const createConfigFile = async (input: CreateConfigFileInput): Promise<ConfigFile> => {
   const formData = new FormData();
   formData.append('filename', input.filename);
   formData.append('raw_yaml', input.raw_yaml);
@@ -54,9 +50,7 @@ export const createConfigFile = async (
     });
     return response as ConfigFile;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to create config file.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to create config file.');
   }
 };
 
@@ -67,9 +61,7 @@ export const getConfigFileById = async (id: number): Promise<ConfigFile> => {
     });
     return response as ConfigFile;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch config file.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch config file.');
   }
 };
 
@@ -80,7 +72,7 @@ export interface UpdateConfigFileInput {
 
 export const updateConfigFile = async (
   id: number,
-  input: UpdateConfigFileInput
+  input: UpdateConfigFileInput,
 ): Promise<ConfigFile> => {
   const formData = new FormData();
   if (input.filename) formData.append('filename', input.filename);
@@ -93,15 +85,11 @@ export const updateConfigFile = async (
     });
     return response as ConfigFile;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to update config file.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to update config file.');
   }
 };
 
-export const deleteConfigFile = async (
-  id: number
-): Promise<MessageResponse> => {
+export const deleteConfigFile = async (id: number): Promise<MessageResponse> => {
   try {
     const response = await fetchWithAuth(CONFIG_FILE_BY_ID_URL(id), {
       method: 'DELETE',
@@ -111,43 +99,30 @@ export const deleteConfigFile = async (
     }
     return response as MessageResponse;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to delete config file.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to delete config file.');
   }
 };
 
-export const getResourcesByConfigFile = async (
-  id: number
-): Promise<Resource[]> => {
+export const getResourcesByConfigFile = async (id: number): Promise<Resource[]> => {
   try {
     const response = await fetchWithAuth(CONFIG_FILE_RESOURCES_URL(id), {
       method: 'GET',
     });
     return response as Resource[];
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch resources.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch resources.');
   }
 };
 
-export const getConfigFilesByProjectId = async (
-  projectId: number
-): Promise<ConfigFile[]> => {
+export const getConfigFilesByProjectId = async (projectId: number): Promise<ConfigFile[]> => {
   try {
-    const response = await fetchWithAuth(
-      CONFIG_FILES_BY_PROJECT_URL(projectId),
-      {
-        method: 'GET',
-      }
-    );
+    const response = await fetchWithAuth(CONFIG_FILES_BY_PROJECT_URL(projectId), {
+      method: 'GET',
+    });
     return response as ConfigFile[];
   } catch (error) {
     throw new Error(
-      error instanceof Error
-        ? error.message
-        : 'Failed to fetch config files by project ID.'
+      error instanceof Error ? error.message : 'Failed to fetch config files by project ID.',
     );
   }
 };
@@ -156,9 +131,7 @@ export const createInstance = async (id: number): Promise<MessageResponse> => {
   try {
     return await fetchWithAuth(INSTANCE_BY_ID_URL(id), { method: 'POST' });
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to create instance.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to create instance.');
   }
 };
 
@@ -166,8 +139,6 @@ export const deleteInstance = async (id: number): Promise<void> => {
   try {
     await fetchWithAuth(INSTANCE_BY_ID_URL(id), { method: 'DELETE' });
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to delete instance.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to delete instance.');
   }
 };

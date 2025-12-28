@@ -116,16 +116,8 @@ const AppHeader: React.FC = () => {
           </button>
 
           <Link to="/" className="lg:hidden">
-            <img
-              className="dark:hidden"
-              src="./images/logo/logo.svg"
-              alt="Logo"
-            />
-            <img
-              className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
-              alt="Logo"
-            />
+            <img className="dark:hidden" src="./images/logo/logo.svg" alt="Logo" />
+            <img className="hidden dark:block" src="./images/logo/logo-dark.svg" alt="Logo" />
           </Link>
 
           <button
@@ -197,11 +189,7 @@ const AppHeader: React.FC = () => {
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* 添加使用者名字顯示 */}
-          {username && (
-            <span className="text-gray-700 dark:text-white/90 text-sm">
-              {username}
-            </span>
-          )}
+          {username && <span className="text-gray-700 dark:text-white/90 text-sm">{username}</span>}
           <UserDropdown />
         </div>
       </div>

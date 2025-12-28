@@ -1,10 +1,7 @@
 import React, { useState, Fragment } from 'react';
 import useTranslation from '../hooks/useTranslation';
 import { Dialog, Transition, Combobox, RadioGroup } from '@headlessui/react';
-import {
-  CheckIcon as CheckMarkIcon,
-  ChevronUpDownIcon,
-} from '@heroicons/react/20/solid';
+import { CheckIcon as CheckMarkIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 
 // --- Interfaces & Data --- //
 
@@ -73,17 +70,10 @@ const generateAvatarBgColor = (name: string) => {
 
 // --- Main Component --- //
 
-const InviteUserModal: React.FC<InviteUserModalProps> = ({
-  isOpen,
-  onClose,
-  users,
-  onSubmit,
-}) => {
+const InviteUserModal: React.FC<InviteUserModalProps> = ({ isOpen, onClose, users, onSubmit }) => {
   // --- Internal State Management --- //
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [selectedRole, setSelectedRole] = useState<
-    'user' | 'admin' | 'manager'
-  >('user');
+  const [selectedRole, setSelectedRole] = useState<'user' | 'admin' | 'manager'>('user');
   const [query, setQuery] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -97,7 +87,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
       : users.filter((user) =>
           user.Username.toLowerCase()
             .replace(/\s+/g, '')
-            .includes(query.toLowerCase().replace(/\s+/g, ''))
+            .includes(query.toLowerCase().replace(/\s+/g, '')),
         );
 
   // --- Event Handlers --- //
@@ -175,8 +165,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
               <div className="relative mt-4">
                 <Combobox value={selectedUser} onChange={setSelectedUser}>
                   <Combobox.Label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {t('invite.userLabel')}{' '}
-                    <span className="text-red-500">*</span>
+                    {t('invite.userLabel')} <span className="text-red-500">*</span>
                   </Combobox.Label>
                   <div className="relative mt-1">
                     <Combobox.Input
@@ -186,10 +175,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                       placeholder={t('invite.userSearchPlaceholder')}
                     />
                     <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-                      <ChevronUpDownIcon
-                        className="h-5 w-5 text-gray-400"
-                        aria-hidden="true"
-                      />
+                      <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                     </Combobox.Button>
                   </div>
                   <Transition
@@ -219,9 +205,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                                   {/* [NEW] User Avatar */}
                                   <div
                                     style={{
-                                      backgroundColor: generateAvatarBgColor(
-                                        user.Username
-                                      ),
+                                      backgroundColor: generateAvatarBgColor(user.Username),
                                     }}
                                     className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white"
                                   >
@@ -237,10 +221,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
                                   <span
                                     className={`flex items-center ${active ? 'text-white' : 'text-blue-600'}`}
                                   >
-                                    <CheckMarkIcon
-                                      className="h-5 w-5"
-                                      aria-hidden="true"
-                                    />
+                                    <CheckMarkIcon className="h-5 w-5" aria-hidden="true" />
                                   </span>
                                 )}
                               </div>
@@ -299,9 +280,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({
 
               {/* Error Message Display */}
               {error && (
-                <p className="mt-4 text-center text-sm text-red-600 dark:text-red-400">
-                  {error}
-                </p>
+                <p className="mt-4 text-center text-sm text-red-600 dark:text-red-400">{error}</p>
               )}
 
               {/* Action Buttons */}

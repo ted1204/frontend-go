@@ -46,11 +46,7 @@ export default function EditConfigModal({
     const isDarkMode = document.documentElement.classList.contains('dark');
     setEditorTheme(isDarkMode ? 'vs-dark' : 'vs-light');
     const observer = new MutationObserver(() => {
-      setEditorTheme(
-        document.documentElement.classList.contains('dark')
-          ? 'vs-dark'
-          : 'vs-light'
-      );
+      setEditorTheme(document.documentElement.classList.contains('dark') ? 'vs-dark' : 'vs-light');
     });
     observer.observe(document.documentElement, {
       attributes: true,
@@ -82,9 +78,7 @@ export default function EditConfigModal({
         <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 p-4 sm:p-6 dark:border-gray-700">
           <h3 className="text-xl font-bold text-gray-900 dark:text-white">
             編輯:{' '}
-            <span className="font-mono text-blue-600 dark:text-blue-400">
-              {formData.filename}
-            </span>
+            <span className="font-mono text-blue-600 dark:text-blue-400">{formData.filename}</span>
           </h3>
           <button
             onClick={onClose}
@@ -98,11 +92,7 @@ export default function EditConfigModal({
               stroke="currentColor"
               strokeWidth={2}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
@@ -134,9 +124,7 @@ export default function EditConfigModal({
                     dark:border-gray-600 dark:bg-gray-900 dark:text-white
                     dark:focus:border-blue-500 dark:focus:ring-blue-500
                   "
-                onChange={(e) =>
-                  setFormData({ ...formData, filename: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, filename: e.target.value })}
               />
             </div>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -155,9 +143,7 @@ export default function EditConfigModal({
                 language="yaml"
                 theme={editorTheme}
                 value={formData.raw_yaml}
-                onChange={(newValue) =>
-                  setFormData((prev) => ({ ...prev, raw_yaml: newValue }))
-                }
+                onChange={(newValue) => setFormData((prev) => ({ ...prev, raw_yaml: newValue }))}
                 options={{
                   minimap: { enabled: true },
                   scrollBeyondLastLine: false,
@@ -170,9 +156,7 @@ export default function EditConfigModal({
 
         {/* Modal Footer */}
         <div className="flex flex-shrink-0 flex-col-reverse items-center gap-4 rounded-b-xl border-t border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50 sm:flex-row sm:justify-between">
-          <div className="text-sm text-red-600 dark:text-red-400">
-            {error && `錯誤: ${error}`}
-          </div>
+          <div className="text-sm text-red-600 dark:text-red-400">{error && `錯誤: ${error}`}</div>
           <div className="flex w-full gap-3 sm:w-auto">
             <Button variant="outline" onClick={onClose} className="w-full">
               取消

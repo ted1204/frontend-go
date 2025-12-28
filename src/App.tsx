@@ -43,10 +43,7 @@ export default function App() {
               <Route path="/projects/:id" element={<ProjectDetail />} />
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/admin" element={<AdminDashboard />} />
-              <Route
-                path="/admin/manage-projects"
-                element={<ManageProjects />}
-              />
+              <Route path="/admin/manage-projects" element={<ManageProjects />} />
               <Route path="/admin/manage-groups" element={<ManageGroups />} />
               <Route path="/admin/forms" element={<AdminFormDashboard />} />
               <Route path="/my-forms" element={<UserFormDashboard />} />

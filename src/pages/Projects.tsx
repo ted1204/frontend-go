@@ -42,7 +42,7 @@ export default function Projects() {
         // Filter projects based on user's group memberships
         const userGroupIds = userGroups.map((ug) => ug.GID);
         const filteredProjects = allProjects.filter((project) =>
-          userGroupIds.includes(project.GID)
+          userGroupIds.includes(project.GID),
         );
 
         setProjects(filteredProjects);
@@ -64,17 +64,13 @@ export default function Projects() {
   const filteredProjects = projects.filter(
     (project) =>
       project.ProjectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (project.Description &&
-        project.Description.toLowerCase().includes(searchTerm.toLowerCase()))
+      (project.Description && project.Description.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProjects = filteredProjects.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentProjects = filteredProjects.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
 
   // Reset page on search
@@ -113,9 +109,7 @@ export default function Projects() {
     >
       <div className="flex items-center gap-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
-          <span className="font-bold">
-            {project.ProjectName.charAt(0).toUpperCase()}
-          </span>
+          <span className="font-bold">{project.ProjectName.charAt(0).toUpperCase()}</span>
         </div>
         <div>
           <h4 className="text-lg font-semibold text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
@@ -157,18 +151,13 @@ export default function Projects() {
 
   return (
     <div>
-      <PageMeta
-        title={t('page.projects.title')}
-        description={t('page.projects.description')}
-      />
+      <PageMeta title={t('page.projects.title')} description={t('page.projects.description')} />
       <PageBreadcrumb pageTitle={t('breadcrumb.projects')} />
 
       {/* Main container for the project grid */}
       <div className="rounded-2xl p-4 md:p-6 2xl:p-10">
         <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
-            {t('myProjects')}
-          </h3>
+          <h3 className="text-2xl font-bold text-gray-800 dark:text-white">{t('myProjects')}</h3>
           <div className="flex items-center gap-3">
             <div className="flex items-center rounded-lg border border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-800">
               <button
@@ -199,11 +188,7 @@ export default function Projects() {
                   stroke="currentColor"
                   strokeWidth={2}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
             </div>
@@ -222,9 +207,7 @@ export default function Projects() {
               // Show 6 skeleton cards while loading
               [...Array(6)].map((_, i) => <SkeletonCard key={i} />)
             ) : error ? (
-              <StateDisplay
-                message={`${t('label.error') || 'Error'}: ${error}`}
-              />
+              <StateDisplay message={`${t('label.error') || 'Error'}: ${error}`} />
             ) : filteredProjects.length === 0 ? (
               <StateDisplay
                 message={
@@ -236,11 +219,7 @@ export default function Projects() {
             ) : (
               // Map over the projects to create cards
               currentProjects.map((project) => (
-                <ProjectCard
-                  key={project.PID}
-                  project={project}
-                  onClick={handleProjectClick}
-                />
+                <ProjectCard key={project.PID} project={project} onClick={handleProjectClick} />
               ))
             )}
           </div>
@@ -255,9 +234,7 @@ export default function Projects() {
                 ></div>
               ))
             ) : error ? (
-              <StateDisplay
-                message={`${t('label.error') || 'Error'}: ${error}`}
-              />
+              <StateDisplay message={`${t('label.error') || 'Error'}: ${error}`} />
             ) : filteredProjects.length === 0 ? (
               <StateDisplay
                 message={
@@ -268,11 +245,7 @@ export default function Projects() {
               />
             ) : (
               currentProjects.map((project) => (
-                <ProjectListItem
-                  key={project.PID}
-                  project={project}
-                  onClick={handleProjectClick}
-                />
+                <ProjectListItem key={project.PID} project={project} onClick={handleProjectClick} />
               ))
             )}
           </div>

@@ -7,10 +7,7 @@ export default function NotFound() {
   const { t } = useTranslation();
   return (
     <>
-      <PageMeta
-        title={`404 | ${t('brand.name')}`}
-        description={t('page.notFound.description')}
-      />
+      <PageMeta title={`404 | ${t('brand.name')}`} description={t('page.notFound.description')} />
       <div className="relative flex flex-col items-center justify-center min-h-screen p-6 overflow-hidden z-1">
         <GridShape />
         <div className="mx-auto w-full max-w-[242px] text-center sm:max-w-[472px]">
@@ -19,11 +16,7 @@ export default function NotFound() {
           </h1>
 
           <img src="/images/error/404.svg" alt="404" className="dark:hidden" />
-          <img
-            src="/images/error/404-dark.svg"
-            alt="404"
-            className="hidden dark:block"
-          />
+          <img src="/images/error/404-dark.svg" alt="404" className="hidden dark:block" />
 
           <p className="mt-10 mb-6 text-base text-gray-700 dark:text-gray-400 sm:text-lg">
             {t('page.notFound.message')}

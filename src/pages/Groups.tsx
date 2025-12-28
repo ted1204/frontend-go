@@ -48,14 +48,10 @@ export default function Groups() {
         ]);
 
         const userGroupIds = new Set(userGroupMappings.map((ug) => ug.GID));
-        const filteredGroups = allGroups.filter((group) =>
-          userGroupIds.has(group.GID)
-        );
+        const filteredGroups = allGroups.filter((group) => userGroupIds.has(group.GID));
         setGroups(filteredGroups);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : t('groups.error.unknown')
-        );
+        setError(err instanceof Error ? err.message : t('groups.error.unknown'));
       } finally {
         setLoading(false);
       }
@@ -94,22 +90,20 @@ export default function Groups() {
   const filteredGroups = groups.filter(
     (group) =>
       group.GroupName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (group.Description &&
-        group.Description.toLowerCase().includes(searchTerm.toLowerCase()))
+      (group.Description && group.Description.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   const totalPages = Math.ceil(filteredGroups.length / itemsPerPage);
   const paginatedGroups = filteredGroups.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   // --- Conditional Rendering --- //
   const renderContent = () => {
     if (loading) return <LoadingState />;
     if (error) return <ErrorState message={error} />;
-    if (groups.length === 0)
-      return <EmptyState onActionClick={handleOpenCreateModal} />;
+    if (groups.length === 0) return <EmptyState onActionClick={handleOpenCreateModal} />;
 
     if (filteredGroups.length === 0) {
       return (
@@ -123,11 +117,7 @@ export default function Groups() {
       <>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {paginatedGroups.map((group) => (
-            <GroupCard
-              key={group.GID}
-              group={group}
-              onClick={() => handleGroupClick(group.GID)}
-            />
+            <GroupCard key={group.GID} group={group} onClick={() => handleGroupClick(group.GID)} />
           ))}
         </div>
         <Pagination
@@ -142,10 +132,7 @@ export default function Groups() {
   // --- Render --- //
   return (
     <>
-      <PageMeta
-        title={t('groups.page.title')}
-        description={t('groups.page.description')}
-      />
+      <PageMeta title={t('groups.page.title')} description={t('groups.page.description')} />
       <PageBreadcrumb pageTitle={t('breadcrumb.groups') || 'Groups'} />
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900/50 sm:p-8">
@@ -154,9 +141,7 @@ export default function Groups() {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               {t('groups.myGroups')}
             </h2>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {t('groups.subtitle')}
-            </p>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{t('groups.subtitle')}</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <SearchInput

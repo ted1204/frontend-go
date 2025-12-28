@@ -87,10 +87,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
           onClick={onClose}
         ></div>
         {/* This is used to vertically center the modal */}
-        <span
-          className="hidden sm:inline-block sm:align-middle sm:h-screen"
-          aria-hidden="true"
-        >
+        <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
           &#8203;
         </span>
 

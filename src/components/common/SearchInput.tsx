@@ -7,11 +7,7 @@ interface SearchInputProps {
   placeholder?: string;
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({
-  value,
-  onChange,
-  placeholder,
-}) => {
+const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, placeholder }) => {
   const { t } = useTranslation();
   const ph = placeholder ?? t('search.placeholder');
   return (

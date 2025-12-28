@@ -108,9 +108,7 @@ export default function NotificationDropdown() {
 
                 <span className="block">
                   <span className="mb-1.5 block text-theme-sm text-gray-500 dark:text-gray-400 space-x-1">
-                    <span className="font-medium text-gray-800 dark:text-white/90">
-                      {n.name}
-                    </span>
+                    <span className="font-medium text-gray-800 dark:text-white/90">{n.name}</span>
                     <span>{t('notification.requestChange')}</span>
                     <span className="font-medium text-gray-800 dark:text-white/90">
                       {t('notification.project')} - Nganter App

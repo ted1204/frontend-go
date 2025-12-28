@@ -102,7 +102,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
   const totalPages = Math.ceil(projects.length / itemsPerPage);
   const paginatedProjects = projects.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const { t } = useTranslation();
@@ -140,9 +140,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
         // Loading State: Centered spinner feedback
         <div className="flex items-center justify-center p-8 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <SpinnerIcon className="w-5 h-5 mr-3 text-gray-600 dark:text-gray-300" />
-          <p className="text-gray-600 dark:text-gray-300">
-            {t('projectList.loading')}
-          </p>
+          <p className="text-gray-600 dark:text-gray-300">{t('projectList.loading')}</p>
         </div>
       ) : error ? (
         // Error State: Visually distinct alert box
@@ -180,8 +178,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
                   <div className="flex items-baseline mb-1">
                     {/* Project Name: Primary content, bold text */}
                     <span className="text-lg font-semibold text-gray-800 dark:text-white truncate">
-                      {project.ProjectName ||
-                        `${t('project.untitled')} (ID: ${project.PID})`}
+                      {project.ProjectName || `${t('project.untitled')} (ID: ${project.PID})`}
                     </span>
                     {/* Project ID: Secondary metadata */}
                     {project.PID && (
@@ -212,9 +209,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
                     disabled:opacity-50 disabled:cursor-not-allowed
                   "
                   aria-label={t('project.delete', {
-                    name:
-                      project.ProjectName ||
-                      `${t('project.untitled')} (ID: ${project.PID})`,
+                    name: project.ProjectName || `${t('project.untitled')} (ID: ${project.PID})`,
                   })}
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent navigation click

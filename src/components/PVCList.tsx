@@ -58,17 +58,13 @@ export default function PVCList({
   pods = [],
 }: Omit<PVCListProps, 'namespace'> & { namespace?: string }) {
   const [loading, setLoading] = useState<Record<string, boolean>>({});
-  const [waitingForFileBrowser, setWaitingForFileBrowser] = useState<
-    string | null
-  >(null);
+  const [waitingForFileBrowser, setWaitingForFileBrowser] = useState<string | null>(null);
 
   useEffect(() => {
     if (waitingForFileBrowser) {
       const fbPodName = `filebrowser-${waitingForFileBrowser}`;
       const fbPod = pods.find((p) => p.name === fbPodName && p.kind === 'Pod');
-      const fbSvc = pods.find(
-        (p) => p.name === `${fbPodName}-svc` && p.kind === 'Service'
-      );
+      const fbSvc = pods.find((p) => p.name === `${fbPodName}-svc` && p.kind === 'Service');
 
       if (fbPod?.status === 'Running' && fbSvc?.nodePorts?.[0]) {
         const nodePort = fbSvc.nodePorts[0];
@@ -90,10 +86,7 @@ export default function PVCList({
       // We don't open the window here anymore, we wait for the pod to be running
     } catch (error) {
       console.error('Failed to start file browser:', error);
-      alert(
-        '無法啟動檔案瀏覽器: ' +
-          (error instanceof Error ? error.message : String(error))
-      );
+      alert('無法啟動檔案瀏覽器: ' + (error instanceof Error ? error.message : String(error)));
       setLoading((prev) => ({ ...prev, [pvc.name]: false }));
     }
   };
@@ -106,10 +99,7 @@ export default function PVCList({
       await stopFileBrowser(pvc.namespace, pvc.name);
     } catch (error) {
       console.error('Failed to stop file browser:', error);
-      alert(
-        '無法停止檔案瀏覽器: ' +
-          (error instanceof Error ? error.message : String(error))
-      );
+      alert('無法停止檔案瀏覽器: ' + (error instanceof Error ? error.message : String(error)));
     } finally {
       setLoading((prev) => ({ ...prev, [pvc.name]: false }));
     }
@@ -118,9 +108,7 @@ export default function PVCList({
   if (pvcs.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center dark:border-gray-600">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
-          找不到 PVC
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">找不到 PVC</h3>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           此專案中沒有 Persistent Volume Claims。
         </p>
@@ -132,12 +120,8 @@ export default function PVCList({
     <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 dark:divide-gray-700 dark:border-gray-700">
       {pvcs.map((pvc) => {
         const fbPodName = `filebrowser-${pvc.name}`;
-        const fbPod = pods.find(
-          (p) => p.name === fbPodName && p.kind === 'Pod'
-        );
-        const fbSvc = pods.find(
-          (p) => p.name === `${fbPodName}-svc` && p.kind === 'Service'
-        );
+        const fbPod = pods.find((p) => p.name === fbPodName && p.kind === 'Pod');
+        const fbSvc = pods.find((p) => p.name === `${fbPodName}-svc` && p.kind === 'Service');
 
         const isRunning = fbPod?.status === 'Running';
         const isPending = fbPod && !isRunning;
@@ -148,12 +132,9 @@ export default function PVCList({
             <div className="flex items-center justify-between p-4">
               {/* PVC Info */}
               <div>
-                <p className="font-semibold text-gray-900 dark:text-white">
-                  {pvc.name}
-                </p>
+                <p className="font-semibold text-gray-900 dark:text-white">{pvc.name}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  大小: <span className="font-mono">{pvc.size}</span> | 狀態:{' '}
-                  {pvc.status}
+                  大小: <span className="font-mono">{pvc.size}</span> | 狀態: {pvc.status}
                 </p>
               </div>
 
@@ -176,11 +157,7 @@ export default function PVCList({
                     ></span>
                   </span>
                   <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
-                    {isRunning
-                      ? '執行中'
-                      : isPending
-                        ? fbPod?.status || '等待中'
-                        : '已停止'}
+                    {isRunning ? '執行中' : isPending ? fbPod?.status || '等待中' : '已停止'}
                   </span>
                 </div>
 

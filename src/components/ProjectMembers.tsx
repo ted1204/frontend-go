@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { UserGroupUser } from '../interfaces/userGroup';
-import {
-  getUsersByGroup,
-  getGroupsByUser,
-  createUserGroup,
-} from '../services/userGroupService';
+import { getUsersByGroup, getGroupsByUser, createUserGroup } from '../services/userGroupService';
 import { getUsers } from '../services/userService';
 import InviteUserModal, { FormData } from './InviteUserModal';
 import { User } from '../interfaces/user';
@@ -35,10 +31,7 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
         const { user_id: userId } = JSON.parse(userData);
         const userGroups = await getGroupsByUser(userId);
         const currentGroup = userGroups.find((g) => g.GID === groupId);
-        if (
-          currentGroup &&
-          (currentGroup.Role === 'admin' || currentGroup.Role === 'manager')
-        ) {
+        if (currentGroup && (currentGroup.Role === 'admin' || currentGroup.Role === 'manager')) {
           setCanManage(true);
         }
       }
@@ -82,7 +75,7 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
   };
 
   const filteredMembers = members.filter((member) =>
-    member.Username.toLowerCase().includes(searchTerm.toLowerCase())
+    member.Username.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   if (loading) {
@@ -121,10 +114,7 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
       <div className="p-4 sm:p-6">
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
           {filteredMembers.map((member) => (
-            <li
-              key={member.UID}
-              className="py-3 flex justify-between items-center"
-            >
+            <li key={member.UID} className="py-3 flex justify-between items-center">
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold">
                   {member.Username.charAt(0).toUpperCase()}
@@ -142,9 +132,7 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
           ))}
           {filteredMembers.length === 0 && (
             <li className="py-4 text-center text-gray-500 dark:text-gray-400">
-              {members.length === 0
-                ? t('members.noneFound')
-                : t('members.noMatch')}
+              {members.length === 0 ? t('members.noneFound') : t('members.noMatch')}
             </li>
           )}
         </ul>

@@ -48,9 +48,7 @@ export default function AdminDashboard() {
               <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
                 {t('admin.manageGroups')}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {t('admin.manageGroups')}
-              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.manageGroups')}</p>
             </div>
           </div>
         </Link>
@@ -81,9 +79,7 @@ export default function AdminDashboard() {
               <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400">
                 {t('admin.forms')}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {t('admin.forms')}
-              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.forms')}</p>
             </div>
           </div>
         </Link>

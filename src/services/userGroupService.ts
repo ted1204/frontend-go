@@ -1,8 +1,4 @@
-import {
-  USER_GROUP_URL,
-  USER_GROUP_BY_GROUP_URL,
-  USER_GROUP_BY_USER_URL,
-} from '../config/url';
+import { USER_GROUP_URL, USER_GROUP_BY_GROUP_URL, USER_GROUP_BY_USER_URL } from '../config/url';
 import { MessageResponse } from '../response/response';
 import {
   GetGroupsByUserResponse,
@@ -14,38 +10,26 @@ import {
 import { fetchWithAuth as baseFetchWithAuth } from '../utils/api';
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
-  const headers: any = {
-    ...options.headers,
+  const headers: Record<string, string> = {
+    ...(options.headers as Record<string, string>),
     'Content-Type': 'application/x-www-form-urlencoded',
   };
   // if JSON
-  if (
-    options.body &&
-    typeof options.body === 'string' &&
-    options.body.startsWith('{')
-  ) {
+  if (options.body && typeof options.body === 'string' && options.body.startsWith('{')) {
     headers['Content-Type'] = 'application/json';
   }
 
   return baseFetchWithAuth(url, { ...options, headers });
 };
 
-export const getUserGroup = async (
-  u_id: number,
-  g_id: number
-): Promise<UserGroup> => {
+export const getUserGroup = async (u_id: number, g_id: number): Promise<UserGroup> => {
   try {
-    const response = await fetchWithAuth(
-      `${USER_GROUP_URL}?u_id=${u_id}&g_id=${g_id}`,
-      {
-        method: 'GET',
-      }
-    );
+    const response = await fetchWithAuth(`${USER_GROUP_URL}?u_id=${u_id}&g_id=${g_id}`, {
+      method: 'GET',
+    });
     return response as UserGroup;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch user-group.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch user-group.');
   }
 };
 
@@ -55,9 +39,7 @@ export interface UserGroupInputDTO {
   role: 'admin' | 'manager' | 'user';
 }
 
-export const createUserGroup = async (
-  input: UserGroupInputDTO
-): Promise<UserGroup> => {
+export const createUserGroup = async (input: UserGroupInputDTO): Promise<UserGroup> => {
   const payload = new URLSearchParams({
     u_id: input.u_id.toString(),
     g_id: input.g_id.toString(),
@@ -70,15 +52,11 @@ export const createUserGroup = async (
     });
     return response as UserGroup;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to create.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to create.');
   }
 };
 
-export const updateUserGroup = async (
-  input: UserGroupInputDTO
-): Promise<UserGroup> => {
+export const updateUserGroup = async (input: UserGroupInputDTO): Promise<UserGroup> => {
   const payload = new URLSearchParams({
     u_id: input.u_id.toString(),
     g_id: input.g_id.toString(),
@@ -91,9 +69,7 @@ export const updateUserGroup = async (
     });
     return response as UserGroup;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to update user-group.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to update user-group.');
   }
 };
 
@@ -102,15 +78,13 @@ export interface UserGroupDeleteDTO {
   g_id: number;
 }
 
-export const deleteUserGroup = async (
-  input: UserGroupDeleteDTO
-): Promise<MessageResponse> => {
+export const deleteUserGroup = async (input: UserGroupDeleteDTO): Promise<MessageResponse> => {
   try {
     const response = await fetchWithAuth(
       `${USER_GROUP_URL}?u_id=${input.u_id}&g_id=${input.g_id}`,
       {
         method: 'DELETE',
-      }
+      },
     );
 
     if (response.status === 204) {
@@ -120,22 +94,15 @@ export const deleteUserGroup = async (
     const data = await response.json();
     return data as MessageResponse;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to delete user-group.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to delete user-group.');
   }
 };
 
-export const getUsersByGroup = async (
-  g_id: number
-): Promise<UserGroupUser[]> => {
+export const getUsersByGroup = async (g_id: number): Promise<UserGroupUser[]> => {
   try {
-    const response = await fetchWithAuth(
-      `${USER_GROUP_BY_GROUP_URL}?g_id=${g_id}`,
-      {
-        method: 'GET',
-      }
-    );
+    const response = await fetchWithAuth(`${USER_GROUP_BY_GROUP_URL}?g_id=${g_id}`, {
+      method: 'GET',
+    });
     const successResponse = response as GetUsersByGroupResponse;
     const groupData = successResponse.data[g_id.toString()];
     return groupData?.Users ?? [];
@@ -145,22 +112,15 @@ export const getUsersByGroup = async (
   }
 };
 
-export const getGroupsByUser = async (
-  u_id: number
-): Promise<UserGroupGroup[]> => {
+export const getGroupsByUser = async (u_id: number): Promise<UserGroupGroup[]> => {
   try {
-    const response = await fetchWithAuth(
-      `${USER_GROUP_BY_USER_URL}?u_id=${u_id}`,
-      {
-        method: 'GET',
-      }
-    );
+    const response = await fetchWithAuth(`${USER_GROUP_BY_USER_URL}?u_id=${u_id}`, {
+      method: 'GET',
+    });
     const successResponse = response as GetGroupsByUserResponse;
     const userData = successResponse.data[u_id.toString()];
     return userData.Groups || [];
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch groups by user.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch groups by user.');
   }
 };

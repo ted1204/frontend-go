@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-} from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { WEBSOCKET_USER_MONITORING_URL } from '../config/url';
 import { ResourceMessage } from '../hooks/useWebSocket';
 
@@ -13,13 +7,9 @@ interface WebSocketContextType {
   getProjectMessages: (namespace: string) => ResourceMessage[];
 }
 
-const WebSocketContext = createContext<WebSocketContextType | undefined>(
-  undefined
-);
+const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined);
 
-export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [messages, setMessages] = useState<ResourceMessage[]>([]);
   const ws = useRef<WebSocket | null>(null);
 
@@ -49,9 +39,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
           setMessages((prev) => {
             const key = `${parsedData.name}-${parsedData.ns}`;
-            const existingIndex = prev.findIndex(
-              (msg) => `${msg.name}-${msg.ns}` === key
-            );
+            const existingIndex = prev.findIndex((msg) => `${msg.name}-${msg.ns}` === key);
 
             if (existingIndex >= 0) {
               const newMessages = [...prev];
@@ -71,11 +59,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       };
 
       ws.current.onclose = (event) => {
-        console.log(
-          'Global WebSocket closed, retrying...',
-          event.code,
-          event.reason
-        );
+        console.log('Global WebSocket closed, retrying...', event.code, event.reason);
         setTimeout(connect, 3000);
       };
 
@@ -105,9 +89,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useGlobalWebSocket = () => {
   const context = useContext(WebSocketContext);
   if (!context) {
-    throw new Error(
-      'useGlobalWebSocket must be used within a WebSocketProvider'
-    );
+    throw new Error('useGlobalWebSocket must be used within a WebSocketProvider');
   }
   return context;
 };

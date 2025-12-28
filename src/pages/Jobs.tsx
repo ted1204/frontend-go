@@ -12,8 +12,8 @@ const Jobs: React.FC = () => {
       try {
         const data = await getJobs();
         setJobs(data);
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch jobs');
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch jobs');
       } finally {
         setLoading(false);
       }
@@ -40,9 +40,7 @@ const Jobs: React.FC = () => {
                 <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                   Status
                 </th>
-                <th className="py-4 px-4 font-medium text-black dark:text-white">
-                  Created At
-                </th>
+                <th className="py-4 px-4 font-medium text-black dark:text-white">Created At</th>
               </tr>
             </thead>
             <tbody>
@@ -68,14 +66,10 @@ const Jobs: React.FC = () => {
                 jobs.map((job) => (
                   <tr key={job.ID}>
                     <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
-                      <h5 className="font-medium text-black dark:text-white">
-                        {job.Name}
-                      </h5>
+                      <h5 className="font-medium text-black dark:text-white">{job.Name}</h5>
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                      <p className="text-black dark:text-white">
-                        {job.Namespace}
-                      </p>
+                      <p className="text-black dark:text-white">{job.Namespace}</p>
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                       <p

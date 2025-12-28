@@ -33,9 +33,7 @@ export default function FileBrowser() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [expandedProjectId, setExpandedProjectId] = useState<number | null>(
-    null
-  );
+  const [expandedProjectId, setExpandedProjectId] = useState<number | null>(null);
   const [projectPvcs, setProjectPvcs] = useState<Record<number, PVC[]>>({});
   const [loadingPvcs, setLoadingPvcs] = useState<Record<number, boolean>>({});
 
@@ -45,9 +43,7 @@ export default function FileBrowser() {
   // Derive messages for the expanded project
   const expandedProject = projects.find((p) => p.PID === expandedProjectId);
   const username = getUsername();
-  const namespace = expandedProject
-    ? `proj-${expandedProject.PID}-${username}`
-    : '';
+  const namespace = expandedProject ? `proj-${expandedProject.PID}-${username}` : '';
   const messages = expandedProject ? getProjectMessages(namespace) : [];
 
   useEffect(() => {
@@ -67,7 +63,7 @@ export default function FileBrowser() {
 
         const userGroupIds = userGroups.map((ug) => ug.GID);
         const filteredProjects = allProjects.filter((project) =>
-          userGroupIds.includes(project.GID)
+          userGroupIds.includes(project.GID),
         );
 
         setProjects(filteredProjects);
@@ -119,10 +115,7 @@ export default function FileBrowser() {
 
   return (
     <div>
-      <PageMeta
-        title={t('fileBrowser.title')}
-        description={t('fileBrowser.description')}
-      />
+      <PageMeta title={t('fileBrowser.title')} description={t('fileBrowser.description')} />
       <PageBreadcrumb pageTitle={t('fileBrowser.title')} />
 
       <div className="rounded-2xl p-4 md:p-6 2xl:p-10">
@@ -134,9 +127,7 @@ export default function FileBrowser() {
           {loading ? (
             [...Array(3)].map((_, i) => <SkeletonCard key={i} />)
           ) : error ? (
-            <StateDisplay
-              message={`${t('label.error') || 'Error'}: ${error}`}
-            />
+            <StateDisplay message={`${t('label.error') || 'Error'}: ${error}`} />
           ) : projects.length === 0 ? (
             <StateDisplay message={t('fileBrowser.noProjects')} />
           ) : (
@@ -155,9 +146,7 @@ export default function FileBrowser() {
                       <h4 className="text-xl font-bold text-gray-900 dark:text-white">
                         {project.ProjectName}
                       </h4>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        ID: {project.PID}
-                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">ID: {project.PID}</p>
                     </div>
                   </div>
                   <svg

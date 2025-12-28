@@ -9,9 +9,7 @@ export const instantiate = async (id: number): Promise<MessageResponse> => {
     });
     return response as MessageResponse;
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to instantiate.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to instantiate.');
   }
 };
 
@@ -21,8 +19,6 @@ export const destruct = async (id: number): Promise<void> => {
       method: 'DELETE',
     });
   } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to destruct.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to destruct.');
   }
 };

@@ -49,12 +49,7 @@ interface EditRoleModalProps {
   onUpdate: (newRole: 'admin' | 'manager' | 'user') => Promise<void>;
 }
 
-export default function EditRoleModal({
-  isOpen,
-  onClose,
-  user,
-  onUpdate,
-}: EditRoleModalProps) {
+export default function EditRoleModal({ isOpen, onClose, user, onUpdate }: EditRoleModalProps) {
   // --- State Management --- //
   const [selectedRole, setSelectedRole] = useState(user.Role);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -101,10 +96,7 @@ export default function EditRoleModal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm"
-            aria-hidden="true"
-          />
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
         </Transition.Child>
 
         {/* Modal Panel */}
@@ -185,11 +177,7 @@ export default function EditRoleModal({
                 </RadioGroup>
               </div>
 
-              {error && (
-                <p className="mt-3 text-sm text-red-600 dark:text-red-400">
-                  {error}
-                </p>
-              )}
+              {error && <p className="mt-3 text-sm text-red-600 dark:text-red-400">{error}</p>}
 
               {/* Action Buttons */}
               <div className="mt-6 flex justify-end gap-3">

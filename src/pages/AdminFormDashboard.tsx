@@ -30,13 +30,11 @@ export default function AdminFormDashboard() {
   const handleStatusChange = async (id: number, newStatus: FormStatus) => {
     try {
       await updateFormStatus(id, newStatus);
-      setTickets((prev) =>
-        prev.map((t) => (t.ID === id ? { ...t, status: newStatus } : t))
-      );
+      setTickets((prev) => prev.map((t) => (t.ID === id ? { ...t, status: newStatus } : t)));
     } catch (err) {
       alert(
         (t('form.createFailed') || 'Unable to update status: ') +
-          (err instanceof Error ? err.message : String(err))
+          (err instanceof Error ? err.message : String(err)),
       );
     }
   };
@@ -72,11 +70,7 @@ export default function AdminFormDashboard() {
   };
 
   if (loading)
-    return (
-      <div className="p-6 text-center">
-        {t('loading.forms') || 'Loading forms...'}
-      </div>
-    );
+    return <div className="p-6 text-center">{t('loading.forms') || 'Loading forms...'}</div>;
   if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
 
   return (
@@ -126,9 +120,7 @@ export default function AdminFormDashboard() {
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {ticket.project ? (
-                      <span className="font-mono">
-                        {ticket.project.ProjectName}
-                      </span>
+                      <span className="font-mono">{ticket.project.ProjectName}</span>
                     ) : (
                       '-'
                     )}
@@ -144,7 +136,7 @@ export default function AdminFormDashboard() {
                   <td className="whitespace-nowrap px-6 py-4">
                     <span
                       className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${getStatusColor(
-                        ticket.status
+                        ticket.status,
                       )}`}
                     >
                       {getStatusText(ticket.status)}
@@ -155,20 +147,13 @@ export default function AdminFormDashboard() {
                       {ticket.status === FormStatus.Pending && (
                         <>
                           <button
-                            onClick={() =>
-                              handleStatusChange(
-                                ticket.ID,
-                                FormStatus.Processing
-                              )
-                            }
+                            onClick={() => handleStatusChange(ticket.ID, FormStatus.Processing)}
                             className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                           >
                             {t('form.action.process')}
                           </button>
                           <button
-                            onClick={() =>
-                              handleStatusChange(ticket.ID, FormStatus.Rejected)
-                            }
+                            onClick={() => handleStatusChange(ticket.ID, FormStatus.Rejected)}
                             className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                           >
                             {t('form.action.reject')}
@@ -177,9 +162,7 @@ export default function AdminFormDashboard() {
                       )}
                       {ticket.status === FormStatus.Processing && (
                         <button
-                          onClick={() =>
-                            handleStatusChange(ticket.ID, FormStatus.Completed)
-                          }
+                          onClick={() => handleStatusChange(ticket.ID, FormStatus.Completed)}
                           className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
                         >
                           {t('form.action.complete')}

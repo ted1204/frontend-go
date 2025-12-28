@@ -12,71 +12,57 @@ const StatusBadge = ({ status }: { status: string | undefined }) => {
 
   const baseClasses =
     'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors';
-  let colorClasses =
-    'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'; // Default: Grey
+  let colorClasses = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'; // Default: Grey
   let displayText = status || 'N/A';
 
   switch (safeStatus) {
     case 'running':
-      colorClasses =
-        'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
+      colorClasses = 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
       displayText = t('monitor.status.running');
       break;
     case 'active':
-      colorClasses =
-        'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
+      colorClasses = 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
       displayText = t('monitor.status.active');
       break;
     case 'completed':
-      colorClasses =
-        'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
+      colorClasses = 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
       displayText = t('monitor.status.completed');
       break;
     case 'succeeded':
-      colorClasses =
-        'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
+      colorClasses = 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
       displayText = t('monitor.status.succeeded');
       break;
     case 'added': // Event: Added
-      colorClasses =
-        'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
+      colorClasses = 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300';
       displayText = t('monitor.status.added');
       break;
     case 'pending':
-      colorClasses =
-        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
+      colorClasses = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
       displayText = t('monitor.status.pending');
       break;
     case 'creating':
-      colorClasses =
-        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
+      colorClasses = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
       displayText = t('monitor.status.creating');
       break;
     case 'modified': // Event: Modified
-      colorClasses =
-        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
+      colorClasses = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300';
       displayText = t('monitor.status.modified');
       break;
     case 'failed':
-      colorClasses =
-        'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300';
+      colorClasses = 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300';
       displayText = t('monitor.status.failed');
       break;
     case 'error':
-      colorClasses =
-        'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300';
+      colorClasses = 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300';
       displayText = t('monitor.status.error');
       break;
     case 'deleted': // Event: Deleted
-      colorClasses =
-        'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300';
+      colorClasses = 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300';
       displayText = t('monitor.status.deleted');
       break;
   }
 
-  return (
-    <span className={`${baseClasses} ${colorClasses}`}>{displayText}</span>
-  );
+  return <span className={`${baseClasses} ${colorClasses}`}>{displayText}</span>;
 };
 
 /**
@@ -133,10 +119,7 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
                   }
 
                   return (
-                    <tr
-                      key={index}
-                      className="hover:bg-gray-50 dark:hover:bg-white/5"
-                    >
+                    <tr key={index} className="hover:bg-gray-50 dark:hover:bg-white/5">
                       <td className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
                         {msg.type}
                       </td>
@@ -177,9 +160,7 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
                           d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V7a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                         />
                       </svg>
-                      <p className="mt-2 font-semibold">
-                        {t('monitor.waiting')}
-                      </p>
+                      <p className="mt-2 font-semibold">{t('monitor.waiting')}</p>
                     </div>
                   </td>
                 </tr>

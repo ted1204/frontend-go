@@ -9,11 +9,7 @@ interface CreateFormModalProps {
   projectId?: number; // Optional pre-filled project ID
 }
 
-export default function CreateFormModal({
-  isOpen,
-  onClose,
-  projectId,
-}: CreateFormModalProps) {
+export default function CreateFormModal({ isOpen, onClose, projectId }: CreateFormModalProps) {
   const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -33,10 +29,7 @@ export default function CreateFormModal({
       setTitle('');
       setDescription('');
     } catch (error) {
-      alert(
-        t('form.createFailed') +
-          (error instanceof Error ? error.message : String(error))
-      );
+      alert(t('form.createFailed') + (error instanceof Error ? error.message : String(error)));
     } finally {
       setLoading(false);
     }
