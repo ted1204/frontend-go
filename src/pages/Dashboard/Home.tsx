@@ -1,5 +1,5 @@
-import PageMeta from '../../components/common/PageMeta';
-import useTranslation from '../../hooks/useTranslation';
+import { PageMeta } from '@tailadmin/ui';
+import { useTranslation } from '@tailadmin/utils';
 
 export default function Home() {
   const { t } = useTranslation();

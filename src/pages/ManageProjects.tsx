@@ -11,12 +11,13 @@ import {
 } from '../services/projectService';
 // removed unused import: useNavigate
 import EditProjectForm from '../components/EditProjectForm';
-import Button from '../components/ui/button/Button';
+import CreateProjectForm from '../components/CreateProjectForm';
+import { Button } from '@tailadmin/ui';
 import DeleteConfirmationModal from '../components/ui/modal/DeleteConfirmationModal';
-import { updateProject, UpdateProjectDTO } from '../services/projectService';
+import { updateProject, UpdateProjectInput } from '../services/projectService';
 
 import { getGroups } from '../services/groupService';
-import useTranslation from '../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 // --- Conceptual Group Interfaces (Must be defined in your app) ---
 interface GroupOption {
   GID: number;
@@ -102,7 +103,7 @@ export default function ManageProjects() {
     e.preventDefault();
     if (!projectToEdit) return;
 
-    const input: UpdateProjectDTO = {
+    const input: UpdateProjectInput = {
       project_name: projectName,
       description,
       gpu_quota: gpuQuota,
@@ -181,7 +182,7 @@ export default function ManageProjects() {
       }
     };
     fetchData();
-  }, []);
+  }, [t]);
 
   // REAL-TIME SEARCH FILTERING LOGIC (for ProjectList)
   useEffect(() => {

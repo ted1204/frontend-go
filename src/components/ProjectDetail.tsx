@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import PageMeta from './common/PageMeta';
+import { PageMeta } from '@tailadmin/ui';
 import PageBreadcrumb from './common/PageBreadCrumb';
 import { Project } from '../interfaces/project';
 import { getProjectById } from '../services/projectService';
@@ -18,14 +18,14 @@ import AddConfigModal from './AddConfigModal';
 import ConfigFileList from './ConfigFileList';
 import PVCList from './PVCList';
 import EditConfigModal from './EditConfigModal';
-import { useGlobalWebSocket } from '../context/WebSocketContext';
+import { useGlobalWebSocket } from '../context/useGlobalWebSocket';
 import MonitoringPanel from './MonitoringPanel';
 import { ConfigFile } from '../interfaces/configFile';
 import Button from './ui/button/Button';
 import { getUsername } from '../services/authService';
 import CreateFormModal from './CreateFormModal';
 import ProjectMembers from './ProjectMembers';
-import { useTranslation } from '../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 
 // Helper component for the initial page loading state (Skeleton)
 const PageSkeleton = () => (

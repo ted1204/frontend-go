@@ -14,7 +14,7 @@ import {
   updateUserGroup,
 } from '../services/userGroupService';
 
-import PageMeta from './common/PageMeta';
+import { PageMeta } from '@tailadmin/ui';
 import PageBreadcrumb from './common/PageBreadCrumb';
 import InviteUserModal, { FormData } from './InviteUserModal';
 import EditRoleModal from './EditRoleModal';

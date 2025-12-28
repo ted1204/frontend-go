@@ -3,7 +3,7 @@ import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { BASE_URL } from '../../config/url';
 import 'xterm/css/xterm.css';
-import useTranslation from '../../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 
 // Define the message structure for communication with the backend.
 interface TerminalMessage {
@@ -139,7 +139,7 @@ const TerminalPage: React.FC<TerminalProps> = ({
       socket.current?.close();
       term.current?.dispose();
     };
-  }, [namespace, pod, container, command, tty]);
+  }, [namespace, pod, container, command, tty, t]);
 
   return (
     <div

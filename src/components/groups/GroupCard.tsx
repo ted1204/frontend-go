@@ -1,6 +1,7 @@
 // src/components/groups/GroupCard.tsx
 
 import React from 'react';
+import useTranslation from '../../../packages/utils/src/hooks/useTranslation';
 import { Group } from '../../interfaces/group';
 
 interface GroupCardProps {
@@ -13,6 +14,7 @@ interface GroupCardProps {
  * It's clickable and has hover effects for better user interaction.
  */
 const GroupCard: React.FC<GroupCardProps> = ({ group, onClick }) => {
+  const { t } = useTranslation();
   return (
     <div
       onClick={onClick}
@@ -40,7 +42,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, onClick }) => {
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{group.GroupName}</h3>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-            {group.Description || '無描述。'}
+            {group.Description || t('groups.noDescription')}
           </p>
         </div>
       </div>

@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import PageBreadcrumb from '../components/common/PageBreadCrumb';
-import PageMeta from '../components/common/PageMeta';
-import useTranslation from '../hooks/useTranslation';
+import { PageMeta } from '@tailadmin/ui';
+import { useTranslation } from '@tailadmin/utils';
 import { Project } from '../interfaces/project';
 import { getProjects } from '../services/projectService';
 import { getGroupsByUser } from '../services/userGroupService';
 import { getPVCListByProject } from '../services/pvcService';
 import { PVC } from '../interfaces/pvc';
 import PVCList from '../components/PVCList';
-import { useGlobalWebSocket } from '../context/WebSocketContext';
+import { useGlobalWebSocket } from '../context/useGlobalWebSocket';
 import { getUsername } from '../services/authService';
 
 const FolderIcon = () => (
@@ -75,7 +75,7 @@ export default function FileBrowser() {
     };
 
     fetchAndFilterProjects();
-  }, []);
+  }, [t]);
 
   const handleProjectClick = async (project: Project) => {
     if (expandedProjectId === project.PID) {

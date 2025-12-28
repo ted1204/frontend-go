@@ -2,14 +2,14 @@
 
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import PageBreadcrumb from '../components/common/PageBreadCrumb';
-import PageMeta from '../components/common/PageMeta';
+import { PageMeta } from '@tailadmin/ui';
 import { getGroups, createGroup, CreateGroupInput, deleteGroup } from '../services/groupService';
 import { Group } from '../interfaces/group';
 import { useNavigate } from 'react-router-dom';
-import useTranslation from '../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 import GroupList from '../components/GroupList';
 import CreateGroupForm from '../components/CreateGroupForm';
-import Button from '../components/ui/button/Button';
+import { Button } from '@tailadmin/ui';
 // Ensure this import path is correct
 import DeleteConfirmationModal from '../components/ui/modal/DeleteConfirmationModal';
 
@@ -99,7 +99,7 @@ export default function ManageGroups() {
       }
     };
     fetchGroups();
-  }, []);
+  }, [t]);
 
   // --- REAL-TIME SEARCH FILTERING LOGIC ---
   useEffect(() => {

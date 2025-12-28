@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.app.json",
+  "compilerOptions": {
+    "composite": true,
+    // "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist",
+    "noEmit": false,
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
+  },
+  "include": ["src"]
+}

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
+import React, { createContext, useEffect, useState, useRef } from 'react';
 import { WEBSOCKET_USER_MONITORING_URL } from '../config/url';
 import { ResourceMessage } from '../hooks/useWebSocket';
 
@@ -86,10 +86,4 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   );
 };
 
-export const useGlobalWebSocket = () => {
-  const context = useContext(WebSocketContext);
-  if (!context) {
-    throw new Error('useGlobalWebSocket must be used within a WebSocketProvider');
-  }
-  return context;
-};
+export default WebSocketContext;

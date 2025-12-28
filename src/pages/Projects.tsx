@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import PageBreadcrumb from '../components/common/PageBreadCrumb';
-import PageMeta from '../components/common/PageMeta';
+import { PageMeta } from '@tailadmin/ui';
 import { Project } from '../interfaces/project';
 import { getProjects } from '../services/projectService';
 import { getGroupsByUser } from '../services/userGroupService';
 import { useNavigate } from 'react-router-dom';
 import ProjectCard from '../components/ProjectCard';
-import Pagination from '../components/common/Pagination';
-import SearchInput from '../components/common/SearchInput';
+import { Pagination } from '@tailadmin/ui';
+import { SearchInput } from '@tailadmin/ui';
 import { GridIcon } from '../icons';
-import useTranslation from '../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -54,7 +54,7 @@ export default function Projects() {
     };
 
     fetchAndFilterProjects();
-  }, []); // The dependency array is empty, so this runs only once on mount.
+  }, [t]); // The dependency array includes `t` to satisfy exhaustive-deps and ensures consistent error messages.
 
   const handleProjectClick = (projectId: number) => {
     navigate(`/projects/${projectId}`);

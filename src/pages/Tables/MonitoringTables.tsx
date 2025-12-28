@@ -1,7 +1,7 @@
 import { useEffect, useState, Fragment } from 'react';
-import { useGlobalWebSocket } from '../../context/WebSocketContext';
-import Pagination from '../../components/common/Pagination';
-import useTranslation from '../../hooks/useTranslation';
+import { useGlobalWebSocket } from '../../context/useGlobalWebSocket';
+import { Pagination } from '@tailadmin/ui';
+import { useTranslation } from '@tailadmin/utils';
 
 // --- Type Definitions --- //
 

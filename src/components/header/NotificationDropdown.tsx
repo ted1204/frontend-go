@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Dropdown } from '../ui/dropdown/Dropdown';
 import { DropdownItem } from '../ui/dropdown/DropdownItem';
 import { Link } from 'react-router';
-import useTranslation from '../../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);

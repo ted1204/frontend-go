@@ -1,5 +1,6 @@
 const translations = {
   zh: {
+    'form.apply.title': '申請',
     'form.history.title': '歷史紀錄',
     'form.history.loading': '載入中...',
     'form.history.empty': '目前沒有紀錄',
@@ -271,6 +272,7 @@ const translations = {
     'page.notFound.back': '返回首頁',
   },
   en: {
+    'form.apply.title': 'Apply',
     'form.history.title': 'History',
     'form.history.loading': 'Loading...',
     'form.history.empty': 'No records yet',
@@ -527,10 +529,11 @@ const translations = {
   },
 } as const;
 
-export type LocaleKey = keyof (typeof translations)['zh'];
+export type LocaleKey = string;
 
 export const t = (lang: 'zh' | 'en', key: LocaleKey, vars?: Record<string, string | number>) => {
-  const str = translations[lang][key] || key;
+  const map = translations as Record<'zh' | 'en', Record<string, string>>;
+  const str = map[lang]?.[key] ?? key;
   if (!vars) return str;
   return Object.keys(vars).reduce((s, k) => s.replace(`{${k}}`, String(vars[k])), str);
 };

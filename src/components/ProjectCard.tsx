@@ -1,7 +1,7 @@
 import React from 'react';
 import { Project } from '../interfaces/project';
-import useTranslation from '../hooks/useTranslation';
-import { useGlobalWebSocket } from '../context/WebSocketContext';
+import { useTranslation } from '@tailadmin/utils';
+import { useGlobalWebSocket } from '../context/useGlobalWebSocket';
 import { getUsername } from '../services/authService';
 
 const FolderIcon = () => (

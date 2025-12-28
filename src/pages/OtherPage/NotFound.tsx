@@ -1,7 +1,7 @@
 import GridShape from '../../components/common/GridShape';
 import { Link } from 'react-router';
-import PageMeta from '../../components/common/PageMeta';
-import useTranslation from '../../hooks/useTranslation';
+import { PageMeta } from '@tailadmin/ui';
+import { useTranslation } from '@tailadmin/utils';
 
 export default function NotFound() {
   const { t } = useTranslation();

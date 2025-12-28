@@ -5,16 +5,16 @@ import { useNavigate } from 'react-router-dom';
 import { Group } from '../interfaces/group';
 import { getGroups } from '../services/groupService'; // Import createGroup
 import { getGroupsByUser } from '../services/userGroupService';
-import PageMeta from '../components/common/PageMeta';
+import { PageMeta } from '@tailadmin/ui';
 import PageBreadcrumb from '../components/common/PageBreadCrumb';
-import useTranslation from '../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 import GroupCard from '../components/groups/GroupCard';
 import LoadingState from '../components/groups/LoadingState';
 import ErrorState from '../components/groups/ErrorState';
 import EmptyState from '../components/groups/EmptyState';
 import CreateGroupModal from '../components/groups/CreateGroupModal'; // Import the new modal component
-import Pagination from '../components/common/Pagination';
-import SearchInput from '../components/common/SearchInput';
+import { Pagination } from '@tailadmin/ui';
+import { SearchInput } from '@tailadmin/ui';
 
 export default function Groups() {
   const { t } = useTranslation();
@@ -57,7 +57,7 @@ export default function Groups() {
       }
     };
     fetchUserGroups();
-  }, []);
+  }, [t]);
 
   // Reset page when search changes
   useEffect(() => {

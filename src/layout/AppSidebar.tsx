@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
-import useTranslation from '../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 import { LocaleKey } from '../i18n';
 
 // Assume these icons are imported from an icon library
 import { BoxIcon, ChevronDownIcon, GridIcon, GroupIcon, HorizontaLDots, TaskIcon } from '../icons';
-import { useSidebar } from '../context/SidebarContext';
+import { useSidebar } from '../context/useSidebar';
 
 type NavItem = {
   name: LocaleKey;
@@ -129,7 +129,7 @@ const AppSidebar: React.FC = () => {
     if (!submenuMatched) {
       setOpenSubmenu(null);
     }
-  }, [location, isActive]);
+  }, [location, isActive, viewMode]);
 
   useEffect(() => {
     if (openSubmenu !== null) {

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@tailadmin/utils';
 import InputField from './form/input/InputField';
 import Button from './ui/button/Button';
 
@@ -151,7 +151,7 @@ const EditProjectForm: React.FC<EditProjectFormProps> = ({
           </button>
 
           <h3 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white text-center">
-            {t('project.edit.title', 'Edit Project')}
+            {t('project.edit.title') || 'Edit Project'}
           </h3>
 
           {error && (

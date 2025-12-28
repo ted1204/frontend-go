@@ -1,8 +1,9 @@
 // src/components/GroupList.tsx
 
 import React, { ChangeEvent, useState, useEffect } from 'react';
+import { useTranslation } from '@tailadmin/utils';
 import { Group } from '../interfaces/group'; // Adjust import based on your structure
-import Pagination from './common/Pagination';
+import { Pagination } from '@tailadmin/ui';
 
 // --- SVG Icons --- //
 
@@ -56,7 +57,7 @@ const SearchIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' })
 
 // --- Helper Components for States (Loading, Error, Empty) --- //
 
-const LoadingSpinner: React.FC = () => (
+const LoadingSpinner: React.FC<{ t: (key: string, vars?: Record<string, string | number>) => string }> = ({ t }) => (
   <div className="flex justify-center items-center p-8 text-gray-500 dark:text-gray-400">
     <svg
       className="animate-spin h-6 w-6 mr-3 text-blue-500 dark:text-blue-400"
@@ -78,28 +79,28 @@ const LoadingSpinner: React.FC = () => (
         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
       ></path>
     </svg>
-    <span>正在取得群組...</span>
+    <span>{t('groupList.loading')}</span>
   </div>
 );
 
-const ErrorDisplay: React.FC<{ message: string }> = ({ message }) => (
+const ErrorDisplay: React.FC<{ message: string; t: (key: string, vars?: Record<string, string | number>) => string }> = ({ message, t }) => (
   <div
     className="bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg"
     role="alert"
   >
-    <strong className="font-bold mr-1">錯誤:</strong>
+    <strong className="font-bold mr-1">{t('projectList.errorPrefix')}</strong>
     <span className="block sm:inline">{message}</span>
   </div>
 );
 
-const EmptyState: React.FC<{ isFiltering: boolean }> = ({ isFiltering }) => (
+const EmptyState: React.FC<{ isFiltering: boolean; t: (key: string, vars?: Record<string, string | number>) => string }> = ({ isFiltering, t }) => (
   <div className="text-center py-12 px-6 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
     <GroupIcon className="mx-auto h-10 w-10 text-gray-400" />
     <h3 className="mt-4 text-lg font-semibold text-gray-800 dark:text-white">
-      {isFiltering ? '沒有符合搜尋條件的群組' : '沒有使用中的群組'}
+      {isFiltering ? t('groupList.empty.filter') : t('groupList.empty.noGroups')}
     </h3>
     <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-      {isFiltering ? '請嘗試調整您的搜尋關鍵字。' : '建立新群組以開始組織您的團隊。'}
+      {isFiltering ? t('groupList.empty.filterTip') : t('groupList.empty.noGroupsTip')}
     </p>
   </div>
 );
@@ -131,7 +132,7 @@ const GroupList: React.FC<GroupListProps> = ({
   onSearchChange,
   // isActionLoading = false, // Uncomment if adding isActionLoading
 }) => {
-  // FIX: Defensive check for searchTerm to prevent TypeError on initial render
+  const { t } = useTranslation();
   const isFiltering = (searchTerm || '').length > 0;
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -149,14 +150,14 @@ const GroupList: React.FC<GroupListProps> = ({
 
   const renderContent = () => {
     if (loading) {
-      return <LoadingSpinner />;
+      return <LoadingSpinner t={t} />;
     }
     if (error) {
-      return <ErrorDisplay message={error} />;
+      return <ErrorDisplay message={error} t={t} />;
     }
     // Defensive check: Ensure 'groups' is an array before checking its length
     if (!groups || groups.length === 0) {
-      return <EmptyState isFiltering={isFiltering} />;
+      return <EmptyState isFiltering={isFiltering} t={t} />;
     }
 
     return (
@@ -188,7 +189,7 @@ const GroupList: React.FC<GroupListProps> = ({
                       {group.GroupName}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400 truncate mt-0.5">
-                      {group.Description || `群組 ID: ${group.GID}`}
+                      {group.Description || t('groupList.noDescription', { id: group.GID })}
                     </p>
                   </div>
                 </div>
@@ -203,7 +204,7 @@ const GroupList: React.FC<GroupListProps> = ({
                     onDeleteGroup(group);
                   }}
                   className="p-2 rounded-full text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
-                  aria-label="刪除群組"
+                  aria-label={t('groupList.deleteGroupAria')}
                   // disabled={isActionLoading} // Uncomment if adding isActionLoading
                 >
                   <TrashIcon className="h-5 w-5" />
@@ -226,10 +227,10 @@ const GroupList: React.FC<GroupListProps> = ({
       {/* Header (Structural Context) */}
       <div className="mb-6">
         <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-          管理組織群組
+          {t('groupList.title')}
         </h2>
         <p className="mt-1 text-base text-gray-600 dark:text-gray-400">
-          檢視、選擇和管理所有已定義的群組及其相關 ID。
+          {t('groupList.description')}
         </p>
       </div>
 
@@ -238,7 +239,7 @@ const GroupList: React.FC<GroupListProps> = ({
         <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
         <input
           type="text"
-          placeholder="依名稱、描述或 ID 搜尋群組..."
+          placeholder={t('groupList.searchPlaceholder')}
           value={searchTerm}
           onChange={onSearchChange}
           className="

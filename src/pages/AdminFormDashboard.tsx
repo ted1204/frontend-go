@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getAllForms, updateFormStatus } from '../services/formService';
 import { Form, FormStatus } from '../interfaces/form';
-import PageMeta from '../components/common/PageMeta';
+import { PageMeta } from '@tailadmin/ui';
 import PageBreadcrumb from '../components/common/PageBreadCrumb';
-import useTranslation from '../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 
 export default function AdminFormDashboard() {
   const { t } = useTranslation();
@@ -11,11 +11,7 @@ export default function AdminFormDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchTickets();
-  }, []);
-
-  const fetchTickets = async () => {
+  const fetchTickets = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getAllForms();
@@ -25,7 +21,11 @@ export default function AdminFormDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    fetchTickets();
+  }, [fetchTickets]);
 
   const handleStatusChange = async (id: number, newStatus: FormStatus) => {
     try {

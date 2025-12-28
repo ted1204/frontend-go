@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { DropdownItem } from '../ui/dropdown/DropdownItem';
 import { Dropdown } from '../ui/dropdown/Dropdown';
 import SignOutButton from '../auth/SignOutButton';
-import useTranslation from '../../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);

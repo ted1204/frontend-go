@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Button from './ui/button/Button';
 import { Project } from '../interfaces/project';
 import { getPVCList } from '../services/pvcService';
@@ -6,7 +6,7 @@ import { PVC } from '../interfaces/pvc';
 
 // Import Monaco Editor and its assets
 import MonacoEditor from 'react-monaco-editor';
-import useTranslation from '../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 
 interface FormData {
   filename: string;
@@ -121,7 +121,7 @@ export default function AddConfigModal({
     return () => observer.disconnect();
   }, []);
 
-  const generateYAML = () => {
+  const generateYAML = useCallback(() => {
     const { image, gpu, pvcName, mountPath, command, args } = wizardData;
     const name = formData.filename.replace(/\.(yaml|yml)$/, '') || 'app';
 
@@ -166,7 +166,7 @@ spec:
     }
 
     return yaml;
-  };
+  }, [wizardData, formData.filename]);
 
   // Update YAML when switching to YAML tab
   useEffect(() => {
@@ -177,7 +177,7 @@ spec:
         setFormData((prev) => ({ ...prev, raw_yaml: generateYAML() }));
       }
     }
-  }, [activeTab, wizardData]);
+  }, [activeTab, generateYAML, formData.raw_yaml]);
 
   const handleSubmit = () => {
     // Validation logic remains the same

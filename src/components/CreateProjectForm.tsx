@@ -1,7 +1,7 @@
 // src/components/CreateProjectForm.tsx
 
 import React, { ChangeEvent, FormEvent, useState, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@tailadmin/utils';
 
 // Assuming InputField and Button are properly defined components
 import InputField from './form/input/InputField';
@@ -207,7 +207,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
     >
       {/* Modal Content Card: Main form container. */}
       <div
-        className="w-full max-w-lg bg-white dark:bg-gray-800 rounded-xl shadow-2xl relative"
+        className="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-xl shadow-2xl relative"
         onClick={(e) => e.stopPropagation()} // Prevent accidental closure
       >
         <div className="p-8">
@@ -246,38 +246,38 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
             </p>
           )}
 
-          <form onSubmit={onSubmit} className="space-y-5">
-            {/* 1. Project Name Input */}
-            <InputField
-              type="text"
-              label={t('project.create.name')}
-              value={projectName}
-              onChange={onProjectNameChange}
-              required
-              placeholder={t('project.create.namePlaceholder')}
-              className="w-full"
-              disabled={loading}
-            />
-            {/* 2. Description (Textarea Field) */}
-            <div className="space-y-1.5 text-left">
-              <label
-                htmlFor="description-textarea"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                {t('project.create.description')}
-              </label>
-              <textarea
-                id="description-textarea"
-                value={description}
-                onChange={onDescriptionChange}
-                rows={4}
-                placeholder={t('project.create.descriptionPlaceholder')}
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white rounded-md shadow-sm resize-y focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 disabled:bg-gray-100 dark:disabled:bg-gray-700/50 disabled:cursor-not-allowed"
+          <form onSubmit={onSubmit} className="space-y-6">
+            <div className="space-y-4">
+              <InputField
+                type="text"
+                label={t('project.create.name')}
+                value={projectName}
+                onChange={onProjectNameChange}
+                required
+                placeholder={t('project.create.namePlaceholder')}
+                className="w-full"
                 disabled={loading}
               />
+
+              <div className="space-y-1.5 text-left">
+                <label
+                  htmlFor="description-textarea"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  {t('project.create.description')}
+                </label>
+                <textarea
+                  id="description-textarea"
+                  value={description}
+                  onChange={onDescriptionChange}
+                  rows={4}
+                  placeholder={t('project.create.descriptionPlaceholder')}
+                  className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white rounded-md shadow-sm resize-y focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 disabled:bg-gray-100 dark:disabled:bg-gray-700/50 disabled:cursor-not-allowed"
+                  disabled={loading}
+                />
+              </div>
             </div>
 
-            {/* 2.1 GPU Quota */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <InputField
                 type="number"
@@ -289,6 +289,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                 min="0"
                 disabled={loading}
               />
+
               <InputField
                 type="number"
                 label={t('project.create.gpuThreadLimit')}
@@ -300,6 +301,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                 max="100"
                 disabled={loading}
               />
+
               <InputField
                 type="number"
                 label={t('project.create.gpuMemoryLimit')}
@@ -312,12 +314,14 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
               />
             </div>
 
-            {/* 2.2 GPU Access Mode */}
-            <div className="space-y-1.5 text-left">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {t('project.create.gpuAccessMode')}
-              </label>
-              <div className="flex gap-4">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('project.create.gpuAccessMode')}
+                </div>
+                <div className="text-xs text-gray-500">{t('project.create.mpsSettings')}</div>
+              </div>
+              <div className="flex flex-wrap gap-4">
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -345,12 +349,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
               </div>
             </div>
 
-            {/* 2.5 MPS Settings (Only if Shared is selected) */}
             {gpuAccess.includes('shared') && (
-              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700">
-                <div className="col-span-2 text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                  {t('project.create.mpsSettings')}
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700">
                 <InputField
                   type="number"
                   label={t('project.create.mpsThreadLimit')}
@@ -375,13 +375,11 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
               </div>
             )}
 
-            {/* 3. GROUP SEARCH-SELECT REPLACEMENT */}
             <div className="space-y-1.5 text-left relative" ref={dropdownRef}>
-              {/* Search Input Field */}
               <InputField
                 type="text"
                 id="group-search"
-                label={t('project.create.group')} // FIX: Label is now mandatory
+                label={t('project.create.group')}
                 value={searchTerm}
                 onChange={handleSearchInputChange}
                 onFocus={() => setIsDropdownOpen(true)}
@@ -389,11 +387,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                 className="w-full"
                 required
                 disabled={loading}
-                // Visually indicate selection success
                 style={{ borderColor: groupId > 0 ? '#4f46e5' : undefined }}
               />
 
-              {/* Dropdown List */}
               {isDropdownOpen && (
                 <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-y-auto">
                   {filteredGroups.length > 0 ? (
@@ -405,7 +401,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                       >
                         {group.GroupName}
                         <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                          {' '}
                           (ID: {group.GID})
                         </span>
                       </li>
@@ -418,7 +413,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                 </ul>
               )}
 
-              {/* Display currently selected Group ID as hint */}
               {groupId > 0 && (
                 <p className="mt-1 text-sm text-green-600 dark:text-green-400">
                   {t('project.create.selectedId')} {groupId}
@@ -426,12 +420,19 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
               )}
             </div>
 
-            {/* 4. Submission Button */}
-            <div className="pt-2">
+            <div className="flex gap-3 pt-2">
+              <Button
+                type="button"
+                onClick={onClose}
+                className="flex-1 px-6 py-2.5 text-base font-semibold bg-white text-gray-700 border border-gray-200 rounded-md hover:bg-gray-50 transition duration-150 disabled:opacity-50"
+                disabled={loading}
+              >
+                {t('project.create.cancel')}
+              </Button>
               <Button
                 type="submit"
-                className="w-full px-6 py-2.5 text-base font-semibold bg-violet-600 text-white rounded-md hover:bg-violet-700 transition duration-150 focus:outline-none focus:ring-4 focus:ring-violet-500 focus:ring-opacity-50 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                disabled={loading || groupId === 0} // Disable if no group is selected (groupId === 0)
+                className="flex-1 px-6 py-2.5 text-base font-semibold bg-violet-600 text-white rounded-md hover:bg-violet-700 transition duration-150 focus:outline-none focus:ring-4 focus:ring-violet-500 focus:ring-opacity-50 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                disabled={loading || groupId === 0}
               >
                 {loading ? (
                   <span className="flex items-center justify-center animate-pulse">

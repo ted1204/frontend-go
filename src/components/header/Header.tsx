@@ -3,8 +3,8 @@ import { ThemeToggleButton } from '../common/ThemeToggleButton';
 import NotificationDropdown from './NotificationDropdown';
 import UserDropdown from './UserDropdown';
 import { Link } from 'react-router';
-import { useLanguage } from '../../context/LanguageContext';
-import useTranslation from '../../hooks/useTranslation';
+import { useLanguage } from '@tailadmin/utils';
+import { useTranslation } from '@tailadmin/utils';
 
 // Define the interface for the props
 interface HeaderProps {
@@ -90,7 +90,7 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
           {/* Visible language toggle for all screen sizes (duplicate of the tool area) */}
           <button
             onClick={() => toggleLanguage()}
-            className="ml-2 rounded px-2 py-1 border border-gray-200 text-sm text-gray-700 dark:text-gray-300"
+            className="ml-2 rounded px-2 py-1 border border-gray-200 text-sm text-gray-700 dark:text-gray-300 lg:hidden"
             aria-label={t('language.aria')}
             title={language === 'zh' ? t('language.switchToEn') : t('language.switchToZh')}
           >
@@ -117,7 +117,7 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
             </svg>
           </button>
 
-          <div className="hidden lg:block">
+          <div className="hidden lg:block overflow-visible">
             <form action="https://formbold.com/s/unique_form_id" method="POST">
               <div className="relative">
                 <button className="absolute -translate-y-1/2 left-4 top-1/2">
@@ -137,11 +137,6 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
                     />
                   </svg>
                 </button>
-                <input
-                  type="text"
-                  placeholder={t('search.placeholder')}
-                  className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
-                />
 
                 <button className="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-[7px] py-[4.5px] text-xs -tracking-[0.2px] text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
                   <span>K</span>
@@ -161,7 +156,7 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
             {/* Language toggle (compact) */}
             <button
               onClick={() => toggleLanguage()}
-              className="ml-2 rounded px-2 py-1 border border-gray-200 text-sm text-gray-700 dark:text-gray-300"
+              className="ml-2 rounded px-2 py-1 border border-gray-200 text-sm text-gray-700 dark:text-gray-300 lg:hidden relative z-50"
               aria-label={t('language.aria')}
             >
               {t('language.short')}
@@ -169,11 +164,33 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
             {/* Prominent language toggle next to notifications/user */}
             <button
               onClick={() => toggleLanguage()}
-              className="ml-3 inline-flex items-center gap-2 rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-blue-500"
+              className="ml-3 hidden lg:inline-flex items-center gap-2 rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-blue-500 relative z-50 overflow-visible"
               aria-label={t('language.aria')}
               title={language === 'zh' ? t('language.switchToEn') : t('language.switchToZh')}
             >
-              🌐 {t('language.switchLabel')}
+              <span className="relative inline-flex items-center">
+                <svg
+                  className="w-7 h-7"
+                  viewBox="0 0 28 28"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <circle cx="14" cy="14" r="13" stroke="#E6E9EE" strokeWidth="2" fill="#2563eb" />
+                  <text
+                    x="50%"
+                    y="54%"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fontSize="12"
+                    fontWeight="bold"
+                    fill="#fff"
+                  >
+                    {t('language.short')}
+                  </text>
+                </svg>
+                <span className="sr-only">{t('language.switchLabel')}</span>
+              </span>
             </button>
             {/* <!-- Dark Mode Toggler --> */}
             <NotificationDropdown />

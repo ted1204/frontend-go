@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { UserGroupUser } from '../interfaces/userGroup';
 import { getUsersByGroup, getGroupsByUser, createUserGroup } from '../services/userGroupService';
 import { getUsers } from '../services/userService';
 import InviteUserModal, { FormData } from './InviteUserModal';
 import { User } from '../interfaces/user';
-import useTranslation from '../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 
 interface ProjectMembersProps {
   groupId: number;
@@ -19,7 +19,7 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const { t } = useTranslation();
 
-  const fetchMembers = async () => {
+  const fetchMembers = useCallback(async () => {
     try {
       setLoading(true);
       const users = await getUsersByGroup(groupId);
@@ -40,9 +40,9 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [groupId]);
 
-  const fetchAvailableUsers = async () => {
+  const fetchAvailableUsers = useCallback(async () => {
     try {
       const allUsers = await getUsers();
       // Filter out users who are already members
@@ -52,17 +52,17 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
     } catch (error) {
       console.error('Failed to fetch users:', error);
     }
-  };
+  }, [members]);
 
   useEffect(() => {
     fetchMembers();
-  }, [groupId]);
+  }, [fetchMembers]);
 
   useEffect(() => {
     if (isInviteModalOpen) {
       fetchAvailableUsers();
     }
-  }, [isInviteModalOpen, members]);
+  }, [isInviteModalOpen, fetchAvailableUsers]);
 
   const handleInvite = async (data: FormData) => {
     await createUserGroup({

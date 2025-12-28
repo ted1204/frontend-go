@@ -1,12 +1,13 @@
 import { ResourceMessage } from '../hooks/useWebSocket';
 import { SYSTEM_POD_PREFIXES } from '../config/constants';
-import useTranslation from '../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 
 /**
  * Helper component to display a colored badge based on status or event type.
  * @param {string | undefined} status - The status or event type string.
  */
 const StatusBadge = ({ status }: { status: string | undefined }) => {
+  const { t } = useTranslation();
   // Ensure status is a string for case comparison, defaulting to an empty string if undefined
   const safeStatus = status?.toLowerCase() || '';
 

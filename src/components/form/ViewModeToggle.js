@@ -1,0 +1,8 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useTranslation } from '@tailadmin/utils';
+const ViewModeToggle = ({ viewMode, setViewMode, className = '', }) => {
+    const { t } = useTranslation();
+    return (_jsxs("div", { className: className +
+            ' flex items-center rounded-lg border border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-800', children: [_jsx("button", { onClick: () => setViewMode('grid'), className: `rounded p-1.5 transition-colors ${viewMode === 'grid' ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`, title: t('view.grid'), children: _jsxs("svg", { className: "h-5 w-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: [_jsx("rect", { x: "3", y: "3", width: "7", height: "7", rx: "2" }), _jsx("rect", { x: "14", y: "3", width: "7", height: "7", rx: "2" }), _jsx("rect", { x: "14", y: "14", width: "7", height: "7", rx: "2" }), _jsx("rect", { x: "3", y: "14", width: "7", height: "7", rx: "2" })] }) }), _jsx("button", { onClick: () => setViewMode('list'), className: `rounded p-1.5 transition-colors ${viewMode === 'list' ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`, title: t('view.list'), children: _jsx("svg", { className: "h-5 w-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: _jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M4 6h16M4 12h16M4 18h16" }) }) })] }));
+};
+export default ViewModeToggle;

@@ -43,4 +43,4 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
   );
 };
 
-export default PageBreadcrumb;
+export default PageBreadcrumb; // kept for local compatibility

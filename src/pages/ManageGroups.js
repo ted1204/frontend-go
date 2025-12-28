@@ -1,0 +1,170 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+// ManageGroups.tsx (Final Component Implementation)
+import { useState, useEffect } from 'react';
+import PageBreadcrumb from '../components/common/PageBreadCrumb';
+import { PageMeta } from '@tailadmin/ui';
+import { getGroups, createGroup, deleteGroup } from '../services/groupService';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '@tailadmin/utils';
+import GroupList from '../components/GroupList';
+import CreateGroupForm from '../components/CreateGroupForm';
+import { Button } from '@tailadmin/ui';
+// Ensure this import path is correct
+import DeleteConfirmationModal from '../components/ui/modal/DeleteConfirmationModal';
+// SVG Icon for the New Group button
+const PlusIcon = ({ className = 'w-5 h-5' }) => (_jsx("svg", { className: className, xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: "2", children: _jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M12 4v16m8-8H4" }) }));
+export default function ManageGroups() {
+    // Master list of all groups
+    const [allGroups, setAllGroups] = useState([]);
+    // List displayed after filtering
+    const [filteredGroups, setFilteredGroups] = useState([]);
+    // Form States (for Modal)
+    const [groupName, setGroupName] = useState('');
+    const [description, setDescription] = useState('');
+    // UI/API States
+    const [loading, setLoading] = useState(true); // Used for initial data fetch
+    const [formLoading, setFormLoading] = useState(false); // Used ONLY for form submission (Creation/Deletion)
+    const [error, setError] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false); // Create Modal control
+    // DELETE CONFIRMATION STATES
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [groupToDelete, setGroupToDelete] = useState(null);
+    // -------------------------
+    // Search State
+    const [searchTerm, setSearchTerm] = useState('');
+    const navigate = useNavigate();
+    const { t } = useTranslation();
+    const handleGroupClick = (groupId) => {
+        navigate(`/groups/${groupId}`);
+    };
+    /**
+     * Handler to update the search term state.
+     */
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+    /**
+     * Closes the creation modal and resets form/error state.
+     */
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setGroupName('');
+        setDescription('');
+        setError(null); // Clear error on close
+    };
+    /**
+     * Closes the delete modal and resets temporary state.
+     */
+    const handleCloseDeleteModal = () => {
+        setIsDeleteModalOpen(false);
+        setGroupToDelete(null);
+        setError(null);
+    };
+    // --- Data Fetching Effect ---
+    useEffect(() => {
+        const fetchGroups = async () => {
+            try {
+                setLoading(true);
+                const fetchedGroups = await getGroups();
+                setAllGroups(fetchedGroups);
+                setFilteredGroups(fetchedGroups); // Initialize filtered list
+            }
+            catch (err) {
+                setError(err instanceof Error ? err.message : t('error.fetchGroups'));
+            }
+            finally {
+                setLoading(false);
+            }
+        };
+        fetchGroups();
+    }, [t]);
+    // --- REAL-TIME SEARCH FILTERING LOGIC ---
+    useEffect(() => {
+        const term = searchTerm.toLowerCase().trim();
+        if (!term) {
+            setFilteredGroups(allGroups);
+            return;
+        }
+        const results = allGroups.filter((group) => {
+            const nameMatch = group.GroupName?.toLowerCase().includes(term);
+            const descMatch = group.Description?.toLowerCase().includes(term);
+            const idMatch = group.GID ? String(group.GID).includes(term) : false;
+            return nameMatch || descMatch || idMatch;
+        });
+        setFilteredGroups(results);
+    }, [searchTerm, allGroups]); // Updates when search term changes or master list is modified
+    /**
+     * Handles the group creation form submission.
+     */
+    const handleCreateGroup = async (e) => {
+        e.preventDefault();
+        const input = { group_name: groupName, description };
+        try {
+            setFormLoading(true); // Lock form fields
+            setError(null);
+            const newGroup = await createGroup(input);
+            // Update the master list; filter will update automatically
+            setAllGroups((prev) => [...prev, newGroup]);
+            handleCloseModal(); // Creation successful, close modal
+        }
+        catch (err) {
+            setError(err instanceof Error ? err.message : t('error.createGroup'));
+        }
+        finally {
+            setFormLoading(false); // Unlock form fields
+        }
+    };
+    /**
+     * Opens the delete confirmation modal, setting the group to be deleted.
+     */
+    const handleDeleteClick = (group) => {
+        // Only allow deletion if no other action is currently processing
+        if (formLoading)
+            return;
+        setGroupToDelete(group);
+        setIsDeleteModalOpen(true);
+    };
+    /**
+     * Executes the deletion API call after user confirmation in the modal.
+     */
+    const handleConfirmDelete = async () => {
+        if (!groupToDelete)
+            return;
+        const groupId = groupToDelete.GID;
+        // Set loading state for delete operation and immediately close the modal
+        setFormLoading(true);
+        handleCloseDeleteModal();
+        try {
+            const res = await deleteGroup(groupId);
+            if (res.message === 'Group deleted') {
+                // Optimistically update the UI list
+                setAllGroups((prev) => prev.filter((g) => g.GID !== groupId));
+            }
+            else {
+                // Display error from API response
+                setError(res.message || t('error.deleteGroup'));
+                console.error('Deletion failed:', res.message);
+            }
+        }
+        catch (err) {
+            setError(err instanceof Error ? err.message : t('error.deleteFailed'));
+        }
+        finally {
+            setFormLoading(false);
+        }
+    };
+    return (_jsxs("div", { className: "relative", children: [_jsx(PageMeta, { title: t('page.manageGroups.title'), description: t('page.manageGroups.description') }), _jsx(PageBreadcrumb, { pageTitle: t('page.manageGroups.title') }), _jsxs("div", { className: "min-h-screen rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 xl:p-10", children: [_jsx("div", { className: "flex justify-end mb-8", children: _jsxs(Button, { type: "button", onClick: () => setIsModalOpen(true), 
+                            // Disable create button if any other action (creation/deletion) is loading
+                            disabled: formLoading, 
+                            // Consistent violet styling
+                            className: "\n                          flex items-center space-x-2 px-4 py-2 text-sm font-semibold \n                          bg-violet-600 text-white rounded-lg shadow-md\n                          hover:bg-violet-700 transition duration-150 \n                          focus:outline-none focus:ring-4 focus:ring-violet-500 focus:ring-opacity-50\n                          disabled:opacity-50 disabled:cursor-not-allowed\n                      ", children: [_jsx(PlusIcon, { className: "w-5 h-5" }), _jsx("span", { children: t('button.newGroup') })] }) }), _jsx(GroupList, { groups: filteredGroups, loading: loading, error: error, onGroupClick: handleGroupClick, 
+                        // Pass the handler to open the modal (which expects a Group object)
+                        onDeleteGroup: handleDeleteClick, searchTerm: searchTerm, onSearchChange: handleSearchChange, 
+                        // Pass formLoading state to GroupList to disable delete buttons
+                        isActionLoading: formLoading })] }), _jsx(CreateGroupForm, { groupName: groupName, description: description, 
+                // Use dedicated form loading state
+                loading: formLoading, error: error, isOpen: isModalOpen, onClose: handleCloseModal, 
+                // Handlers
+                onGroupNameChange: (e) => setGroupName(e.target.value), onDescriptionChange: (e) => setDescription(e.target.value), onSubmit: handleCreateGroup }), _jsx(DeleteConfirmationModal, { isOpen: isDeleteModalOpen, onClose: handleCloseDeleteModal, onConfirm: handleConfirmDelete, item: groupToDelete, itemType: "Group" // Specifies the type of item being deleted
+                , loading: formLoading })] }));
+}

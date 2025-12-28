@@ -1,4 +1,4 @@
-import PageMeta from '../../components/common/PageMeta';
+import { PageMeta } from '@tailadmin/ui';
 import AuthLayout from './AuthPageLayout';
 import SignInForm from '../../components/auth/SignInForm';
 

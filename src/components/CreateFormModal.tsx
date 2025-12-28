@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { createForm } from '../services/formService';
-import { useTranslation } from '../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 
 interface CreateFormModalProps {
   isOpen: boolean;

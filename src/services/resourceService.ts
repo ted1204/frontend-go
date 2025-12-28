@@ -64,7 +64,7 @@ export const getResources = async (): Promise<Resource[]> => {
 export const getResourcesByConfigFile = async (cfId: number): Promise<Resource[]> => {
   try {
     const response = await fetchWithAuth(`${CONFIG_FILE_BY_ID_URL(cfId)}/resources`, {
-      // 用你的 base URL 包裝
+      // Wrap with your base URL
       method: 'GET',
     });
     return response as Resource[];

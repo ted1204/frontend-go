@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
+import { resolve } from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -15,4 +16,10 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      '@tailadmin/ui': resolve(__dirname, 'packages/ui/dist/src/index.js'),
+      '@tailadmin/utils': resolve(__dirname, 'packages/utils/dist/src/index.js'),
+    },
+  },
 });

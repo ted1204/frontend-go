@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '@tailadmin/utils';
 import { Link } from 'react-router-dom'; // 修正 import
-import { useSidebar } from '../context/SidebarContext';
-import useTranslation from '../hooks/useTranslation';
+import { useSidebar } from '../context/useSidebar';
+import { useTranslation } from '@tailadmin/utils';
 import { ThemeToggleButton } from '../components/common/ThemeToggleButton';
 import NotificationDropdown from '../components/header/NotificationDropdown';
 import UserDropdown from '../components/header/UserDropdown';

@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react';
-import useTranslation from '../hooks/useTranslation';
+import { useTranslation } from '@tailadmin/utils';
 import { Dialog, Transition, Combobox, RadioGroup } from '@headlessui/react';
 import { CheckIcon as CheckMarkIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 
@@ -243,7 +243,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({ isOpen, onClose, user
                   <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
                     {roles.map((role) => (
                       <RadioGroup.Option
-                        key={role.name}
+                        key={role.value}
                         value={role.value}
                         className={({ active, checked }) =>
                           `${active ? 'ring-2 ring-white/60 ring-offset-2 ring-offset-blue-400' : ''} ${checked ? 'bg-blue-600 text-white' : 'bg-white dark:bg-gray-900/75'} relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none transition`
