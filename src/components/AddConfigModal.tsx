@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Button from './ui/button/Button';
 import { Project } from '../interfaces/project';
-import { getPVCList } from '../services/pvcService';
+import { getPVCList } from '../services/storageService';
 import { PVC } from '../interfaces/pvc';
 
 // Import Monaco Editor and its assets

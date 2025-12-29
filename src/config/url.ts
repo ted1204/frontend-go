@@ -57,3 +57,6 @@ export const INSTANCE_BY_ID_URL = (id: number) => `${INSTANCE_URL}/${id}`;
 export const WEBSOCKET_MONITORING_URL = (namespace: string) =>
   `ws://${BASE_URL}/ws/monitoring/${namespace}`; // Adjust protocol if needed
 export const WEBSOCKET_USER_MONITORING_URL = () => `ws://${BASE_URL}/ws/monitoring`; // Adjust protocol if needed
+
+// user storage
+export const USER_DRIVE_URL = `${API_BASE_URL}/k8s/users/browse`;

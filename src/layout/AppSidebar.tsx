@@ -72,8 +72,8 @@ const adminItems: NavItem[] = [
   },
   {
     icon: <BoxIcon />, // You can replace with a storage icon if available
-    name: 'admin.pvcManagement',
-    path: '/admin/pvc-management',
+    name: 'admin.storageManagement',
+    path: '/admin/storage-management',
   },
 ];
 

@@ -18,7 +18,7 @@ import TerminalWrapper from './pages/Terminal/TerminalPage';
 import FileBrowser from './pages/FileBrowser';
 import AdminFormDashboard from './pages/AdminFormDashboard';
 import AdminDashboard from './pages/AdminDashboard';
-import AdminPVCManagement from './pages/AdminPVCManagement';
+import StoragePage from './pages/StoragePage';
 import UserFormDashboard from './pages/UserFormDashboard';
 import Jobs from './pages/Jobs';
 import { AuthProvider } from './context/AuthContext';
@@ -53,7 +53,7 @@ export default function App() {
             <Route path="/admin/manage-projects" element={<ManageProjects />} />
             <Route path="/admin/manage-groups" element={<ManageGroups />} />
             <Route path="/admin/forms" element={<AdminFormDashboard />} />
-            <Route path="/admin/pvc-management" element={<AdminPVCManagement />} />
+            <Route path="/admin/storage-management" element={<StoragePage />} />
             <Route path="/my-forms" element={<UserFormDashboard />} />
             <Route path="/pod-tables" element={<PodTables />} />
             <Route path="/terminal" element={<TerminalWrapper />} />

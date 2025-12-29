@@ -12,7 +12,7 @@ import {
   createInstance,
   deleteInstance,
 } from '../services/configFileService';
-import { getPVCListByProject } from '../services/pvcService';
+import { getPVCListByProject } from '../services/storageService';
 import { PVC } from '../interfaces/pvc';
 import AddConfigModal from './AddConfigModal';
 import ConfigFileList from './ConfigFileList';

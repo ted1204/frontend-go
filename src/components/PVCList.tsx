@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { PVC } from '../interfaces/pvc';
-import { startFileBrowser, stopFileBrowser } from '../services/pvcService';
+import { startFileBrowser, stopFileBrowser } from '../services/storageService';
 import { BASE_URL } from '../config/url';
 import { ResourceMessage } from '../hooks/useWebSocket';
 

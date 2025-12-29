@@ -7,6 +7,8 @@ import {
   PVC_DELETE_URL,
   PVC_FILEBROWSER_START_URL,
   PVC_FILEBROWSER_STOP_URL,
+  USER_DRIVE_URL,
+  API_BASE_URL,
 } from '../config/url';
 import { PVC, PVCRequest } from '../interfaces/pvc';
 import { fetchWithAuth as baseFetchWithAuth } from '../utils/api';
@@ -133,5 +135,95 @@ export const stopFileBrowser = async (namespace: string, pvcName: string): Promi
     });
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : 'Failed to stop file browser.');
+  }
+};
+
+/**
+ * Expands the storage capacity for a specific user's hub.
+ * Endpoint: PUT /k8s/users/:username/storage/expand
+ */
+export const expandUserStorage = async (username: string, newSize: string): Promise<void> => {
+  try {
+    // Updated path to match the new K8s handler structure
+    await fetchWithAuth(`${API_BASE_URL}/k8s/users/${username}/storage/expand`, {
+      method: 'PUT',
+      body: JSON.stringify({ new_size: newSize }),
+    });
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Failed to expand user storage.');
+  }
+};
+
+/**
+ * Initializes the storage hub for a specific user.
+ * Endpoint: POST /k8s/users/:username/storage/init
+ */
+export const initUserStorage = async (username: string): Promise<void> => {
+  try {
+    // Ensure this matches the route defined in RegisterK8sRoutes
+    await fetchWithAuth(`${API_BASE_URL}/k8s/users/${username}/storage/init`, {
+      method: 'POST',
+    });
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Failed to initialize user storage.');
+  }
+};
+
+/**
+ * Deletes the storage hub for a specific user.
+ * Endpoint: DELETE /k8s/users/:username/storage
+ */
+export const deleteUserStorage = async (username: string): Promise<void> => {
+  try {
+    await fetchWithAuth(`${API_BASE_URL}/k8s/users/${username}/storage`, {
+      method: 'DELETE',
+    });
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Failed to delete user storage.');
+  }
+};
+
+/**
+ * Checks if the storage hub exists for a user.
+ * Endpoint: GET /k8s/users/:username/storage/status
+ */
+export const checkUserStorageStatus = async (username: string): Promise<boolean> => {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/k8s/users/${username}/storage/status`, {
+      method: 'GET',
+    });
+    return response.exists;
+  } catch (error) {
+    console.error('Failed to check status', error);
+    return false;
+  }
+};
+
+export const openUserDrive = async (): Promise<{ nodePort: number }> => {
+  try {
+    const response = await fetchWithAuth(USER_DRIVE_URL, {
+      method: 'POST',
+    });
+
+    const data = response.data || response;
+
+    if (!data.nodePort) {
+      throw new Error('Server did not return a valid NodePort.');
+    }
+
+    return { nodePort: Number(data.nodePort) };
+  } catch (error) {
+    console.error('Failed to open drive:', error);
+    throw new Error(error instanceof Error ? error.message : 'Failed to open user drive.');
+  }
+};
+
+export const stopUserDrive = async (): Promise<void> => {
+  try {
+    await fetchWithAuth(USER_DRIVE_URL, {
+      method: 'DELETE',
+    });
+  } catch (error) {
+    console.warn('Failed to stop user drive:', error);
   }
 };
