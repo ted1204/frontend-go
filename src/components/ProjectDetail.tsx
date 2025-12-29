@@ -68,9 +68,11 @@ const StateDisplay = ({ title, message }: { title: string; message: string }) =>
   </div>
 );
 
+
 export default function ProjectDetail() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id?: string }>();
-  if (!id) throw new Error('需要專案 ID');
+  if (!id) throw new Error(t('projectDetail.needProjectId'));
 
   // State management remains largely the same
   const { getProjectMessages } = useGlobalWebSocket();
@@ -90,8 +92,6 @@ export default function ProjectDetail() {
   const [actionLoading, setActionLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
-  const { t } = useTranslation();
-
   // Data fetching logic remains the same, fetching Project and Config Files in parallel
   useEffect(() => {
     const fetchData = async () => {
@@ -107,7 +107,7 @@ export default function ProjectDetail() {
         setConfigFiles(configData);
         setPvcs(pvcData);
       } catch (err) {
-        setError(err instanceof Error ? err.message : '無法取得資料');
+        setError(err instanceof Error ? err.message : t('projectDetail.fetchError'));
       } finally {
         setLoading(false);
       }
@@ -125,7 +125,7 @@ export default function ProjectDetail() {
       setConfigFiles(updated);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '無法建立設定檔');
+      setError(err instanceof Error ? err.message : t('projectDetail.createConfigError'));
     } finally {
       setActionLoading(false);
     }
@@ -144,14 +144,14 @@ export default function ProjectDetail() {
       setConfigFiles(updated);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '無法更新設定檔');
+      setError(err instanceof Error ? err.message : t('projectDetail.updateConfigError'));
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleDelete = async (configId: number) => {
-    if (confirm('您確定嗎？')) {
+    if (confirm(t('common.confirmDelete'))) {
       setActionLoading(true);
       try {
         await deleteConfigFile(configId);
@@ -159,7 +159,7 @@ export default function ProjectDetail() {
         setConfigFiles(updated);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : '無法刪除設定檔');
+        setError(err instanceof Error ? err.message : t('projectDetail.deleteConfigError'));
       } finally {
         setActionLoading(false);
       }
@@ -171,10 +171,10 @@ export default function ProjectDetail() {
     setActionLoading(true);
     try {
       await createInstance(id);
-      alert('已發送實例建立請求。請檢查狀態。');
+      alert(t('projectDetail.instanceCreateSent'));
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '無法建立實例');
+      setError(err instanceof Error ? err.message : t('projectDetail.createInstanceError'));
     } finally {
       setActionLoading(false);
     }
@@ -182,14 +182,14 @@ export default function ProjectDetail() {
 
   // Handler for deleting an instance
   const handleDeleteInstance = async (id: number) => {
-    if (confirm('您確定要刪除此實例嗎？')) {
+    if (confirm(t('projectDetail.confirmDeleteInstance'))) {
       setActionLoading(true);
       try {
         await deleteInstance(id);
-        alert('已發送實例刪除請求。');
+        alert(t('projectDetail.instanceDeleteSent'));
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : '無法刪除實例');
+        setError(err instanceof Error ? err.message : t('projectDetail.deleteInstanceError'));
       } finally {
         setActionLoading(false);
       }
@@ -391,8 +391,8 @@ export default function ProjectDetail() {
                       </dt>
                       <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                         <div className="flex flex-col gap-1">
-                          <span>配額: {project.GPUQuota} (單位)</span>
-                          <span>存取模式: {project.GPUAccess}</span>
+                          <span>{t('project.gpuQuotaUnit', { quota: project.GPUQuota })}</span>
+                          <span>{t('project.gpuAccessMode', { mode: t(`project.gpuAccess${project.GPUAccess?.charAt(0).toUpperCase() + project.GPUAccess?.slice(1)}`) })}</span>
                         </div>
                       </dd>
                     </div>
@@ -419,10 +419,10 @@ export default function ProjectDetail() {
                       <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                         <div className="flex flex-col gap-1">
                           <span>
-                            執行緒限制: {project.MPSLimit ? `${project.MPSLimit}%` : '無限制'}
+                            {t('project.mpsThreadLimit', { value: project.MPSLimit ? `${project.MPSLimit}%` : t('project.mpsUnlimited') })}
                           </span>
                           <span>
-                            記憶體限制: {project.MPSMemory ? `${project.MPSMemory} MB` : '無限制'}
+                            {t('project.mpsMemoryLimit', { value: project.MPSMemory ? `${project.MPSMemory} MB` : t('project.mpsUnlimited') })}
                           </span>
                         </div>
                       </dd>
@@ -445,7 +445,7 @@ export default function ProjectDetail() {
                     </svg>
                     <div>
                       <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        建立時間
+                        {t('projectDetail.createdAt')}
                       </dt>
                       <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                         {new Date(project.CreatedAt).toLocaleString()}
@@ -469,7 +469,7 @@ export default function ProjectDetail() {
                     </svg>
                     <div>
                       <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        最後更新
+                        {t('projectDetail.updatedAt')}
                       </dt>
                       <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                         {new Date(project.UpdatedAt).toLocaleString()}
@@ -518,10 +518,10 @@ export default function ProjectDetail() {
             <div className="flex items-center justify-between border-b border-gray-200 p-4 sm:p-6 dark:border-gray-600">
               <div>
                 <h3 className="text-lg font-bold leading-6 text-gray-900 dark:text-white">
-                  設定檔
+                  {t('projectDetail.configTitle')}
                 </h3>
                 <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-                  管理、編輯與部署您的 YAML 設定。
+                  {t('projectDetail.configDesc')}
                 </p>
               </div>
               <Button
@@ -541,7 +541,7 @@ export default function ProjectDetail() {
                     clipRule="evenodd"
                   />
                 </svg>
-                {actionLoading ? '處理中...' : '新增設定'}
+                {actionLoading ? t('common.loading') : t('projectDetail.addConfig')}
               </Button>
             </div>
             <div className="p-4 sm:p-6">
@@ -562,10 +562,10 @@ export default function ProjectDetail() {
             <div className="flex items-center justify-between border-b border-gray-200 p-4 sm:p-6 dark:border-gray-600">
               <div>
                 <h3 className="text-lg font-bold leading-6 text-gray-900 dark:text-white">
-                  Persistent Volume Claims
+                  {t('projectDetail.pvcTitle')}
                 </h3>
                 <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-                  管理您的儲存卷與存取檔案。
+                  {t('projectDetail.pvcDesc')}
                 </p>
               </div>
             </div>

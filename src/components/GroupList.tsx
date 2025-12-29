@@ -57,7 +57,9 @@ const SearchIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' })
 
 // --- Helper Components for States (Loading, Error, Empty) --- //
 
-const LoadingSpinner: React.FC<{ t: (key: string, vars?: Record<string, string | number>) => string }> = ({ t }) => (
+const LoadingSpinner: React.FC<{
+  t: (key: string, vars?: Record<string, string | number>) => string;
+}> = ({ t }) => (
   <div className="flex justify-center items-center p-8 text-gray-500 dark:text-gray-400">
     <svg
       className="animate-spin h-6 w-6 mr-3 text-blue-500 dark:text-blue-400"
@@ -83,7 +85,10 @@ const LoadingSpinner: React.FC<{ t: (key: string, vars?: Record<string, string |
   </div>
 );
 
-const ErrorDisplay: React.FC<{ message: string; t: (key: string, vars?: Record<string, string | number>) => string }> = ({ message, t }) => (
+const ErrorDisplay: React.FC<{
+  message: string;
+  t: (key: string, vars?: Record<string, string | number>) => string;
+}> = ({ message, t }) => (
   <div
     className="bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg"
     role="alert"
@@ -93,7 +98,10 @@ const ErrorDisplay: React.FC<{ message: string; t: (key: string, vars?: Record<s
   </div>
 );
 
-const EmptyState: React.FC<{ isFiltering: boolean; t: (key: string, vars?: Record<string, string | number>) => string }> = ({ isFiltering, t }) => (
+const EmptyState: React.FC<{
+  isFiltering: boolean;
+  t: (key: string, vars?: Record<string, string | number>) => string;
+}> = ({ isFiltering, t }) => (
   <div className="text-center py-12 px-6 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
     <GroupIcon className="mx-auto h-10 w-10 text-gray-400" />
     <h3 className="mt-4 text-lg font-semibold text-gray-800 dark:text-white">

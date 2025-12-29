@@ -10,7 +10,7 @@ import { useTranslation } from '@tailadmin/utils';
 import { getProjects } from '../services/projectService';
 import { createForm, getMyForms } from '../services/formService';
 export default function UserFormDashboard() {
-    // {t('userFormDashboard.tabStatus')}
+    // 新增 tab 狀態: 'history' 或 'apply'
     const [tab, setTab] = useState('history');
     const { t } = useTranslation();
     const [projects, setProjects] = useState([]);
