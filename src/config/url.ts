@@ -46,7 +46,7 @@ export const PVC_DELETE_URL = (namespace: string, name: string) =>
   `${API_BASE_URL}/k8s/pvc/${namespace}/${name}`;
 export const PVC_FILEBROWSER_START_URL = `${API_BASE_URL}/k8s/filebrowser/start`;
 export const PVC_FILEBROWSER_STOP_URL = `${API_BASE_URL}/k8s/filebrowser/stop`;
-export const PROJECTS_BY_USER_URL = (id: number) => `${API_BASE_URL}/projects/by-user/${id}`;
+export const PROJECTS_BY_USER_URL = () => `${API_BASE_URL}/projects/by-user`;
 // users
 export const USERS_URL = `${API_BASE_URL}/users`;
 export const USER_BY_ID_URL = (id: number) => `${API_BASE_URL}/users/${id}`;

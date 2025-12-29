@@ -9,6 +9,9 @@ const zh: Dictionary = {
     createdAt: '建立時間',
     untitled: '未命名專案',
     cancel: '取消',
+    success: "成功",
+    edit: "編輯",
+    delete: "刪除",
     submit: '送出',
     submitting: '送出中...',
     loading: '載入中...',
@@ -157,6 +160,39 @@ const zh: Dictionary = {
         successInit: '使用者 "{{user}}" 初始化成功。',
         successDelete: '使用者 "{{user}}" 的儲存空間已刪除。',
         successExpand: '使用者 "{{user}}" 已擴充至 {{size}}。',
+      },
+      project: {
+        tab: {
+          list: '儲存空間列表',
+          create: '新增專案儲存'
+        },
+        create: {
+          guideTitle: '建立專案共享空間',
+          guideDesc: '這將為選定的專案配置一個 Persistent Volume Claim (PVC)。所有專案成員將擁有讀寫權限。',
+          submit: '配置儲存空間',
+          success: '專案儲存空間建立成功。'
+        },
+        form: {
+          project: '目標專案',
+          projectPlaceholder: '請選擇一個專案...',
+          capacity: '儲存容量 (Gi)',
+          capacityHint: '預設：10Gi。日後可再擴充。'
+        },
+        list: {
+          project: '專案名稱',
+          namespace: '命名空間',
+          status: '狀態',
+          capacity: '容量',
+          age: '建立時間',
+          actions: '操作',
+          empty: '目前沒有專案儲存空間。'
+        },
+        action: {
+          edit: '編輯配額',
+          delete: '刪除',
+          confirmDelete: '您確定要「永久刪除」此專案的儲存空間嗎？此動作無法復原。',
+          expandPrompt: '請輸入新的容量大小 (例如：20Gi)：'
+        }
       },
     },
     pvc: {
@@ -446,20 +482,38 @@ const zh: Dictionary = {
     },
   },
   fileBrowser: {
-    title: '檔案瀏覽器',
-    description: '管理個人與專案檔案。',
-    selectProject: '選擇專案',
-    noProjects: '未找到專案。',
-    tab: {
-      user: '個人雲端硬碟 (My Drive)',
-      project: '專案共享硬碟',
+    "user": {
+      "title": "我的個人雲端硬碟",
+      "description": "透過安全入口存取您的私有儲存空間。",
+      "confirmStop": "確定要停止您的個人雲端硬碟嗎？"
     },
-    user: {
-      title: '個人雲端硬碟',
-      description: '存取您的私人儲存空間。您的檔案將被安全地保存在平台上。',
-      openBtn: '開啟檔案管理器',
-      note: '點擊後將開啟新視窗連接至您的儲存中心。',
+    "status": {
+      "checking": "正在檢查系統配置...",
+      "noStorage": "儲存空間尚未初始化，請聯繫管理員建立。"
     },
+    "label": {
+      "status": "目前狀態"
+    },
+    "state": {
+      "running": "運行中 (就緒)",
+      "pending": "啟動中...",
+      "terminating": "停止中...",
+      "stopped": "已停止",
+      "unknown": "未知狀態"
+    },
+    "button": {
+      "start": "啟動硬碟",
+      "starting": "請求中...",
+      "open": "開啟",
+      "stop": "停止",
+      "preparing": "環境準備中...",
+      "terminating": "正在終止..."
+    },
+    "error": {
+      "verifyStorage": "無法驗證儲存配置狀態。",
+      "startFailed": "啟動硬碟失敗。",
+      "stopFailed": "停止硬碟失敗。"
+    }
   },
   notification: {
     title: '通知',

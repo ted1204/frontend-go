@@ -17,8 +17,8 @@ import {
   expandUserStorage,
   deleteUserStorage,
   checkUserStorageStatus,
-} from '../../services/storageService';
-import Button from '../ui/button/Button';
+} from '../../../services/storageService';
+import Button from '../../ui/button/Button';
 
 // Define possible states for the storage hub
 type StorageStatus = 'unknown' | 'exists' | 'missing';

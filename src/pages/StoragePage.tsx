@@ -5,8 +5,8 @@ import { useTranslation } from '@tailadmin/utils';
 import { ServerStackIcon, UserCircleIcon, CubeIcon } from '@heroicons/react/24/outline';
 
 // Components
-// import ProjectStorageManagement from '../components/admin-storage/ProjectStorageManagement';
-import UserStorageManagement from '../components/admin-storage/UserStorageManagement';
+import ProjectStorageManagement from '../components/admin-storage/project/ProjectStorageManagement';
+import UserStorageManagement from '../components/admin-storage/user/UserStorageManagement';
 
 type MainTab = 'user' | 'project';
 
@@ -75,7 +75,7 @@ const StoragePage: React.FC = () => {
           </div>
         ) : (
           // Container for Project Storage Management (Legacy PVC Admin)
-          <UserStorageManagement />
+          <ProjectStorageManagement />
         )}
       </div>
     </div>

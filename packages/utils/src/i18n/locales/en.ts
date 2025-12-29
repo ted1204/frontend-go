@@ -12,6 +12,9 @@ const en = {
     loading: 'Loading...',
     error: 'Error',
     id: 'ID',
+    success: "Success",
+    edit: "Edit",
+    delete: "Delete"
   },
   badge: {
     new: 'New',
@@ -157,6 +160,39 @@ const en = {
         successDelete: 'Storage for {{user}} has been deleted.',
         successExpand: 'Expanded {{user}} to {{size}}.',
       },
+      project: {
+        tab: {
+          list: 'Storage List',
+          create: 'New Project Storage'
+        },
+        create: {
+          guideTitle: 'Create Project Shared Space',
+          guideDesc: 'This will provision a Persistent Volume Claim (PVC) for the selected project. All project members will have Read-Write access.',
+          submit: 'Provision Storage',
+          success: 'Project storage created successfully.'
+        },
+        form: {
+          project: 'Target Project',
+          projectPlaceholder: 'Select a project...',
+          capacity: 'Storage Capacity (Gi)',
+          capacityHint: 'Default: 10Gi. Can be expanded later.'
+        },
+        list: {
+          project: 'Project Name',
+          namespace: 'Namespace',
+          status: 'Status',
+          capacity: 'Capacity',
+          age: 'Age',
+          actions: 'Actions',
+          empty: 'No project storage found.'
+        },
+        action: {
+          edit: 'Edit Quota',
+          delete: 'Delete',
+          confirmDelete: 'Are you sure you want to PERMANENTLY delete this project storage? This action cannot be undone.',
+          expandPrompt: 'Please enter the new capacity (e.g., 20Gi):'
+        }
+      }
     },
     pvc: {
       title: 'PVC Management',
@@ -446,21 +482,38 @@ const en = {
     },
   },
   fileBrowser: {
-    title: 'File Browser',
-    description: 'Manage personal and project files.',
-    selectProject: 'Select a Project',
-    noProjects: 'No projects found.',
-    tab: {
-      user: 'My Drive (Personal)',
-      project: 'Project Files (Shared)',
+    "user": {
+      "title": "My Personal Drive",
+      "description": "Access your private storage space via Secure Ingress.",
+      "confirmStop": "Are you sure you want to stop your personal drive?"
     },
-    user: {
-      title: 'My Personal Drive',
-      description:
-        'Access your private storage space. Your files are persisted and secured on the platform.',
-      openBtn: 'Open File Manager',
-      note: 'This will open a new window connecting to your storage hub.',
+    "status": {
+      "checking": "Checking system configuration...",
+      "noStorage": "Storage space not initialized. Please contact administrator."
     },
+    "label": {
+      "status": "Status"
+    },
+    "state": {
+      "running": "Running (Ready)",
+      "pending": "Starting...",
+      "terminating": "Stopping...",
+      "stopped": "Stopped",
+      "unknown": "Unknown"
+    },
+    "button": {
+      "start": "Start Drive",
+      "starting": "Requesting...",
+      "open": "Open",
+      "stop": "Stop",
+      "preparing": "Preparing...",
+      "terminating": "Terminating..."
+    },
+    "error": {
+      "verifyStorage": "Unable to verify storage configuration.",
+      "startFailed": "Failed to start drive.",
+      "stopFailed": "Failed to stop drive."
+    }
   },
   notification: {
     title: 'Notifications',

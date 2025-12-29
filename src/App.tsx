@@ -15,7 +15,7 @@ import ManageGroups from './pages/ManageGroups';
 import PrivateRoute from './components/PrivateRoute';
 import PublicRoute from './components/PublicRoute';
 import TerminalWrapper from './pages/Terminal/TerminalPage';
-import FileBrowser from './pages/FileBrowser';
+import BrowserPage from './pages/BrowserPage';
 import AdminFormDashboard from './pages/AdminFormDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import StoragePage from './pages/StoragePage';
@@ -57,7 +57,7 @@ export default function App() {
             <Route path="/my-forms" element={<UserFormDashboard />} />
             <Route path="/pod-tables" element={<PodTables />} />
             <Route path="/terminal" element={<TerminalWrapper />} />
-            <Route path="/file-browser" element={<FileBrowser />} />
+            <Route path="/file-browser" element={<BrowserPage />} />
           </Route>
         </Route>
 

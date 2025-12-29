@@ -1,4 +1,5 @@
 import {
+  PROJECTS_BY_USER_URL,
   PROJECTS_URL,
   PROJECT_BY_ID_URL,
   PROJECT_CONFIG_FILES_URL,
@@ -18,6 +19,30 @@ export const getProjects = async (): Promise<Project[]> => {
     return response as Project[];
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : 'Failed to fetch projects.');
+  }
+};
+
+/**
+ * Fetch all projects associated with the current user.
+ * This endpoint typically returns project details along with the user's specific role.
+ * GET /projects/by-user
+ */
+export const getProjectListByUser = async (): Promise<Project[]> => {
+  try {
+    const response = await fetchWithAuth(PROJECTS_BY_USER_URL(), {
+      method: 'GET',
+    });
+
+    // Handle different response structures (standardized data wrapper)
+    const data = response.data !== undefined ? response.data : response;
+
+    // Ensure we return an array for the UI to map over
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error('getProjectListByUser error:', error);
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed to fetch your projects.'
+    );
   }
 };
 
