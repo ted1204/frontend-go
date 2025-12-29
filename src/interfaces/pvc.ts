@@ -3,6 +3,7 @@ export interface PVC {
   namespace: string;
   size: string;
   status: string;
+  isGlobal?: boolean;
 }
 
 export interface PVCRequest {

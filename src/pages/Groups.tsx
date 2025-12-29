@@ -6,7 +6,7 @@ import { Group } from '../interfaces/group';
 import { getGroups } from '../services/groupService'; // Import createGroup
 import { getGroupsByUser } from '../services/userGroupService';
 import { PageMeta } from '@tailadmin/ui';
-import PageBreadcrumb from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
 import { useTranslation } from '@tailadmin/utils';
 import GroupCard from '../components/groups/GroupCard';
 import LoadingState from '../components/groups/LoadingState';

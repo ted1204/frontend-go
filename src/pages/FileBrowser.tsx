@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import PageBreadcrumb from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
 import { PageMeta } from '@tailadmin/ui';
 import { useTranslation } from '@tailadmin/utils';
 import { Project } from '../interfaces/project';

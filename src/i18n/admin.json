@@ -1,0 +1,45 @@
+{
+  "pvcManagement": "PVC Management",
+  "pvcList": {
+    "title": "List PVCs",
+    "namespace": "Namespace",
+    "namespacePlaceholder": "Enter namespace",
+    "customNamespace": "Custom...",
+    "loading": "Loading...",
+    "fetchError": "Failed to fetch PVCs.",
+    "name": "Name",
+    "status": "Status",
+    "size": "Size",
+    "noData": "No PVCs found."
+  },
+  "pvcCreate": {
+    "title": "Create PVC",
+    "namespace": "Namespace",
+    "name": "PVC Name",
+    "storageClass": "Storage Class",
+    "size": "Size (e.g. 1Gi)",
+    "submit": "Create",
+    "success": "PVC created successfully!",
+    "error": "Failed to create PVC.",
+    "namespaceInvalid": "Cannot create PVC in kube-system namespace."
+  },
+  "pvcDelete": {
+    "title": "Delete PVC",
+    "namespace": "Namespace",
+    "name": "PVC Name",
+    "submit": "Delete",
+    "success": "PVC deleted successfully!",
+    "error": "Failed to delete PVC.",
+    "namespaceInvalid": "Cannot delete PVC in kube-system namespace."
+  },
+  "pvcExpand": {
+    "title": "Expand PVC",
+    "namespace": "Namespace",
+    "name": "PVC Name",
+    "newSize": "New Size (e.g. 2Gi)",
+    "submit": "Expand",
+    "success": "PVC expanded successfully!",
+    "error": "Failed to expand PVC.",
+    "namespaceInvalid": "Cannot expand PVC in kube-system namespace."
+  }
+}

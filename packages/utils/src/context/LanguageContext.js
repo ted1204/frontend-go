@@ -4,7 +4,6 @@ import { LanguageContext } from './LanguageContextCore';
 export const LanguageProvider = ({ children }) => {
     const [language, setLanguage] = React.useState('en');
     const toggleLanguage = () => setLanguage((prev) => (prev === 'zh' ? 'en' : 'zh'));
-    console.log('[LanguageProvider] render, language =', language);
     return (_jsx(LanguageContext.Provider, { value: { language, setLanguage, toggleLanguage }, children: children }));
 };
 export const useLanguage = () => {

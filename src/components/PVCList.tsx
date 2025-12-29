@@ -57,6 +57,8 @@ export default function PVCList({
   pvcs,
   pods = [],
 }: Omit<PVCListProps, 'namespace'> & { namespace?: string }) {
+  // 過濾掉 isGlobal 為 true 的 PVC
+  const filteredPVCs = pvcs.filter((pvc) => !pvc.isGlobal);
   const [loading, setLoading] = useState<Record<string, boolean>>({});
   const [waitingForFileBrowser, setWaitingForFileBrowser] = useState<string | null>(null);
 
@@ -105,7 +107,7 @@ export default function PVCList({
     }
   };
 
-  if (pvcs.length === 0) {
+  if (filteredPVCs.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center dark:border-gray-600">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white">找不到 PVC</h3>
@@ -118,7 +120,7 @@ export default function PVCList({
 
   return (
     <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 dark:divide-gray-700 dark:border-gray-700">
-      {pvcs.map((pvc) => {
+      {filteredPVCs.map((pvc) => {
         const fbPodName = `filebrowser-${pvc.name}`;
         const fbPod = pods.find((p) => p.name === fbPodName && p.kind === 'Pod');
         const fbSvc = pods.find((p) => p.name === `${fbPodName}-svc` && p.kind === 'Service');

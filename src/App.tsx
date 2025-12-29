@@ -18,45 +18,52 @@ import TerminalWrapper from './pages/Terminal/TerminalPage';
 import FileBrowser from './pages/FileBrowser';
 import AdminFormDashboard from './pages/AdminFormDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminPVCManagement from './pages/AdminPVCManagement';
 import UserFormDashboard from './pages/UserFormDashboard';
 import Jobs from './pages/Jobs';
+import { AuthProvider } from './context/AuthContext';
 
 export default function App() {
   return (
-    <>
-      <Router>
-        <ScrollToTop />
-        <Routes>
-          {/* Public Routes */}
-          <Route element={<PublicRoute />}>
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-          </Route>
+    <Router>
+      <ScrollToTop />
+      <Routes>
+        {/* Public Routes */}
+        <Route element={<PublicRoute />}>
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+        </Route>
 
-          {/* Protected Routes */}
-          <Route element={<PrivateRoute />}>
-            <Route element={<AppLayout />}>
-              <Route index path="/" element={<Home />} />
-              <Route path="/groups" element={<Groups />} />
-              <Route path="/groups/:id" element={<GroupDetail />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/projects/:id" element={<ProjectDetail />} />
-              <Route path="/jobs" element={<Jobs />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/manage-projects" element={<ManageProjects />} />
-              <Route path="/admin/manage-groups" element={<ManageGroups />} />
-              <Route path="/admin/forms" element={<AdminFormDashboard />} />
-              <Route path="/my-forms" element={<UserFormDashboard />} />
-              <Route path="/pod-tables" element={<PodTables />} />
-              <Route path="/terminal" element={<TerminalWrapper />} />
-              <Route path="/file-browser" element={<FileBrowser />} />
-            </Route>
+        {/* Protected Routes */}
+        <Route
+          element={
+            <AuthProvider>
+              <PrivateRoute />
+            </AuthProvider>
+          }
+        >
+          <Route element={<AppLayout />}>
+            <Route index path="/" element={<Home />} />
+            <Route path="/groups" element={<Groups />} />
+            <Route path="/groups/:id" element={<GroupDetail />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/projects/:id" element={<ProjectDetail />} />
+            <Route path="/jobs" element={<Jobs />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/manage-projects" element={<ManageProjects />} />
+            <Route path="/admin/manage-groups" element={<ManageGroups />} />
+            <Route path="/admin/forms" element={<AdminFormDashboard />} />
+            <Route path="/admin/pvc-management" element={<AdminPVCManagement />} />
+            <Route path="/my-forms" element={<UserFormDashboard />} />
+            <Route path="/pod-tables" element={<PodTables />} />
+            <Route path="/terminal" element={<TerminalWrapper />} />
+            <Route path="/file-browser" element={<FileBrowser />} />
           </Route>
+        </Route>
 
-          {/* Not Found */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
-    </>
+        {/* Not Found */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
   );
 }

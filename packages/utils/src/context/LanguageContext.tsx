@@ -6,7 +6,6 @@ import type { Locale } from '../i18n';
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguage] = React.useState<Locale>('en');
   const toggleLanguage = () => setLanguage((prev) => (prev === 'zh' ? 'en' : 'zh'));
-  console.log('[LanguageProvider] render, language =', language);
   return (
     <LanguageContext.Provider value={{ language, setLanguage, toggleLanguage }}>
       {children}

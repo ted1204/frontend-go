@@ -4,7 +4,7 @@ import UserFormApply from '../components/form/UserFormApply';
 import UserFormHistory from '../components/form/UserFormHistory';
 import TabSwitcher from '../components/form/TabSwitcher';
 import { PageMeta } from '@tailadmin/ui';
-import PageBreadcrumb from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
 import { useTranslation } from '@tailadmin/utils';
 import { getProjects } from '../services/projectService';
 import { createForm, getMyForms } from '../services/formService';

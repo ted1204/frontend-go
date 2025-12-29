@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { PageMeta } from '@tailadmin/ui';
-import PageBreadcrumb from './common/PageBreadCrumb';
+import { PageBreadcrumb } from './common/PageBreadCrumb';
 import { Project } from '../interfaces/project';
 import { getProjectById } from '../services/projectService';
 import {
@@ -67,7 +67,6 @@ const StateDisplay = ({ title, message }: { title: string; message: string }) =>
     <p className="mt-2 text-gray-500 dark:text-gray-400">{message}</p>
   </div>
 );
-
 
 export default function ProjectDetail() {
   const { t } = useTranslation();
@@ -392,7 +391,13 @@ export default function ProjectDetail() {
                       <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                         <div className="flex flex-col gap-1">
                           <span>{t('project.gpuQuotaUnit', { quota: project.GPUQuota })}</span>
-                          <span>{t('project.gpuAccessMode', { mode: t(`project.gpuAccess${project.GPUAccess?.charAt(0).toUpperCase() + project.GPUAccess?.slice(1)}`) })}</span>
+                          <span>
+                            {t('project.gpuAccessMode', {
+                              mode: t(
+                                `project.gpuAccess${project.GPUAccess?.charAt(0).toUpperCase() + project.GPUAccess?.slice(1)}`,
+                              ),
+                            })}
+                          </span>
                         </div>
                       </dd>
                     </div>
@@ -419,10 +424,18 @@ export default function ProjectDetail() {
                       <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                         <div className="flex flex-col gap-1">
                           <span>
-                            {t('project.mpsThreadLimit', { value: project.MPSLimit ? `${project.MPSLimit}%` : t('project.mpsUnlimited') })}
+                            {t('project.mpsThreadLimit', {
+                              value: project.MPSLimit
+                                ? `${project.MPSLimit}%`
+                                : t('project.mpsUnlimited'),
+                            })}
                           </span>
                           <span>
-                            {t('project.mpsMemoryLimit', { value: project.MPSMemory ? `${project.MPSMemory} MB` : t('project.mpsUnlimited') })}
+                            {t('project.mpsMemoryLimit', {
+                              value: project.MPSMemory
+                                ? `${project.MPSMemory} MB`
+                                : t('project.mpsUnlimited'),
+                            })}
                           </span>
                         </div>
                       </dd>

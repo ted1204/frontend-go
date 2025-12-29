@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { PageMeta } from '@tailadmin/ui';
-import PageBreadcrumb from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
 import { useTranslation } from '@tailadmin/utils';
 import { GroupIcon, TaskIcon } from '../icons';
 

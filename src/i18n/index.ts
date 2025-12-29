@@ -1,5 +1,6 @@
 const translations = {
   zh: {
+    'breadcrumb.home': '首頁',
     'form.apply.title': '申請',
     'form.history.title': '歷史紀錄',
     'form.history.loading': '載入中...',
@@ -272,6 +273,7 @@ const translations = {
     'page.notFound.back': '返回首頁',
   },
   en: {
+    'breadcrumb.home': 'Home',
     'form.apply.title': 'Apply',
     'form.history.title': 'History',
     'form.history.loading': 'Loading...',

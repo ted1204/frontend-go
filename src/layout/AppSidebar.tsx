@@ -1,17 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { useTranslation } from '@tailadmin/utils';
-import { LocaleKey } from '../i18n';
-
-// Assume these icons are imported from an icon library
 import { BoxIcon, ChevronDownIcon, GridIcon, GroupIcon, HorizontaLDots, TaskIcon } from '../icons';
 import { useSidebar } from '../context/useSidebar';
 
 type NavItem = {
-  name: LocaleKey;
+  name: string;
   icon: React.ReactNode;
   path?: string;
-  subItems?: { name: LocaleKey; path: string; pro?: boolean; new?: boolean }[];
+  subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
 const navItems: NavItem[] = [
@@ -73,63 +70,58 @@ const adminItems: NavItem[] = [
     name: 'admin.forms',
     path: '/admin/forms',
   },
+  {
+    icon: <BoxIcon />, // You can replace with a storage icon if available
+    name: 'admin.pvcManagement',
+    path: '/admin/pvc-management',
+  },
 ];
 
 const AppSidebar: React.FC = () => {
+  // Checks if the given path is active (matches current location)
+  const isActive = (path: string) => location.pathname === path;
+
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
+  // --- Sidebar State ---
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: 'main' | 'admin';
     index: number;
   } | null>(null);
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>({});
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  // --- View/Admin State ---
+  const [viewMode, setViewMode] = useState<'user' | 'admin'>(() => {
+    const stored = localStorage.getItem('viewMode');
+    return stored === 'admin' ? 'admin' : 'user';
+  });
   const [isAdmin, setIsAdmin] = useState(false);
-  const [viewMode, setViewMode] = useState<'user' | 'admin'>('user');
+  // Session flag to prevent unwanted auto-switching
+  const hasManuallySwitchedToUser = useRef(false);
 
-  // const isActive = (path: string) => location.pathname === path;
-  const isActive = useCallback((path: string) => location.pathname === path, [location.pathname]);
-
+  // Only auto-switch to admin view on first mount if on /admin and no viewMode in localStorage
   useEffect(() => {
+    // Auto-switch to admin view only on first load, if on /admin and no viewMode is set
+    // Prevent auto-switch if user has manually switched to user view in this session
     const userData = localStorage.getItem('userData');
     if (userData) {
       const parsedData = JSON.parse(userData);
       const isSuperAdmin = parsedData.is_super_admin === true;
       setIsAdmin(isSuperAdmin);
-      // If user is admin and on an admin route, switch to admin view automatically
-      if (isSuperAdmin && location.pathname.startsWith('/admin')) {
+      if (
+        isSuperAdmin &&
+        window.location.pathname.startsWith('/admin') &&
+        localStorage.getItem('viewMode') === null &&
+        !hasManuallySwitchedToUser.current // Block auto-switch if user manually switched to user view
+      ) {
         setViewMode('admin');
       }
     }
-
-    let submenuMatched = false;
-    ['main', 'admin'].forEach((menuType) => {
-      // Only check the active menu type
-      if (menuType === 'main' && viewMode === 'admin') return;
-      if (menuType === 'admin' && viewMode === 'user') return;
-
-      const items = menuType === 'main' ? navItems : adminItems;
-      items.forEach((nav, index) => {
-        if (nav.subItems) {
-          nav.subItems.forEach((subItem) => {
-            if (isActive(subItem.path)) {
-              setOpenSubmenu({ type: menuType as 'main' | 'admin', index });
-              submenuMatched = true;
-            }
-          });
-        } else if (nav.path && isActive(nav.path)) {
-          setOpenSubmenu(null); // If it's a single path, close submenu
-          submenuMatched = true;
-        }
-      });
-    });
-
-    if (!submenuMatched) {
-      setOpenSubmenu(null);
-    }
-  }, [location, isActive, viewMode]);
+  }, []); // Only run on mount
 
   useEffect(() => {
     if (openSubmenu !== null) {
@@ -364,7 +356,22 @@ const AppSidebar: React.FC = () => {
         {isAdmin && (isExpanded || isHovered || isMobileOpen) && (
           <div className="mt-auto px-6 pb-6">
             <button
-              onClick={() => setViewMode(viewMode === 'user' ? 'admin' : 'user')}
+              onClick={() => {
+                if (viewMode === 'user') {
+                  setViewMode('admin');
+                  localStorage.setItem('viewMode', 'admin');
+                } else {
+                  // Set session flag BEFORE setViewMode to prevent auto-switch back
+                  if (location.pathname.startsWith('/admin')) {
+                    hasManuallySwitchedToUser.current = true;
+                    localStorage.removeItem('viewMode');
+                    setViewMode('user');
+                    navigate('/projects');
+                  } else {
+                    setViewMode('user');
+                  }
+                }
+              }}
               className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
             >
               {viewMode === 'user' ? (

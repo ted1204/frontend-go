@@ -1,4 +1,4 @@
-import translations from './index.js';
+import translations from './index';
 
 const zhKeys = Object.keys(translations.zh);
 const enKeys = Object.keys(translations.en);

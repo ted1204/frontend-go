@@ -1,7 +1,7 @@
 // ManageGroups.tsx (Final Component Implementation)
 
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import PageBreadcrumb from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
 import { PageMeta } from '@tailadmin/ui';
 import { getGroups, createGroup, CreateGroupInput, deleteGroup } from '../services/groupService';
 import { Group } from '../interfaces/group';
