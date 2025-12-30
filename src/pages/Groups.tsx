@@ -5,16 +5,16 @@ import { useNavigate } from 'react-router-dom';
 import { Group } from '../interfaces/group';
 import { getGroups } from '../services/groupService'; // Import createGroup
 import { getGroupsByUser } from '../services/userGroupService';
-import { PageMeta } from '@tailadmin/ui';
+import { PageMeta } from '@nthucscc/ui';
 import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 import GroupCard from '../components/groups/GroupCard';
 import LoadingState from '../components/groups/LoadingState';
 import ErrorState from '../components/groups/ErrorState';
 import EmptyState from '../components/groups/EmptyState';
 import CreateGroupModal from '../components/groups/CreateGroupModal'; // Import the new modal component
-import { Pagination } from '@tailadmin/ui';
-import { SearchInput } from '@tailadmin/ui';
+import { Pagination } from '@nthucscc/ui';
+import { SearchInput } from '@nthucscc/ui';
 
 export default function Groups() {
   const { t } = useTranslation();
@@ -36,11 +36,11 @@ export default function Groups() {
         setLoading(true);
         setError(null);
         const userDataString = localStorage.getItem('userData');
-        if (!userDataString) throw new Error(t('groups.error.userNotLogged'));
+        if (!userDataString) throw new Error(t('groups_error_userNotLogged'));
 
         const userData = JSON.parse(userDataString);
         const userId = userData?.user_id;
-        if (!userId) throw new Error(t('groups.error.userIdMissing'));
+        if (!userId) throw new Error(t('groups_error_userIdMissing'));
 
         const [allGroups, userGroupMappings] = await Promise.all([
           getGroups(),
@@ -51,7 +51,7 @@ export default function Groups() {
         const filteredGroups = allGroups.filter((group) => userGroupIds.has(group.GID));
         setGroups(filteredGroups);
       } catch (err) {
-        setError(err instanceof Error ? err.message : t('groups.error.unknown'));
+        setError(err instanceof Error ? err.message : t('groups_error_unknown'));
       } finally {
         setLoading(false);
       }
@@ -108,7 +108,7 @@ export default function Groups() {
     if (filteredGroups.length === 0) {
       return (
         <div className="text-center py-10 text-gray-500">
-          {t('groups.noMatch', { term: searchTerm })}
+          {t('groups_noMatch', { term: searchTerm })}
         </div>
       );
     }
@@ -132,22 +132,22 @@ export default function Groups() {
   // --- Render --- //
   return (
     <>
-      <PageMeta title={t('groups.page.title')} description={t('groups.page.description')} />
-      <PageBreadcrumb pageTitle={t('breadcrumb.groups') || 'Groups'} />
+      <PageMeta title={t('groups_page_title')} description={t('groups_page_description')} />
+      <PageBreadcrumb pageTitle={t('breadcrumb_groups') || 'Groups'} />
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900/50 sm:p-8">
         <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {t('groups.myGroups')}
+              {t('groups_myGroups')}
             </h2>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{t('groups.subtitle')}</p>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{t('groups_subtitle')}</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <SearchInput
               value={searchTerm}
               onChange={setSearchTerm}
-              placeholder={t('groups.searchPlaceholder')}
+              placeholder={t('groups_searchPlaceholder')}
             />
             <button
               onClick={handleOpenCreateModal} // This now opens the modal
@@ -161,7 +161,7 @@ export default function Groups() {
               >
                 <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
               </svg>
-              {t('groups.createNew')}
+              {t('groups_createNew')}
             </button>
           </div>
         </div>

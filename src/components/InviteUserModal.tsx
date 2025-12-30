@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 import { Dialog, Transition, Combobox, RadioGroup } from '@headlessui/react';
 import { CheckIcon as CheckMarkIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 
@@ -24,21 +24,23 @@ interface InviteUserModalProps {
   onSubmit: (formData: FormData) => Promise<void>;
 }
 
-const roles = [
+import { LocaleKey } from '@nthucscc/utils';
+
+const roles: { nameKey: LocaleKey; value: 'user' | 'admin' | 'manager'; descKey: LocaleKey }[] = [
   {
-    nameKey: 'role.admin.name',
-    value: 'admin' as const,
-    descKey: 'role.admin.desc',
+    nameKey: 'role.admin.name' as LocaleKey,
+    value: 'admin',
+    descKey: 'role.admin.desc' as LocaleKey,
   },
   {
-    nameKey: 'role.manager.name',
-    value: 'manager' as const,
-    descKey: 'role.manager.desc',
+    nameKey: 'role.manager.name' as LocaleKey,
+    value: 'manager',
+    descKey: 'role.manager.desc' as LocaleKey,
   },
   {
-    nameKey: 'role.user.name',
-    value: 'user' as const,
-    descKey: 'role.user.desc',
+    nameKey: 'role.user.name' as LocaleKey,
+    value: 'user',
+    descKey: 'role.user.desc' as LocaleKey,
   },
 ];
 

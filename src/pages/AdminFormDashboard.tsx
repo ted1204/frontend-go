@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getAllForms, updateFormStatus } from '../services/formService';
 import { Form, FormStatus } from '../interfaces/form';
-import { PageMeta } from '@tailadmin/ui';
+import { PageMeta } from '@nthucscc/ui';
 import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 export default function AdminFormDashboard() {
   const { t } = useTranslation();
@@ -17,7 +17,7 @@ export default function AdminFormDashboard() {
       const data = await getAllForms();
       setTickets(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('error.initData'));
+      setError(err instanceof Error ? err.message : t('error_initData'));
     } finally {
       setLoading(false);
     }

@@ -11,7 +11,7 @@ import {
   API_BASE_URL,
 } from '../config/url';
 import { PVC, PVCRequest } from '../interfaces/pvc';
-// 請確保此路徑正確，或將介面定義直接寫在下方
+
 import {
   ProjectPVC,
   CreateProjectStoragePayload,
@@ -280,4 +280,48 @@ export const createProjectStorage = async (
  */
 export const getProjectStorageProxyUrl = (projectId: number | string): string => {
   return `${PROJECT_STORAGE_BASE_URL}/${projectId}/proxy/`;
+};
+
+export const getUserHubProxyUrl = (): string => {
+  return `${API_BASE_URL}/k8s/users/proxy/`;
+};
+
+/**
+ * Fetch project storages for the current logged-in user.
+ * GET /k8s/storage/projects/my-storages
+ */
+export const getMyProjectStorages = async (): Promise<ProjectPVC[]> => {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/k8s/storage/projects/my-storages`, {
+      method: 'GET',
+    });
+
+    const result = response.data !== undefined ? response.data : response;
+    return Array.isArray(result) ? result : [];
+  } catch (error) {
+    console.error('getMyProjectStorages error:', error);
+    throw new Error('Failed to fetch your project storages.');
+  }
+};
+
+// storageService.ts
+
+/**
+ * Start project file browser with RBAC consideration on backend.
+ * POST /k8s/storage/projects/:id/start
+ */
+export const startProjectFileBrowser = async (projectId: string | number): Promise<void> => {
+  await fetchWithAuth(`${API_BASE_URL}/k8s/storage/projects/${projectId}/start`, {
+    method: 'POST',
+  });
+};
+
+/**
+ * Stop project file browser for a specific project.
+ * DELETE /k8s/storage/projects/:id/stop
+ */
+export const stopProjectFileBrowser = async (projectId: string | number): Promise<void> => {
+  await fetchWithAuth(`${API_BASE_URL}/k8s/storage/projects/${projectId}/stop`, {
+    method: 'DELETE',
+  });
 };

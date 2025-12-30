@@ -1,6 +1,6 @@
 // src/components/admin-storage/project/ProjectStorageManagement.tsx
 import React, { useState } from 'react';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 import { ListBulletIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 
 // Import sub-components
@@ -43,7 +43,7 @@ const ProjectStorageManagement: React.FC = () => {
               ${activeTab === 'list' ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'}
             `}
             />
-            {t('admin.storage.project.tab.list')}
+            {t('admin_storage_project_tab_list')}
           </button>
 
           <button
@@ -63,7 +63,7 @@ const ProjectStorageManagement: React.FC = () => {
               ${activeTab === 'create' ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'}
             `}
             />
-            {t('admin.storage.project.tab.create')}
+            {t('admin_storage_project_tab_create')}
           </button>
         </nav>
       </div>

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { PageMeta } from '@tailadmin/ui';
+import { PageMeta } from '@nthucscc/ui';
 import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 import { GroupIcon, TaskIcon } from '../icons';
 
 export default function AdminDashboard() {
@@ -9,8 +9,8 @@ export default function AdminDashboard() {
   return (
     <div>
       <PageMeta
-        title={t('page.admin.title') || 'Admin'}
-        description={t('page.admin.description') || ''}
+        title={t('page_admin_title') || 'Admin'}
+        description={t('page_admin_description') || ''}
       />
       <PageBreadcrumb pageTitle={t('admin.dashboard') || 'Admin Dashboard'} />
 
@@ -26,10 +26,10 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                {t('admin.manageProjects')}
+                {t('admin_manageProjects')}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                {t('page.admin.description')}
+                {t('page_admin_description')}
               </p>
             </div>
           </div>
@@ -46,9 +46,9 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
-                {t('admin.manageGroups')}
+                {t('admin_manageGroups')}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.manageGroups')}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin_manageGroups')}</p>
             </div>
           </div>
         </Link>
@@ -77,9 +77,9 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400">
-                {t('admin.forms')}
+                {t('admin_forms')}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.forms')}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin_forms')}</p>
             </div>
           </div>
         </Link>

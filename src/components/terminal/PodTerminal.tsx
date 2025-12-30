@@ -3,7 +3,7 @@ import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { BASE_URL } from '../../config/url';
 import 'xterm/css/xterm.css';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 // Define the message structure for communication with the backend.
 interface TerminalMessage {

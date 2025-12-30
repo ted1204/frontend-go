@@ -1,5 +1,5 @@
 {
-  "name": "tailadmin-react",
+  "name": "nthucscc-react",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -10,12 +10,12 @@
     "dev": "vite",
     "dev:app": "npm run -w frontend-app dev",
     "build": "tsc -b && vite build",
-    "build:packages": "npm run -w @tailadmin/ui build || true",
+    "build:packages": "npm run -w @nthucscc/ui build || true",
     "lint": "eslint .",
     "lint:fix": "eslint --ext .ts,.tsx,.js,.jsx src --fix",
     "format": "prettier --write \"**/*.{js,ts,tsx,jsx,json,css,md}\"",
     "format:check": "prettier --check \"**/*.{js,ts,tsx,jsx,json,css,md}\"",
-    "ci:check": "npx tsc -b --verbose && npm run -w @tailadmin/utils build && npm run -w @tailadmin/ui build && npm run lint && npm run format:check",
+    "ci:check": "npx tsc -b --verbose && npm run -w @nthucscc/utils build && npm run -w @nthucscc/ui build && npm run lint && npm run format:check",
     "prepare": "husky install",
     "preview": "vite preview",
     "i18n:check": "npx ts-node packages/utils/src/i18n/check-missing-keys.ts",

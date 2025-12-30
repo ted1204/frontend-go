@@ -38,7 +38,7 @@ Useful scripts
 Workspace packages overview
 
 - `packages/frontend-app` — the application; run with `npm run dev:app`.
-- `packages/ui` — UI primitives/components (build with `npm run build:packages` or `npm run -w @tailadmin/ui build`).
+- `packages/ui` — UI primitives/components (build with `npm run build:packages` or `npm run -w @nthucscc/ui build`).
 - `packages/components-shared` — small shared components and helpers.
 - `packages/utils` — utility functions and scripts (i18n helpers, build helpers).
 

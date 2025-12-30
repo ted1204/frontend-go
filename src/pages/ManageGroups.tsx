@@ -2,14 +2,14 @@
 
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
-import { PageMeta } from '@tailadmin/ui';
+import { PageMeta } from '@nthucscc/ui';
 import { getGroups, createGroup, CreateGroupInput, deleteGroup } from '../services/groupService';
 import { Group } from '../interfaces/group';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 import GroupList from '../components/GroupList';
 import CreateGroupForm from '../components/CreateGroupForm';
-import { Button } from '@tailadmin/ui';
+import { Button } from '@nthucscc/ui';
 // Ensure this import path is correct
 import DeleteConfirmationModal from '../components/ui/modal/DeleteConfirmationModal';
 

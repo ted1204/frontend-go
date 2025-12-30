@@ -1,10 +1,11 @@
 import React from 'react';
 import { Form } from '../../interfaces/form';
+import { LocaleKey } from '@nthucscc/utils';
 
 interface FormCardProps {
   form: Form;
   statusText: (s?: string) => string;
-  t: (key: string) => string;
+  t: (key: LocaleKey, vars?: Record<string, string | number>) => string;
 }
 
 const FormCard: React.FC<FormCardProps> = ({ form, statusText, t }) => (
@@ -26,7 +27,7 @@ const FormCard: React.FC<FormCardProps> = ({ form, statusText, t }) => (
         {t('form.label.project')}: {form.project?.ProjectName || '-'}
       </span>
       <span>
-        {t('createdAt')}: {new Date(form.CreatedAt).toLocaleDateString()}
+        {t('common.createdAt')}: {new Date(form.CreatedAt).toLocaleDateString()}
       </span>
     </div>
   </div>

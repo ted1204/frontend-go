@@ -1,4 +1,4 @@
-# @tailadmin/components-shared
+# @nthucscc/components-shared
 
 共享 React UI 元件庫，供 monorepo 內各前端專案共用。
 
@@ -12,7 +12,7 @@
 ## 使用方式
 
 ```tsx
-import { Pagination, SearchInput, PageMeta, ThemeToggleButton } from '@tailadmin/components-shared';
+import { Pagination, SearchInput, PageMeta, ThemeToggleButton } from '@nthucscc/components-shared';
 ```
 
 ## 開發

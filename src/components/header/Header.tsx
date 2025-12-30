@@ -3,8 +3,8 @@ import { ThemeToggleButton } from '../common/ThemeToggleButton';
 import NotificationDropdown from './NotificationDropdown';
 import UserDropdown from './UserDropdown';
 import { Link } from 'react-router';
-import { useLanguage } from '@tailadmin/utils';
-import { useTranslation } from '@tailadmin/utils';
+import { useLanguage } from '@nthucscc/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 // Define the interface for the props
 interface HeaderProps {

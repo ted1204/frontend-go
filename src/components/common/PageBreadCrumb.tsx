@@ -1,2 +1,2 @@
-// Deprecated: Please use PageBreadcrumb from @tailadmin/ui instead.
-export { PageBreadcrumb } from '@tailadmin/ui';
+// Deprecated: Please use PageBreadcrumb from @nthucscc/ui instead.
+export { PageBreadcrumb } from '@nthucscc/ui';

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Dropdown } from '../ui/dropdown/Dropdown';
 import { DropdownItem } from '../ui/dropdown/DropdownItem';
 import { Link } from 'react-router';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -118,7 +118,15 @@ export default function NotificationDropdown() {
                   <span className="flex items-center gap-2 text-gray-500 text-theme-xs dark:text-gray-400">
                     <span>{t('notification.project')}</span>
                     <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                    <span>{t(n.minsKey)}</span>
+                    <span>
+                      {t(
+                        n.minsKey as
+                          | 'notification.time.5min'
+                          | 'notification.time.8min'
+                          | 'notification.time.15min'
+                          | 'notification.time.1hour',
+                      )}
+                    </span>
                   </span>
                 </span>
               </DropdownItem>

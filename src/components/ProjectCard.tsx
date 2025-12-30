@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Project } from '../interfaces/project';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 import { useGlobalWebSocket } from '../context/useGlobalWebSocket';
-import { getUsername } from '../services/authService';
+// English: Removed getUsername if namespace is now handled by project ID and backend logic
 
 const FolderIcon = () => (
   <svg
@@ -27,17 +27,31 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
-  // Connect to WebSocket for this project
-  const { getProjectMessages } = useGlobalWebSocket();
-  const username = getUsername();
-  const namespace = `proj-${project.PID}-${username}`;
+  // English: Destructure connectToNamespace to ensure the pool connection is active
+  const { getProjectMessages, connectToNamespace } = useGlobalWebSocket();
+  const { t } = useTranslation();
+
+  /** * English: Namespace should match the format returned by GetUserProjectStorages (e.g., project-test-b1f7f5)
+   * If the project object contains the namespace, use it directly.
+   */
+  const namespace = `project-${project.ProjectName?.toLowerCase()}-${project.PID}`;
+
+  // English: Initiate connection for this specific project's namespace
+  useEffect(() => {
+    if (namespace) {
+      connectToNamespace(namespace);
+    }
+  }, [namespace, connectToNamespace]);
+
   const messages = getProjectMessages(namespace);
 
-  // Determine status based on messages
-  // If we have any running pods, we consider the project "Active"
-  const runningPods = messages.filter((msg) => msg.kind === 'Pod' && msg.status === 'Running');
-  const isRunning = runningPods.length > 0;
-  const { t } = useTranslation();
+  /**
+   * English: Determine status based on filebrowser pod status.
+   * Using 'includes' for pod names to match dynamic K8s naming conventions.
+   */
+  const isRunning = messages.some(
+    (msg) => msg.kind === 'Pod' && msg.status === 'Running' && msg.name.includes('filebrowser'),
+  );
 
   return (
     <div
@@ -47,10 +61,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
       <div className="absolute top-4 right-4 flex items-center gap-2">
         <span
           className={`h-3 w-3 rounded-full ${
-            isRunning ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'
+            isRunning ? 'bg-green-500 animate-pulse' : 'bg-gray-300 dark:bg-gray-600'
           }`}
         ></span>
-        <span className="text-xs text-gray-500 dark:text-gray-400">
+        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
           {isRunning ? t('status.active') : t('status.idle')}
         </span>
       </div>
@@ -62,9 +76,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
       <p className="h-20 text-sm text-gray-600 dark:text-gray-400 line-clamp-4">
         {project.Description || t('project.noDescription')}
       </p>
-      <span className="mt-4 inline-block text-xs font-medium text-gray-400 dark:text-gray-500">
-        {t('project.idLabel', { id: project.PID })}
-      </span>
+
+      <div className="mt-4 flex items-center justify-between">
+        <span className="text-xs font-medium text-gray-400 dark:text-gray-500">
+          {t('project.idLabel', { id: project.PID })}
+        </span>
+        {/* English: If project data includes role info, it could be displayed here as a PermissionBadge */}
+      </div>
     </div>
   );
 };

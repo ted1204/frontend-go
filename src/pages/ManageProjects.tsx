@@ -12,12 +12,12 @@ import {
 // removed unused import: useNavigate
 import EditProjectForm from '../components/EditProjectForm';
 import CreateProjectForm from '../components/CreateProjectForm';
-import { Button } from '@tailadmin/ui';
+import { Button } from '@nthucscc/ui';
 import DeleteConfirmationModal from '../components/ui/modal/DeleteConfirmationModal';
 import { updateProject, UpdateProjectInput } from '../services/projectService';
 
 import { getGroups } from '../services/groupService';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 // --- Conceptual Group Interfaces (Must be defined in your app) ---
 interface GroupOption {
   GID: number;

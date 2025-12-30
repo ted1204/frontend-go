@@ -5,9 +5,9 @@
     // "emitDeclarationOnly": true,
     "declaration": true,
     "declarationMap": true,
-    "outDir": "dist",
+    "outDir": "../../build/ui",
     "noEmit": false,
-    "tsBuildInfoFile": "dist/.tsbuildinfo"
+    "tsBuildInfoFile": "../../build/ui/.tsbuildinfo"
   },
   "references": [{ "path": "../utils" }],
   "include": ["src"]

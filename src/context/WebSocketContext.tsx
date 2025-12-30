@@ -1,89 +1,100 @@
-import React, { createContext, useEffect, useState, useRef } from 'react';
-import { WEBSOCKET_USER_MONITORING_URL } from '../config/url';
+import React, { createContext, useState, useRef, useCallback, useEffect } from 'react';
 import { ResourceMessage } from '../hooks/useWebSocket';
+import { GET_NS_MONITORING_URL } from '../config/url';
 
 interface WebSocketContextType {
   messages: ResourceMessage[];
+  connectToNamespace: (namespace: string) => void;
   getProjectMessages: (namespace: string) => ResourceMessage[];
 }
 
-const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined);
+export const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined);
 
 export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [messages, setMessages] = useState<ResourceMessage[]>([]);
-  const ws = useRef<WebSocket | null>(null);
+  // English: Registry to store active WebSocket instances, preventing redundant connections
+  const sockets = useRef<Record<string, WebSocket>>({});
 
-  useEffect(() => {
-    const connect = () => {
-      const wsUrl = WEBSOCKET_USER_MONITORING_URL();
-      console.log('Connecting to global WebSocket:', wsUrl);
+  const connectToNamespace = useCallback((ns: string) => {
+    // English: Check if a healthy connection already exists for this namespace
+    if (
+      sockets.current[ns] &&
+      (sockets.current[ns].readyState === WebSocket.OPEN ||
+        sockets.current[ns].readyState === WebSocket.CONNECTING)
+    ) {
+      console.log(`[WS Pool] Already connected/connecting to ${ns}, skipping.`);
+      return;
+    }
 
-      ws.current = new WebSocket(wsUrl);
+    const url = GET_NS_MONITORING_URL(ns);
+    console.log(`%c[WS Pool] Opening Connection: ${ns}`, 'color: #8b5cf6; font-weight: bold;');
 
-      ws.current.onopen = () => {
-        console.log('Global WebSocket connected');
+    const ws = new WebSocket(url);
+
+    // --- English: ACTUALLY SUBSCRIBE ON OPEN ---
+    ws.onopen = () => {
+      console.log(`[WS Pool] Connected to ${ns}. Sending subscription signal...`);
+      // English: Explicitly tell the backend to start watching this namespace
+      const subMsg = {
+        action: 'subscribe',
+        namespace: ns,
       };
-
-      ws.current.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          // Adjust the data structure for Service resources if necessary
-          const parsedData: ResourceMessage =
-            data.kind === 'Service'
-              ? {
-                  ...data,
-                  serviceType: data.type,
-                  type: data.type,
-                }
-              : data;
-
-          setMessages((prev) => {
-            const key = `${parsedData.name}-${parsedData.ns}`;
-            const existingIndex = prev.findIndex((msg) => `${msg.name}-${msg.ns}` === key);
-
-            if (existingIndex >= 0) {
-              const newMessages = [...prev];
-              newMessages[existingIndex] = {
-                ...newMessages[existingIndex],
-                ...parsedData,
-              };
-              return newMessages;
-            } else {
-              // Limit to 500 to prevent memory issues, but enough for multiple projects
-              return [...prev, parsedData].slice(-500);
-            }
-          });
-        } catch (e) {
-          console.error('WS Parse Error', e);
-        }
-      };
-
-      ws.current.onclose = (event) => {
-        console.log('Global WebSocket closed, retrying...', event.code, event.reason);
-        setTimeout(connect, 3000);
-      };
-
-      ws.current.onerror = (error) => {
-        console.error('Global WebSocket error:', error);
-      };
+      ws.send(JSON.stringify(subMsg));
     };
 
-    connect();
+    ws.onmessage = (event) => {
+      try {
+        const parsedData: ResourceMessage = JSON.parse(event.data);
+        // English: Ignore heartbeat or malformed messages
+        if (!parsedData.kind || !parsedData.name) return;
 
+        setMessages((prev) => {
+          const key = `${parsedData.name}-${parsedData.ns}`;
+          const existingIndex = prev.findIndex((msg) => `${msg.name}-${msg.ns}` === key);
+
+          if (existingIndex >= 0) {
+            // English: Update existing resource status
+            const newMessages = [...prev];
+            newMessages[existingIndex] = { ...newMessages[existingIndex], ...parsedData };
+            return newMessages;
+          }
+          // English: Append new resource message and maintain buffer limit
+          return [...prev, parsedData].slice(-500);
+        });
+      } catch (e) {
+        console.error(`[WS Pool] Parse error for ${ns}:`, e);
+      }
+    };
+
+    ws.onclose = (e) => {
+      console.log(`[WS Pool] Connection closed for ${ns}. Code: ${e.code}`);
+      delete sockets.current[ns];
+    };
+
+    ws.onerror = (err) => {
+      console.error(`[WS Pool] WebSocket error on ${ns}:`, err);
+    };
+
+    sockets.current[ns] = ws;
+  }, []);
+
+  const getProjectMessages = useCallback(
+    (namespace: string) => {
+      return messages.filter((m) => m.ns === namespace);
+    },
+    [messages],
+  );
+
+  // English: Ensure all pool connections are terminated when the provider unmounts
+  useEffect(() => {
     return () => {
-      ws.current?.close();
+      Object.values(sockets.current).forEach((s) => s.close());
     };
   }, []);
 
-  const getProjectMessages = (namespace: string) => {
-    return messages.filter((m) => m.ns === namespace);
-  };
-
   return (
-    <WebSocketContext.Provider value={{ messages, getProjectMessages }}>
+    <WebSocketContext.Provider value={{ messages, connectToNamespace, getProjectMessages }}>
       {children}
     </WebSocketContext.Provider>
   );
 };
-
-export default WebSocketContext;

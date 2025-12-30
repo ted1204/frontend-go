@@ -1,4 +1,4 @@
-import { PageMeta } from '@tailadmin/ui';
+import { PageMeta } from '@nthucscc/ui';
 import AuthLayout from './AuthPageLayout';
 import SignUpForm from '../../components/auth/SignUpForm';
 

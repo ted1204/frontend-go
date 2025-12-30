@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 interface PaginationWrapperProps {
   currentPage: number;

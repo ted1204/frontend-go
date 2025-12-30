@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState, useEffect, useRef } from 'react';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 import InputField from './form/input/InputField';
 import Button from './ui/button/Button';
 

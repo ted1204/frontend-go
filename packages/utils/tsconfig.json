@@ -2,12 +2,19 @@
   "extends": "../../tsconfig.app.json",
   "compilerOptions": {
     "composite": true,
-    // "emitDeclarationOnly": true,
     "declaration": true,
     "declarationMap": true,
-    "outDir": "dist",
+
+    // 👇 1. 設定原始碼根目錄，確保結構正確
+    "rootDir": "src",
+
+    // 👇 2. 修改輸出位置：往上兩層回到 root，再進入 build/utils
+    "outDir": "../../build/utils",
+
     "noEmit": false,
-    "tsBuildInfoFile": "dist/.tsbuildinfo"
+
+    // 👇 3. 修改編譯資訊檔位置，也放進 build 資料夾
+    "tsBuildInfoFile": "../../build/utils/.tsbuildinfo"
   },
-  "include": ["src"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/locales/zh.ts"]
 }

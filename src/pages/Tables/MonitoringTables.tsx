@@ -1,7 +1,8 @@
-import { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import { useGlobalWebSocket } from '../../context/useGlobalWebSocket';
-import { Pagination } from '@tailadmin/ui';
-import { useTranslation } from '@tailadmin/utils';
+import { Pagination } from '@nthucscc/ui';
+import { useTranslation } from '@nthucscc/utils';
+// English: Import WebSocketContext to access the connection pool functions
 
 // --- Type Definitions --- //
 
@@ -15,29 +16,31 @@ interface NamespacePods {
   [namespace: string]: Pod[];
 }
 
-// Icon for the terminal connect button
-const TerminalIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" {...props}>
-    <path
-      fillRule="evenodd"
-      d="M2 5a3 3 0 013-3h10a3 3 0 013 3v10a3 3 0 01-3 3H5a3 3 0 01-3-3V5zm4.5 2.5a.5.5 0 00-.5.5v.5a.5.5 0 00.5.5h.5a.5.5 0 00.5-.5V8a.5.5 0 00-.5-.5h-.5zM8 8a.5.5 0 01.5-.5h5a.5.5 0 010 1h-5A.5.5 0 018 8zm-1.5 3.5a.5.5 0 00-.5.5v.5a.5.5 0 00.5.5h.5a.5.5 0 00.5-.5v-.5a.5.5 0 00-.5-.5h-.5zM8 12a.5.5 0 01.5-.5h5a.5.5 0 010 1h-5a.5.5 0 01-.5-.5z"
-      clipRule="evenodd"
-    />
+// --- Icon Components --- //
+const TerminalIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    aria-hidden="true"
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3" />
   </svg>
 );
 
-// Icon to indicate expandable rows
-const ChevronDownIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" {...props}>
-    <path
-      fillRule="evenodd"
-      d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-      clipRule="evenodd"
-    />
+// You may already have ChevronDownIcon defined elsewhere, but if not, here's a simple version:
+const ChevronDownIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    aria-hidden="true"
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
   </svg>
 );
-
-// --- PodMonitoringTable Component --- //
 
 interface PodMonitoringTableProps {
   namespace: string;
@@ -50,7 +53,6 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Reset page when pods change
   useEffect(() => {
     setCurrentPage(1);
   }, [pods]);
@@ -58,19 +60,17 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
   const totalPages = Math.ceil(pods.length / itemsPerPage);
   const paginatedPods = pods.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  // Toggles the expanded state for a specific pod
   const togglePodExpand = (podName: string) => {
     const key = `${namespace}-${podName}`;
     setExpandedPods((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  // Opens a new window to the terminal for a specific container
   const handleConnectTerminal = (podName: string, container: string) => {
+    // English: Ensure terminal connection uses the correct proxy path if necessary
     const url = `/terminal?namespace=${encodeURIComponent(namespace)}&pod=${encodeURIComponent(podName)}&container=${container}&command=/bin/bash&tty=true`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  // Renders a colored badge based on pod status
   const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
     const isRunning = status === 'Running';
     const colorClasses = isRunning
@@ -94,16 +94,16 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
         <thead className="text-xs text-gray-500 uppercase bg-gray-50 dark:bg-gray-700/50 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3 w-2/5">
-              {t('monitor.table.podName')}
+              {t('monitor_table_podName')}
             </th>
             <th scope="col" className="px-6 py-3 w-1/5">
-              {t('monitor.table.namespace')}
+              {t('monitor_table_namespace')}
             </th>
             <th scope="col" className="px-6 py-3 w-1/5">
-              {t('monitor.table.status')}
+              {t('monitor_table_status')}
             </th>
             <th scope="col" className="px-6 py-3 w-1/5 text-right">
-              {t('monitor.table.actions')}
+              {t('monitor_table_actions')}
             </th>
           </tr>
         </thead>
@@ -111,17 +111,46 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
           {paginatedPods.length === 0 ? (
             <tr>
               <td colSpan={4} className="text-center py-6 text-gray-400 dark:text-gray-500">
-                {t('monitor.empty.noPods')}
+                {t('monitor_empty_noPods')}
               </td>
             </tr>
           ) : (
-            paginatedPods.map((pod) => {
-              const podKey = `${namespace}-${pod.name}`;
-              const isExpanded = !!expandedPods[podKey];
+            paginatedPods.map((pod: Pod) => {
+              const podKey: string = `${namespace}-${pod.name}`;
+              const isExpanded: boolean = !!expandedPods[podKey];
+
+              interface ContainerRowProps {
+                podKey: string;
+                container: string;
+                podName: string;
+              }
+
+              const ContainerRow: React.FC<ContainerRowProps> = ({
+                podKey,
+                container,
+                podName,
+              }) => (
+                <tr key={`${podKey}-${container}`} className="bg-gray-50 dark:bg-gray-800/60">
+                  <td className="pl-14 pr-6 py-3 text-gray-700 dark:text-gray-300">{container}</td>
+                  <td className="px-6 py-3"></td>
+                  <td className="px-6 py-3"></td>
+                  <td className="px-6 py-3 text-right">
+                    <button
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                        e.stopPropagation();
+                        handleConnectTerminal(podName, container);
+                      }}
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors duration-150"
+                    >
+                      <TerminalIcon className="w-4 h-4" />
+                      {t('monitor_button_connect')}
+                    </button>
+                  </td>
+                </tr>
+              );
 
               return (
                 <Fragment key={podKey}>
-                  {/* Main pod row */}
                   <tr
                     className="hover:bg-gray-50 dark:hover:bg-gray-800/60 cursor-pointer"
                     onClick={() => togglePodExpand(pod.name)}
@@ -140,29 +169,14 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
                     </td>
                     <td className="px-6 py-4"></td>
                   </tr>
-
-                  {/* Expanded container rows */}
                   {isExpanded &&
-                    pod.containers.map((container) => (
-                      <tr key={`${podKey}-${container}`} className="bg-gray-50 dark:bg-gray-800/60">
-                        <td className="pl-14 pr-6 py-3 text-gray-700 dark:text-gray-300">
-                          {container}
-                        </td>
-                        <td className="px-6 py-3"></td>
-                        <td className="px-6 py-3"></td>
-                        <td className="px-6 py-3 text-right">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation(); // Prevent row click from firing
-                              handleConnectTerminal(pod.name, container);
-                            }}
-                            className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                          >
-                            <TerminalIcon className="w-4 h-4" />
-                            {t('monitor.button.connect')}
-                          </button>
-                        </td>
-                      </tr>
+                    pod.containers.map((container: string) => (
+                      <ContainerRow
+                        key={`${podKey}-${container}`}
+                        podKey={podKey}
+                        container={container}
+                        podName={pod.name}
+                      />
                     ))}
                 </Fragment>
               );
@@ -176,10 +190,23 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
 };
 
 export default function PodTablesPage() {
-  const { messages } = useGlobalWebSocket();
+  // English: Destructure functions from context pool
+  const { messages, connectToNamespace } = useGlobalWebSocket();
   const [podsData, setPodsData] = useState<NamespacePods>({});
   const { t } = useTranslation();
 
+  /**
+   * English: Assuming this page needs to monitor specific namespaces or all user-related namespaces.
+   * If you have a specific list of namespaces, call connectToNamespace for each.
+   */
+  useEffect(() => {
+    // English: Example: If monitoring is dynamic, you might fetch namespaces first.
+    // Here we ensure existing namespaces in 'messages' stay connected.
+    const activeNamespaces = Object.keys(podsData);
+    activeNamespaces.forEach((ns) => connectToNamespace(ns));
+  }, [podsData, connectToNamespace]);
+
+  // English: Process global messages into organized namespace-pod structure
   useEffect(() => {
     const newPodsData: NamespacePods = {};
     messages.forEach((msg) => {
@@ -187,11 +214,14 @@ export default function PodTablesPage() {
         if (!newPodsData[msg.ns]) {
           newPodsData[msg.ns] = [];
         }
-        newPodsData[msg.ns].push({
-          name: msg.name,
-          containers: msg.containers || [],
-          status: msg.status || 'Unknown',
-        });
+        // English: Avoid duplicate pods in the same namespace list
+        if (!newPodsData[msg.ns].find((p) => p.name === msg.name)) {
+          newPodsData[msg.ns].push({
+            name: msg.name,
+            containers: msg.containers || [],
+            status: msg.status || 'Unknown',
+          });
+        }
       }
     });
     setPodsData(newPodsData);
@@ -200,11 +230,7 @@ export default function PodTablesPage() {
   const hasPods = Object.keys(podsData).length > 0;
 
   return (
-    <div className="space-y-8">
-      {/* Placeholder for PageMeta and PageBreadcrumb if needed */}
-      {/* <PageMeta title="Pods Dashboard" /> */}
-      {/* <PageBreadcrumb pageTitle="Containers" /> */}
-
+    <div className="space-y-8 p-4">
       {hasPods ? (
         Object.keys(podsData)
           .sort()
@@ -213,10 +239,10 @@ export default function PodTablesPage() {
               key={ns}
               className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700"
             >
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-                  {t('monitor.table.namespace')}:&nbsp;
-                  <span className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md text-blue-600 dark:text-blue-400">
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/30">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+                  {t('monitor_table_namespace')}:
+                  <span className="font-mono bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-3 py-1 rounded-full text-sm">
                     {ns}
                   </span>
                 </h2>
@@ -225,13 +251,11 @@ export default function PodTablesPage() {
             </div>
           ))
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-              {t('monitor.table.namespace')}
-            </h2>
-          </div>
-          <PodMonitoringTable namespace={''} pods={[]} />
+        <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
+          <p className="text-gray-500 dark:text-gray-400 font-medium">
+            {t('monitor_empty_waitingForData') || 'Waiting for cluster data stream...'}
+          </p>
         </div>
       )}
     </div>

@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useState, useEffect } from 'react';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 import { Project } from '../interfaces/project';
-import { Pagination } from '@tailadmin/ui';
+import { Pagination } from '@nthucscc/ui';
 
 // SVG Icon for a simple Loading Spinner
 const SpinnerIcon = ({ className = 'w-5 h-5' }) => (

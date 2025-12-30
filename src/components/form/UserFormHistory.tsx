@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 import { Form } from '../../interfaces/form';
 import SearchBar from './SearchBar';
 import ViewModeToggle from './ViewModeToggle';

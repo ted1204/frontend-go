@@ -1,9 +1,9 @@
 // src/components/GroupList.tsx
 
 import React, { ChangeEvent, useState, useEffect } from 'react';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 import { Group } from '../interfaces/group'; // Adjust import based on your structure
-import { Pagination } from '@tailadmin/ui';
+import { Pagination } from '@nthucscc/ui';
 
 // --- SVG Icons --- //
 
@@ -58,7 +58,24 @@ const SearchIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' })
 // --- Helper Components for States (Loading, Error, Empty) --- //
 
 const LoadingSpinner: React.FC<{
-  t: (key: string, vars?: Record<string, string | number>) => string;
+  t: (
+    key:
+      | 'breadcrumb_groups'
+      | 'admin_manageProjects'
+      | 'admin_manageGroups'
+      | 'admin_forms'
+      | 'groups_error_userNotLogged'
+      | 'groups_error_userIdMissing'
+      | 'groups_error_unknown'
+      | 'loading.forms'
+      | 'groupList.loading'
+      | 'projectList.errorPrefix'
+      | 'groupList.empty.filter'
+      | 'groupList.empty.noGroups'
+      | 'groupList.empty.filterTip'
+      | 'groupList.empty.noGroupsTip',
+    vars?: Record<string, string | number>,
+  ) => string;
 }> = ({ t }) => (
   <div className="flex justify-center items-center p-8 text-gray-500 dark:text-gray-400">
     <svg
@@ -87,7 +104,24 @@ const LoadingSpinner: React.FC<{
 
 const ErrorDisplay: React.FC<{
   message: string;
-  t: (key: string, vars?: Record<string, string | number>) => string;
+  t: (
+    key:
+      | 'breadcrumb_groups'
+      | 'admin_manageProjects'
+      | 'admin_manageGroups'
+      | 'admin_forms'
+      | 'groups_error_userNotLogged'
+      | 'groups_error_userIdMissing'
+      | 'groups_error_unknown'
+      | 'loading.forms'
+      | 'groupList.loading'
+      | 'projectList.errorPrefix'
+      | 'groupList.empty.filter'
+      | 'groupList.empty.noGroups'
+      | 'groupList.empty.filterTip'
+      | 'groupList.empty.noGroupsTip',
+    vars?: Record<string, string | number>,
+  ) => string;
 }> = ({ message, t }) => (
   <div
     className="bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg"
@@ -100,7 +134,24 @@ const ErrorDisplay: React.FC<{
 
 const EmptyState: React.FC<{
   isFiltering: boolean;
-  t: (key: string, vars?: Record<string, string | number>) => string;
+  t: (
+    key:
+      | 'breadcrumb_groups'
+      | 'admin_manageProjects'
+      | 'admin_manageGroups'
+      | 'admin_forms'
+      | 'groups_error_userNotLogged'
+      | 'groups_error_userIdMissing'
+      | 'groups_error_unknown'
+      | 'loading.forms'
+      | 'groupList.loading'
+      | 'projectList.errorPrefix'
+      | 'groupList.empty.filter'
+      | 'groupList.empty.noGroups'
+      | 'groupList.empty.filterTip'
+      | 'groupList.empty.noGroupsTip',
+    vars?: Record<string, string | number>,
+  ) => string;
 }> = ({ isFiltering, t }) => (
   <div className="text-center py-12 px-6 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
     <GroupIcon className="mx-auto h-10 w-10 text-gray-400" />

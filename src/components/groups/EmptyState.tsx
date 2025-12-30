@@ -1,5 +1,5 @@
 // src/components/groups/EmptyState.tsx
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 const EmptyState = ({ onActionClick }: { onActionClick: () => void }) => {
   const { t } = useTranslation();

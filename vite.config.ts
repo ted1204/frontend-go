@@ -18,8 +18,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@tailadmin/ui': resolve(__dirname, 'packages/ui/src/index.ts'),
-      '@tailadmin/utils': resolve(__dirname, 'packages/utils/src/index.ts'),
+      '@nthucscc/ui': resolve(__dirname, 'packages/ui/src/index.ts'),
+      '@nthucscc/utils': resolve(__dirname, 'packages/utils/src/index.ts'),
     },
   },
 });

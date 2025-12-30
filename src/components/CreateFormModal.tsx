@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { createForm } from '../services/formService';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 interface CreateFormModalProps {
   isOpen: boolean;
@@ -92,7 +92,7 @@ export default function CreateFormModal({ isOpen, onClose, projectId }: CreateFo
                       onChange={(e) => setDescription(e.target.value)}
                       rows={4}
                       className="mt-1 block w-full rounded-sm border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
-                      placeholder={t('form.placeholder.description')}
+                      placeholder={t('form.placeholder.description.base')}
                     />
                   </div>
                   {projectId && (

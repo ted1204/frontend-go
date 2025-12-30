@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { PageMeta } from '@tailadmin/ui';
+import { PageMeta } from '@nthucscc/ui';
 import { PageBreadcrumb } from './common/PageBreadCrumb';
 import { Project } from '../interfaces/project';
 import { getProjectById } from '../services/projectService';
@@ -25,7 +25,7 @@ import Button from './ui/button/Button';
 import { getUsername } from '../services/authService';
 import CreateFormModal from './CreateFormModal';
 import ProjectMembers from './ProjectMembers';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 // Helper component for the initial page loading state (Skeleton)
 const PageSkeleton = () => (
@@ -394,7 +394,9 @@ export default function ProjectDetail() {
                           <span>
                             {t('project.gpuAccessMode', {
                               mode: t(
-                                `project.gpuAccess${project.GPUAccess?.charAt(0).toUpperCase() + project.GPUAccess?.slice(1)}`,
+                                project.GPUAccess === 'Shared'
+                                  ? 'project.gpuAccessShared'
+                                  : 'project.gpuAccessDedicated',
                               ),
                             })}
                           </span>

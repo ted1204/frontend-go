@@ -1,5 +1,5 @@
 // src/components/groups/ErrorState.tsx
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 const ErrorState = ({ message }: { message: string }) => {
   const { t } = useTranslation();

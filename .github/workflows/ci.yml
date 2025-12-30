@@ -46,8 +46,8 @@ jobs:
 
       - name: Build packages
         run: |
-          npm run -w @tailadmin/utils build
-          npm run -w @tailadmin/ui build
+          npm run -w @nthucscc/utils build
+          npm run -w @nthucscc/ui build
 
       - name: Run tests
         run: npm test || true

@@ -6,7 +6,7 @@ import { PVC } from '../interfaces/pvc';
 
 // Import Monaco Editor and its assets
 import MonacoEditor from 'react-monaco-editor';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 interface FormData {
   filename: string;
@@ -182,11 +182,11 @@ spec:
   const handleSubmit = () => {
     // Validation logic remains the same
     if (!formData.filename.trim()) {
-      setError(t('config.error.filenameRequired'));
+      setError(t('config_error_filenameRequired'));
       return;
     }
     if (!formData.filename.endsWith('.yaml') && !formData.filename.endsWith('.yml')) {
-      setError(t('config.error.filenameSuffix'));
+      setError(t('config_error_filenameSuffix'));
       return;
     }
 
@@ -196,7 +196,7 @@ spec:
     }
 
     if (!finalYaml.trim()) {
-      setError(t('config.error.yamlEmpty'));
+      setError(t('config_error_yamlEmpty'));
       return;
     }
     setError(null);
@@ -224,10 +224,10 @@ spec:
         <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 p-4 sm:p-6 dark:border-gray-700">
           <div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-              {t('config.createTitle')}
+              {t('config_createTitle')}
             </h3>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {t('config.createSubtitle')}
+              {t('config_createSubtitle')}
             </p>
           </div>
           <button
@@ -261,7 +261,7 @@ spec:
                 }
               `}
             >
-              {t('config.tab.wizard')}
+              {t('config_tab_wizard')}
             </button>
             <button
               onClick={() => setActiveTab('yaml')}
@@ -274,7 +274,7 @@ spec:
                 }
               `}
             >
-              {t('config.tab.yaml')}
+              {t('config_tab_yaml')}
             </button>
           </nav>
         </div>
@@ -287,11 +287,11 @@ spec:
               htmlFor="filename"
               className="block text-sm font-bold text-gray-800 dark:text-gray-200"
             >
-              {t('config.filename.label')}
+              {t('config_filename_label')}
             </label>
             <div className="flex rounded-lg shadow-sm">
               <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 sm:text-sm">
-                {t('config.filename.prefix')}
+                {t('config_filename_prefix')}
               </span>
               <input
                 id="filename"
@@ -303,7 +303,7 @@ spec:
               />
             </div>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              {t('config.filename.note')}
+              {t('config_filename_note')}
             </p>
           </div>
 
@@ -314,7 +314,7 @@ spec:
                 {/* Image Input */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {t('config.wizard.imageLabel')}
+                    {t('config_wizard_imageLabel')}
                   </label>
                   {/* [Backend Requirement] Replace with a dropdown fetching from /api/images */}
                   <input
@@ -324,13 +324,13 @@ spec:
                     onChange={(e) => setWizardData({ ...wizardData, image: e.target.value })}
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   />
-                  <p className="text-xs text-gray-500">{t('config.wizard.imageNote')}</p>
+                  <p className="text-xs text-gray-500">{t('config_wizard_imageNote')}</p>
                 </div>
 
                 {/* GPU Input */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {t('config.wizard.gpuLabel')}
+                    {t('config_wizard_gpuLabel')}
                   </label>
                   <input
                     type="number"
@@ -351,16 +351,16 @@ spec:
                 {/* PVC Selection */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {t('config.wizard.pvcLabel')}
+                    {t('config_wizard_pvcLabel')}
                   </label>
                   <select
                     value={wizardData.pvcName}
                     onChange={(e) => setWizardData({ ...wizardData, pvcName: e.target.value })}
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   >
-                    <option value="">{t('config.pvc.placeholder')}</option>
+                    <option value="">{t('config_pvc_placeholder')}</option>
                     {loadingPvcs ? (
-                      <option disabled>{t('config.pvc.loading')}</option>
+                      <option disabled>{t('config_pvc_loading')}</option>
                     ) : (
                       pvcs.map((pvc) => (
                         <option key={pvc.name} value={pvc.name}>
@@ -369,13 +369,13 @@ spec:
                       ))
                     )}
                   </select>
-                  <p className="text-xs text-gray-500">{t('config.pvc.note')}</p>
+                  <p className="text-xs text-gray-500">{t('config_pvc_note')}</p>
                 </div>
 
                 {/* Mount Path */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {t('config.mountPath')}
+                    {t('config_mountPath')}
                   </label>
                   <input
                     type="text"
@@ -396,7 +396,7 @@ spec:
               {/* Command & Args */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {t('config.commandLabel')}
+                  {t('config_commandLabel')}
                 </label>
                 <input
                   type="text"
@@ -408,7 +408,7 @@ spec:
               </div>
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {t('config.argsLabel')}
+                  {t('config_argsLabel')}
                 </label>
                 <input
                   type="text"
@@ -425,7 +425,7 @@ spec:
           {activeTab === 'yaml' && (
             <div>
               <label className="block text-sm font-bold text-gray-800 dark:text-gray-200">
-                {t('config.yamlContentLabel')}
+                {t('config_yamlContentLabel')}
               </label>
               <div className="editor-container mt-2 h-[450px] rounded-lg border border-gray-300 p-px shadow-sm focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 dark:border-gray-600">
                 <MonacoEditor
@@ -449,11 +449,11 @@ spec:
         {/* Modal Footer */}
         <div className="flex flex-shrink-0 flex-col-reverse items-center gap-4 rounded-b-xl border-t border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50 sm:flex-row sm:justify-between">
           <div className="text-sm text-red-600 dark:text-red-400">
-            {error && `${t('label.error')}: ${error}`}
+            {error && `${t('common.error')}: ${error}`}
           </div>
           <div className="flex w-full gap-3 sm:w-auto">
             <Button variant="outline" onClick={onClose} className="w-full">
-              {t('form.cancel')}
+              {t('common.cancel')}
             </Button>
             <Button
               variant="primary"
@@ -461,7 +461,7 @@ spec:
               disabled={actionLoading}
               className="w-full"
             >
-              {actionLoading ? t('config.creating') : t('config.createButton')}
+              {actionLoading ? t('config_creating') : t('config_createButton')}
             </Button>
           </div>
         </div>

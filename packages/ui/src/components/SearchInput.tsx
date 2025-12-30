@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 interface SearchInputProps {
   value: string;
@@ -9,7 +9,7 @@ interface SearchInputProps {
 
 const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, placeholder }) => {
   const { t } = useTranslation();
-  const ph = placeholder ?? t('search.placeholder');
+  const ph = placeholder ?? t('common.search');
   return (
     <div className="relative w-full sm:w-64">
       <input

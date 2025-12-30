@@ -2,7 +2,7 @@ import en from './locales/en';
 import zh from './locales/zh';
 
 // Define the resource map
-const resources = { en, zh };
+const resources = { en, zh } as const;
 
 /**
  * Recursive type helper to convert nested objects into dot-notation paths.
@@ -16,6 +16,7 @@ type Path<T> = T extends object
 
 // Automatically derive all valid keys from the English source file
 export type LocaleKey = Path<typeof en>;
+export type Locale = 'en' | 'zh';
 
 /**
  * Helper function to resolve a dot-notation path in a nested object.
@@ -41,11 +42,7 @@ const resolvePath = (obj: unknown, path: string): string | undefined => {
  * @param key The strong-typed key path
  * @param vars Optional variables for interpolation (e.g., { name: 'John' })
  */
-export const t = (
-  lang: 'zh' | 'en',
-  key: LocaleKey,
-  vars?: Record<string, string | number>,
-): string => {
+export const t = (lang: Locale, key: LocaleKey, vars?: Record<string, string | number>): string => {
   // 1. Get the dictionary for the requested language, default to English if missing
   const dictionary = resources[lang] ?? resources.en;
 

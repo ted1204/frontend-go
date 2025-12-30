@@ -5,8 +5,9 @@
     "emitDeclarationOnly": true,
     "declaration": true,
     "declarationMap": true,
-    "outDir": "dist",
-    "noEmit": false
+    "outDir": "../../build/components-shared",
+    "noEmit": false,
+    "tsBuildInfoFile": "../../build/components-shared/.tsbuildinfo"
   },
   "include": ["src"]
 }

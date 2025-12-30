@@ -1,7 +1,7 @@
 // src/components/CreateProjectForm.tsx
 
 import React, { ChangeEvent, FormEvent, useState, useEffect, useRef } from 'react';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 // Assuming InputField and Button are properly defined components
 import InputField from './form/input/InputField';

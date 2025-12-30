@@ -11,6 +11,11 @@ export interface ResourceMessage {
   nodePorts?: number[];
   serviceType?: string;
   containers?: string[];
+  metadata?: {
+    deletionTimestamp?: string | null;
+    creationTimestamp?: string;
+    labels?: Record<string, string>;
+  };
 }
 
 // Placeholder: the real implementation lives in the app.

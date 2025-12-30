@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form } from '../../interfaces/form';
 import FormCard from './FormCard';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 interface FormListProps {
   viewMode: 'grid' | 'list';
@@ -31,7 +31,7 @@ const FormList: React.FC<FormListProps> = ({ viewMode, currentForms, statusText 
             <th className="px-4 py-2">{t('form.label.description')}</th>
             <th className="px-4 py-2">{t('form.label.project')}</th>
             <th className="px-4 py-2">{t('table.status')}</th>
-            <th className="px-4 py-2">{t('createdAt')}</th>
+            <th className="px-4 py-2">{t('common.createdAt')}</th>
           </tr>
         </thead>
         <tbody>

@@ -23,12 +23,12 @@
     "types": ["vite/client", "node"],
     "baseUrl": ".",
     "paths": {
-      "@tailadmin/ui": ["packages/ui/src"],
-      "@tailadmin/ui/*": ["packages/ui/src/*"],
-      "@tailadmin/components-shared": ["packages/components-shared/src"],
-      "@tailadmin/components-shared/*": ["packages/components-shared/src/*"],
-      "@tailadmin/utils": ["packages/utils/src"],
-      "@tailadmin/utils/*": ["packages/utils/src/*"]
+      "@nthucscc/ui": ["packages/ui/src"],
+      "@nthucscc/ui/*": ["packages/ui/src/*"],
+      "@nthucscc/components-shared": ["packages/components-shared/src"],
+      "@nthucscc/components-shared/*": ["packages/components-shared/src/*"],
+      "@nthucscc/utils": ["packages/utils/src"],
+      "@nthucscc/utils/*": ["packages/utils/src/*"]
     }
   },
   "include": ["src"]

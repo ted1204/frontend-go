@@ -3,9 +3,9 @@ import { useEffect, useState, FormEvent } from 'react';
 import UserFormApply from '../components/form/UserFormApply';
 import UserFormHistory from '../components/form/UserFormHistory';
 import TabSwitcher from '../components/form/TabSwitcher';
-import { PageMeta } from '@tailadmin/ui';
+import { PageMeta } from '@nthucscc/ui';
 import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 import { getProjects } from '../services/projectService';
 import { createForm, getMyForms } from '../services/formService';
 import { Form } from '../interfaces/form';
@@ -76,7 +76,7 @@ export default function UserFormDashboard() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      setError(t('form.error.titleRequired'));
+      setError(t('form_error_titleRequired'));
       return;
     }
     setLoading(true);
@@ -87,18 +87,18 @@ export default function UserFormDashboard() {
         title: title.trim(),
         description,
       });
-      setSuccess(t('form.success.submitted'));
+      setSuccess(t('form_success_submitted'));
       setTitle('');
       setDescription('');
       setSelectedProject(undefined);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('form.error.submitFailed'));
+      setError(err instanceof Error ? err.message : t('form_error_submitFailed'));
     } finally {
       setLoading(false);
     }
   };
 
-  const statusText = (s?: string) => (s ? t('form.status.' + s.toLowerCase()) : '');
+  const statusText = (s?: string) => (s ? t(`form_status_${s.toLowerCase()}` as any) : '');
 
   return (
     <div>
@@ -106,12 +106,12 @@ export default function UserFormDashboard() {
         tab={tab}
         setTab={setTab as any}
         tabs={[
-          { key: 'history', label: t('form.history.title') },
-          { key: 'apply', label: t('form.apply.title') },
+          { key: 'history', label: t('form_history_title') },
+          { key: 'apply', label: t('form_apply_title') },
         ]}
       />
-      <PageMeta title={t('form.page.title')} description={t('form.page.description')} />
-      <PageBreadcrumb pageTitle={t('form.page.title')} />
+      <PageMeta title={t('form_page_title')} description={t('form_page_description')} />
+      <PageBreadcrumb pageTitle={t('form_page_title')} />
 
       {tab === 'history' && (
         <UserFormHistory

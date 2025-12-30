@@ -4,7 +4,7 @@ import { getUsersByGroup, getGroupsByUser, createUserGroup } from '../services/u
 import { getUsers } from '../services/userService';
 import InviteUserModal, { FormData } from './InviteUserModal';
 import { User } from '../interfaces/user';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 interface ProjectMembersProps {
   groupId: number;

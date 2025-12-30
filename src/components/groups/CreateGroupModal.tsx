@@ -1,7 +1,7 @@
 // src/components/groups/CreateGroupModal.tsx
 
 import React, { useState, Fragment } from 'react';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 import { Dialog, Transition } from '@headlessui/react';
 import { Group } from '../../interfaces/group';
 import { createGroup } from '../../services/groupService'; // Assuming you have this service function

@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
-import { PageMeta } from '@tailadmin/ui';
+import { PageMeta } from '@nthucscc/ui';
 import { Project } from '../interfaces/project';
 import { getProjects } from '../services/projectService';
 import { getGroupsByUser } from '../services/userGroupService';
 import { useNavigate } from 'react-router-dom';
 import ProjectCard from '../components/ProjectCard';
-import { Pagination } from '@tailadmin/ui';
-import { SearchInput } from '@tailadmin/ui';
+import { Pagination } from '@nthucscc/ui';
+import { SearchInput } from '@nthucscc/ui';
 import { GridIcon } from '../icons';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -122,7 +122,7 @@ export default function Projects() {
       </div>
       <div className="flex items-center gap-6">
         <div className="hidden sm:block text-right">
-          <p className="text-xs text-gray-400">{t('createdAt')}</p>
+          <p className="text-xs text-gray-400">{t('common.createdAt')}</p>
           <p className="text-sm text-gray-600 dark:text-gray-300">
             {new Date(project.CreatedAt).toLocaleDateString()}
           </p>
@@ -157,7 +157,9 @@ export default function Projects() {
       {/* Main container for the project grid */}
       <div className="rounded-2xl p-4 md:p-6 2xl:p-10">
         <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <h3 className="text-2xl font-bold text-gray-800 dark:text-white">{t('myProjects')}</h3>
+          <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
+            {t('project.list.title')}
+          </h3>
           <div className="flex items-center gap-3">
             <div className="flex items-center rounded-lg border border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-800">
               <button
@@ -167,7 +169,7 @@ export default function Projects() {
                     ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
                     : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                 }`}
-                title={t('view.grid')}
+                title={t('view_grid')}
               >
                 <GridIcon className="h-5 w-5" />
               </button>
@@ -178,7 +180,7 @@ export default function Projects() {
                     ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
                     : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                 }`}
-                title={t('view.list')}
+                title={t('view_list')}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -195,7 +197,7 @@ export default function Projects() {
             <SearchInput
               value={searchTerm}
               onChange={setSearchTerm}
-              placeholder={t('search.projectsPlaceholder')}
+              placeholder={t('search_projectsPlaceholder')}
             />
           </div>
         </div>
@@ -207,13 +209,13 @@ export default function Projects() {
               // Show 6 skeleton cards while loading
               [...Array(6)].map((_, i) => <SkeletonCard key={i} />)
             ) : error ? (
-              <StateDisplay message={`${t('label.error') || 'Error'}: ${error}`} />
+              <StateDisplay message={`${t('common.error') || 'Error'}: ${error}`} />
             ) : filteredProjects.length === 0 ? (
               <StateDisplay
                 message={
                   projects.length === 0
-                    ? t('noProjectsAssigned')
-                    : t('noMatchingProjects', { term: searchTerm })
+                    ? t('storage.emptyAssigned')
+                    : t('storage.emptyFilter', { term: searchTerm })
                 }
               />
             ) : (
@@ -234,13 +236,13 @@ export default function Projects() {
                 ></div>
               ))
             ) : error ? (
-              <StateDisplay message={`${t('label.error') || 'Error'}: ${error}`} />
+              <StateDisplay message={`${t('common.error') || 'Error'}: ${error}`} />
             ) : filteredProjects.length === 0 ? (
               <StateDisplay
                 message={
                   projects.length === 0
-                    ? t('noProjectsAssigned')
-                    : t('noMatchingProjects', { term: searchTerm })
+                    ? t('storage.emptyAssigned')
+                    : t('storage.emptyFilter', { term: searchTerm })
                 }
               />
             ) : (

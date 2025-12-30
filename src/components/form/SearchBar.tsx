@@ -1,6 +1,6 @@
 import React from 'react';
-import { useTranslation } from '@tailadmin/utils';
-import { SearchInput } from '@tailadmin/ui';
+import { useTranslation } from '@nthucscc/utils';
+import { SearchInput } from '@nthucscc/ui';
 
 interface SearchBarProps {
   value: string;

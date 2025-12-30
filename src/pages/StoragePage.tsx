@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 // Icons
 import { ServerStackIcon, UserCircleIcon, CubeIcon } from '@heroicons/react/24/outline';
@@ -23,7 +23,7 @@ const StoragePage: React.FC = () => {
         </div>
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-            {t('admin.storage.title') || 'Storage Administration'}
+            {t('admin_storage_title') || 'Storage Administration'}
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Centralized management for User Hubs and Project PVCs.
@@ -46,7 +46,7 @@ const StoragePage: React.FC = () => {
             `}
           >
             <UserCircleIcon className="w-5 h-5" />
-            {t('admin.storage.tab.user') || 'User Storage (Hub)'}
+            {t('admin_storage_tab_user') || 'User Storage (Hub)'}
           </button>
 
           <button
@@ -61,7 +61,7 @@ const StoragePage: React.FC = () => {
             `}
           >
             <CubeIcon className="w-5 h-5" />
-            {t('admin.storage.tab.project') || 'Project Storage (PVC)'}
+            {t('admin_storage_tab_project') || 'Project Storage (PVC)'}
           </button>
         </div>
       </div>

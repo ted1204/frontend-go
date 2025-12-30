@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation, LocaleKey } from '@nthucscc/utils';
 import { BoxIcon, ChevronDownIcon, GridIcon, GroupIcon, HorizontaLDots, TaskIcon } from '../icons';
 import { useSidebar } from '../context/useSidebar';
 
 type NavItem = {
-  name: string;
+  name: LocaleKey;
   icon: React.ReactNode;
   path?: string;
-  subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  subItems?: { name: LocaleKey; path: string; pro?: boolean; new?: boolean }[];
 };
 
 const navItems: NavItem[] = [
@@ -44,7 +44,7 @@ const navItems: NavItem[] = [
   },
   {
     icon: <BoxIcon />,
-    name: 'sidebar.myForms',
+    name: 'sidebar.forms',
     path: '/my-forms',
   },
 ];
@@ -57,12 +57,12 @@ const adminItems: NavItem[] = [
   },
   {
     icon: <TaskIcon />, // Use TaskIcon for Manage Projects
-    name: 'admin.manageProjects',
+    name: 'admin_manageProjects',
     path: '/admin/manage-projects',
   },
   {
     icon: <GroupIcon />, // Use GroupIcon for Manage Groups
-    name: 'admin.manageGroups',
+    name: 'admin_manageGroups',
     path: '/admin/manage-groups',
   },
   {
@@ -72,19 +72,19 @@ const adminItems: NavItem[] = [
   },
   {
     icon: <BoxIcon />, // You can replace with a storage icon if available
-    name: 'admin.storageManagement',
+    name: 'admin.storageManagement.title',
     path: '/admin/storage-management',
   },
 ];
 
 const AppSidebar: React.FC = () => {
-  // Checks if the given path is active (matches current location)
-  const isActive = (path: string) => location.pathname === path;
-
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  // Checks if the given path is active (matches current location)
+  const isActive = (path: string) => location.pathname === path;
 
   // --- Sidebar State ---
   const [openSubmenu, setOpenSubmenu] = useState<{

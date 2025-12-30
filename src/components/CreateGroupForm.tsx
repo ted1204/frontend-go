@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState, useEffect, useRef } from 'react';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 // Assuming InputField is the component provided above,
 // and that InputFieldDefault is aliased to InputField here.

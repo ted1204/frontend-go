@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 interface BreadcrumbProps {
   pageTitle: string;

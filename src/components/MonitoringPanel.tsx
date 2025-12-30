@@ -1,6 +1,6 @@
 import { ResourceMessage } from '../hooks/useWebSocket';
 import { SYSTEM_POD_PREFIXES } from '../config/constants';
-import { useTranslation } from '@tailadmin/utils';
+import { useTranslation } from '@nthucscc/utils';
 
 /**
  * Helper component to display a colored badge based on status or event type.
