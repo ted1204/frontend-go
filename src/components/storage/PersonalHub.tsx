@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useContext } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@nthucscc/utils';
 import { toast } from 'react-hot-toast';
 import {
   CloudIcon,

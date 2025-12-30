@@ -224,34 +224,33 @@ export default function ProjectDetail() {
       />
       <PageBreadcrumb pageTitle={project.ProjectName} />
 
-      {/* Tab Navigation */}
-      <div className="mb-6 border-b border-gray-200 dark:border-gray-700">
-        <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+      {/* Tab Navigation - Similar to BrowserPage style */}
+      <div className="mb-6">
+        <div className="bg-white dark:bg-gray-800 p-1.5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 inline-flex">
           {[
-            { id: 'overview', label: t('projectDetail.tab.overview') },
+            { id: 'overview', label: t('projectDetail.tab.overview'), icon: '📊' },
             {
               id: 'configurations',
               label: t('projectDetail.tab.configurations'),
+              icon: '⚙️',
             },
-            { id: 'storage', label: t('projectDetail.tab.storage') },
-            { id: 'members', label: t('projectDetail.tab.members') },
+            { id: 'storage', label: t('projectDetail.tab.storage'), icon: '💾' },
+            { id: 'members', label: t('projectDetail.tab.members'), icon: '👥' },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`
-                  whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium capitalize
-                  ${
-                    activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-                  }
-                `}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${
+                activeTab === tab.id
+                  ? 'bg-blue-50 text-blue-600 dark:bg-gray-700 dark:text-white shadow-sm ring-1 ring-black/5'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 dark:text-gray-400 dark:hover:text-gray-300'
+              }`}
             >
+              <span>{tab.icon}</span>
               {tab.label}
             </button>
           ))}
-        </nav>
+        </div>
       </div>
 
       {/* Tab Content */}

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { useTranslation } from '@nthucscc/utils';
 import { logout } from '../../services/authService';
 
 interface SignOutButtonProps {
@@ -7,6 +8,7 @@ interface SignOutButtonProps {
 }
 
 export default function SignOutButton({ onClick }: SignOutButtonProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleLogout = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -37,7 +39,7 @@ export default function SignOutButton({ onClick }: SignOutButtonProps) {
           fill=""
         />
       </svg>
-      登出
+      {t('auth.signOut')}
     </Link>
   );
 }

@@ -3,6 +3,7 @@ import Button from './ui/button/Button';
 import { Project } from '../interfaces/project';
 import { getPVCList } from '../services/storageService';
 import { PVC } from '../interfaces/pvc';
+import { getUsername } from '../services/authService';
 
 // Import Monaco Editor and its assets
 import MonacoEditor from 'react-monaco-editor';
@@ -37,12 +38,21 @@ export default function AddConfigModal({
   const [activeTab, setActiveTab] = useState<'wizard' | 'yaml'>('wizard');
   const { t } = useTranslation();
 
+  // Mount storage type
+  type MountType = 'project-pvc' | 'user-storage';
+
+  interface MountConfig {
+    id: string;
+    type: MountType;
+    pvcName?: string; // For project PVC
+    mountPath: string;
+  }
+
   // Wizard State
   const [wizardData, setWizardData] = useState({
     image: '',
     gpu: 0,
-    pvcName: '',
-    mountPath: '/data',
+    mounts: [] as MountConfig[],
     command: '',
     args: '',
   });
@@ -63,8 +73,7 @@ export default function AddConfigModal({
       setWizardData({
         image: '',
         gpu: 0,
-        pvcName: '',
-        mountPath: '/data',
+        mounts: [],
         command: '',
         args: '',
       });
@@ -122,7 +131,7 @@ export default function AddConfigModal({
   }, []);
 
   const generateYAML = useCallback(() => {
-    const { image, gpu, pvcName, mountPath, command, args } = wizardData;
+    const { image, gpu, mounts, command, args } = wizardData;
     const name = formData.filename.replace(/\.(yaml|yml)$/, '') || 'app';
 
     let yaml = `apiVersion: v1
@@ -151,15 +160,28 @@ spec:
         .join(', ')}]\n`;
     }
 
-    if (pvcName) {
-      yaml += `      volumeMounts:
-        - mountPath: ${mountPath}
-          name: data-volume
-  volumes:
-    - name: data-volume
-      persistentVolumeClaim:
-        claimName: ${pvcName}
-`;
+    if (mounts.length > 0) {
+      yaml += `      volumeMounts:\n`;
+      mounts.forEach((mount, index) => {
+        yaml += `        - mountPath: ${mount.mountPath}\n`;
+        yaml += `          name: volume-${index}\n`;
+      });
+
+      yaml += `  volumes:\n`;
+      mounts.forEach((mount, index) => {
+        if (mount.type === 'user-storage') {
+          // Use NFS mount for user storage with template
+          // Backend will replace {{username}} with safe username
+          yaml += `    - name: volume-${index}\n`;
+          yaml += `      nfs:\n`;
+          yaml += `        server: storage-svc.user-{{username}}-storage.svc.cluster.local\n`;
+          yaml += `        path: /\n`;
+        } else if (mount.type === 'project-pvc' && mount.pvcName) {
+          yaml += `    - name: volume-${index}\n`;
+          yaml += `      persistentVolumeClaim:\n`;
+          yaml += `        claimName: ${mount.pvcName}\n`;
+        }
+      });
     } else {
       // Close containers list if no volumes
       yaml += `\n`;
@@ -347,50 +369,167 @@ spec:
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                {/* PVC Selection */}
-                <div className="space-y-2">
+              {/* Mount Storage Section */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {t('config_wizard_pvcLabel')}
+                    {t('config_wizard_pvcLabel')} / {t('storage.tab.personal')}
                   </label>
-                  <select
-                    value={wizardData.pvcName}
-                    onChange={(e) => setWizardData({ ...wizardData, pvcName: e.target.value })}
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                  >
-                    <option value="">{t('config_pvc_placeholder')}</option>
-                    {loadingPvcs ? (
-                      <option disabled>{t('config_pvc_loading')}</option>
-                    ) : (
-                      pvcs.map((pvc) => (
-                        <option key={pvc.name} value={pvc.name}>
-                          {pvc.name} ({pvc.size})
-                        </option>
-                      ))
-                    )}
-                  </select>
-                  <p className="text-xs text-gray-500">{t('config_pvc_note')}</p>
-                </div>
-
-                {/* Mount Path */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {t('config_mountPath')}
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="/data"
-                    value={wizardData.mountPath}
-                    onChange={(e) =>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newMount: MountConfig = {
+                        id: Date.now().toString(),
+                        type: 'project-pvc',
+                        mountPath: '/data',
+                      };
                       setWizardData({
                         ...wizardData,
-                        mountPath: e.target.value,
-                      })
-                    }
-                    disabled={!wizardData.pvcName}
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                  />
+                        mounts: [...wizardData.mounts, newMount],
+                      });
+                    }}
+                    className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    {t('common.create')}
+                  </button>
                 </div>
+
+                {/* Mount List */}
+                {wizardData.mounts.length === 0 ? (
+                  <div className="rounded-lg border-2 border-dashed border-gray-300 p-8 text-center dark:border-gray-600">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {t('config_pvc_note')}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {wizardData.mounts.map((mount, index) => (
+                      <div
+                        key={mount.id}
+                        className="flex items-start gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800"
+                      >
+                        <div className="flex-1 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                          {/* Mount Type */}
+                          <div className="space-y-1">
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400">
+                              {t('storage.tab.personal')} / PVC
+                            </label>
+                            <select
+                              value={mount.type}
+                              onChange={(e) => {
+                                const updatedMounts = [...wizardData.mounts];
+                                updatedMounts[index] = {
+                                  ...mount,
+                                  type: e.target.value as MountType,
+                                  pvcName:
+                                    e.target.value === 'user-storage' ? undefined : mount.pvcName,
+                                };
+                                setWizardData({ ...wizardData, mounts: updatedMounts });
+                              }}
+                              className="block w-full rounded-lg border border-gray-300 bg-white p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-500"
+                            >
+                              <option value="user-storage">
+                                {t('storage.tab.personal')} ({{ username }})
+                              </option>
+                              <option value="project-pvc">Project PVC</option>
+                            </select>
+                          </div>
+
+                          {/* PVC Selection (only for project-pvc) */}
+                          {mount.type === 'project-pvc' && (
+                            <div className="space-y-1">
+                              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400">
+                                PVC
+                              </label>
+                              <select
+                                value={mount.pvcName || ''}
+                                onChange={(e) => {
+                                  const updatedMounts = [...wizardData.mounts];
+                                  updatedMounts[index] = {
+                                    ...mount,
+                                    pvcName: e.target.value,
+                                  };
+                                  setWizardData({ ...wizardData, mounts: updatedMounts });
+                                }}
+                                className="block w-full rounded-lg border border-gray-300 bg-white p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-500"
+                              >
+                                <option value="">{t('config_pvc_placeholder')}</option>
+                                {loadingPvcs ? (
+                                  <option disabled>{t('config_pvc_loading')}</option>
+                                ) : (
+                                  pvcs.map((pvc) => (
+                                    <option key={pvc.name} value={pvc.name}>
+                                      {pvc.name} ({pvc.size})
+                                    </option>
+                                  ))
+                                )}
+                              </select>
+                            </div>
+                          )}
+
+                          {/* Mount Path */}
+                          <div className="space-y-1">
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400">
+                              {t('config_mountPath')}
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="/data"
+                              value={mount.mountPath}
+                              onChange={(e) => {
+                                const updatedMounts = [...wizardData.mounts];
+                                updatedMounts[index] = {
+                                  ...mount,
+                                  mountPath: e.target.value,
+                                };
+                                setWizardData({ ...wizardData, mounts: updatedMounts });
+                              }}
+                              className="block w-full rounded-lg border border-gray-300 bg-white p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Remove Button */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updatedMounts = wizardData.mounts.filter(
+                              (m) => m.id !== mount.id,
+                            );
+                            setWizardData({ ...wizardData, mounts: updatedMounts });
+                          }}
+                          className="rounded-lg p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                          title={t('common.delete')}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Command & Args */}

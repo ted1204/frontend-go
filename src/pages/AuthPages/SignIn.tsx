@@ -1,11 +1,13 @@
 import { PageMeta } from '@nthucscc/ui';
+import { useTranslation } from '@nthucscc/utils';
 import AuthLayout from './AuthPageLayout';
 import SignInForm from '../../components/auth/SignInForm';
 
 export default function SignIn() {
+  const { t } = useTranslation();
   return (
     <>
-      <PageMeta title="登入 | AI 平台" description="這是 AI 平台的登入頁面" />
+      <PageMeta title={t('auth.login.pageTitle')} description={t('auth.login.pageDescription')} />
       <AuthLayout>
         <SignInForm />
       </AuthLayout>
