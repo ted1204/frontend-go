@@ -51,7 +51,7 @@ export const ProjectGridView: React.FC<Props> = ({
                     {storage.projectName}
                   </h3>
                   <div className="mt-1">
-                    <PermissionBadge role={(storage as any).role} />
+                    <PermissionBadge role={((storage as unknown) as { role?: string }).role} />
                   </div>
                 </div>
               </div>

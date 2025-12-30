@@ -87,8 +87,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // English: Ensure all pool connections are terminated when the provider unmounts
   useEffect(() => {
+    const currentSockets = sockets.current;
     return () => {
-      Object.values(sockets.current).forEach((s) => s.close());
+      Object.values(currentSockets).forEach((s) => s.close());
     };
   }, []);
 

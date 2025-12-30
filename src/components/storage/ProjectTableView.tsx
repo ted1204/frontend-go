@@ -87,7 +87,7 @@ export const ProjectTableView: React.FC<Props> = ({
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <PermissionBadge role={(storage as any).role} />
+                  <PermissionBadge role={((storage as unknown) as { role?: string }).role} />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <StatusBadge isOnline={isOnline} />
