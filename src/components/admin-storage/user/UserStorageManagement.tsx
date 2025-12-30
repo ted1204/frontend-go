@@ -48,7 +48,7 @@ const UserStorageManagement: React.FC = () => {
       const exists = await checkUserStorageStatus(targetUser);
       setStorageStatus(exists ? 'exists' : 'missing');
       setMessage(null); // Clear previous messages
-    } catch (err) {
+    } catch {
       setStorageStatus('unknown');
     } finally {
       setLoading(false);
@@ -87,8 +87,9 @@ const UserStorageManagement: React.FC = () => {
           text: t('admin.storage.user.successExpand', { user: targetUser, size: expandSize }),
         });
       }
-    } catch (err: any) {
-      setMessage({ type: 'error', text: err.message });
+    } catch (err: unknown) {
+      const e = err as { message?: string };
+      setMessage({ type: 'error', text: e.message || 'Operation failed' });
     } finally {
       setLoading(false);
     }

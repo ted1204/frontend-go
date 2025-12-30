@@ -112,7 +112,7 @@ export default function ProjectDetail() {
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, t]);
 
   // Handler functions for CRUD operations
   const handleCreate = async (data: { filename: string; raw_yaml: string }) => {

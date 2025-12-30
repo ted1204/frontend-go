@@ -23,8 +23,16 @@ export type LocaleKey = Path<typeof en>;
  * @param path The dot-notation string (e.g., 'project.create.title')
  * @returns The translated string or undefined if not found
  */
-const resolvePath = (obj: any, path: string): string | undefined => {
-  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+const resolvePath = (obj: unknown, path: string): string | undefined => {
+  if (typeof obj !== 'object' || obj === null) return undefined;
+  const parts = path.split('.');
+  let acc: unknown = obj;
+  for (const part of parts) {
+    if (typeof acc !== 'object' || acc === null) return undefined;
+    acc = (acc as Record<string, unknown>)[part];
+    if (acc === undefined) return undefined;
+  }
+  return typeof acc === 'string' ? acc : undefined;
 };
 
 /**

@@ -12,7 +12,7 @@ import {
 // Services & Types
 import { getProjectStorages, deletePVC } from '../../../services/storageService';
 import { ProjectPVC } from '../../../interfaces/projectStorage';
-import { useGlobalWebSocket } from '../../../context/useGlobalWebSocket'; // Global WebSocket
+// Global WebSocket (not used here)
 
 interface ProjectStorageListProps {
   refreshTrigger: number; // 用於從父層觸發刷新
@@ -29,9 +29,9 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
     try {
       const data = await getProjectStorages();
       setPvcs(data);
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to load storage list');
+      } catch (err) {
+        console.error(err);
+        toast.error('Failed to load storage list');
     } finally {
       setLoading(false);
     }
@@ -56,8 +56,9 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
         await deletePVC(namespace, pvcName);
         toast.success(t('common.success'));
         fetchData(); // Reload list after delete
-      } catch (err: any) {
-        toast.error(err.message || 'Delete failed');
+      } catch (err: unknown) {
+        const e = err as { message?: string };
+        toast.error(e.message || 'Delete failed');
       }
     }
   };

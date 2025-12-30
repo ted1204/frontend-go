@@ -74,8 +74,9 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
       
       toast.success(t('admin.storage.project.create.success'));
       onSuccess(); // 通知父層刷新並切換 Tab
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to create storage');
+    } catch (err: unknown) {
+      const e = err as { message?: string };
+      toast.error(e.message || 'Failed to create storage');
     } finally {
       setLoading(false);
     }

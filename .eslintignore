@@ -3,3 +3,6 @@ dist
 build
 public
 coverage
+
+# ignore compiled package outputs
+packages/**/dist

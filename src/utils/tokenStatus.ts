@@ -17,7 +17,7 @@ export async function checkTokenStatus() {
       return false;
     }
     return true;
-  } catch (e) {
+  } catch {
     // Network or other error, treat as expired for safety
     localStorage.removeItem('userData');
     localStorage.removeItem('username');

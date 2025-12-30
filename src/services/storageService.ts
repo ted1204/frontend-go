@@ -263,8 +263,9 @@ export const createProjectStorage = async (payload: CreateProjectStoragePayload)
       body: JSON.stringify(payload),
     });
     return (response.data || response) as CreateStorageResponse;
-  } catch (error: any) {
-    const msg = error.response?.data?.error || error.message || 'Failed to create project storage.';
+  } catch (error: unknown) {
+    const err = error as { response?: { data?: { error?: string } }; message?: string };
+    const msg = err.response?.data?.error || err.message || 'Failed to create project storage.';
     throw new Error(msg);
   }
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { LanguageContext } from './LanguageContextCore';
+import { LanguageContext, type LanguageContextType } from './LanguageContextCore';
 
 import type { Locale } from '../i18n';
 
@@ -13,8 +13,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   );
 };
 
-export const useLanguage = () => {
-  return React.useContext(LanguageContext as React.Context<any>);
+export const useLanguage = (): LanguageContextType => {
+  return React.useContext(LanguageContext);
 };
 
 export default LanguageContext;

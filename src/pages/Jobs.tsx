@@ -29,7 +29,6 @@ const Jobs: React.FC = () => {
 
   useEffect(() => {
     fetchJobs();
-    // eslint-disable-next-line
   }, []);
 
   const fetchJobs = async () => {

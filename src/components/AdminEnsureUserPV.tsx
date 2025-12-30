@@ -11,8 +11,9 @@ export default function AdminEnsureUserPV() {
     try {
       const res = await axios.post('/admin/ensure-user-pv');
       setResult(`已補齊 PV/PVC 數量: ${res.data.created}`);
-    } catch (e: any) {
-      setResult('補齊失敗: ' + (e.response?.data?.error || e.message));
+    } catch (e: unknown) {
+      const err = e as { response?: { data?: { error?: string } }; message?: string };
+      setResult('補齊失敗: ' + (err.response?.data?.error || err.message || 'unknown error'));
     } finally {
       setLoading(false);
     }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
 import { PageMeta } from '@tailadmin/ui';
-import { useTranslation } from '@tailadmin/utils';
+// translations not needed in this file
 import { toast } from 'react-hot-toast';
 
 // Icons
@@ -55,7 +55,7 @@ const PermissionBadge: React.FC<{ role: string }> = ({ role }) => {
 // Sub-Component: Personal Hub
 // ==========================================
 const PersonalHub: React.FC = () => {
-  const { t } = useTranslation();
+  // translation not used in this component
   const [isRequesting, setIsRequesting] = useState(false);
   const [storageExists, setStorageExists] = useState<boolean | null>(null);
 
@@ -79,16 +79,28 @@ const PersonalHub: React.FC = () => {
 
   const handleStart = async () => {
     setIsRequesting(true);
-    try { await openUserDrive(); toast.success("Starting personal hub..."); } 
-    catch (err: any) { toast.error(err.message); }
-    finally { setIsRequesting(false); }
+    try {
+      await openUserDrive();
+      toast.success('Starting personal hub...');
+    } catch (err: unknown) {
+      const e = err as { message?: string };
+      toast.error(e.message || 'Start failed');
+    } finally {
+      setIsRequesting(false);
+    }
   };
 
   const handleStop = async () => {
     setIsRequesting(true);
-    try { await stopUserDrive(); toast.success("Stopping personal hub..."); } 
-    catch (err: any) { toast.error(err.message); }
-    finally { setIsRequesting(false); }
+    try {
+      await stopUserDrive();
+      toast.success('Stopping personal hub...');
+    } catch (err: unknown) {
+      const e = err as { message?: string };
+      toast.error(e.message || 'Stop failed');
+    } finally {
+      setIsRequesting(false);
+    }
   };
 
   return (
@@ -124,18 +136,26 @@ const PersonalHub: React.FC = () => {
 // Sub-Component: Project Storage List
 // ==========================================
 const ProjectStorage: React.FC = () => {
-  const { t } = useTranslation();
-  const [projects, setProjects] = useState<any[]>([]);
+  interface ProjectInfo {
+    id: string | number;
+    namespace: string;
+    name: string;
+    userRole?: string;
+  }
+
+  const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [isActionLoading, setIsActionLoading] = useState<Record<string, boolean>>({});
   
   const { messages } = useGlobalWebSocket();
 
   useEffect(() => {
-    getProjectListByUser().then((data) => {
-      console.log("Projects loaded for user:", data);
-      setProjects(data);
-    }).catch(err => console.error("API Error:", err));
+    getProjectListByUser()
+      .then((data) => {
+        setProjects(data as ProjectInfo[]);
+      })
+      .catch((err) => console.error('API Error:', err))
+      .finally(() => setLoading(false));
   }, []);
 
   const getProjectStatus = (namespace: string) => {
@@ -150,11 +170,12 @@ const ProjectStorage: React.FC = () => {
     setIsActionLoading(prev => ({ ...prev, [projectId]: true }));
     try {
       await startFileBrowser(namespace, projectPvcName);
-      toast.success("Starting project drive...");
-    } catch (err: any) {
-      toast.error(err.message);
+      toast.success('Starting project drive...');
+    } catch (err: unknown) {
+      const e = err as { message?: string };
+      toast.error(e.message || 'Start failed');
     } finally {
-      setIsActionLoading(prev => ({ ...prev, [projectId]: false }));
+      setIsActionLoading((prev) => ({ ...prev, [projectId]: false }));
     }
   };
 
@@ -162,11 +183,12 @@ const ProjectStorage: React.FC = () => {
     setIsActionLoading(prev => ({ ...prev, [projectId]: true }));
     try {
       await stopFileBrowser(namespace, projectPvcName);
-      toast.success("Stopping project drive...");
-    } catch (err: any) {
-      toast.error(err.message);
+      toast.success('Stopping project drive...');
+    } catch (err: unknown) {
+      const e = err as { message?: string };
+      toast.error(e.message || 'Stop failed');
     } finally {
-      setIsActionLoading(prev => ({ ...prev, [projectId]: false }));
+      setIsActionLoading((prev) => ({ ...prev, [projectId]: false }));
     }
   };
 
