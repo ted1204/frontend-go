@@ -2,11 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@tailadmin/utils';
 import { toast } from 'react-hot-toast';
-import {
-  ServerIcon,
-  CubeIcon,
-  PlusCircleIcon,
-} from '@heroicons/react/24/outline';
+import { ServerIcon, CubeIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 
 // Services
 import { createProjectStorage } from '../../../services/storageService'; // 引用整合後的 service
@@ -71,7 +67,7 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
         projectName: selectedProjectName,
         capacity: capacity,
       });
-      
+
       toast.success(t('admin.storage.project.create.success'));
       onSuccess(); // 通知父層刷新並切換 Tab
     } catch (err: unknown) {
@@ -113,7 +109,9 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
               className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:opacity-50"
             >
               <option value="">
-                {fetchingProjects ? 'Loading projects...' : t('admin.storage.project.form.projectPlaceholder')}
+                {fetchingProjects
+                  ? 'Loading projects...'
+                  : t('admin.storage.project.form.projectPlaceholder')}
               </option>
               {projects.map((p) => (
                 <option key={p.PID} value={p.PID}>

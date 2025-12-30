@@ -40,9 +40,7 @@ export const getProjectListByUser = async (): Promise<Project[]> => {
     return Array.isArray(data) ? data : [];
   } catch (error) {
     console.error('getProjectListByUser error:', error);
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch your projects.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch your projects.');
   }
 };
 

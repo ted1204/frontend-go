@@ -2,12 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@tailadmin/utils';
 import { toast } from 'react-hot-toast';
-import {
-  CubeIcon,
-  PencilSquareIcon,
-  TrashIcon,
-  ArrowPathIcon,
-} from '@heroicons/react/24/outline';
+import { CubeIcon, PencilSquareIcon, TrashIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
 // Services & Types
 import { getProjectStorages, deletePVC } from '../../../services/storageService';
@@ -29,9 +24,9 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
     try {
       const data = await getProjectStorages();
       setPvcs(data);
-      } catch (err) {
-        console.error(err);
-        toast.error('Failed to load storage list');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to load storage list');
     } finally {
       setLoading(false);
     }
@@ -75,13 +70,13 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
     <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
       {/* Manual Refresh Button (Optional but useful) */}
       <div className="flex justify-end p-2 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
-         <button 
-           onClick={fetchData} 
-           className="flex items-center gap-1 text-xs text-gray-500 hover:text-blue-600 transition-colors"
-         >
-            <ArrowPathIcon className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-            Refresh
-         </button>
+        <button
+          onClick={fetchData}
+          className="flex items-center gap-1 text-xs text-gray-500 hover:text-blue-600 transition-colors"
+        >
+          <ArrowPathIcon className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          Refresh
+        </button>
       </div>
 
       <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -113,7 +108,10 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
             </tr>
           ) : (
             pvcs.map((pvc) => (
-              <tr key={pvc.pvcName} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+              <tr
+                key={pvc.pvcName}
+                className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+              >
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <CubeIcon className="h-5 w-5 text-gray-400 mr-3" />
@@ -126,11 +124,15 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    pvc.status === 'Bound' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 
-                    pvc.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                    'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                  }`}>
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      pvc.status === 'Bound'
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                        : pvc.status === 'Pending'
+                          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                          : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                    }`}
+                  >
                     {pvc.status}
                   </span>
                 </td>
@@ -138,8 +140,8 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
                   {pvc.capacity}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                   {/* ISO Date String to Locale Date */}
-                   {new Date(pvc.createdAt).toLocaleDateString()}
+                  {/* ISO Date String to Locale Date */}
+                  {new Date(pvc.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end gap-3">

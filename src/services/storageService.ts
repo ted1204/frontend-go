@@ -12,7 +12,11 @@ import {
 } from '../config/url';
 import { PVC, PVCRequest } from '../interfaces/pvc';
 // 請確保此路徑正確，或將介面定義直接寫在下方
-import { ProjectPVC, CreateProjectStoragePayload, CreateStorageResponse } from '../interfaces/projectStorage';
+import {
+  ProjectPVC,
+  CreateProjectStoragePayload,
+  CreateStorageResponse,
+} from '../interfaces/projectStorage';
 import { fetchWithAuth as baseFetchWithAuth } from '../utils/api';
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
@@ -246,9 +250,7 @@ export const getProjectStorages = async (): Promise<ProjectPVC[]> => {
     return Array.isArray(result) ? result : [];
   } catch (error) {
     console.error('getProjectStorages error:', error);
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch project storages.'
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch project storages.');
   }
 };
 
@@ -256,7 +258,9 @@ export const getProjectStorages = async (): Promise<ProjectPVC[]> => {
  * Provision a new storage for a project.
  * POST /k8s/storage/projects
  */
-export const createProjectStorage = async (payload: CreateProjectStoragePayload): Promise<CreateStorageResponse> => {
+export const createProjectStorage = async (
+  payload: CreateProjectStoragePayload,
+): Promise<CreateStorageResponse> => {
   try {
     const response = await fetchWithAuth(PROJECT_STORAGE_BASE_URL, {
       method: 'POST',

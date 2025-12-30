@@ -18,13 +18,13 @@ import {
 } from '@heroicons/react/24/outline';
 
 // Services
-import { 
-  openUserDrive, 
-  stopUserDrive, 
-  checkUserStorageStatus, 
+import {
+  openUserDrive,
+  stopUserDrive,
+  checkUserStorageStatus,
   getProjectStorageProxyUrl,
   startFileBrowser, // Ensure these are exported from storageService
-  stopFileBrowser 
+  stopFileBrowser,
 } from '../services/storageService';
 import { getUsername } from '../services/authService';
 import { getProjectListByUser } from '../services/projectService';
@@ -42,10 +42,16 @@ const getPersonalProxyUrl = () => `${API_BASE_URL}/k8s/users/proxy/`;
 const PermissionBadge: React.FC<{ role: string }> = ({ role }) => {
   const isManager = role === 'manager' || role === 'admin';
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
-      isManager ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
-    }`}>
-      {isManager ? <PencilSquareIcon className="h-3 w-3" /> : <LockClosedIcon className="h-3 w-3" />}
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
+        isManager ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+      }`}
+    >
+      {isManager ? (
+        <PencilSquareIcon className="h-3 w-3" />
+      ) : (
+        <LockClosedIcon className="h-3 w-3" />
+      )}
       {isManager ? 'Read/Write' : 'Read Only'}
     </span>
   );
@@ -65,9 +71,9 @@ const PersonalHub: React.FC = () => {
   const podName = `fb-hub-${safeUsername}`;
 
   const { messages } = useGlobalWebSocket();
-  
+
   const runtimeStatus = useMemo(() => {
-    const pod = messages.find(m => m.kind === 'Pod' && m.ns === personalNs && m.name === podName);
+    const pod = messages.find((m) => m.kind === 'Pod' && m.ns === personalNs && m.name === podName);
     if (!pod) return 'Stopped';
     if (pod.metadata?.deletionTimestamp) return 'Terminating';
     return pod.status || 'Unknown';
@@ -106,24 +112,41 @@ const PersonalHub: React.FC = () => {
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-12 shadow-sm dark:border-gray-700 dark:bg-gray-800 text-center">
       <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/20">
-        <CloudIcon className={`h-12 w-12 ${runtimeStatus === 'Running' ? 'text-green-500' : 'text-blue-500'}`} />
+        <CloudIcon
+          className={`h-12 w-12 ${runtimeStatus === 'Running' ? 'text-green-500' : 'text-blue-500'}`}
+        />
       </div>
       <h3 className="text-2xl font-bold dark:text-white">Personal Storage Hub</h3>
       <p className="mt-2 text-gray-500">Manage your private files and data.</p>
-      
+
       <div className="mt-8 flex justify-center gap-4">
         {runtimeStatus === 'Running' ? (
           <>
-            <button onClick={() => window.open(getPersonalProxyUrl(), '_blank')} className="inline-flex items-center gap-2 rounded-lg bg-green-600 px-6 py-3 font-bold text-white hover:bg-green-700 transition-all">
+            <button
+              onClick={() => window.open(getPersonalProxyUrl(), '_blank')}
+              className="inline-flex items-center gap-2 rounded-lg bg-green-600 px-6 py-3 font-bold text-white hover:bg-green-700 transition-all"
+            >
               <ArrowTopRightOnSquareIcon className="h-5 w-5" /> Open Browser
             </button>
-            <button onClick={handleStop} disabled={isRequesting} className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-6 py-3 font-bold text-red-600 hover:bg-red-50 transition-all">
+            <button
+              onClick={handleStop}
+              disabled={isRequesting}
+              className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-6 py-3 font-bold text-red-600 hover:bg-red-50 transition-all"
+            >
               <StopIcon className="h-5 w-5" /> Stop
             </button>
           </>
         ) : (
-          <button onClick={handleStart} disabled={isRequesting || storageExists === false} className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-8 py-3 font-bold text-white hover:bg-blue-700 disabled:opacity-50 transition-all">
-            {isRequesting ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" /> : <PlayIcon className="h-5 w-5" />}
+          <button
+            onClick={handleStart}
+            disabled={isRequesting || storageExists === false}
+            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-8 py-3 font-bold text-white hover:bg-blue-700 disabled:opacity-50 transition-all"
+          >
+            {isRequesting ? (
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            ) : (
+              <PlayIcon className="h-5 w-5" />
+            )}
             {isRequesting ? 'Requesting...' : 'Start Hub'}
           </button>
         )}
@@ -146,7 +169,7 @@ const ProjectStorage: React.FC = () => {
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [isActionLoading, setIsActionLoading] = useState<Record<string, boolean>>({});
-  
+
   const { messages } = useGlobalWebSocket();
 
   useEffect(() => {
@@ -160,14 +183,18 @@ const ProjectStorage: React.FC = () => {
 
   const getProjectStatus = (namespace: string) => {
     // Assuming the pod name contains the namespace hash or starts with 'pvc-project'
-    const pod = messages.find(m => m.kind === 'Pod' && m.ns === namespace);
+    const pod = messages.find((m) => m.kind === 'Pod' && m.ns === namespace);
     if (!pod) return 'Stopped';
     if (pod.metadata?.deletionTimestamp) return 'Terminating';
     return pod.status || 'Unknown';
   };
 
-  const handleStartProject = async (namespace: string, projectPvcName: string, projectId: string) => {
-    setIsActionLoading(prev => ({ ...prev, [projectId]: true }));
+  const handleStartProject = async (
+    namespace: string,
+    projectPvcName: string,
+    projectId: string,
+  ) => {
+    setIsActionLoading((prev) => ({ ...prev, [projectId]: true }));
     try {
       await startFileBrowser(namespace, projectPvcName);
       toast.success('Starting project drive...');
@@ -179,8 +206,12 @@ const ProjectStorage: React.FC = () => {
     }
   };
 
-  const handleStopProject = async (namespace: string, projectPvcName: string, projectId: string) => {
-    setIsActionLoading(prev => ({ ...prev, [projectId]: true }));
+  const handleStopProject = async (
+    namespace: string,
+    projectPvcName: string,
+    projectId: string,
+  ) => {
+    setIsActionLoading((prev) => ({ ...prev, [projectId]: true }));
     try {
       await stopFileBrowser(namespace, projectPvcName);
       toast.success('Stopping project drive...');
@@ -192,7 +223,12 @@ const ProjectStorage: React.FC = () => {
     }
   };
 
-  if (loading) return <div className="py-20 text-center animate-pulse text-gray-500 font-medium">Fetching shared storages...</div>;
+  if (loading)
+    return (
+      <div className="py-20 text-center animate-pulse text-gray-500 font-medium">
+        Fetching shared storages...
+      </div>
+    );
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -204,7 +240,10 @@ const ProjectStorage: React.FC = () => {
         const pvcName = `pvc-${project.namespace}`; // Consistent with your Go backend naming
 
         return (
-          <div key={project.id} className="flex flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800 transition-hover hover:shadow-md">
+          <div
+            key={project.id}
+            className="flex flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800 transition-hover hover:shadow-md"
+          >
             <div className="mb-4 flex items-center justify-between">
               <div className="rounded-xl bg-indigo-50 p-3 dark:bg-indigo-900/20">
                 <CircleStackIcon className="h-6 w-6 text-indigo-600" />
@@ -212,10 +251,14 @@ const ProjectStorage: React.FC = () => {
               <PermissionBadge role={project.userRole} />
             </div>
 
-            <h4 className="text-lg font-bold text-gray-900 dark:text-white truncate">{project.name}</h4>
+            <h4 className="text-lg font-bold text-gray-900 dark:text-white truncate">
+              {project.name}
+            </h4>
             <div className="mt-2 flex items-center gap-2 text-sm">
-               <span className={`h-2.5 w-2.5 rounded-full ${isRunning ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`} />
-               <span className="font-medium text-gray-600 dark:text-gray-400">{status}</span>
+              <span
+                className={`h-2.5 w-2.5 rounded-full ${isRunning ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`}
+              />
+              <span className="font-medium text-gray-600 dark:text-gray-400">{status}</span>
             </div>
 
             <div className="mt-8 flex flex-col gap-2">
@@ -274,8 +317,8 @@ function BrowserPage() {
           <button
             onClick={() => setActiveTab('personal')}
             className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-bold transition-all ${
-              activeTab === 'personal' 
-                ? 'bg-white shadow-md text-blue-600 dark:bg-gray-700 dark:text-blue-400' 
+              activeTab === 'personal'
+                ? 'bg-white shadow-md text-blue-600 dark:bg-gray-700 dark:text-blue-400'
                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
             }`}
           >
@@ -284,8 +327,8 @@ function BrowserPage() {
           <button
             onClick={() => setActiveTab('project')}
             className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-bold transition-all ${
-              activeTab === 'project' 
-                ? 'bg-white shadow-md text-blue-600 dark:bg-gray-700 dark:text-blue-400' 
+              activeTab === 'project'
+                ? 'bg-white shadow-md text-blue-600 dark:bg-gray-700 dark:text-blue-400'
                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
             }`}
           >
