@@ -193,6 +193,23 @@ const en = {
   config_creating: 'Creating...',
   config_createButton: 'Create Config',
 
+  // --- Config File List / Actions ---
+  configFile: {
+    editFile: 'Edit file',
+    destroyInstance: 'Destroy instance',
+    deleteFile: 'Delete file',
+    notFoundTitle: 'No config files found',
+    notFoundDesc: 'Click "Add Config" to get started.',
+    toggleResources: 'Toggle resources',
+    id: 'ID',
+    createdAt: 'Created At',
+    deployInstance: 'Deploy instance',
+    deploy: 'Deploy',
+    relatedResources: 'Related Resources',
+    noRelatedResources: 'No related resources',
+    notDeployed: 'This config file has not been deployed yet.',
+  },
+
   // --- Storage Admin ---
   admin_storage_project_form_projectPlaceholder: 'Select project...',
   admin_storage_project_create_success: 'Project storage created successfully',

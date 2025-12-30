@@ -54,7 +54,7 @@ interface PVCListProps {
 }
 
 export default function PVCList({
-  pvcs,
+  pvcs = [],
   pods = [],
 }: Omit<PVCListProps, 'namespace'> & { namespace?: string }) {
   // 過濾掉 isGlobal 為 true 的 PVC

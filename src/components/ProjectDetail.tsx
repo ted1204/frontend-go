@@ -12,20 +12,19 @@ import {
   createInstance,
   deleteInstance,
 } from '../services/configFileService';
-import { getPVCListByProject } from '../services/storageService';
-import { PVC } from '../interfaces/pvc';
+import { ConfigFile } from '../interfaces/configFile';
 import AddConfigModal from './AddConfigModal';
 import ConfigFileList from './ConfigFileList';
-import PVCList from './PVCList';
 import EditConfigModal from './EditConfigModal';
 import { useGlobalWebSocket } from '../context/useGlobalWebSocket';
 import MonitoringPanel from './MonitoringPanel';
-import { ConfigFile } from '../interfaces/configFile';
+import { ProjectStorageManager } from './storage/ProjectStorageManager';
 import Button from './ui/button/Button';
 import { getUsername } from '../services/authService';
 import CreateFormModal from './CreateFormModal';
 import ProjectMembers from './ProjectMembers';
 import { useTranslation } from '@nthucscc/utils';
+import { ChartBarIcon, Cog6ToothIcon, CubeIcon, UsersIcon } from '@heroicons/react/24/outline';
 
 // Helper component for the initial page loading state (Skeleton)
 const PageSkeleton = () => (
@@ -41,19 +40,14 @@ const PageSkeleton = () => (
           <div className="h-40 w-full rounded bg-gray-200 dark:bg-gray-700"></div>
         </div>
       </div>
-      {/* Main Content Skeleton (Project Details and Config Files) */}
+      {/* Main Content Skeleton */}
       <div className="space-y-8 col-span-full">
         <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
           <div className="mb-4 h-8 w-1/2 rounded-md bg-gray-300 dark:bg-gray-600"></div>
           <div className="space-y-3">
             <div className="h-4 w-full rounded bg-gray-200 dark:bg-gray-700"></div>
             <div className="h-4 w-5/6 rounded bg-gray-200 dark:bg-gray-700"></div>
-            <div className="h-4 w-3/4 rounded bg-gray-200 dark:bg-gray-700"></div>
           </div>
-        </div>
-        <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
-          <div className="mb-4 h-8 w-1/3 rounded-md bg-gray-300 dark:bg-gray-600"></div>
-          <div className="h-10 w-full rounded bg-gray-200 dark:bg-gray-700"></div>
         </div>
       </div>
     </div>
@@ -73,55 +67,83 @@ export default function ProjectDetail() {
   const { id } = useParams<{ id?: string }>();
   if (!id) throw new Error(t('projectDetail.needProjectId'));
 
-  // State management remains largely the same
+  // Global WebSocket for monitoring
   const { getProjectMessages } = useGlobalWebSocket();
   const username = getUsername();
   const namespace = `proj-${id}-${username}`;
   const messages = getProjectMessages(namespace);
 
+  // --- State Management ---
+
+  // Project Info (Always needed)
   const [project, setProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(true); // Main page loading (Project info)
+
+  // Config Files (Lazy loaded)
   const [configFiles, setConfigFiles] = useState<ConfigFile[]>([]);
-  const [pvcs, setPvcs] = useState<PVC[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isConfigsLoaded, setIsConfigsLoaded] = useState(false); // Flag to check if loaded once
+  const [configLoading, setConfigLoading] = useState(false); // Local loading for config tab
+
   const [error, setError] = useState<string | null>(null);
+  const [actionLoading, setActionLoading] = useState(false);
+
+  // UI State (Modals & Tabs)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
   const [selectedConfig, setSelectedConfig] = useState<ConfigFile | null>(null);
-  const [actionLoading, setActionLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
-  // Data fetching logic remains the same, fetching Project and Config Files in parallel
+  // --- Data Fetching ---
+
+  // 1. Initial Load: Fetch Project Info Only (Fast)
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchProject = async () => {
       try {
         setLoading(true);
         const projectId = parseInt(id);
         const projectData = await getProjectById(projectId);
-        const [configData, pvcData] = await Promise.all([
-          getConfigFilesByProjectId(projectId),
-          getPVCListByProject(projectId),
-        ]);
         setProject(projectData);
-        setConfigFiles(configData);
-        setPvcs(pvcData);
       } catch (err) {
         setError(err instanceof Error ? err.message : t('projectDetail.fetchError'));
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+    fetchProject();
   }, [id, t]);
 
-  // Handler functions for CRUD operations
+  // 2. Lazy Load: Fetch Config Files only when tab is active and not loaded yet
+  useEffect(() => {
+    const fetchConfigs = async () => {
+      if (activeTab === 'configurations' && !isConfigsLoaded && id) {
+        try {
+          setConfigLoading(true);
+          const data = await getConfigFilesByProjectId(parseInt(id));
+          setConfigFiles(data);
+          setIsConfigsLoaded(true); // Mark as loaded so we don't re-fetch on tab switch
+        } catch (err) {
+          console.error('Failed to load configs', err);
+          // Optional: Set a local error state for the tab
+        } finally {
+          setConfigLoading(false);
+        }
+      }
+    };
+    fetchConfigs();
+  }, [activeTab, isConfigsLoaded, id]);
+
+  // --- Handlers ---
+
   const handleCreate = async (data: { filename: string; raw_yaml: string }) => {
     setActionLoading(true);
     try {
       await createConfigFile({ ...data, project_id: parseInt(id) });
       setIsCreateModalOpen(false);
+      // Refresh list
       const updated = await getConfigFilesByProjectId(parseInt(id));
       setConfigFiles(updated);
+      setIsConfigsLoaded(true); // Ensure flag is set
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : t('projectDetail.createConfigError'));
@@ -139,6 +161,7 @@ export default function ProjectDetail() {
         raw_yaml: data.raw_yaml || selectedConfig.Content,
       });
       setIsEditModalOpen(false);
+      // Refresh list
       const updated = await getConfigFilesByProjectId(parseInt(id));
       setConfigFiles(updated);
       setError(null);
@@ -154,6 +177,7 @@ export default function ProjectDetail() {
       setActionLoading(true);
       try {
         await deleteConfigFile(configId);
+        // Refresh list
         const updated = await getConfigFilesByProjectId(parseInt(id));
         setConfigFiles(updated);
         setError(null);
@@ -165,7 +189,6 @@ export default function ProjectDetail() {
     }
   };
 
-  // Handler for creating an instance from a config file
   const handleCreateInstance = async (id: number) => {
     setActionLoading(true);
     try {
@@ -179,7 +202,6 @@ export default function ProjectDetail() {
     }
   };
 
-  // Handler for deleting an instance
   const handleDeleteInstance = async (id: number) => {
     if (confirm(t('projectDetail.confirmDeleteInstance'))) {
       setActionLoading(true);
@@ -195,17 +217,18 @@ export default function ProjectDetail() {
     }
   };
 
-  // Prepares the config file data for the Edit Modal
   const handleEdit = (config: ConfigFile) => {
     setSelectedConfig(config);
     setIsEditModalOpen(true);
   };
 
-  // Render loading skeleton first
+  // --- Render ---
+
+  // Initial page skeleton (only waits for Project Info)
   if (loading) return <PageSkeleton />;
 
-  // Render error or not found states
   if (error) return <StateDisplay title={t('projectDetail.errorTitle')} message={error} />;
+
   if (!project)
     return (
       <StateDisplay
@@ -218,24 +241,34 @@ export default function ProjectDetail() {
     <div>
       <PageMeta
         title={`${project.ProjectName} | ${t('projectDetail.titleSuffix')}`}
-        description={t('projectDetail.description', {
-          name: project.ProjectName,
-        })}
+        description={t('projectDetail.description', { name: project.ProjectName })}
       />
       <PageBreadcrumb pageTitle={project.ProjectName} />
 
-      {/* Tab Navigation - Similar to BrowserPage style */}
+      {/* Tab Navigation */}
       <div className="mb-6">
         <div className="bg-white dark:bg-gray-800 p-1.5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 inline-flex">
           {[
-            { id: 'overview', label: t('projectDetail.tab.overview'), icon: '📊' },
+            {
+              id: 'overview',
+              label: t('projectDetail.tab.overview'),
+              icon: <ChartBarIcon className="h-4 w-4" />,
+            },
             {
               id: 'configurations',
               label: t('projectDetail.tab.configurations'),
-              icon: '⚙️',
+              icon: <Cog6ToothIcon className="h-4 w-4" />,
             },
-            { id: 'storage', label: t('projectDetail.tab.storage'), icon: '💾' },
-            { id: 'members', label: t('projectDetail.tab.members'), icon: '👥' },
+            {
+              id: 'storage',
+              label: t('projectDetail.tab.storage'),
+              icon: <CubeIcon className="h-4 w-4" />,
+            },
+            {
+              id: 'members',
+              label: t('projectDetail.tab.members'),
+              icon: <UsersIcon className="h-4 w-4" />,
+            },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -246,7 +279,7 @@ export default function ProjectDetail() {
                   : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >
-              <span>{tab.icon}</span>
+              <span className="inline-flex items-center text-current">{tab.icon}</span>
               {tab.label}
             </button>
           ))}
@@ -255,28 +288,15 @@ export default function ProjectDetail() {
 
       {/* Tab Content */}
       <div className="mt-6">
+        {/* --- OVERVIEW TAB --- */}
         {activeTab === 'overview' && (
           <div className="flex flex-col gap-8">
-            {/* Project Details Card */}
             <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
-              {/* Card Header */}
+              {/* Header */}
               <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50/50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
                 <div className="flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/50">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-blue-600 dark:text-blue-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                      />
-                    </svg>
+                    <ChartBarIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -311,28 +331,16 @@ export default function ProjectDetail() {
                 </div>
               </div>
 
-              {/* Card Body */}
+              {/* Body */}
               <div className="p-6">
                 <p className="mb-6 text-gray-600 dark:text-gray-300">
                   {project.Description || t('project.noDescription')}
                 </p>
                 <hr className="mb-6 border-gray-200 dark:border-gray-700" />
                 <dl className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+                  {/* ID */}
                   <div className="flex items-start gap-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 flex-shrink-0 text-gray-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                      />
-                    </svg>
+                    <CubeIcon className="h-5 w-5 flex-shrink-0 text-gray-400" />
                     <div>
                       <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
                         {t('project.idLabel', { id: project.PID })}
@@ -342,21 +350,9 @@ export default function ProjectDetail() {
                       </dd>
                     </div>
                   </div>
+                  {/* GID */}
                   <div className="flex items-start gap-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 flex-shrink-0 text-gray-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
+                    <UsersIcon className="h-5 w-5 flex-shrink-0 text-gray-400" />
                     <div>
                       <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
                         {t('project.members.title')}
@@ -368,6 +364,7 @@ export default function ProjectDetail() {
                       </dd>
                     </div>
                   </div>
+                  {/* Quota */}
                   <div className="flex items-start gap-3">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -403,6 +400,7 @@ export default function ProjectDetail() {
                       </dd>
                     </div>
                   </div>
+                  {/* MPS */}
                   <div className="flex items-start gap-3">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -442,6 +440,7 @@ export default function ProjectDetail() {
                       </dd>
                     </div>
                   </div>
+                  {/* Time */}
                   <div className="flex items-start gap-3">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -466,30 +465,6 @@ export default function ProjectDetail() {
                       </dd>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 flex-shrink-0 text-gray-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4 4v5h5M23 18v-5h-5m-4-1V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v4h-4a1 1 0 00-1 1v4a1 1 0 001 1h4v4a1 1 0 001 1h4a1 1 0 001-1v-4h4a1 1 0 001-1v-4a1 1 0 00-1-1h-4z"
-                      />
-                    </svg>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        {t('projectDetail.updatedAt')}
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                        {new Date(project.UpdatedAt).toLocaleString()}
-                      </dd>
-                    </div>
-                  </div>
                 </dl>
               </div>
             </div>
@@ -498,20 +473,7 @@ export default function ProjectDetail() {
             <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700/50 dark:bg-gray-800/60 backdrop-blur-lg">
               <div className="flex items-center gap-4 border-b border-gray-900/10 pb-4 dark:border-gray-50/10">
                 <div className="grid h-10 w-10 flex-shrink-0 place-content-center rounded-lg bg-gray-900 text-white dark:bg-white dark:text-gray-900">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
+                  <ChartBarIcon className="h-6 w-6" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -527,6 +489,7 @@ export default function ProjectDetail() {
           </div>
         )}
 
+        {/* --- CONFIGURATIONS TAB --- */}
         {activeTab === 'configurations' && (
           <div className="rounded-xl border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
             <div className="flex items-center justify-between border-b border-gray-200 p-4 sm:p-6 dark:border-gray-600">
@@ -541,62 +504,52 @@ export default function ProjectDetail() {
               <Button
                 onClick={() => setIsCreateModalOpen(true)}
                 disabled={actionLoading}
-                className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-800 shadow-sm transition-all duration-150 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-gray-800"
+                className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-800 shadow-sm transition-all duration-150 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <PlusIcon className="h-5 w-5" />
                 {actionLoading ? t('common.loading') : t('projectDetail.addConfig')}
               </Button>
             </div>
             <div className="p-4 sm:p-6">
-              <ConfigFileList
-                configFiles={configFiles}
-                onDelete={handleDelete}
-                onEdit={handleEdit}
-                onCreateInstance={handleCreateInstance}
-                onDeleteInstance={handleDeleteInstance}
-                actionLoading={actionLoading}
-              />
+              {configLoading ? (
+                <div className="py-10 text-center text-gray-500">
+                  <div className="animate-spin inline-block w-6 h-6 border-2 border-current border-t-transparent rounded-full mb-2"></div>
+                  <p>{t('common.loading')} Configurations...</p>
+                </div>
+              ) : (
+                <ConfigFileList
+                  configFiles={configFiles}
+                  onDelete={handleDelete}
+                  onEdit={handleEdit}
+                  onCreateInstance={handleCreateInstance}
+                  onDeleteInstance={handleDeleteInstance}
+                  actionLoading={actionLoading}
+                />
+              )}
             </div>
           </div>
         )}
 
+        {/* --- STORAGE TAB --- */}
         {activeTab === 'storage' && (
-          <div className="rounded-xl border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
-            <div className="flex items-center justify-between border-b border-gray-200 p-4 sm:p-6 dark:border-gray-600">
-              <div>
-                <h3 className="text-lg font-bold leading-6 text-gray-900 dark:text-white">
-                  {t('projectDetail.pvcTitle')}
-                </h3>
-                <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-                  {t('projectDetail.pvcDesc')}
-                </p>
-              </div>
-            </div>
-            <div className="p-4 sm:p-6">
-              <PVCList
-                pvcs={pvcs}
-                namespace={`proj-${project.PID}-${getUsername()}`}
-                pods={messages}
-              />
+          <div className="rounded-xl border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 p-4 sm:p-6">
+            <h3 className="text-lg font-bold leading-6 text-gray-900 dark:text-white">
+              {t('storage.pageTitle')}
+            </h3>
+            <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
+              {t('storage.pageSubtitle')}
+            </p>
+            <div className="mt-4">
+              <ProjectStorageManager />
             </div>
           </div>
         )}
 
+        {/* --- MEMBERS TAB --- */}
         {activeTab === 'members' && <ProjectMembers groupId={project.GID} />}
       </div>
 
-      {/* Modals remain the same */}
+      {/* --- MODALS --- */}
       <AddConfigModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
@@ -617,5 +570,23 @@ export default function ProjectDetail() {
         projectId={project.PID}
       />
     </div>
+  );
+}
+
+// Helper: Missing PlusIcon definition locally if not imported
+function PlusIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path
+        fillRule="evenodd"
+        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+        clipRule="evenodd"
+      />
+    </svg>
   );
 }

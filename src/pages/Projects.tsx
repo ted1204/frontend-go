@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
 import { PageMeta } from '@nthucscc/ui';
 import { Project } from '../interfaces/project';
@@ -11,66 +11,160 @@ import { SearchInput } from '@nthucscc/ui';
 import { GridIcon } from '../icons';
 import { useTranslation } from '@nthucscc/utils';
 
+// --- 優化 1: 將子元件移出主 Component，避免每次 Render 都重新定義 ---
+
+// Helper component for the loading state (Skeleton)
+const SkeletonCard = () => (
+  <div className="animate-pulse rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+    <div className="mb-4 h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+    <div className="mb-2 h-6 w-3/4 rounded bg-gray-300 dark:bg-gray-600"></div>
+    <div className="h-4 w-full rounded bg-gray-300 dark:bg-gray-600"></div>
+    <div className="mt-1 h-4 w-5/6 rounded bg-gray-300 dark:bg-gray-600"></div>
+  </div>
+);
+
+// Helper component for displaying states like error or no projects
+const StateDisplay = ({ message }: { message: string }) => (
+  <div className="col-span-full mt-10 flex flex-col items-center justify-center text-center">
+    <p className="text-lg text-gray-500 dark:text-gray-400">{message}</p>
+  </div>
+);
+
+// List View Component
+// 使用 React.memo 避免不必要的重繪，雖然在這個簡單列表效果有限，但若是長列表會有幫助
+const ProjectListItem = ({
+  project,
+  onClick,
+  t, // Pass t function as prop or use hook inside
+}: {
+  project: Project;
+  onClick: (id: number) => void;
+  t: (key: string) => string;
+}) => (
+  <div
+    onClick={() => onClick(project.PID)}
+    className="group flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
+  >
+    <div className="flex items-center gap-4">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
+        <span className="font-bold">{project.ProjectName.charAt(0).toUpperCase()}</span>
+      </div>
+      <div>
+        <h4 className="text-lg font-semibold text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
+          {project.ProjectName}
+        </h4>
+        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
+          {project.Description || t('project.noDescription')}
+        </p>
+      </div>
+    </div>
+    <div className="flex items-center gap-6">
+      <div className="hidden sm:block text-right">
+        <p className="text-xs text-gray-400">{t('common.createdAt')}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300">
+          {new Date(project.CreatedAt).toLocaleDateString()}
+        </p>
+      </div>
+      <div className="hidden sm:block text-right">
+        <p className="text-xs text-gray-400">{t('groupId')}</p>
+        <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+          {project.GID}
+        </span>
+      </div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5 text-gray-400 group-hover:text-blue-500"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fillRule="evenodd"
+          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+          clipRule="evenodd"
+        />
+      </svg>
+    </div>
+  </div>
+);
+
 export default function Projects() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // UI States
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const itemsPerPage = 5; // Limit to 5 projects per page as requested
-  const navigate = useNavigate();
-  const { t } = useTranslation();
 
+  const itemsPerPage = 5;
+
+  // Data Fetching
   useEffect(() => {
+    // 使用 AbortController 避免組件卸載後 setState 造成的 memory leak (雖然 React 18 會自動處理，但這是好習慣)
+    const controller = new AbortController();
+
     const fetchAndFilterProjects = async () => {
       setLoading(true);
       try {
-        // Get user data from localStorage first
         const userData = localStorage.getItem('userData');
         if (!userData) {
           throw new Error(t('error.userNotLogged'));
         }
         const { user_id: userId } = JSON.parse(userData);
 
-        // Fetch all projects and user's groups concurrently for better performance
         const [allProjects, userGroups] = await Promise.all([
           getProjects(),
           getGroupsByUser(userId),
         ]);
 
-        // Filter projects based on user's group memberships
-        const userGroupIds = userGroups.map((ug) => ug.GID);
-        const filteredProjects = allProjects.filter((project) =>
-          userGroupIds.includes(project.GID),
-        );
+        if (controller.signal.aborted) return;
+
+        // Create a Set for O(1) lookup complexity instead of O(N) array includes
+        const userGroupIds = new Set(userGroups.map((ug) => ug.GID));
+
+        const filteredProjects = allProjects.filter((project) => userGroupIds.has(project.GID));
 
         setProjects(filteredProjects);
       } catch (err) {
-        setError(err instanceof Error ? err.message : t('error.fetchData'));
+        if (!controller.signal.aborted) {
+          setError(err instanceof Error ? err.message : t('error.fetchData'));
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchAndFilterProjects();
-  }, [t]); // The dependency array includes `t` to satisfy exhaustive-deps and ensures consistent error messages.
 
-  const handleProjectClick = (projectId: number) => {
-    navigate(`/projects/${projectId}`);
-  };
+    return () => controller.abort();
+  }, [t]);
 
-  // Filter logic
-  const filteredProjects = projects.filter(
-    (project) =>
-      project.ProjectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (project.Description && project.Description.toLowerCase().includes(searchTerm.toLowerCase())),
-  );
+  // --- 優化 2: 使用 useMemo 快取過濾結果 ---
+  // 只有當 projects 或 searchTerm 改變時才重新計算過濾
+  const filteredProjects = useMemo(() => {
+    if (!searchTerm) return projects;
 
-  // Pagination logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProjects = filteredProjects.slice(indexOfFirstItem, indexOfLastItem);
+    const lowerTerm = searchTerm.toLowerCase();
+    return projects.filter(
+      (project) =>
+        project.ProjectName.toLowerCase().includes(lowerTerm) ||
+        (project.Description && project.Description.toLowerCase().includes(lowerTerm)),
+    );
+  }, [projects, searchTerm]);
+
+  // --- 優化 3: 使用 useMemo 快取分頁結果 ---
+  const currentProjects = useMemo(() => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return filteredProjects.slice(indexOfFirstItem, indexOfLastItem);
+  }, [filteredProjects, currentPage, itemsPerPage]);
+
   const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
 
   // Reset page on search
@@ -78,75 +172,12 @@ export default function Projects() {
     setCurrentPage(1);
   }, [searchTerm]);
 
-  // Helper component for the loading state (Skeleton)
-  const SkeletonCard = () => (
-    <div className="animate-pulse rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
-      <div className="mb-4 h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600"></div>
-      <div className="mb-2 h-6 w-3/4 rounded bg-gray-300 dark:bg-gray-600"></div>
-      <div className="h-4 w-full rounded bg-gray-300 dark:bg-gray-600"></div>
-      <div className="mt-1 h-4 w-5/6 rounded bg-gray-300 dark:bg-gray-600"></div>
-    </div>
-  );
-
-  // Helper component for displaying states like error or no projects
-  const StateDisplay = ({ message }: { message: string }) => (
-    <div className="col-span-full mt-10 flex flex-col items-center justify-center text-center">
-      <p className="text-lg text-gray-500 dark:text-gray-400">{message}</p>
-    </div>
-  );
-
-  // List View Component
-  const ProjectListItem = ({
-    project,
-    onClick,
-  }: {
-    project: Project;
-    onClick: (id: number) => void;
-  }) => (
-    <div
-      onClick={() => onClick(project.PID)}
-      className="group flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
-    >
-      <div className="flex items-center gap-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
-          <span className="font-bold">{project.ProjectName.charAt(0).toUpperCase()}</span>
-        </div>
-        <div>
-          <h4 className="text-lg font-semibold text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
-            {project.ProjectName}
-          </h4>
-          <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
-            {project.Description || t('project.noDescription')}
-          </p>
-        </div>
-      </div>
-      <div className="flex items-center gap-6">
-        <div className="hidden sm:block text-right">
-          <p className="text-xs text-gray-400">{t('common.createdAt')}</p>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            {new Date(project.CreatedAt).toLocaleDateString()}
-          </p>
-        </div>
-        <div className="hidden sm:block text-right">
-          <p className="text-xs text-gray-400">{t('groupId')}</p>
-          <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-            {project.GID}
-          </span>
-        </div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5 text-gray-400 group-hover:text-blue-500"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fillRule="evenodd"
-            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </div>
-    </div>
+  // --- 優化 4: 使用 useCallback 保持函數引用穩定 ---
+  const handleProjectClick = useCallback(
+    (projectId: number) => {
+      navigate(`/projects/${projectId}`);
+    },
+    [navigate],
   );
 
   return (
@@ -154,7 +185,6 @@ export default function Projects() {
       <PageMeta title={t('page.projects.title')} description={t('page.projects.description')} />
       <PageBreadcrumb pageTitle={t('breadcrumb.projects')} />
 
-      {/* Main container for the project grid */}
       <div className="rounded-2xl p-4 md:p-6 2xl:p-10">
         <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -206,7 +236,6 @@ export default function Projects() {
         {viewMode === 'grid' ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {loading ? (
-              // Show 6 skeleton cards while loading
               [...Array(6)].map((_, i) => <SkeletonCard key={i} />)
             ) : error ? (
               <StateDisplay message={`${t('common.error') || 'Error'}: ${error}`} />
@@ -219,7 +248,6 @@ export default function Projects() {
                 }
               />
             ) : (
-              // Map over the projects to create cards
               currentProjects.map((project) => (
                 <ProjectCard key={project.PID} project={project} onClick={handleProjectClick} />
               ))
@@ -228,7 +256,6 @@ export default function Projects() {
         ) : (
           <div className="flex flex-col gap-4">
             {loading ? (
-              // Show skeleton list items
               [...Array(5)].map((_, i) => (
                 <div
                   key={i}
@@ -247,7 +274,12 @@ export default function Projects() {
               />
             ) : (
               currentProjects.map((project) => (
-                <ProjectListItem key={project.PID} project={project} onClick={handleProjectClick} />
+                <ProjectListItem
+                  key={project.PID}
+                  project={project}
+                  onClick={handleProjectClick}
+                  t={t}
+                />
               ))
             )}
           </div>

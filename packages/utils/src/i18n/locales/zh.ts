@@ -192,6 +192,23 @@ const zh = {
   config_creating: '建立中...',
   config_createButton: '建立設定',
 
+  // --- 設定檔列表 / 動作 ---
+  configFile: {
+    editFile: '編輯檔案',
+    destroyInstance: '銷毀實例',
+    deleteFile: '刪除檔案',
+    notFoundTitle: '找不到設定檔',
+    notFoundDesc: '點擊「新增設定檔」以開始。',
+    toggleResources: '切換資源顯示',
+    id: 'ID',
+    createdAt: '建立時間',
+    deployInstance: '部署實例',
+    deploy: '部署',
+    relatedResources: '關聯資源',
+    noRelatedResources: '無關聯資源',
+    notDeployed: '此設定檔尚未部署。',
+  },
+
   // --- 儲存管理 ---
   admin_storage_project_form_projectPlaceholder: '選擇專案...',
   admin_storage_project_create_success: '專案儲存空間建立成功',

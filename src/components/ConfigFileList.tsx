@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from '@nthucscc/utils';
 import { ConfigFile } from '../interfaces/configFile';
 import { Resource } from '../interfaces/resource';
 import { getResourcesByConfigFile } from '../services/resourceService';
@@ -30,6 +31,7 @@ const MoreActionsButton = ({
   onDelete: () => void;
   onDeleteInstance: () => void;
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -72,7 +74,7 @@ const MoreActionsButton = ({
             }}
             className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
           >
-            編輯檔案
+            {t('configFile.editFile')}
           </button>
           <button
             onClick={() => {
@@ -81,7 +83,7 @@ const MoreActionsButton = ({
             }}
             className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
           >
-            銷毀實例
+            {t('configFile.destroyInstance')}
           </button>
           <div className="my-1 h-px bg-gray-100 dark:bg-gray-700" />
           <button
@@ -91,7 +93,7 @@ const MoreActionsButton = ({
             }}
             className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/50"
           >
-            刪除檔案
+            {t('configFile.deleteFile')}
           </button>
         </div>
       )}
@@ -118,6 +120,7 @@ export default function ConfigFileList({
   onDeleteInstance,
   actionLoading,
 }: ConfigFileListProps) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState<Record<number, boolean>>({});
   const [resources, setResources] = useState<Record<number, Resource[]>>({});
   const [loading, setLoading] = useState<Record<number, boolean>>({});
@@ -142,8 +145,12 @@ export default function ConfigFileList({
   if (configFiles.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center dark:border-gray-600">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">找不到設定檔</h3>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">點擊「新增設定檔」以開始。</p>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+          {t('configFile.notFoundTitle')}
+        </h3>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          {t('configFile.notFoundDesc')}
+        </p>
       </div>
     );
   }
@@ -159,7 +166,7 @@ export default function ConfigFileList({
               onClick={() => toggleExpand(cf.CFID)}
               className="mr-4 flex-shrink-0 rounded-md p-1 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
               disabled={actionLoading}
-              aria-label="Toggle resources"
+              aria-label={t('configFile.toggleResources')}
             >
               <ChevronIcon isOpen={!!expanded[cf.CFID]} />
             </button>
@@ -168,8 +175,8 @@ export default function ConfigFileList({
             <div className="flex-grow">
               <p className="font-semibold text-gray-900 dark:text-white">{cf.Filename}</p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                ID: <span className="font-mono">{cf.CFID}</span> | 建立時間:{' '}
-                {new Date(cf.CreatedAt).toLocaleDateString()}
+                {t('configFile.id')}: <span className="font-mono">{cf.CFID}</span> |{' '}
+                {t('configFile.createdAt')}: {new Date(cf.CreatedAt).toLocaleDateString()}
               </p>
             </div>
 
@@ -180,9 +187,9 @@ export default function ConfigFileList({
                 onClick={() => onCreateInstance(cf.CFID)}
                 disabled={actionLoading}
                 className="text-sm font-semibold text-blue-600 transition-colors hover:text-blue-800 disabled:cursor-not-allowed disabled:opacity-50 dark:text-blue-500 dark:hover:text-blue-400"
-                title="部署實例"
+                title={t('configFile.deployInstance')}
               >
-                部署
+                {t('configFile.deploy')}
               </button>
 
               {/* Secondary Actions in a Dropdown */}
@@ -211,7 +218,7 @@ export default function ConfigFileList({
               ) : resources[cf.CFID]?.length ? (
                 <div>
                   <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    關聯資源
+                    {t('configFile.relatedResources')}
                   </h4>
                   <ul className="space-y-2">
                     {resources[cf.CFID].map((r) => (
@@ -243,10 +250,10 @@ export default function ConfigFileList({
                     />
                   </svg>
                   <p className="mt-2 text-sm font-semibold text-gray-600 dark:text-gray-300">
-                    無關聯資源
+                    {t('configFile.noRelatedResources')}
                   </p>
                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    此設定檔尚未部署。
+                    {t('configFile.notDeployed')}
                   </p>
                 </div>
               )}

@@ -1,5 +1,8 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { useGlobalWebSocket } from '../../context/useGlobalWebSocket';
+import { getUsername } from '../../services/authService';
+import { getProjectListByUser, getProjects } from '../../services/projectService';
+import { getGroupsByUser } from '../../services/userGroupService';
 import { Pagination } from '@nthucscc/ui';
 import { useTranslation } from '@nthucscc/utils';
 // English: Import WebSocketContext to access the connection pool functions
@@ -200,8 +203,54 @@ export default function PodTablesPage() {
    * If you have a specific list of namespaces, call connectToNamespace for each.
    */
   useEffect(() => {
-    // English: Example: If monitoring is dynamic, you might fetch namespaces first.
-    // Here we ensure existing namespaces in 'messages' stay connected.
+    // Connect to the current user's personal namespace and all their project namespaces.
+    const username = getUsername();
+    if (username && username !== 'null') {
+      // subscribe to personal namespace
+      // connectToNamespace(username);
+
+      // Use same logic as Projects.tsx: read userData -> getGroupsByUser + getProjects -> filter
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        (async () => {
+          try {
+            const { user_id: userId } = JSON.parse(userData);
+            const [allProjects, userGroups] = await Promise.all([
+              getProjects(),
+              getGroupsByUser(userId),
+            ]);
+            const userGroupIds = userGroups.map((g: any) => g.GID);
+            const userProjects = (allProjects || []).filter((p: any) =>
+              userGroupIds.includes(p.GID),
+            );
+            userProjects.forEach((p: any) => {
+              const ns = `proj-${p.PID}-${username}`;
+              connectToNamespace(ns);
+            });
+          } catch (err) {
+            console.error('Failed to load user projects for namespace registration', err);
+          }
+        })();
+      } else {
+        // Fallback: try the simpler endpoint if userData not present
+        (async () => {
+          try {
+            const projects = await getProjectListByUser();
+            projects.forEach((p) => {
+              const ns = `proj-${p.PID}-${username}`;
+              connectToNamespace(ns);
+            });
+          } catch (err) {
+            console.error(
+              'Failed to load user projects (fallback) for namespace registration',
+              err,
+            );
+          }
+        })();
+      }
+    }
+
+    // Also ensure any namespaces discovered in podsData are connected.
     const activeNamespaces = Object.keys(podsData);
     activeNamespaces.forEach((ns) => connectToNamespace(ns));
   }, [podsData, connectToNamespace]);
