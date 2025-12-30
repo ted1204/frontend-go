@@ -179,6 +179,22 @@ const en = {
     config_yamlContentLabel: 'YAML Content',
     config_creating: 'Creating...',
     config_createButton: 'Create Config',
+    // --- Config File List / Actions ---
+    configFile: {
+        editFile: 'Edit file',
+        destroyInstance: 'Destroy instance',
+        deleteFile: 'Delete file',
+        notFoundTitle: 'No config files found',
+        notFoundDesc: 'Click "Add Config" to get started.',
+        toggleResources: 'Toggle resources',
+        id: 'ID',
+        createdAt: 'Created At',
+        deployInstance: 'Deploy instance',
+        deploy: 'Deploy',
+        relatedResources: 'Related Resources',
+        noRelatedResources: 'No related resources',
+        notDeployed: 'This config file has not been deployed yet.',
+    },
     // --- Storage Admin ---
     admin_storage_project_form_projectPlaceholder: 'Select project...',
     admin_storage_project_create_success: 'Project storage created successfully',
@@ -303,6 +319,7 @@ const en = {
             noStorageDesc: 'Your personal storage space has not been provisioned yet.',
             contactAdmin: 'Please contact an administrator to initialize your storage.',
         },
+        pageSubtitle: 'Browse and manage your storage volumes and project drives.',
         // Keep original nested structure for compatibility if needed
         colProject: 'Project',
         colStatus: 'Status',
@@ -499,6 +516,27 @@ const en = {
         login: 'Login',
         editProfile: 'Edit Profile', // Added
         support: 'Support', // Added
+    },
+    // --- Authentication / Login ---
+    auth: {
+        login: {
+            title: 'Login',
+            subtitle: 'Enter your username and password to login!',
+            username: 'Username',
+            usernamePlaceholder: 'Enter your username',
+            password: 'Password',
+            passwordPlaceholder: 'Enter your password',
+            forgotPassword: 'Forgot password?',
+            submit: 'Login',
+            noAccount: "Don't have an account?",
+            signUp: 'Sign up',
+            backToDashboard: 'Back to Dashboard',
+            loginFailed: 'Login failed, please try again.',
+            pageTitle: 'Login | AI Platform',
+            pageDescription: 'This is the login page for AI Platform',
+        },
+        signOut: 'Sign out',
+        signIn: 'Sign in',
     },
     // --- Groups (nested) ---
     groups: {

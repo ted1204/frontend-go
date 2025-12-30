@@ -162,6 +162,21 @@ declare const zh: {
     readonly config_yamlContentLabel: "YAML 內容";
     readonly config_creating: "建立中...";
     readonly config_createButton: "建立設定";
+    readonly configFile: {
+        readonly editFile: "編輯檔案";
+        readonly destroyInstance: "銷毀實例";
+        readonly deleteFile: "刪除檔案";
+        readonly notFoundTitle: "找不到設定檔";
+        readonly notFoundDesc: "點擊「新增設定檔」以開始。";
+        readonly toggleResources: "切換資源顯示";
+        readonly id: "ID";
+        readonly createdAt: "建立時間";
+        readonly deployInstance: "部署實例";
+        readonly deploy: "部署";
+        readonly relatedResources: "關聯資源";
+        readonly noRelatedResources: "無關聯資源";
+        readonly notDeployed: "此設定檔尚未部署。";
+    };
     readonly admin_storage_project_form_projectPlaceholder: "選擇專案...";
     readonly admin_storage_project_create_success: "專案儲存空間建立成功";
     readonly admin_storage_project_create_guideTitle: "建立專案儲存空間";
@@ -271,6 +286,7 @@ declare const zh: {
             readonly noStorageDesc: "您的個人儲存空間尚未配置。";
             readonly contactAdmin: "請聯繫管理員以初始化您的儲存空間。";
         };
+        readonly pageSubtitle: "瀏覽並管理您的儲存磁區與專案硬碟。";
         readonly projectList: {
             readonly colProject: "專案";
             readonly colStatus: "狀態";
@@ -460,6 +476,26 @@ declare const zh: {
         readonly login: "登入";
         readonly editProfile: "編輯個人檔案";
         readonly support: "支援";
+    };
+    readonly auth: {
+        readonly login: {
+            readonly title: "登入";
+            readonly subtitle: "輸入您的使用者名稱和密碼以登入！";
+            readonly username: "使用者名稱";
+            readonly usernamePlaceholder: "輸入您的使用者名稱";
+            readonly password: "密碼";
+            readonly passwordPlaceholder: "輸入您的密碼";
+            readonly forgotPassword: "忘記密碼？";
+            readonly submit: "登入";
+            readonly noAccount: "還沒有帳號？";
+            readonly signUp: "註冊";
+            readonly backToDashboard: "返回儀表板";
+            readonly loginFailed: "登入失敗，請重試。";
+            readonly pageTitle: "登入 | AI 平台";
+            readonly pageDescription: "這是 AI 平台的登入頁面";
+        };
+        readonly signOut: "登出";
+        readonly signIn: "登入";
     };
     readonly groups: {
         readonly form: {

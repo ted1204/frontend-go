@@ -35,57 +35,59 @@ const StateDisplay = ({ message }: { message: string }) => (
 const ProjectListItem = ({
   project,
   onClick,
-  t, // Pass t function as prop or use hook inside
 }: {
   project: Project;
   onClick: (id: number) => void;
-  t: (key: string) => string;
-}) => (
-  <div
-    onClick={() => onClick(project.PID)}
-    className="group flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
-  >
-    <div className="flex items-center gap-4">
-      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
-        <span className="font-bold">{project.ProjectName.charAt(0).toUpperCase()}</span>
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <div
+      onClick={() => onClick(project.PID)}
+      className="group flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
+    >
+      <div className="flex items-center gap-4">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
+          <span className="font-bold">{project.ProjectName.charAt(0).toUpperCase()}</span>
+        </div>
+        <div>
+          <h4 className="text-lg font-semibold text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
+            {project.ProjectName}
+          </h4>
+          <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
+            {project.Description || t('project.noDescription')}
+          </p>
+        </div>
       </div>
-      <div>
-        <h4 className="text-lg font-semibold text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
-          {project.ProjectName}
-        </h4>
-        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
-          {project.Description || t('project.noDescription')}
-        </p>
+      <div className="flex items-center gap-6">
+        <div className="hidden sm:block text-right">
+          <p className="text-xs text-gray-400">{t('common.createdAt')}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            {new Date(project.CreatedAt).toLocaleDateString()}
+          </p>
+        </div>
+        <div className="hidden sm:block text-right">
+          <p className="text-xs text-gray-400">{t('groupId')}</p>
+          <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+            {project.GID}
+          </span>
+        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5 text-gray-400 group-hover:text-blue-500"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+            clipRule="evenodd"
+          />
+        </svg>
       </div>
     </div>
-    <div className="flex items-center gap-6">
-      <div className="hidden sm:block text-right">
-        <p className="text-xs text-gray-400">{t('common.createdAt')}</p>
-        <p className="text-sm text-gray-600 dark:text-gray-300">
-          {new Date(project.CreatedAt).toLocaleDateString()}
-        </p>
-      </div>
-      <div className="hidden sm:block text-right">
-        <p className="text-xs text-gray-400">{t('groupId')}</p>
-        <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-          {project.GID}
-        </span>
-      </div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-5 w-5 text-gray-400 group-hover:text-blue-500"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fillRule="evenodd"
-          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-          clipRule="evenodd"
-        />
-      </svg>
-    </div>
-  </div>
-);
+  );
+};
 
 export default function Projects() {
   const { t } = useTranslation();
@@ -274,12 +276,7 @@ export default function Projects() {
               />
             ) : (
               currentProjects.map((project) => (
-                <ProjectListItem
-                  key={project.PID}
-                  project={project}
-                  onClick={handleProjectClick}
-                  t={t}
-                />
+                <ProjectListItem key={project.PID} project={project} onClick={handleProjectClick} />
               ))
             )}
           </div>

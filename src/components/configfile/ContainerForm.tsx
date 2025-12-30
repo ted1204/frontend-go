@@ -1,11 +1,6 @@
 import { useState } from 'react';
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  TrashIcon,
-  DocumentDuplicateIcon,
-} from '@heroicons/react/24/outline';
-import { ContainerConfig } from '../../interfaces/configFile';
+import { ChevronDownIcon, TrashIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline';
+import type { ContainerConfig, WizardData } from '../../interfaces/configFile';
 import { PVC } from '../../interfaces/pvc';
 
 // Import managers
@@ -34,7 +29,10 @@ const ContainerForm = ({
 }: ContainerFormProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
-  const handleChange = (field: keyof ContainerConfig, value: any) => {
+  const handleChange = (
+    field: keyof ContainerConfig,
+    value: ContainerConfig[keyof ContainerConfig],
+  ) => {
     onUpdate({ ...container, [field]: value });
   };
 
@@ -142,8 +140,14 @@ const ContainerForm = ({
             projectPvcs={projectPvcs}
             hasUserStorage={hasUserStorage}
             setWizardData={(action) => {
-              const current = { mounts: container.mounts };
-              const next = typeof action === 'function' ? action(current as any) : action;
+              const current: WizardData = {
+                image: container.image || '',
+                gpu: 0,
+                mounts: container.mounts,
+                command: container.command || '',
+                args: container.args || '',
+              };
+              const next = typeof action === 'function' ? action(current) : action;
               handleChange('mounts', next.mounts);
             }}
           />

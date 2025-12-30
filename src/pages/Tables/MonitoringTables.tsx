@@ -4,6 +4,7 @@ import { getUsername } from '../../services/authService';
 import { getProjectListByUser, getProjects } from '../../services/projectService';
 import { getGroupsByUser } from '../../services/userGroupService';
 import { Pagination } from '@nthucscc/ui';
+import { Project } from '../../interfaces/project';
 import { useTranslation } from '@nthucscc/utils';
 // English: Import WebSocketContext to access the connection pool functions
 
@@ -219,11 +220,11 @@ export default function PodTablesPage() {
               getProjects(),
               getGroupsByUser(userId),
             ]);
-            const userGroupIds = userGroups.map((g: any) => g.GID);
-            const userProjects = (allProjects || []).filter((p: any) =>
+            const userGroupIds = userGroups.map((g: { GID: number | string }) => g.GID);
+            const userProjects = (allProjects || []).filter((p: Project) =>
               userGroupIds.includes(p.GID),
             );
-            userProjects.forEach((p: any) => {
+            userProjects.forEach((p: Project) => {
               const ns = `proj-${p.PID}-${username}`;
               connectToNamespace(ns);
             });

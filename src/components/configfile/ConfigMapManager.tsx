@@ -17,7 +17,7 @@ const ConfigMapManager = ({ data, onChange }: ConfigMapManagerProps) => {
   };
 
   const removePair = (id: string) => {
-    onChange(data.filter((item) => item.id !== item.id)); // Note: logic fix in implementation below
+    onChange(data.filter((item) => item.id !== id));
   };
 
   const updatePair = (id: string, field: keyof KeyValuePair, value: string) => {
@@ -80,7 +80,7 @@ const ConfigMapManager = ({ data, onChange }: ConfigMapManagerProps) => {
               {/* Remove Button */}
               <button
                 type="button"
-                onClick={() => onChange(data.filter((d) => d.id !== item.id))}
+                onClick={() => removePair(item.id)}
                 className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
               >
                 <TrashIcon className="h-4 w-4" />

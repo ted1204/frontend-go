@@ -345,6 +345,7 @@ const en = {
       noStorageDesc: 'Your personal storage space has not been provisioned yet.',
       contactAdmin: 'Please contact an administrator to initialize your storage.',
     },
+    pageSubtitle: 'Browse and manage your storage volumes and project drives.',
     // Keep original nested structure for compatibility if needed
     colProject: 'Project',
     colStatus: 'Status',

@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import {
-  TrashIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-  CubeIcon,
-  ServerStackIcon,
-  GlobeAltIcon,
-  DocumentTextIcon,
-} from '@heroicons/react/24/outline';
+import { TrashIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 
 // Ensure these paths match your project structure
 import {
@@ -42,21 +34,7 @@ const ResourceItemForm = ({
 }: ResourceItemFormProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
-  // Helper: Determine the icon based on the resource kind
-  const getIcon = () => {
-    switch (resource.kind) {
-      case 'Pod':
-        return <CubeIcon className="h-4 w-4" />;
-      case 'Deployment':
-        return <ServerStackIcon className="h-4 w-4" />;
-      case 'Service':
-        return <GlobeAltIcon className="h-4 w-4" />;
-      case 'ConfigMap':
-        return <DocumentTextIcon className="h-4 w-4" />;
-      default:
-        return <CubeIcon className="h-4 w-4" />;
-    }
-  };
+  // (Icon removed) Using index badge for compact display to avoid colored emojis.
 
   // Helper: Determine the color theme based on the resource kind
   const getColorClass = () => {
@@ -88,7 +66,7 @@ const ResourceItemForm = ({
           <span
             className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold shadow-sm ${getColorClass()}`}
           >
-            {getIcon()}
+            <span className="text-[10px] font-bold">{index + 1}</span>
           </span>
           <div className="flex flex-col">
             <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">

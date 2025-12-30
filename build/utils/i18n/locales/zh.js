@@ -178,6 +178,22 @@ const zh = {
     config_yamlContentLabel: 'YAML 內容',
     config_creating: '建立中...',
     config_createButton: '建立設定',
+    // --- 設定檔列表 / 動作 ---
+    configFile: {
+        editFile: '編輯檔案',
+        destroyInstance: '銷毀實例',
+        deleteFile: '刪除檔案',
+        notFoundTitle: '找不到設定檔',
+        notFoundDesc: '點擊「新增設定檔」以開始。',
+        toggleResources: '切換資源顯示',
+        id: 'ID',
+        createdAt: '建立時間',
+        deployInstance: '部署實例',
+        deploy: '部署',
+        relatedResources: '關聯資源',
+        noRelatedResources: '無關聯資源',
+        notDeployed: '此設定檔尚未部署。',
+    },
     // --- 儲存管理 ---
     admin_storage_project_form_projectPlaceholder: '選擇專案...',
     admin_storage_project_create_success: '專案儲存空間建立成功',
@@ -298,6 +314,7 @@ const zh = {
             noStorageDesc: '您的個人儲存空間尚未配置。',
             contactAdmin: '請聯繫管理員以初始化您的儲存空間。',
         },
+        pageSubtitle: '瀏覽並管理您的儲存磁區與專案硬碟。',
         // 專案列表特有
         projectList: {
             colProject: '專案',
@@ -499,6 +516,27 @@ const zh = {
         login: '登入',
         editProfile: '編輯個人檔案',
         support: '支援',
+    },
+    // --- 認證 / 登入 ---
+    auth: {
+        login: {
+            title: '登入',
+            subtitle: '輸入您的使用者名稱和密碼以登入！',
+            username: '使用者名稱',
+            usernamePlaceholder: '輸入您的使用者名稱',
+            password: '密碼',
+            passwordPlaceholder: '輸入您的密碼',
+            forgotPassword: '忘記密碼？',
+            submit: '登入',
+            noAccount: '還沒有帳號？',
+            signUp: '註冊',
+            backToDashboard: '返回儀表板',
+            loginFailed: '登入失敗，請重試。',
+            pageTitle: '登入 | AI 平台',
+            pageDescription: '這是 AI 平台的登入頁面',
+        },
+        signOut: '登出',
+        signIn: '登入',
     },
     // --- 群組 (巢狀結構) ---
     groups: {

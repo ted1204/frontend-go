@@ -11,7 +11,10 @@ interface WorkloadFormProps {
 }
 
 const WorkloadForm = ({ resource, projectPvcs, hasUserStorage, onChange }: WorkloadFormProps) => {
-  const updateField = (field: keyof WorkloadResource, value: any) => {
+  const updateField = (
+    field: keyof WorkloadResource,
+    value: WorkloadResource[keyof WorkloadResource],
+  ) => {
     onChange({ ...resource, [field]: value });
   };
 

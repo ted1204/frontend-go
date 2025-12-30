@@ -16,7 +16,11 @@ const PortManager = ({ ports, onChange }: PortManagerProps) => {
     onChange(ports.filter((p) => p.id !== id));
   };
 
-  const updatePort = (id: string, field: keyof ContainerPort, value: any) => {
+  const updatePort = (
+    id: string,
+    field: keyof ContainerPort,
+    value: ContainerPort[keyof ContainerPort],
+  ) => {
     onChange(ports.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
   };
 

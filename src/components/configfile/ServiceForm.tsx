@@ -7,7 +7,10 @@ interface ServiceFormProps {
 }
 
 const ServiceForm = ({ resource, onUpdate }: ServiceFormProps) => {
-  const handleChange = (field: keyof ServiceResource, value: any) => {
+  const handleChange = (
+    field: keyof ServiceResource,
+    value: ServiceResource[keyof ServiceResource],
+  ) => {
     onUpdate({ ...resource, [field]: value });
   };
 
@@ -48,7 +51,11 @@ const ServiceForm = ({ resource, onUpdate }: ServiceFormProps) => {
     onUpdate({ ...resource, ports: resource.ports.filter((p) => p.id !== id) });
   };
 
-  const updatePort = (id: string, field: string, value: any) => {
+  const updatePort = (
+    id: string,
+    field: keyof ServiceResource['ports'][number],
+    value: string | number | ServiceProtocol | undefined,
+  ) => {
     onUpdate({
       ...resource,
       ports: resource.ports.map((p) => (p.id === id ? { ...p, [field]: value } : p)),

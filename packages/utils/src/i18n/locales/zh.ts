@@ -339,6 +339,7 @@ const zh = {
       noStorageDesc: '您的個人儲存空間尚未配置。',
       contactAdmin: '請聯繫管理員以初始化您的儲存空間。',
     },
+    pageSubtitle: '瀏覽並管理您的儲存磁區與專案硬碟。',
 
     // 專案列表特有
     projectList: {

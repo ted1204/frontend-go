@@ -162,6 +162,21 @@ declare const en: {
     readonly config_yamlContentLabel: "YAML Content";
     readonly config_creating: "Creating...";
     readonly config_createButton: "Create Config";
+    readonly configFile: {
+        readonly editFile: "Edit file";
+        readonly destroyInstance: "Destroy instance";
+        readonly deleteFile: "Delete file";
+        readonly notFoundTitle: "No config files found";
+        readonly notFoundDesc: "Click \"Add Config\" to get started.";
+        readonly toggleResources: "Toggle resources";
+        readonly id: "ID";
+        readonly createdAt: "Created At";
+        readonly deployInstance: "Deploy instance";
+        readonly deploy: "Deploy";
+        readonly relatedResources: "Related Resources";
+        readonly noRelatedResources: "No related resources";
+        readonly notDeployed: "This config file has not been deployed yet.";
+    };
     readonly admin_storage_project_form_projectPlaceholder: "Select project...";
     readonly admin_storage_project_create_success: "Project storage created successfully";
     readonly admin_storage_project_create_guideTitle: "Create Project Storage";
@@ -275,6 +290,7 @@ declare const en: {
             readonly noStorageDesc: "Your personal storage space has not been provisioned yet.";
             readonly contactAdmin: "Please contact an administrator to initialize your storage.";
         };
+        readonly pageSubtitle: "Browse and manage your storage volumes and project drives.";
         readonly colProject: "Project";
         readonly colStatus: "Status";
         readonly emptyFilter: "No projects match \"{term}\".";
@@ -459,6 +475,26 @@ declare const en: {
         readonly login: "Login";
         readonly editProfile: "Edit Profile";
         readonly support: "Support";
+    };
+    readonly auth: {
+        readonly login: {
+            readonly title: "Login";
+            readonly subtitle: "Enter your username and password to login!";
+            readonly username: "Username";
+            readonly usernamePlaceholder: "Enter your username";
+            readonly password: "Password";
+            readonly passwordPlaceholder: "Enter your password";
+            readonly forgotPassword: "Forgot password?";
+            readonly submit: "Login";
+            readonly noAccount: "Don't have an account?";
+            readonly signUp: "Sign up";
+            readonly backToDashboard: "Back to Dashboard";
+            readonly loginFailed: "Login failed, please try again.";
+            readonly pageTitle: "Login | AI Platform";
+            readonly pageDescription: "This is the login page for AI Platform";
+        };
+        readonly signOut: "Sign out";
+        readonly signIn: "Sign in";
     };
     readonly groups: {
         readonly form: {
