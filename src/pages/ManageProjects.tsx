@@ -2,7 +2,7 @@
 
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { Project } from '../interfaces/project';
-import ProjectList from '../components/ProjectList';
+import ProjectList from '../components/project/ProjectListTable';
 import {
   getProjects,
   createProject,

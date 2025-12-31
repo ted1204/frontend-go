@@ -268,8 +268,8 @@ export default function PodTablesPage() {
         if (!newPodsData[msg.ns].find((p) => p.name === msg.name)) {
           newPodsData[msg.ns].push({
             name: msg.name,
-            containers: Array.isArray(msg.containers) ? msg.containers : [],
-            status: typeof msg.status === 'string' ? msg.status : 'Unknown',
+            containers: msg.containers || [],
+            status: msg.status || 'Unknown',
           });
         }
       }

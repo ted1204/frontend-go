@@ -9,7 +9,7 @@ import Home from './pages/Dashboard/Home';
 import Groups from './pages/Groups';
 import Projects from './pages/Projects';
 import GroupDetail from './components/GroupDetail';
-import ProjectDetail from './components/ProjectDetail';
+import ProjectDetail from './pages/ProjecDetails';
 import ManageProjects from './pages/ManageProjects';
 import ManageGroups from './pages/ManageGroups';
 import PrivateRoute from './components/PrivateRoute';
@@ -25,9 +25,9 @@ import { AuthProvider } from './context/AuthContext';
 
 export default function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <AuthProvider>
+    <AuthProvider>
+      <Router>
+        <ScrollToTop />
         <Routes>
           {/* Public Routes */}
           <Route element={<PublicRoute />}>
@@ -59,7 +59,7 @@ export default function App() {
           {/* Not Found */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </AuthProvider>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 }

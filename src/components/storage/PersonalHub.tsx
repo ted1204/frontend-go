@@ -31,7 +31,7 @@ export const PersonalHub: React.FC = () => {
   const username = getUsername();
   const safeUsername = username?.toLowerCase() || '';
   const personalNs = `user-${safeUsername}-storage`;
-  const podPattern = `filebrowser-pvc-user-${safeUsername}`;
+  const podPattern = `fb-hub-${safeUsername}`;
 
   // 1. Check if Storage Exists & Connect WS
   useEffect(() => {

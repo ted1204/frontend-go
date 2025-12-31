@@ -11,10 +11,12 @@ export interface ResourceMessage {
   nodePorts?: number[];
   serviceType?: string;
   containers?: string[];
+  images?: string[]; // [New]
+  restartCount?: number; // [New]
   metadata?: {
     deletionTimestamp?: string | null;
     creationTimestamp?: string;
-    labels?: Record<string, string>;
+    labels?: Record<string, string>; // [New]
   };
 }
 

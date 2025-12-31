@@ -12,17 +12,22 @@ const en = {
     submit: 'Submit',
     save: 'Save',
     search: 'Search...',
+    remove: 'Remove', // [New]
+    actions: 'Actions', // [New]
+
     // States
     loading: 'Loading...',
     submitting: 'Submitting...',
     success: 'Success',
     error: 'Error',
+
     // Labels
     id: 'ID',
     name: 'Name',
     description: 'Description',
     status: 'Status',
     createdAt: 'Created At',
+    updatedAt: 'Updated At', // [New]
     noData: 'No data found.',
     untitled: 'Untitled',
     confirmDelete: 'Are you sure you want to delete?',
@@ -378,6 +383,15 @@ const en = {
 
   // 3. Project Module
   project: {
+    about: 'About Project', // [New]
+    name: 'Project Name', // [New]
+    description: 'Description', // [New]
+    group: 'Group', // [New]
+    noDescription: 'No description',
+    untitled: 'Untitled',
+    idLabel: 'Project ID: {id}',
+    requestSupport: 'Request Support',
+    empty: 'No projects available.', // [New],
     list: {
       title: 'Projects',
       create: 'New Project',
@@ -436,10 +450,7 @@ const en = {
       searchPlaceholder: 'Search members...',
       addMember: 'Add Member',
     },
-    untitled: 'Untitled',
-    idLabel: 'Project ID: {id}',
     delete: 'Delete project: {name}',
-    requestSupport: 'Request Support',
     gpuResources: 'GPU Resources',
     gpuQuotaUnit: '{quota} GPU(s)',
     gpuAccessMode: 'Access Mode',
@@ -449,7 +460,6 @@ const en = {
     mpsThreadLimit: 'Thread Limit: {value}%',
     mpsMemoryLimit: 'Memory Limit: {value} MB',
     mpsUnlimited: 'Unlimited',
-    noDescription: 'No description',
   },
 
   // --- Project List ---
@@ -518,11 +528,14 @@ const en = {
       subtitle: 'Real-time logs and status updates.',
     },
     col: {
-      eventType: 'Event Type',
       kind: 'Kind',
       name: 'Name',
-      endpoint: 'Endpoint',
+      details: 'Details',
+      age: 'Age',
       status: 'Status',
+      images: 'Images',
+      restarts: 'Restarts',
+      labels: 'Labels',
     },
     agePrefix: 'Age',
     status: {
@@ -576,6 +589,25 @@ const en = {
 
   // --- Groups (nested) ---
   groups: {
+    // Fields
+    name: 'Group Name', // [New]
+    description: 'Description', // [New]
+
+    // Detail Page
+    infoTitle: 'Group Information', // [New]
+    inviteUser: 'Invite User', // [New]
+    manageMembers: 'Manage', // [New]
+    membersList: 'Group Members', // [New]
+    memberCount: '{count} members in this group.', // [New]
+    noMembers: 'No members invited yet.', // [New]
+    notFound: 'Group not found.', // [New]
+
+    // Tabs
+    tab: {
+      overview: 'Overview',
+      members: 'Members',
+      info: 'Info',
+    },
     form: {
       title: 'Create Group',
       nameRequired: 'Group name is required',

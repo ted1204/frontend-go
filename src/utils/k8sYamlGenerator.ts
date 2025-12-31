@@ -144,7 +144,7 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
 
           yaml += `${volItemPrefix}- name: ${volName}\n`;
           if (m.type === 'user-storage') {
-            yaml += `${volInnerPrefix}nfs:\n${volInnerInner}server: storage-svc.user-{{username}}-storage.svc.cluster.local\n${volInnerInner}path: /\n`;
+            yaml += `${volInnerPrefix}nfs:\n${volInnerInner}server: "{{nfsServer}}"\n${volInnerInner}path: /\n`;
           } else {
             yaml += `${volInnerPrefix}persistentVolumeClaim:\n${volInnerInner}claimName: ${m.pvcName}\n`;
           }
@@ -155,6 +155,10 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
     else if (res.kind === 'Service') {
       const svc = res as ServiceResource;
       yaml += `spec:\n`;
+      // Service Type (ClusterIP / NodePort)
+      if (svc.serviceType) {
+        yaml += `  type: ${svc.serviceType}\n`;
+      }
       if (svc.headless) {
         yaml += `  clusterIP: None\n`;
       }

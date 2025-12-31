@@ -518,11 +518,14 @@ const zh = {
       subtitle: '即時日誌與狀態更新。',
     },
     col: {
-      eventType: '事件類型',
-      kind: '種類 (Kind)',
+      kind: '類型',
       name: '名稱',
-      endpoint: '端點',
+      details: '詳細資訊',
+      age: '存活時間',
       status: '狀態',
+      images: '映像檔',
+      restarts: '重啟次數',
+      labels: '標籤',
     },
     agePrefix: '存在時間',
     status: {
