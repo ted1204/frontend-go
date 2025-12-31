@@ -19,6 +19,7 @@
     "prepare": "husky install",
     "preview": "vite preview",
     "i18n:check": "npx ts-node packages/utils/src/i18n/check-missing-keys.ts",
+    "i18n:check-js": "node scripts/check-i18n.js",
     "clean": "rm -rf dist && find src -name '*.js' -not -name '*.config.js' -delete && find packages -name '*.js' -not -name '*.config.js' -delete"
   },
   "dependencies": {
