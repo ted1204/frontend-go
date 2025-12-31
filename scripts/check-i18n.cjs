@@ -39,7 +39,6 @@ function loadLocaleObject(){
   const src = fs.readFileSync(srcPath,'utf8');
   try{
     const clean = src.replace(/as const;?/, '');
-    // eslint-disable-next-line no-eval
     eval(clean + '\nmodule.exports = en;');
     return module.exports;
   }catch(e){
