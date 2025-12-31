@@ -10,10 +10,12 @@ interface ResourceWizardProps {
   hasUserStorage: boolean;
 }
 
-export default function ResourceWizard({ 
-  resources, setResources, projectPvcs, hasUserStorage 
+export default function ResourceWizard({
+  resources,
+  setResources,
+  projectPvcs,
+  hasUserStorage,
 }: ResourceWizardProps) {
-  
   const addResource = (kind: ResourceKind) => {
     const id = Date.now().toString();
     const count = resources.filter((r) => r.kind === kind).length + 1;
@@ -23,7 +25,7 @@ export default function ResourceWizard({
   };
 
   const removeResource = (id: string) => setResources(resources.filter((r) => r.id !== id));
-  
+
   const updateResource = (id: string, updated: ResourceItem) => {
     setResources(resources.map((r) => (r.id === id ? updated : r)));
   };

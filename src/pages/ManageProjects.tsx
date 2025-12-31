@@ -302,7 +302,6 @@ export default function ManageProjects() {
         {/* Project List Component */}
         <ProjectList
           projects={filteredProjects}
-          loading={loading}
           error={error}
           onProjectClick={handleProjectClick}
           // Pass new handler that accepts Project object

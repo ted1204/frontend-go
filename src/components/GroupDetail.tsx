@@ -127,7 +127,7 @@ export default function GroupDetail() {
   useEffect(() => {
     const fetchInitialData = async () => {
       if (!id) {
-        setError(t('groups_error_idMissing'));
+        setError(t('groups_error_userIdMissing'));
         setLoading(false);
         return;
       }
@@ -138,7 +138,7 @@ export default function GroupDetail() {
         setAllUsers(usersData);
         await refetchGroupUsers();
       } catch (err) {
-        setError(err instanceof Error ? err.message : t('groups_error_fetchFailed'));
+        setError(err instanceof Error ? err.message : t('groups_error_unknown'));
       } finally {
         setLoading(false);
       }
@@ -248,10 +248,10 @@ export default function GroupDetail() {
                     <thead className="bg-gray-50 dark:bg-gray-700/50">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                          {t('user.name')}
+                          {t('table_user')}
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                          {t('user.role')}
+                          {t('table_role')}
                         </th>
                         <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                           {t('common.actions')}

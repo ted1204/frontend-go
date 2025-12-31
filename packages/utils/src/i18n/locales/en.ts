@@ -168,6 +168,7 @@ const en = {
   // --- Tables (Flat) ---
   table_id: 'ID',
   table_user: 'User',
+  table_role: 'Role',
   table_project: 'Project',
   table_titleDesc: 'Title / Description',
   table_status: 'Status',

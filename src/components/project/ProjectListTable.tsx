@@ -5,10 +5,22 @@ import { FolderIcon } from '../Icon';
 
 interface ProjectListTableProps {
   projects: Project[];
-  onClick: (id: number) => void;
+  onClick?: (id: number) => void;
+  // legacy / alternate prop name
+  onProjectClick?: (id: number) => void;
+  // Optional compatibility props used by pages that wrap this table
+  error?: string | null;
+  onDeleteProject?: (project: Project) => void;
+  searchTerm?: string;
+  isActionLoading?: boolean;
+  onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const ProjectListTable: React.FC<ProjectListTableProps> = ({ projects, onClick }) => {
+const ProjectListTable: React.FC<ProjectListTableProps> = ({
+  projects,
+  onClick,
+  onProjectClick,
+}) => {
   const { t } = useTranslation();
 
   if (projects.length === 0) return null;
@@ -36,7 +48,7 @@ const ProjectListTable: React.FC<ProjectListTableProps> = ({ projects, onClick }
           {projects.map((project) => (
             <tr
               key={project.PID}
-              onClick={() => onClick(project.PID)}
+              onClick={() => (onClick ?? onProjectClick)?.(project.PID)}
               className="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50"
             >
               <td className="px-6 py-4">

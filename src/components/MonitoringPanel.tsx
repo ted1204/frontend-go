@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from '@nthucscc/utils';
 // Ensure you have this constant. If not, define it locally:
 // const SYSTEM_POD_PREFIXES = ['kube-', 'coredns', 'etcd', 'calico', 'ingress'];

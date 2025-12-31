@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import yaml from 'js-yaml';
 import { createDefaultResource } from './resourceFactories'; // 假設既有
 import {
@@ -14,7 +15,7 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
   const id = `parsed-${idx}-${Date.now()}`;
   const baseName = docObj.metadata?.name || `${kind.toLowerCase()}-${idx + 1}`;
 
-  let res: ResourceItem = createDefaultResource(kind, id, baseName);
+  const res: ResourceItem = createDefaultResource(kind, id, baseName);
   if (docObj.metadata?.name) res.name = docObj.metadata.name;
 
   if (kind === 'ConfigMap') {

@@ -50,7 +50,7 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
       setError(null);
     } catch (err) {
       console.error('Failed to load configs', err);
-      setError(t('projectDetail.fetchConfigError') || 'Failed to load configurations');
+      setError(t('projectDetail.fetchError') || 'Failed to load configurations');
     } finally {
       setLoading(false);
     }

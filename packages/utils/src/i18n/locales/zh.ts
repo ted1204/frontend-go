@@ -166,6 +166,7 @@ const zh = {
   table_titleDesc: '標題 / 描述',
   table_status: '狀態',
   table_actions: '動作',
+  table_role: '角色',
 
   // --- 設定精靈 ---
   config_error_filenameRequired: '檔案名稱為必填',

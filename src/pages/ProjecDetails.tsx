@@ -2,13 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom'; // Add Link
 import { useTranslation } from '@nthucscc/utils';
 import { PageMeta } from '@nthucscc/ui';
-import {
-  ChartBarIcon,
-  Cog6ToothIcon,
-  CubeIcon,
-  UsersIcon,
-  ArrowTopRightOnSquareIcon,
-} from '@heroicons/react/24/outline';
+import { ChartBarIcon, Cog6ToothIcon, CubeIcon, UsersIcon } from '@heroicons/react/24/outline';
 
 // Services & Context
 import { getProjectById } from '../services/projectService';

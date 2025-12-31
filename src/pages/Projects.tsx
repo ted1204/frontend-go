@@ -118,15 +118,16 @@ export default function Projects() {
           </h2>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <SearchInput
-              value={searchTerm}
-              onChange={(val) => {
-                setSearchTerm(val);
-                setCurrentPage(1);
-              }}
-              placeholder={t('search_projectsPlaceholder')}
-              className="w-full sm:w-64"
-            />
+            <div className="w-full sm:w-64">
+              <SearchInput
+                value={searchTerm}
+                onChange={(val) => {
+                  setSearchTerm(val);
+                  setCurrentPage(1);
+                }}
+                placeholder={t('search_projectsPlaceholder')}
+              />
+            </div>
 
             <div className="flex items-center rounded-lg border border-gray-200 bg-white p-1 dark:border-gray-700 dark:bg-gray-800">
               <button

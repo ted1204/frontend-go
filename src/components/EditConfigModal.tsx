@@ -84,7 +84,7 @@ export default function EditConfigModal({
     <BaseModal
       isOpen={isOpen}
       onClose={onClose}
-      title={t('config_editTitle') || 'Edit Configuration'}
+      title={t('config_createTitle') || 'Edit Configuration'}
       subtitle={t('config_createSubtitle') || 'Use wizard or edit YAML directly.'}
       maxWidth="max-w-7xl"
     >
