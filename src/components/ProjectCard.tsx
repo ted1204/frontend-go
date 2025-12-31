@@ -28,7 +28,7 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
   // English: Destructure connectToNamespace to ensure the pool connection is active
-  const { getProjectMessages, connectToNamespace } = useGlobalWebSocket();
+  const { getNamespaceMessages, connectToNamespace } = useGlobalWebSocket();
   const { t } = useTranslation();
 
   /** * English: Namespace should match the format returned by GetUserProjectStorages (e.g., project-test-b1f7f5)
@@ -43,7 +43,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
     }
   }, [namespace, connectToNamespace]);
 
-  const messages = getProjectMessages(namespace);
+  const messages = getNamespaceMessages(namespace);
 
   /**
    * English: Determine status based on filebrowser pod status.

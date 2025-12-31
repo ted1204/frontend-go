@@ -55,6 +55,7 @@ export const createDefaultResource = (
         name: baseName,
         replicas: 1,
         containers: [createDefaultContainer(`${id}-c1`, 1)],
+        selectors: [{ id: `${id}-s1`, key: 'app', value: baseName }],
       } as WorkloadResource;
 
     default:

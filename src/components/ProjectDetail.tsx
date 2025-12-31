@@ -68,10 +68,10 @@ export default function ProjectDetail() {
   if (!id) throw new Error(t('projectDetail.needProjectId'));
 
   // Global WebSocket for monitoring
-  const { getProjectMessages } = useGlobalWebSocket();
+  const { getNamespaceMessages } = useGlobalWebSocket();
   const username = getUsername();
   const namespace = `proj-${id}-${username}`;
-  const messages = getProjectMessages(namespace);
+  const messages = getNamespaceMessages(namespace);
 
   // --- State Management ---
 

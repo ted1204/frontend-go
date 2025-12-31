@@ -10,7 +10,6 @@ export default defineConfig({
     svgr({
       svgrOptions: {
         icon: true,
-        // This will transform your SVG to a React component
         exportType: 'named',
         namedExport: 'ReactComponent',
       },
@@ -21,5 +20,9 @@ export default defineConfig({
       '@nthucscc/ui': resolve(__dirname, 'packages/ui/src/index.ts'),
       '@nthucscc/utils': resolve(__dirname, 'packages/utils/src/index.ts'),
     },
+  },
+  build: {
+    outDir: resolve(__dirname, 'dist'),
+    emptyOutDir: true,
   },
 });

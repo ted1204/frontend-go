@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { API_BASE_URL } from '../config/url';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -17,9 +18,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/auth/status', { credentials: 'include' })
-      .then((res) => res.status === 200)
-      .then((ok) => setIsAuthenticated(ok))
+    // At app root: check auth with backend.
+    // If token exists in localStorage, validate it via Authorization header.
+    // If no token, call backend with credentials included to allow cookie/session-based auth.
+    const token = localStorage.getItem('token') || localStorage.getItem('accessToken');
+    const url = `${API_BASE_URL}/auth/status`;
+
+    const options: RequestInit = token
+      ? { headers: { Authorization: `Bearer ${token}` } }
+      : { credentials: 'include' };
+
+    fetch(url, options)
+      .then((res) => {
+        if (res.status === 200) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+          localStorage.removeItem('userData');
+          localStorage.removeItem('username');
+        }
+      })
+      .catch(() => {
+        setIsAuthenticated(false);
+        localStorage.removeItem('userData');
+        localStorage.removeItem('username');
+      })
       .finally(() => setLoading(false));
   }, []);
 

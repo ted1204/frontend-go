@@ -1,5 +1,6 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { WorkloadResource, ContainerConfig } from '../../interfaces/configFile';
+import ConfigMapManager from './ConfigMapManager';
 import { PVC } from '../../interfaces/pvc';
 import ContainerForm from './ContainerForm';
 
@@ -71,6 +72,17 @@ const WorkloadForm = ({ resource, projectPvcs, hasUserStorage, onChange }: Workl
         )}
       </div>
 
+      {/* Selectors (labels) */}
+      <div>
+        <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Selectors</label>
+        <p className="text-xs text-gray-400">Key-value pairs used as labels and selectors</p>
+        <div className="mt-2">
+          <ConfigMapManager
+            data={resource.selectors || []}
+            onChange={(s) => updateField('selectors', s)}
+          />
+        </div>
+      </div>
       {/* Containers List */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">

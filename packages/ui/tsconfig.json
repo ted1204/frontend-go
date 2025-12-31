@@ -6,7 +6,7 @@
     "declaration": true,
     "declarationMap": true,
     "outDir": "../../build/ui",
-    "noEmit": false,
+    "noEmit": true,
     "tsBuildInfoFile": "../../build/ui/.tsbuildinfo"
   },
   "references": [{ "path": "../utils" }],

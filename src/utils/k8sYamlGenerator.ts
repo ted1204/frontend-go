@@ -14,8 +14,6 @@ export const generateMultiDocYAML = (resources: ResourceItem[]): string => {
 kind: ${res.kind}
 metadata:
   name: ${res.name}
-  labels:
-    app: ${res.name}
 `;
 
     // --- WORKLOADS (Pod / Deployment) ---
@@ -24,33 +22,42 @@ metadata:
       const isDeploy = res.kind === 'Deployment';
       // Deployment 的 spec 在比較深層，縮排不同
       const indent = isDeploy ? '        ' : '    ';
+      // Helper to serialize selectors into label blocks
+      const serializeLabels = (
+        selectors: { id?: string; key?: string; value?: string }[],
+        prefix: string,
+      ) => {
+        if (!selectors || selectors.length === 0) {
+          return `${prefix}labels:\n${prefix}  app: ${res.name}\n`;
+        }
+        let s = `${prefix}labels:\n`;
+        selectors.forEach((sel) => {
+          if (sel.key) s += `${prefix}  ${sel.key}: ${sel.value}\n`;
+        });
+        return s;
+      };
 
       // 1. Header & Spec Structure
       if (isDeploy) {
-        yaml = `apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ${res.name}
-  labels:
-    app: ${res.name}
-spec:
-  replicas: ${wl.replicas || 1}
-  selector:
-    matchLabels:
-      app: ${res.name}
-  template:
-    metadata:
-      labels:
-        app: ${res.name}
-    spec:
-`;
+        yaml = `apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: ${res.name}\n`;
+        // metadata.labels
+        yaml += serializeLabels(wl.selectors, '  ');
+        yaml += `spec:\n  replicas: ${wl.replicas || 1}\n  selector:\n    matchLabels:\n`;
+        // selector.matchLabels (indent deeper)
+        yaml += serializeLabels(wl.selectors, '      ').replace(/labels:\n/, '');
+        yaml += `  template:\n    metadata:\n`;
+        // template.metadata.labels
+        yaml += serializeLabels(wl.selectors, '      ');
+        yaml += `    spec:\n`;
       } else {
-        yaml += `spec:
-`;
+        // Pod header + metadata.labels
+        yaml += serializeLabels(wl.selectors, '  ');
+        yaml += `spec:\n`;
       }
 
       // 2. Containers Loop
-      yaml += `      containers:\n`;
+      const containersHeader = isDeploy ? `      containers:\n` : `  containers:\n`;
+      yaml += containersHeader;
 
       // 用來收集所有 Container 的 Mounts，最後在 Pod Level 定義 Volumes
       const allMounts: MountConfig[] = [];
@@ -121,7 +128,12 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
 
       // 3. Volumes Definition (Pod Level) - 去除重複
       if (allMounts.length > 0) {
-        yaml += `      volumes:\n`;
+        const volumesHeader = isDeploy ? `      volumes:\n` : `  volumes:\n`;
+        const volItemPrefix = isDeploy ? `        ` : `    `;
+        const volInnerPrefix = isDeploy ? `          ` : `      `;
+        const volInnerInner = isDeploy ? `            ` : `        `;
+
+        yaml += volumesHeader;
         const uniqueVols = new Set<string>();
 
         allMounts.forEach((m) => {
@@ -130,11 +142,11 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
           if (uniqueVols.has(volName)) return; // Skip duplicates
           uniqueVols.add(volName);
 
-          yaml += `        - name: ${volName}\n`;
+          yaml += `${volItemPrefix}- name: ${volName}\n`;
           if (m.type === 'user-storage') {
-            yaml += `          nfs:\n            server: storage-svc.user-{{username}}-storage.svc.cluster.local\n            path: /\n`;
+            yaml += `${volInnerPrefix}nfs:\n${volInnerInner}server: storage-svc.user-{{username}}-storage.svc.cluster.local\n${volInnerInner}path: /\n`;
           } else {
-            yaml += `          persistentVolumeClaim:\n            claimName: ${m.pvcName}\n`;
+            yaml += `${volInnerPrefix}persistentVolumeClaim:\n${volInnerInner}claimName: ${m.pvcName}\n`;
           }
         });
       }

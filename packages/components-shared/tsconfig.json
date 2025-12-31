@@ -6,7 +6,7 @@
     "declaration": true,
     "declarationMap": true,
     "outDir": "../../build/components-shared",
-    "noEmit": false,
+    "noEmit": true,
     "tsBuildInfoFile": "../../build/components-shared/.tsbuildinfo"
   },
   "include": ["src"]

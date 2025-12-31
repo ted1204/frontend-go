@@ -6,6 +6,7 @@ import Label from '../form/Label';
 import Input from '../form/input/InputFieldDefault';
 import Button from '../ui/button/Button';
 import { login } from '../../services/authService';
+import { useAuth } from '../../context/AuthContext';
 
 export default function SignInForm() {
   const { t } = useTranslation();
@@ -15,6 +16,7 @@ export default function SignInForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
+  const { setIsAuthenticated } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     console.log('handleLogin called');
@@ -29,11 +31,16 @@ export default function SignInForm() {
           is_super_admin: data.is_super_admin,
         }),
       );
+      // mark auth context as authenticated so routes update immediately
+      try {
+        setIsAuthenticated(true);
+      } catch (e) {
+        console.log('setIsAuthenticated not available', e);
+      }
       // Redirect to the page the user was trying to access, or default to home
       navigate(from, { replace: true });
     } catch (err) {
-      console.error('Login error:', err);
-      alert(err instanceof Error ? err.message : t('auth.login.loginFailed'));
+      console.log('Login error:', err);
     }
   };
 

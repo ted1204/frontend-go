@@ -10,7 +10,8 @@ import {
   ServerStackIcon,
 } from '@heroicons/react/24/outline';
 
-import { WebSocketContext } from '../../context/WebSocketContext';
+// Fix 1: 匯入 ResourceMessage 型別介面
+import { WebSocketContext, ResourceMessage } from '../../context/WebSocketContext';
 import { getUsername } from '../../services/authService';
 import {
   openUserDrive,
@@ -22,17 +23,17 @@ import { StatusBadge } from './StorageComponents';
 
 export const PersonalHub: React.FC = () => {
   const { t } = useTranslation();
-  const { messages, connectToNamespace } = useContext(WebSocketContext)!;
+  const { connectToNamespace, getNamespaceMessages } = useContext(WebSocketContext)!;
 
   const [isRequesting, setIsRequesting] = useState(false);
-  const [storageExists, setStorageExists] = useState<boolean | null>(null); // null=loading, false=no pvc, true=ready
+  const [storageExists, setStorageExists] = useState<boolean | null>(null);
 
   const username = getUsername();
   const safeUsername = username?.toLowerCase() || '';
   const personalNs = `user-${safeUsername}-storage`;
   const podPattern = `filebrowser-pvc-user-${safeUsername}`;
 
-  // 1. Check if Storage Exists on Mount
+  // 1. Check if Storage Exists & Connect WS
   useEffect(() => {
     if (safeUsername) {
       connectToNamespace(personalNs);
@@ -40,16 +41,29 @@ export const PersonalHub: React.FC = () => {
     }
   }, [safeUsername, personalNs, connectToNamespace]);
 
-  // 2. Check Pod Status (Running/Pending/Error)
-  const personalPod = useMemo(() => {
-    return messages.find(
-      (m) => m.kind === 'Pod' && m.ns === personalNs && m.name.includes(podPattern),
-    );
-  }, [messages, personalNs, podPattern]);
+  const nsMessages = getNamespaceMessages(personalNs);
+
+  // 2. Check Pod Status
+  // Fix 2: 明確告訴 TypeScript，useMemo 回傳的是 ResourceMessage 或 undefined
+  const personalPod = useMemo<ResourceMessage | undefined>(() => {
+    return nsMessages.find((m) => {
+      if (m.kind !== 'Pod' || !m.name) return false;
+
+      const name = m.name.toLowerCase();
+      return (
+        name.includes(podPattern.toLowerCase()) ||
+        (name.includes('filebrowser') && name.includes(safeUsername))
+      );
+    });
+  }, [nsMessages, podPattern, safeUsername]);
 
   const podExists = !!personalPod;
-  const isOnline = personalPod?.status === 'Running' && !personalPod.metadata?.deletionTimestamp;
-  const podStatusDetail = personalPod?.status || 'Unknown';
+
+  // Fix 3: 這裡的 metadata 存取現在是安全的，因為 TypeScript 知道 personalPod 是 ResourceMessage
+  const isTerminating = !!personalPod?.metadata?.deletionTimestamp;
+  const isOnline = personalPod?.status === 'Running' && !isTerminating;
+
+  const podStatusDetail = isTerminating ? 'Stopping...' : personalPod?.status || 'Unknown';
 
   // --- Handlers ---
 
@@ -87,14 +101,12 @@ export const PersonalHub: React.FC = () => {
 
   // --- Render States ---
 
-  // 1. Loading State
   if (storageExists === null) {
     return (
       <div className="p-12 text-center animate-pulse text-gray-400">{t('common.loading')}</div>
     );
   }
 
-  // 2. No Storage State (Admin hasn't created it yet)
   if (storageExists === false) {
     return (
       <div className="max-w-4xl mx-auto rounded-3xl border border-dashed border-gray-300 bg-gray-50 p-12 text-center dark:border-gray-700 dark:bg-gray-800/50">
@@ -113,7 +125,6 @@ export const PersonalHub: React.FC = () => {
     );
   }
 
-  // 3. Normal State (Storage Exists)
   return (
     <div className="max-w-4xl mx-auto rounded-3xl border border-gray-100 bg-white p-12 shadow-sm dark:border-gray-700 dark:bg-gray-800 text-center hover:shadow-md transition-shadow">
       <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/20">
@@ -135,7 +146,7 @@ export const PersonalHub: React.FC = () => {
       </div>
 
       <div className="mt-10 flex justify-center gap-4">
-        {!podExists ? (
+        {!podExists && !isTerminating ? (
           <button
             onClick={handleStart}
             disabled={isRequesting}
@@ -164,7 +175,7 @@ export const PersonalHub: React.FC = () => {
 
             <button
               onClick={handleStop}
-              disabled={isRequesting}
+              disabled={isRequesting || isTerminating}
               className="inline-flex items-center gap-2 rounded-xl bg-red-50 px-6 py-3.5 font-bold text-red-600 hover:bg-red-100 disabled:opacity-50 transition-all border border-red-100"
             >
               {isRequesting ? (

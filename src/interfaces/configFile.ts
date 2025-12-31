@@ -68,6 +68,7 @@ export interface WorkloadResource extends BaseResource {
   kind: 'Pod' | 'Deployment';
   replicas: number;
   containers: ContainerConfig[]; // Array of containers
+  selectors: KeyValuePair[]; // New: selectors (labels) for matching and metadata
 }
 
 export interface ServiceResource extends BaseResource {

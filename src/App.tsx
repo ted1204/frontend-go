@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignIn from './pages/AuthPages/SignIn';
 import SignUp from './pages/AuthPages/SignUp';
 import NotFound from './pages/OtherPage/NotFound';
@@ -27,43 +27,39 @@ export default function App() {
   return (
     <Router>
       <ScrollToTop />
-      <Routes>
-        {/* Public Routes */}
-        <Route element={<PublicRoute />}>
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-        </Route>
-
-        {/* Protected Routes */}
-        <Route
-          element={
-            <AuthProvider>
-              <PrivateRoute />
-            </AuthProvider>
-          }
-        >
-          <Route element={<AppLayout />}>
-            <Route index path="/" element={<Home />} />
-            <Route path="/groups" element={<Groups />} />
-            <Route path="/groups/:id" element={<GroupDetail />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/projects/:id" element={<ProjectDetail />} />
-            <Route path="/jobs" element={<Jobs />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/manage-projects" element={<ManageProjects />} />
-            <Route path="/admin/manage-groups" element={<ManageGroups />} />
-            <Route path="/admin/forms" element={<AdminFormDashboard />} />
-            <Route path="/admin/storage-management" element={<StoragePage />} />
-            <Route path="/my-forms" element={<UserFormDashboard />} />
-            <Route path="/pod-tables" element={<PodTables />} />
-            <Route path="/terminal" element={<TerminalWrapper />} />
-            <Route path="/file-browser" element={<BrowserPage />} />
+      <AuthProvider>
+        <Routes>
+          {/* Public Routes */}
+          <Route element={<PublicRoute />}>
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
           </Route>
-        </Route>
 
-        {/* Not Found */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          {/* Protected Routes */}
+          <Route element={<PrivateRoute />}>
+            <Route element={<AppLayout />}>
+              <Route index path="/" element={<Home />} />
+              <Route path="/groups" element={<Groups />} />
+              <Route path="/groups/:id" element={<GroupDetail />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/projects/:id" element={<ProjectDetail />} />
+              <Route path="/jobs" element={<Jobs />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/manage-projects" element={<ManageProjects />} />
+              <Route path="/admin/manage-groups" element={<ManageGroups />} />
+              <Route path="/admin/forms" element={<AdminFormDashboard />} />
+              <Route path="/admin/storage-management" element={<StoragePage />} />
+              <Route path="/my-forms" element={<UserFormDashboard />} />
+              <Route path="/pod-tables" element={<PodTables />} />
+              <Route path="/terminal" element={<TerminalWrapper />} />
+              <Route path="/file-browser" element={<BrowserPage />} />
+            </Route>
+          </Route>
+
+          {/* Not Found */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AuthProvider>
     </Router>
   );
 }

@@ -1,12 +1,13 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { isAuthenticated } from '../utils/auth';
+import { useAuth } from '../context/AuthContext';
 
 const PublicRoute = () => {
-  if (isAuthenticated()) {
-    return <Navigate to="/" replace />;
-  }
+  const { isAuthenticated, loading } = useAuth();
 
-  return <Outlet />;
+  // While auth state is being determined, don't redirect.
+  if (loading) return null;
+
+  return isAuthenticated ? <Navigate to="/" replace /> : <Outlet />;
 };
 
 export default PublicRoute;

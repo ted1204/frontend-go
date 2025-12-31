@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.app.json",
   "compilerOptions": {
-    "noEmit": false,
+    "noEmit": true,
     "outDir": "../../build/frontend-app",
     "tsBuildInfoFile": "../../build/frontend-app/.tsbuildinfo"
   },
