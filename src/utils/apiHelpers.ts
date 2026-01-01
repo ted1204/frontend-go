@@ -1,0 +1,34 @@
+// Consolidate common API response/error handling patterns
+
+export interface ApiResponse<T = unknown> {
+  message?: string;
+  error?: string;
+  data?: T;
+  status?: number;
+}
+
+export interface ApiError {
+  message: string;
+  statusCode?: number;
+  details?: unknown;
+}
+
+export const handleApiError = (error: unknown): ApiError => {
+  if (error instanceof Error) {
+    return { message: error.message };
+  }
+  if (typeof error === 'string') {
+    return { message: error };
+  }
+  return { message: 'Unknown error occurred' };
+};
+
+export const isSuccessResponse = (response: ApiResponse): boolean => {
+  return !response.error && !!response.message && response.status !== 'error';
+};
+
+export const getErrorMessage = (response: ApiResponse | Error | string): string => {
+  if (typeof response === 'string') return response;
+  if (response instanceof Error) return response.message;
+  return response.error || response.message || 'An error occurred';
+};
