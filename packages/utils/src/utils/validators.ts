@@ -21,7 +21,9 @@ export const validatePassword = (password: string): { valid: boolean; error?: st
   return { valid: true };
 };
 
-export const validateRequired = (value: string | number | undefined): { valid: boolean; error?: string } => {
+export const validateRequired = (
+  value: string | number | undefined,
+): { valid: boolean; error?: string } => {
   if (value === undefined || value === '' || value === null)
     return { valid: false, error: 'This field is required' };
   return { valid: true };

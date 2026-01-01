@@ -6,11 +6,7 @@ export interface StatusBadgeProps {
   className?: string;
 }
 
-export const StatusBadge: React.FC<StatusBadgeProps> = ({
-  status,
-  isTerminating,
-  className,
-}) => {
+export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, isTerminating, className }) => {
   if (isTerminating) {
     return (
       <span

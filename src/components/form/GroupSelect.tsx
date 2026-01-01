@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from '@nthucscc/utils';
 
 interface GroupOption {
@@ -47,7 +47,9 @@ export const GroupSelect: React.FC<GroupSelectProps> = ({
         {open && (
           <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded shadow-lg z-10 max-h-48 overflow-y-auto">
             {filtered.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-gray-500">{t('project.create.noGroupsFound')}</div>
+              <div className="px-3 py-2 text-sm text-gray-500">
+                {t('project.create.noGroupsFound')}
+              </div>
             ) : (
               filtered.map((group) => (
                 <button

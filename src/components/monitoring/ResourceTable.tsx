@@ -12,9 +12,7 @@ export const ResourceTable: React.FC<ResourceTableProps> = ({ resources, visible
 
   if (resources.length === 0) {
     return (
-      <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-        {t('monitor.waiting')}
-      </div>
+      <div className="p-8 text-center text-gray-500 dark:text-gray-400">{t('monitor.waiting')}</div>
     );
   }
 
@@ -47,7 +45,10 @@ export const ResourceTable: React.FC<ResourceTableProps> = ({ resources, visible
         </thead>
         <tbody>
           {resources.map((resource, idx) => (
-            <tr key={`${resource.kind}-${resource.name}-${idx}`} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+            <tr
+              key={`${resource.kind}-${resource.name}-${idx}`}
+              className="hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
               {visibleColumns.has('kind') && (
                 <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm">
                   {resource.kind}

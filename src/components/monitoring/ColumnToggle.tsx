@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useTranslation } from '@nthucscc/utils';
 import { ColumnKey } from './types';
 
 interface ColumnToggleProps {
@@ -19,7 +18,6 @@ const availableColumns: { key: ColumnKey; label: string }[] = [
 ];
 
 export const ColumnToggle: React.FC<ColumnToggleProps> = ({ visibleColumns, onToggle }) => {
-  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   return (

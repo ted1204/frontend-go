@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import { useTranslation } from '@nthucscc/utils';
-import InputField from '../../form/input/InputField';
+import InputField from '../form/input/InputField';
 
 interface MPSSettingsProps {
   mpsLimit: number;
@@ -27,7 +27,6 @@ export const MPSSettings: React.FC<MPSSettingsProps> = ({
         value={mpsLimit}
         onChange={onMpsLimitChange}
         placeholder="100"
-        help="MPS Thread Limit (%)"
       />
 
       <InputField
@@ -36,7 +35,6 @@ export const MPSSettings: React.FC<MPSSettingsProps> = ({
         value={mpsMemory}
         onChange={onMpsMemoryChange}
         placeholder="1024"
-        help="MPS Memory Limit (MB)"
       />
     </div>
   );

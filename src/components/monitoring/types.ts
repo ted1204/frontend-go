@@ -23,4 +23,12 @@ export interface ResourceMessage {
   };
 }
 
-export type ColumnKey = 'kind' | 'name' | 'details' | 'age' | 'status' | 'images' | 'restarts' | 'labels';
+export type ColumnKey =
+  | 'kind'
+  | 'name'
+  | 'details'
+  | 'age'
+  | 'status'
+  | 'images'
+  | 'restarts'
+  | 'labels';
