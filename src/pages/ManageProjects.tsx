@@ -18,6 +18,7 @@ import { updateProject, UpdateProjectInput } from '../services/projectService';
 
 import { getGroups } from '../services/groupService';
 import { useTranslation } from '@nthucscc/utils';
+import { useProjectFormState } from '../hooks/useProjectFormState';
 // --- Conceptual Group Interfaces (Must be defined in your app) ---
 interface GroupOption {
   GID: number;
@@ -44,25 +45,20 @@ export default function ManageProjects() {
   const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
 
-  // Group/Form States
-  const [availableGroups, setAvailableGroups] = useState<GroupOption[]>([]); // Groups for dropdown
-  const [selectedGroupName, setSelectedGroupName] = useState(''); // Name for dropdown display
-  const [projectName, setProjectName] = useState('');
-  const [description, setDescription] = useState('');
-  const [gpuQuota, setGpuQuota] = useState<number>(0);
-  const [gpuAccess, setGpuAccess] = useState<string[]>(['shared']);
-  const [mpsLimit, setMpsLimit] = useState<number>(100);
-  const [mpsMemory, setMpsMemory] = useState<number>(0);
-  const [groupId, setGroupId] = useState<number>(0); // Group ID to submit
+  // Form State Management (Consolidated via Hook)
+  const [formState, formHandlers] = useProjectFormState();
+
+  // Group State
+  const [availableGroups, setAvailableGroups] = useState<GroupOption[]>([]);
 
   // UI/API States
   const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(false); // 2. Add dedicated action loading state
+  const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // 3. Add delete confirmation related states
+  // Delete confirmation states
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
 
@@ -77,12 +73,14 @@ export default function ManageProjects() {
     const project = allProjects.find((p) => p.PID === projectId);
     if (project) {
       setProjectToEdit(project);
-      setProjectName(project.ProjectName);
-      setDescription(project.Description || '');
-      setGpuQuota(project.GPUQuota || 0);
-      setGpuAccess(project.GPUAccess ? project.GPUAccess.split(',') : ['shared']);
-      setMpsLimit(project.MPSLimit || 100);
-      setMpsMemory(project.MPSMemory || 0);
+      formHandlers.loadProjectData({
+        projectName: project.ProjectName,
+        description: project.Description || '',
+        gpuQuota: project.GPUQuota || 0,
+        gpuAccess: project.GPUAccess ? project.GPUAccess.split(',') : ['shared'],
+        mpsLimit: project.MPSLimit || 100,
+        mpsMemory: project.MPSMemory || 0,
+      });
       setIsEditModalOpen(true);
     }
   };
@@ -90,12 +88,7 @@ export default function ManageProjects() {
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
     setProjectToEdit(null);
-    setProjectName('');
-    setDescription('');
-    setGpuQuota(0);
-    setGpuAccess(['shared']);
-    setMpsLimit(100);
-    setMpsMemory(0);
+    formHandlers.resetForm();
     setError(null);
   };
 
@@ -104,12 +97,12 @@ export default function ManageProjects() {
     if (!projectToEdit) return;
 
     const input: UpdateProjectInput = {
-      project_name: projectName,
-      description,
-      gpu_quota: gpuQuota,
-      gpu_access: gpuAccess.join(','),
-      mps_limit: mpsLimit,
-      mps_memory: mpsMemory,
+      project_name: formState.projectName,
+      description: formState.description,
+      gpu_quota: formState.gpuQuota,
+      gpu_access: formState.gpuAccess.join(','),
+      mps_limit: formState.mpsLimit,
+      mps_memory: formState.mpsMemory,
     };
 
     try {
@@ -132,30 +125,15 @@ export default function ManageProjects() {
   };
 
   /**
-   * Handles setting the Group ID and Name from the modal's search-select.
-   */
-  const handleSelectedGroupChange = (id: number, name: string) => {
-    setGroupId(id);
-    setSelectedGroupName(name);
-  };
-
-  /**
    * Handles closing the creation modal and resets the form state.
    */
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setProjectName('');
-    setDescription('');
-    setGpuQuota(0);
-    setGpuAccess(['shared']);
-    setMpsLimit(100);
-    setMpsMemory(0);
-    setGroupId(0);
-    setSelectedGroupName('');
+    formHandlers.resetForm();
     setError(null);
   };
 
-  // 4. Handle closing delete modal
+  // Handle closing delete modal
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
     setProjectToDelete(null);
@@ -209,22 +187,22 @@ export default function ManageProjects() {
   const handleCreateProject = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (groupId === 0) {
+    if (formState.groupId === 0) {
       setError(t('error.selectGroup'));
       return;
     }
     const input: CreateProjectDTO = {
-      project_name: projectName,
-      description,
-      g_id: groupId,
-      gpu_quota: gpuQuota,
-      gpu_access: gpuAccess.join(','),
-      mps_limit: mpsLimit,
-      mps_memory: mpsMemory,
+      project_name: formState.projectName,
+      description: formState.description,
+      g_id: formState.groupId,
+      gpu_quota: formState.gpuQuota,
+      gpu_access: formState.gpuAccess.join(','),
+      mps_limit: formState.mpsLimit,
+      mps_memory: formState.mpsMemory,
     };
 
     try {
-      setActionLoading(true); // Use actionLoading to lock button
+      setActionLoading(true);
       setError(null);
 
       const newProject = await createProject(input);
@@ -313,74 +291,49 @@ export default function ManageProjects() {
       </div>
       {/* Project Creation Modal (Conditional Rendering) */}
       <CreateProjectForm
-        projectName={projectName}
-        description={description}
-        groupId={groupId}
-        gpuQuota={gpuQuota}
-        gpuAccess={gpuAccess}
-        mpsLimit={mpsLimit}
-        mpsMemory={mpsMemory}
-        // Use actionLoading to control form submission loading state
+        projectName={formState.projectName}
+        description={formState.description}
+        groupId={formState.groupId}
+        gpuQuota={formState.gpuQuota}
+        gpuAccess={formState.gpuAccess}
+        mpsLimit={formState.mpsLimit}
+        mpsMemory={formState.mpsMemory}
         loading={actionLoading}
         error={error}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        onProjectNameChange={(e: ChangeEvent<HTMLInputElement>) => setProjectName(e.target.value)}
-        onDescriptionChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-          setDescription(e.target.value)
-        }
-        onGpuQuotaChange={(e: ChangeEvent<HTMLInputElement>) => setGpuQuota(Number(e.target.value))}
-        onGpuAccessChange={(access: string) => {
-          setGpuAccess((prev) => {
-            if (prev.includes(access)) {
-              return prev.filter((a) => a !== access);
-            } else {
-              return [...prev, access];
-            }
-          });
-        }}
-        onMpsLimitChange={(e: ChangeEvent<HTMLInputElement>) => setMpsLimit(Number(e.target.value))}
-        onMpsMemoryChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setMpsMemory(Number(e.target.value))
-        }
+        onProjectNameChange={formHandlers.onProjectNameChange}
+        onDescriptionChange={formHandlers.onDescriptionChange}
+        onGpuQuotaChange={formHandlers.onGpuQuotaChange}
+        onGpuAccessChange={formHandlers.onGpuAccessChange}
+        onMpsLimitChange={formHandlers.onMpsLimitChange}
+        onMpsMemoryChange={formHandlers.onMpsMemoryChange}
         onGroupIdChange={() => {
           /* No operation */
         }}
         onSubmit={handleCreateProject}
         availableGroups={availableGroups}
-        selectedGroupName={selectedGroupName}
-        onSelectedGroupChange={handleSelectedGroupChange}
+        selectedGroupName={formState.selectedGroupName}
+        onSelectedGroupChange={formHandlers.onSelectedGroupChange}
       />
 
       <EditProjectForm
-        projectName={projectName}
-        description={description}
-        gpuQuota={gpuQuota}
-        gpuAccess={gpuAccess}
-        mpsLimit={mpsLimit}
-        mpsMemory={mpsMemory}
+        projectName={formState.projectName}
+        description={formState.description}
+        gpuQuota={formState.gpuQuota}
+        gpuAccess={formState.gpuAccess}
+        mpsLimit={formState.mpsLimit}
+        mpsMemory={formState.mpsMemory}
         loading={actionLoading}
         error={error}
         isOpen={isEditModalOpen}
         onClose={handleCloseEditModal}
-        onProjectNameChange={(e: ChangeEvent<HTMLInputElement>) => setProjectName(e.target.value)}
-        onDescriptionChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-          setDescription(e.target.value)
-        }
-        onGpuQuotaChange={(e: ChangeEvent<HTMLInputElement>) => setGpuQuota(Number(e.target.value))}
-        onGpuAccessChange={(access: string) => {
-          setGpuAccess((prev) => {
-            if (prev.includes(access)) {
-              return prev.filter((a) => a !== access);
-            } else {
-              return [...prev, access];
-            }
-          });
-        }}
-        onMpsLimitChange={(e: ChangeEvent<HTMLInputElement>) => setMpsLimit(Number(e.target.value))}
-        onMpsMemoryChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setMpsMemory(Number(e.target.value))
-        }
+        onProjectNameChange={formHandlers.onProjectNameChange}
+        onDescriptionChange={formHandlers.onDescriptionChange}
+        onGpuQuotaChange={formHandlers.onGpuQuotaChange}
+        onGpuAccessChange={formHandlers.onGpuAccessChange}
+        onMpsLimitChange={formHandlers.onMpsLimitChange}
+        onMpsMemoryChange={formHandlers.onMpsMemoryChange}
         onSubmit={handleUpdateProject}
       />
 
