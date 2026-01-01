@@ -38,7 +38,7 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
   }, [refreshTrigger]); // 當 WebSocket 連上時也可以刷新一次確保資料最新
 
   const handleExpand = (pvcName: string) => {
-    const newSize = prompt(t('admin_storage_project_action_expandPrompt'));
+    const newSize = prompt(t('admin.storage.project.actionExpandPrompt'));
     if (newSize) {
       // TODO: Implement expandPVC API call
       toast.success(`Expand request sent for ${pvcName} (Pending Implementation)`);
@@ -46,7 +46,7 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
   };
 
   const handleDelete = async (namespace: string, pvcName: string) => {
-    if (confirm(t('admin_storage_project_action_confirmDelete'))) {
+    if (confirm(t('admin.storage.project.actionConfirmDelete'))) {
       try {
         await deletePVC(namespace, pvcName);
         toast.success(t('common.success'));
@@ -83,19 +83,19 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
         <thead className="bg-gray-50 dark:bg-gray-800/50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {t('admin_storage_project_list_project')}
+              {t('admin.storage.project.list.project')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {t('admin_storage_project_list_status')}
+              {t('admin.storage.project.list.status')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {t('admin_storage_project_list_capacity')}
+              {t('admin.storage.project.list.capacity')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {t('admin_storage_project_list_age')}
+              {t('admin.storage.project.list.age')}
             </th>
             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {t('admin_storage_project_list_actions')}
+              {t('admin.storage.project.list.actions')}
             </th>
           </tr>
         </thead>
@@ -103,7 +103,7 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
           {pvcs.length === 0 ? (
             <tr>
               <td colSpan={5} className="px-6 py-10 text-center text-gray-500">
-                {t('admin_storage_project_list_empty')}
+                {t('admin.storage.project.list.empty')}
               </td>
             </tr>
           ) : (
@@ -148,14 +148,14 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
                     <button
                       onClick={() => handleExpand(pvc.pvcName)}
                       className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1"
-                      title={t('admin_storage_project_action_edit')}
+                      title={t('admin.storage.project.actionEdit')}
                     >
                       <PencilSquareIcon className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(pvc.namespace, pvc.pvcName)}
                       className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 flex items-center gap-1"
-                      title={t('admin_storage_project_action_delete')}
+                      title={t('admin.storage.project.actionDelete')}
                     >
                       <TrashIcon className="h-4 w-4" />
                     </button>

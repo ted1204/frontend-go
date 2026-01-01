@@ -3,21 +3,21 @@
   "name": "@nthucscc/utils",
   "version": "0.0.0",
   "private": true,
-  "main": "dist/src/index.js",
-  "module": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "dist/utils/index.js",
+  "module": "dist/utils/index.js",
+  "types": "dist/utils/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/src/index.js",
-      "require": "./dist/src/index.js",
-      "types": "./dist/src/index.d.ts"
+      "import": "./dist/utils/index.js",
+      "require": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
     }
   },
   "scripts": {
     "build": "tsc -b",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "clean": "rm -rf dist && find src -name '*.js' -delete && find src -name '*.d.ts' -delete"
+    "clean": "rm -rf dist .tsbuildinfo && find src -name '*.js' -delete && find src -name '*.d.ts' -delete"
   },
   "files": [
     "dist"

@@ -92,28 +92,28 @@ export const StorageActionButtons: React.FC<ActionButtonsProps> = ({
           onClick={() => onAction(pId, 'start')}
           disabled={isLoading}
           className={`${baseBtnClass} ${sizeClass} bg-blue-600 hover:bg-blue-700 text-white shadow-sm`}
-          title={t('storage_startDrive')}
+          title={t('storage.action.start')}
         >
           {isLoading ? (
             <span className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
           ) : (
             <PlayIcon className="w-4 h-4" />
           )}
-          {!compact && t('storage_startDrive')}
+          {!compact && t('storage.action.start')}
         </button>
       ) : (
         <button
           onClick={() => onAction(pId, 'stop')}
           disabled={isLoading}
           className={`${baseBtnClass} ${sizeClass} bg-red-50 hover:bg-red-100 text-red-600 border border-red-200`}
-          title={t('storage_stopDrive')}
+          title={t('storage.action.stop')}
         >
           {isLoading ? (
             <span className="h-3 w-3 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
           ) : (
             <StopIcon className="w-4 h-4" />
           )}
-          {!compact && t('storage_stopDrive')}
+          {!compact && t('storage.action.stop')}
         </button>
       )}
 
@@ -126,10 +126,10 @@ export const StorageActionButtons: React.FC<ActionButtonsProps> = ({
             ? 'bg-violet-600 hover:bg-violet-700 text-white shadow-sm'
             : 'bg-gray-100 text-gray-400 cursor-not-allowed'
         }`}
-        title={t('storage_openBrowser')}
+        title={t('storage.action.open')}
       >
         <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-        {!compact && t('storage_openBrowser')}
+        {!compact && t('storage.action.open')}
       </button>
     </div>
   );

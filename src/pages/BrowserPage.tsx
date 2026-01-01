@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from '@nthucscc/utils';
-import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '@nthucscc/ui';
 import { PageMeta } from '@nthucscc/ui';
 import { UserCircleIcon, CubeIcon } from '@heroicons/react/24/outline';
 

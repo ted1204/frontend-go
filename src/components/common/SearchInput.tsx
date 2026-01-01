@@ -9,7 +9,7 @@ interface SearchInputProps {
 
 const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, placeholder }) => {
   const { t } = useTranslation();
-  const ph = placeholder ?? t('search_placeholder');
+  const ph = placeholder ?? t('search.placeholder');
   return (
     <div className="relative w-full sm:w-64">
       <input

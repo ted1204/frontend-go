@@ -1,7 +1,7 @@
 // src/components/GroupList.tsx
 
 import React, { ChangeEvent, useState, useEffect } from 'react';
-import { useTranslation } from '@nthucscc/utils';
+import { useTranslation, LocaleKey } from '@nthucscc/utils';
 import { Group } from '../interfaces/group'; // Adjust import based on your structure
 import { Pagination } from '@nthucscc/ui';
 
@@ -58,24 +58,7 @@ const SearchIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' })
 // --- Helper Components for States (Loading, Error, Empty) --- //
 
 const LoadingSpinner: React.FC<{
-  t: (
-    key:
-      | 'breadcrumb_groups'
-      | 'admin_manageProjects'
-      | 'admin_manageGroups'
-      | 'admin_forms'
-      | 'groups_error_userNotLogged'
-      | 'groups_error_userIdMissing'
-      | 'groups_error_unknown'
-      | 'loading.forms'
-      | 'groupList.loading'
-      | 'projectList.errorPrefix'
-      | 'groupList.empty.filter'
-      | 'groupList.empty.noGroups'
-      | 'groupList.empty.filterTip'
-      | 'groupList.empty.noGroupsTip',
-    vars?: Record<string, string | number>,
-  ) => string;
+  t: (key: LocaleKey, vars?: Record<string, string | number>) => string;
 }> = ({ t }) => (
   <div className="flex justify-center items-center p-8 text-gray-500 dark:text-gray-400">
     <svg
@@ -98,68 +81,34 @@ const LoadingSpinner: React.FC<{
         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
       ></path>
     </svg>
-    <span>{t('groupList.loading')}</span>
+    <span>{t('groups.list.loading')}</span>
   </div>
 );
 
 const ErrorDisplay: React.FC<{
   message: string;
-  t: (
-    key:
-      | 'breadcrumb_groups'
-      | 'admin_manageProjects'
-      | 'admin_manageGroups'
-      | 'admin_forms'
-      | 'groups_error_userNotLogged'
-      | 'groups_error_userIdMissing'
-      | 'groups_error_unknown'
-      | 'loading.forms'
-      | 'groupList.loading'
-      | 'projectList.errorPrefix'
-      | 'groupList.empty.filter'
-      | 'groupList.empty.noGroups'
-      | 'groupList.empty.filterTip'
-      | 'groupList.empty.noGroupsTip',
-    vars?: Record<string, string | number>,
-  ) => string;
+  t: (key: LocaleKey, vars?: Record<string, string | number>) => string;
 }> = ({ message, t }) => (
   <div
     className="bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg"
     role="alert"
   >
-    <strong className="font-bold mr-1">{t('projectList.errorPrefix')}</strong>
+    <strong className="font-bold mr-1">{t('project.list.errorPrefix')}</strong>
     <span className="block sm:inline">{message}</span>
   </div>
 );
 
 const EmptyState: React.FC<{
   isFiltering: boolean;
-  t: (
-    key:
-      | 'breadcrumb_groups'
-      | 'admin_manageProjects'
-      | 'admin_manageGroups'
-      | 'admin_forms'
-      | 'groups_error_userNotLogged'
-      | 'groups_error_userIdMissing'
-      | 'groups_error_unknown'
-      | 'loading.forms'
-      | 'groupList.loading'
-      | 'projectList.errorPrefix'
-      | 'groupList.empty.filter'
-      | 'groupList.empty.noGroups'
-      | 'groupList.empty.filterTip'
-      | 'groupList.empty.noGroupsTip',
-    vars?: Record<string, string | number>,
-  ) => string;
+  t: (key: LocaleKey, vars?: Record<string, string | number>) => string;
 }> = ({ isFiltering, t }) => (
   <div className="text-center py-12 px-6 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
     <GroupIcon className="mx-auto h-10 w-10 text-gray-400" />
     <h3 className="mt-4 text-lg font-semibold text-gray-800 dark:text-white">
-      {isFiltering ? t('groupList.empty.filter') : t('groupList.empty.noGroups')}
+      {isFiltering ? t('groups.list.empty.filter') : t('groups.list.empty.noGroups')}
     </h3>
     <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-      {isFiltering ? t('groupList.empty.filterTip') : t('groupList.empty.noGroupsTip')}
+      {isFiltering ? t('groups.list.empty.filterTip') : t('groups.list.empty.noGroupsTip')}
     </p>
   </div>
 );
@@ -248,7 +197,7 @@ const GroupList: React.FC<GroupListProps> = ({
                       {group.GroupName}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400 truncate mt-0.5">
-                      {group.Description || t('groupList.noDescription', { id: group.GID })}
+                      {group.Description || t('groups.noDescription')}
                     </p>
                   </div>
                 </div>
@@ -263,7 +212,7 @@ const GroupList: React.FC<GroupListProps> = ({
                     onDeleteGroup(group);
                   }}
                   className="p-2 rounded-full text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
-                  aria-label={t('groupList.deleteGroupAria')}
+                  aria-label={t('groups.list.deleteGroupAria')}
                   // disabled={isActionLoading} // Uncomment if adding isActionLoading
                 >
                   <TrashIcon className="h-5 w-5" />
@@ -286,10 +235,10 @@ const GroupList: React.FC<GroupListProps> = ({
       {/* Header (Structural Context) */}
       <div className="mb-6">
         <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-          {t('groupList.title')}
+          {t('groups.list.title')}
         </h2>
         <p className="mt-1 text-base text-gray-600 dark:text-gray-400">
-          {t('groupList.description')}
+          {t('groups.list.description')}
         </p>
       </div>
 
@@ -298,7 +247,7 @@ const GroupList: React.FC<GroupListProps> = ({
         <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
         <input
           type="text"
-          placeholder={t('groupList.searchPlaceholder')}
+          placeholder={t('groups.list.searchPlaceholder')}
           value={searchTerm}
           onChange={onSearchChange}
           className="

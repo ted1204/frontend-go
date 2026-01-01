@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getJobs, Job } from '../services/jobService';
 import { getJobLog } from '../services/jobLogService';
 import { submitJob, SubmitJobRequest } from '../services/jobSubmitService';
-import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '@nthucscc/ui';
 import JobCard from '../components/job/JobCard';
 import JobLogModal from '../components/job/JobLogModal';
 import JobApplyModal from '../components/job/JobApplyModal';

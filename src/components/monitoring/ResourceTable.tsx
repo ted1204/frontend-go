@@ -23,22 +23,22 @@ export const ResourceTable: React.FC<ResourceTableProps> = ({ resources, visible
           <tr>
             {visibleColumns.has('kind') && (
               <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                {t('monitor.col.kind')}
+                {t('monitor.table.kind')}
               </th>
             )}
             {visibleColumns.has('name') && (
               <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                {t('monitor.col.name')}
+                {t('monitor.table.name')}
               </th>
             )}
             {visibleColumns.has('status') && (
               <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                {t('monitor.col.status')}
+                {t('monitor.table.status')}
               </th>
             )}
             {visibleColumns.has('age') && (
               <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                {t('monitor.col.age')}
+                {t('monitor.table.age')}
               </th>
             )}
           </tr>

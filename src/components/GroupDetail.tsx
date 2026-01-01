@@ -13,7 +13,7 @@ import {
 } from '../services/userGroupService';
 
 import { PageMeta } from '@nthucscc/ui';
-import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '@nthucscc/ui';
 import InviteUserModal, { FormData } from '../components/InviteUserModal';
 import EditRoleModal from '../components/EditRoleModal';
 import Button from '../components/ui/button/Button';
@@ -127,7 +127,7 @@ export default function GroupDetail() {
   useEffect(() => {
     const fetchInitialData = async () => {
       if (!id) {
-        setError(t('groups_error_userIdMissing'));
+        setError(t('groups.error.userIdMissing'));
         setLoading(false);
         return;
       }
@@ -138,7 +138,7 @@ export default function GroupDetail() {
         setAllUsers(usersData);
         await refetchGroupUsers();
       } catch (err) {
-        setError(err instanceof Error ? err.message : t('groups_error_unknown'));
+        setError(err instanceof Error ? err.message : t('groups.error.unknown'));
       } finally {
         setLoading(false);
       }
@@ -248,10 +248,10 @@ export default function GroupDetail() {
                     <thead className="bg-gray-50 dark:bg-gray-700/50">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                          {t('table_user')}
+                          {t('table.user')}
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                          {t('table_role')}
+                          {t('table.role')}
                         </th>
                         <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                           {t('common.actions')}

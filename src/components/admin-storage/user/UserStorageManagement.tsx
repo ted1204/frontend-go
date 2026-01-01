@@ -65,26 +65,26 @@ const UserStorageManagement: React.FC = () => {
         await initUserStorage(targetUser);
         setMessage({
           type: 'success',
-          text: t('admin_storage_user_successInit'),
+          text: t('admin.storage.user.successInit'),
         });
         setStorageStatus('exists'); // Update state locally on success
       } else if (action === 'delete') {
         // Double confirmation for deletion
-        if (!window.confirm(t('admin_storage_user_confirmDelete'))) {
+        if (!window.confirm(t('admin.storage.user.confirmDelete'))) {
           setLoading(false);
           return;
         }
         await deleteUserStorage(targetUser);
         setMessage({
           type: 'success',
-          text: t('admin_storage_user_successDelete'),
+          text: t('admin.storage.user.successDelete'),
         });
         setStorageStatus('missing'); // Update state locally on success
       } else {
         await expandUserStorage(targetUser, expandSize);
         setMessage({
           type: 'success',
-          text: t('admin_storage_user_successExpand'),
+          text: t('admin.storage.user.successExpand'),
         });
       }
     } catch (err: unknown) {
@@ -101,19 +101,19 @@ const UserStorageManagement: React.FC = () => {
       <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
         <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
           <UserIcon className="w-5 h-5 text-violet-500" />
-          {t('admin_storage_user_targetUser')}
+          {t('admin.storage.user.targetUser')}
         </h3>
 
         <div className="flex gap-4 items-end max-w-xl">
           <div className="flex-grow">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {t('admin_storage_user_username')}
+              {t('admin.storage.user.username')}
             </label>
             <input
               type="text"
               value={targetUser}
               onChange={(e) => setTargetUser(e.target.value)}
-              placeholder={t('admin_storage_user_usernamePlaceholder')}
+              placeholder={t('admin.storage.user.usernamePlaceholder')}
               className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 p-2.5 border"
             />
           </div>
@@ -124,7 +124,7 @@ const UserStorageManagement: React.FC = () => {
             className="bg-gray-800 hover:bg-gray-700 text-white flex items-center gap-2"
           >
             <MagnifyingGlassIcon className="w-4 h-4" />
-            {t('admin_storage_user_checkStatus')}
+            {t('admin.storage.user.checkStatus')}
           </Button>
         </div>
 
@@ -137,12 +137,12 @@ const UserStorageManagement: React.FC = () => {
           >
             {storageStatus === 'exists' ? (
               <>
-                <CheckCircleIcon className="w-5 h-5" /> {t('admin_storage_user_statusExists')}
+                <CheckCircleIcon className="w-5 h-5" /> {t('admin.storage.user.statusExists')}
               </>
             ) : (
               <>
                 <QuestionMarkCircleIcon className="w-5 h-5" />{' '}
-                {t('admin_storage_user_statusMissing')}
+                {t('admin.storage.user.statusMissing')}
               </>
             )}
           </div>
@@ -178,19 +178,19 @@ const UserStorageManagement: React.FC = () => {
               )}
             </div>
             <h4 className="font-semibold text-gray-900 dark:text-gray-100">
-              {t('admin_storage_user_lifecycleTitle')}
+              {t('admin.storage.user.lifecycleTitle')}
             </h4>
           </div>
 
           <div className="flex-grow mb-6 text-sm">
             {storageStatus === 'unknown' && (
-              <p className="text-gray-500 italic">{t('admin_storage_user_hintUnknown')}</p>
+              <p className="text-gray-500 italic">{t('admin.storage.user.hintUnknown')}</p>
             )}
             {storageStatus === 'missing' && (
-              <p className="text-gray-500">{t('admin_storage_user_hintMissing')}</p>
+              <p className="text-gray-500">{t('admin.storage.user.hintMissing')}</p>
             )}
             {storageStatus === 'exists' && (
-              <p className="text-gray-500">{t('admin_storage_user_hintExists')}</p>
+              <p className="text-gray-500">{t('admin.storage.user.hintExists')}</p>
             )}
           </div>
 
@@ -201,7 +201,7 @@ const UserStorageManagement: React.FC = () => {
               disabled={loading}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
             >
-              {loading ? t('admin_storage_user_processing') : t('admin_storage_user_initBtn')}
+              {loading ? t('admin.storage.user.processing') : t('admin.storage.user.initBtn')}
             </Button>
           )}
 
@@ -211,7 +211,7 @@ const UserStorageManagement: React.FC = () => {
               disabled={loading}
               className="w-full bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white transition-all"
             >
-              {loading ? t('admin_storage_user_processing') : t('admin_storage_user_deleteBtn')}
+              {loading ? t('admin.storage.user.processing') : t('admin.storage.user.deleteBtn')}
             </Button>
           )}
 
@@ -220,7 +220,7 @@ const UserStorageManagement: React.FC = () => {
               disabled
               className="w-full bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
             >
-              {t('admin_storage_user_checkStatusFirst')}
+              {t('admin.storage.user.checkStatusFirst')}
             </Button>
           )}
         </div>
@@ -234,19 +234,19 @@ const UserStorageManagement: React.FC = () => {
               <ArrowsPointingOutIcon className="w-6 h-6" />
             </div>
             <h4 className="font-semibold text-gray-900 dark:text-gray-100">
-              {t('admin_storage_user_expandTitle')}
+              {t('admin.storage.user.expandTitle')}
             </h4>
           </div>
 
           <div className="mb-4">
             <label className="text-xs text-gray-500 mb-1 block font-medium">
-              {t('admin_storage_user_newSize')}
+              {t('admin.storage.user.newSize')}
             </label>
             <input
               type="text"
               value={expandSize}
               onChange={(e) => setExpandSize(e.target.value)}
-              placeholder={t('admin_storage_user_newSizePlaceholder')}
+              placeholder={t('admin.storage.user.newSizePlaceholder')}
               className="block w-full rounded-md border-gray-300 dark:bg-gray-900 dark:border-gray-600 p-2 border"
             />
           </div>
@@ -256,7 +256,7 @@ const UserStorageManagement: React.FC = () => {
             disabled={storageStatus !== 'exists' || loading}
             className="w-full bg-orange-600 hover:bg-orange-700 text-white"
           >
-            {loading ? t('admin_storage_user_processing') : t('admin_storage_user_expandBtn')}
+            {loading ? t('admin.storage.user.processing') : t('admin.storage.user.expandBtn')}
           </Button>
         </div>
       </div>

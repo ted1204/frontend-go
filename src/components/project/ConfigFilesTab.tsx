@@ -50,7 +50,7 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
       setError(null);
     } catch (err) {
       console.error('Failed to load configs', err);
-      setError(t('projectDetail.fetchError') || 'Failed to load configurations');
+      setError(t('project.detail.fetchError') || 'Failed to load configurations');
     } finally {
       setLoading(false);
     }
@@ -70,7 +70,7 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
       setIsCreateModalOpen(false);
       await fetchConfigs(); // Refresh list
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('projectDetail.createConfigError'));
+      setError(err instanceof Error ? err.message : t('project.detail.createConfigError'));
     } finally {
       setActionLoading(false);
     }
@@ -87,7 +87,7 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
       setIsEditModalOpen(false);
       await fetchConfigs(); // Refresh list
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('projectDetail.updateConfigError'));
+      setError(err instanceof Error ? err.message : t('project.detail.updateConfigError'));
     } finally {
       setActionLoading(false);
     }
@@ -101,7 +101,7 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
       await deleteConfigFile(configId);
       await fetchConfigs(); // Refresh list
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('projectDetail.deleteConfigError'));
+      setError(err instanceof Error ? err.message : t('project.detail.deleteConfigError'));
     } finally {
       setActionLoading(false);
     }
@@ -111,23 +111,23 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
     setActionLoading(true);
     try {
       await createInstance(id);
-      alert(t('projectDetail.instanceCreateSent'));
+      alert(t('project.detail.instanceCreateSent'));
     } catch (err) {
-      alert(err instanceof Error ? err.message : t('projectDetail.createInstanceError'));
+      alert(err instanceof Error ? err.message : t('project.detail.createInstanceError'));
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleDeleteInstance = async (id: number) => {
-    if (!window.confirm(t('projectDetail.confirmDeleteInstance'))) return;
+    if (!window.confirm(t('project.detail.confirmDeleteInstance'))) return;
 
     setActionLoading(true);
     try {
       await deleteInstance(id);
-      alert(t('projectDetail.instanceDeleteSent'));
+      alert(t('project.detail.instanceDeleteSent'));
     } catch (err) {
-      alert(err instanceof Error ? err.message : t('projectDetail.deleteInstanceError'));
+      alert(err instanceof Error ? err.message : t('project.detail.deleteInstanceError'));
     } finally {
       setActionLoading(false);
     }
@@ -145,10 +145,10 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
         <div className="flex items-center justify-between border-b border-gray-200 p-4 sm:p-6 dark:border-gray-600">
           <div>
             <h3 className="text-lg font-bold leading-6 text-gray-900 dark:text-white">
-              {t('projectDetail.configTitle')}
+              {t('project.detail.configTitle')}
             </h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-              {t('projectDetail.configDesc')}
+              {t('project.detail.configDesc')}
             </p>
           </div>
           <Button
@@ -157,7 +157,7 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
             className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-800 shadow-sm transition-all duration-150 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
           >
             <PlusIcon className="h-5 w-5" />
-            {actionLoading ? t('common.loading') : t('projectDetail.addConfig')}
+            {actionLoading ? t('common.loading') : t('project.detail.addConfig')}
           </Button>
         </div>
 

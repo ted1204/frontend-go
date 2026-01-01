@@ -98,16 +98,16 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
         <thead className="text-xs text-gray-500 uppercase bg-gray-50 dark:bg-gray-700/50 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3 w-2/5">
-              {t('monitor_table_podName')}
+              {t('monitor.table.podName')}
             </th>
             <th scope="col" className="px-6 py-3 w-1/5">
-              {t('monitor_table_namespace')}
+              {t('monitor.table.namespace')}
             </th>
             <th scope="col" className="px-6 py-3 w-1/5">
-              {t('monitor_table_status')}
+              {t('monitor.table.status')}
             </th>
             <th scope="col" className="px-6 py-3 w-1/5 text-right">
-              {t('monitor_table_actions')}
+              {t('monitor.table.actions')}
             </th>
           </tr>
         </thead>
@@ -115,7 +115,7 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
           {paginatedPods.length === 0 ? (
             <tr>
               <td colSpan={4} className="text-center py-6 text-gray-400 dark:text-gray-500">
-                {t('monitor_empty_noPods')}
+                {t('monitor.empty.noPods')}
               </td>
             </tr>
           ) : (
@@ -147,7 +147,7 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
                       className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors duration-150"
                     >
                       <TerminalIcon className="w-4 h-4" />
-                      {t('monitor_button_connect')}
+                      {t('monitor.button.connect')}
                     </button>
                   </td>
                 </tr>
@@ -291,7 +291,7 @@ export default function PodTablesPage() {
             >
               <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/30">
                 <h2 className="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2">
-                  {t('monitor_table_namespace')}:
+                  {t('monitor.table.namespace')}:
                   <span className="font-mono bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-3 py-1 rounded-full text-sm">
                     {ns}
                   </span>
@@ -304,7 +304,7 @@ export default function PodTablesPage() {
         <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
           <p className="text-gray-500 dark:text-gray-400 font-medium">
-            {t('monitor_empty_waitingForData') || 'Waiting for cluster data stream...'}
+            {t('monitor.empty.waitingForData') || 'Waiting for cluster data stream...'}
           </p>
         </div>
       )}

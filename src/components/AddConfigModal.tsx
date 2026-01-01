@@ -89,13 +89,13 @@ export default function AddConfigModal({
 
   const handleSubmit = () => {
     if (!filename.trim()) {
-      return setError(t('config_error_filenameRequired') || '請輸入檔案名稱');
+      return setError(t('config.error.filenameRequired') || '請輸入檔案名稱');
     }
 
     const finalYaml = activeTab === 'wizard' ? generateMultiDocYAML(resources) : rawYaml;
 
     if (!finalYaml.trim()) {
-      return setError(t('config_error_yamlEmpty') || '內容不能為空');
+      return setError(t('config.error.yamlEmpty') || '內容不能為空');
     }
 
     const cb = onConfirm ?? onCreate;
@@ -106,15 +106,15 @@ export default function AddConfigModal({
     <BaseModal
       isOpen={isOpen}
       onClose={onClose}
-      title={t('config_createTitle') || '新增設定檔'}
-      subtitle={t('config_createSubtitle') || '使用精靈模式或直接編寫 YAML'}
+      title={t('config.createTitle') || '新增設定檔'}
+      subtitle={t('config.createSubtitle') || '使用精靈模式或直接編寫 YAML'}
       maxWidth="max-w-7xl"
     >
       <div className="flex flex-col h-[75vh]">
         {/* 檔名輸入區 (新增模式特有) */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            {t('config_filename_label') || '檔案名稱'} <span className="text-red-500">*</span>
+            {t('config.filename.label') || '檔案名稱'} <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -200,7 +200,7 @@ export default function AddConfigModal({
               className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 disabled:opacity-50 transition-colors shadow-sm"
             >
               {loading || actionLoading
-                ? t('config_creating') || '建立中...'
+                ? t('config.creating') || '建立中...'
                 : t('common.create') || '建立'}
             </button>
           </div>

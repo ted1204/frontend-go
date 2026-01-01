@@ -2,12 +2,11 @@
   "extends": "../../tsconfig.app.json",
   "compilerOptions": {
     "composite": true,
-    // "emitDeclarationOnly": true,
     "declaration": true,
     "declarationMap": true,
     "outDir": "../../build/ui",
-    "noEmit": true,
-    "tsBuildInfoFile": "../../build/ui/.tsbuildinfo"
+    "noEmit": false,
+    "tsBuildInfoFile": "../../.tsbuildinfo/ui.tsbuildinfo"
   },
   "references": [{ "path": "../utils" }],
   "include": ["src"]

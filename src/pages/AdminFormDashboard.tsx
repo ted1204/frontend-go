@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { getAllForms, updateFormStatus } from '../services/formService';
 import { Form, FormStatus } from '../interfaces/form';
 import { PageMeta } from '@nthucscc/ui';
-import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '@nthucscc/ui';
 import { useTranslation } from '@nthucscc/utils';
 
 export default function AdminFormDashboard() {
@@ -17,7 +17,7 @@ export default function AdminFormDashboard() {
       const data = await getAllForms();
       setTickets(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('error_initData'));
+      setError(err instanceof Error ? err.message : t('error.initData'));
     } finally {
       setLoading(false);
     }
@@ -79,7 +79,7 @@ export default function AdminFormDashboard() {
         title={t('page.adminForm.title') || 'Forms Dashboard'}
         description={t('page.adminForm.description') || ''}
       />
-      <PageBreadcrumb pageTitle={t('admin.forms') || 'Forms'} />
+      <PageBreadcrumb pageTitle={t('page.admin.forms') || 'Forms'} />
 
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <div className="overflow-x-auto">

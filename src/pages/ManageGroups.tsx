@@ -1,7 +1,7 @@
 // ManageGroups.tsx (Final Component Implementation)
 
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '@nthucscc/ui';
 import { PageMeta } from '@nthucscc/ui';
 import { getGroups, createGroup, CreateGroupInput, deleteGroup } from '../services/groupService';
 import { Group } from '../interfaces/group';

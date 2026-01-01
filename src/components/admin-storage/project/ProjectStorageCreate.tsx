@@ -56,7 +56,7 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedProjectId) {
-      toast.error(t('admin_storage_project_error_selectProject'));
+      toast.error(t('admin.storage.project.errorSelectProject'));
       return;
     }
 
@@ -68,7 +68,7 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
         capacity: capacity,
       });
 
-      toast.success(t('admin_storage_project_create_success'));
+      toast.success(t('admin.storage.project.createSuccess'));
       onSuccess(); // 通知父層刷新並切換 Tab
     } catch (err: unknown) {
       const e = err as { message?: string };
@@ -84,10 +84,10 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
         <ServerIcon className="w-6 h-6 text-blue-600 dark:text-blue-400 mt-0.5" />
         <div>
           <h4 className="font-medium text-blue-900 dark:text-blue-300">
-            {t('admin_storage_project_create_guideTitle')}
+            {t('admin.storage.project.createGuideTitle')}
           </h4>
           <p className="text-sm text-blue-700 dark:text-blue-400 mt-1">
-            {t('admin_storage_project_create_guideDesc')}
+            {t('admin.storage.project.createGuideDesc')}
           </p>
         </div>
       </div>
@@ -96,7 +96,7 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
         {/* Project Selection */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            {t('admin_storage_project_form_project')}
+            {t('admin.storage.project.form.project')}
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -111,7 +111,7 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
               <option value="">
                 {fetchingProjects
                   ? 'Loading projects...'
-                  : t('admin_storage_project_form_projectPlaceholder')}
+                  : t('admin.storage.project.form.projectPlaceholder')}
               </option>
               {projects.map((p) => (
                 <option key={p.PID} value={p.PID}>
@@ -125,7 +125,7 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
         {/* Capacity Input */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            {t('admin_storage_project_form_capacity')}
+            {t('admin.storage.project.form.capacity')}
           </label>
           <input
             type="number"
@@ -135,7 +135,7 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
             className="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           />
           <p className="mt-1 text-xs text-gray-500">
-            {t('admin_storage_project_form_capacityHint')}
+            {t('admin.storage.project.form.capacityHint')}
           </p>
         </div>
 
@@ -158,7 +158,7 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
             ) : (
               <PlusCircleIcon className="w-5 h-5" />
             )}
-            {t('admin_storage_project_create_submit')}
+            {t('admin.storage.project.createSubmit')}
           </button>
         </div>
       </form>

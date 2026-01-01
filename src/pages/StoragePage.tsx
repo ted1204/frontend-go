@@ -23,7 +23,7 @@ const StoragePage: React.FC = () => {
         </div>
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-            {t('admin_storage_title') || 'Storage Administration'}
+            {t('admin.storage.title') || 'Storage Administration'}
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Centralized management for User Hubs and Project PVCs.
@@ -46,7 +46,7 @@ const StoragePage: React.FC = () => {
             `}
           >
             <UserCircleIcon className="w-5 h-5" />
-            {t('admin_storage_tab_user') || 'User Storage (Hub)'}
+            {t('admin.storage.tab.user') || 'User Hubs'}
           </button>
 
           <button
@@ -61,7 +61,7 @@ const StoragePage: React.FC = () => {
             `}
           >
             <CubeIcon className="w-5 h-5" />
-            {t('admin_storage_tab_project') || 'Project Storage (PVC)'}
+            {t('admin.storage.tab.project') || 'Project PVCs'}
           </button>
         </div>
       </div>

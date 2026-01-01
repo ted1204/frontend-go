@@ -11,7 +11,7 @@ import { useGlobalWebSocket } from '../context/useGlobalWebSocket';
 import { Project } from '../interfaces/project';
 
 // Components
-import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '@nthucscc/ui';
 import MonitoringPanel from '../components/MonitoringPanel';
 import ConfigFilesTab from '../components/project/ConfigFilesTab';
 import { ProjectStorageManager } from '../components/storage/ProjectStorageManager';
@@ -67,13 +67,13 @@ export default function ProjectDetail() {
       <div className="mb-6 mt-4 border-b border-gray-200 dark:border-gray-700">
         <nav className="-mb-px flex space-x-8 overflow-x-auto">
           {[
-            { id: 'overview', label: t('projectDetail.tab.overview'), icon: ChartBarIcon },
+            { id: 'overview', label: t('project.detail.tab.overview'), icon: ChartBarIcon },
             {
               id: 'configurations',
-              label: t('projectDetail.tab.configurations'),
+              label: t('project.detail.tab.configurations'),
               icon: Cog6ToothIcon,
             },
-            { id: 'storage', label: t('projectDetail.tab.storage'), icon: CubeIcon },
+            { id: 'storage', label: t('project.detail.tab.storage'), icon: CubeIcon },
             // Removed Members Tab
           ].map((tab) => (
             <button

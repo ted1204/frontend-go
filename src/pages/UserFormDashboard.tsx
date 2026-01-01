@@ -4,7 +4,7 @@ import UserFormApply from '../components/form/UserFormApply';
 import UserFormHistory from '../components/form/UserFormHistory';
 import TabSwitcher from '../components/form/TabSwitcher';
 import { PageMeta } from '@nthucscc/ui';
-import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '@nthucscc/ui';
 import { useTranslation } from '@nthucscc/utils';
 import { getProjects } from '../services/projectService';
 import { createForm, getMyForms } from '../services/formService';
@@ -76,7 +76,7 @@ export default function UserFormDashboard() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      setError(t('form_error_titleRequired'));
+      setError(t('form.error.titleRequired'));
       return;
     }
     setLoading(true);
@@ -87,12 +87,12 @@ export default function UserFormDashboard() {
         title: title.trim(),
         description,
       });
-      setSuccess(t('form_success_submitted'));
+      setSuccess(t('form.success.submitted'));
       setTitle('');
       setDescription('');
       setSelectedProject(undefined);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('form_error_submitFailed'));
+      setError(err instanceof Error ? err.message : t('form.error.submitFailed'));
     } finally {
       setLoading(false);
     }
@@ -106,12 +106,12 @@ export default function UserFormDashboard() {
         tab={tab}
         setTab={setTab as any}
         tabs={[
-          { key: 'history', label: t('form_history_title') },
-          { key: 'apply', label: t('form_apply_title') },
+          { key: 'history', label: t('form.history.title') },
+          { key: 'apply', label: t('form.apply.title') },
         ]}
       />
-      <PageMeta title={t('form_page_title')} description={t('form_page_description')} />
-      <PageBreadcrumb pageTitle={t('form_page_title')} />
+      <PageMeta title={t('form.page.title')} description={t('form.page.description')} />
+      <PageBreadcrumb pageTitle={t('form.page.title')} />
 
       {tab === 'history' && (
         <UserFormHistory

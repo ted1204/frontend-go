@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { PageMeta } from '@nthucscc/ui';
-import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '@nthucscc/ui';
 import { useTranslation } from '@nthucscc/utils';
 import { GroupIcon, TaskIcon } from '../icons';
 
@@ -9,8 +9,8 @@ export default function AdminDashboard() {
   return (
     <div>
       <PageMeta
-        title={t('page_admin_title') || 'Admin'}
-        description={t('page_admin_description') || ''}
+        title={t('page.admin.title') || 'Admin'}
+        description={t('page.admin.description') || ''}
       />
       <PageBreadcrumb pageTitle={t('admin.dashboard') || 'Admin Dashboard'} />
 
@@ -26,10 +26,10 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                {t('admin_manageProjects')}
+                {t('page.admin.manageProjects')}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                {t('page_admin_description')}
+                {t('page.admin.description')}
               </p>
             </div>
           </div>
@@ -46,9 +46,11 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
-                {t('admin_manageGroups')}
+                {t('page.admin.manageGroups')}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin_manageGroups')}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {t('page.admin.manageGroups')}
+              </p>
             </div>
           </div>
         </Link>
@@ -77,9 +79,9 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400">
-                {t('admin_forms')}
+                {t('page.admin.forms')}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin_forms')}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('page.admin.forms')}</p>
             </div>
           </div>
         </Link>

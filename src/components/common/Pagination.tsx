@@ -19,17 +19,17 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           disabled={currentPage === 1}
           className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50 dark:border-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
-          {t('pagination_prev')}
+          {t('pagination.prev')}
         </button>
         <span className="text-sm text-gray-600 dark:text-gray-400">
-          {t('pagination_pageOf', { current: currentPage, total: totalPages })}
+          {t('pagination.pageOf', { current: currentPage, total: totalPages })}
         </span>
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50 dark:border-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
-          {t('pagination_next')}
+          {t('pagination.next')}
         </button>
       </nav>
     </div>

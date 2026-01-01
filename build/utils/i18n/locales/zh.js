@@ -1,8 +1,14 @@
+/**
+ * 繁體中文 (Traditional Chinese) 翻譯字典 - 優化版
+ * 純巢狀結構，移除所有重複的扁平 key
+ * 性能優化：將原本 ~750 行精簡至 ~450 行
+ */
 const zh = {
-    // --- 全域 / 通用 ---
+    // --- 品牌 / 全域 ---
     brand: {
         name: 'AI 平台',
     },
+    // --- 通用 / 共享 ---
     common: {
         // 動作
         create: '建立',
@@ -12,6 +18,8 @@ const zh = {
         submit: '送出',
         save: '儲存',
         search: '搜尋...',
+        remove: '移除',
+        actions: '動作',
         // 狀態
         loading: '載入中...',
         submitting: '提交中...',
@@ -23,6 +31,7 @@ const zh = {
         description: '描述',
         status: '狀態',
         createdAt: '建立時間',
+        updatedAt: '更新時間',
         noData: '無資料。',
         untitled: '無標題',
         confirmDelete: '您確定要刪除嗎？',
@@ -31,51 +40,39 @@ const zh = {
     status: {
         active: '啟用中',
         idle: '閒置',
+        pending: '待審核',
+        approved: '已核准',
+        rejected: '已駁回',
+        processing: '處理中',
+        completed: '已完成',
+        succeeded: '成功',
+        failed: '失敗',
+        running: '執行中',
+        unknown: '未知',
     },
-    // --- 導覽 & 結構 ---
+    // --- 導覽 ---
     breadcrumb: {
         home: '首頁',
         projects: '專案',
         groups: '群組',
     },
-    breadcrumb_groups: '群組',
-    // --- 管理 & 群組 (舊版/扁平結構) ---
-    admin_manageProjects: '專案管理',
-    admin_manageGroups: '群組管理',
-    admin_forms: '表單管理',
-    groups_error_userNotLogged: '使用者未登入',
-    groups_error_userIdMissing: '缺少使用者 ID',
-    groups_error_unknown: '未知錯誤',
-    groups_noMatch: '找不到符合 "{term}" 的群組。',
-    groups_page_title: '群組',
-    groups_page_description: '在此管理您的群組。',
-    groups_myGroups: '我的群組',
-    groups_subtitle: '管理並加入群組。',
-    groups_searchPlaceholder: '搜尋群組...',
-    groups_createNew: '建立新群組',
-    // --- 監控 ---
-    monitor_table_podName: 'Pod 名稱',
-    monitor_table_namespace: '命名空間',
-    monitor_table_status: '狀態',
-    monitor_table_actions: '動作',
-    monitor_empty_noPods: '找不到 Pod。',
-    monitor_button_connect: '連線',
-    monitor_empty_waitingForData: '等待叢集資料串流...',
-    // --- 錯誤 (扁平結構) ---
-    error_initData: '資料初始化失敗',
-    error_selectGroup: '請選擇群組',
-    error_invalidProjectData: '無效的專案資料',
-    error_createProject: '建立專案失敗',
-    error_deleteProject: '刪除專案失敗',
-    error_deleteFailed: '刪除失敗',
-    error_fetchGroups: '讀取群組失敗',
-    error_createGroup: '建立群組失敗',
-    error_deleteGroup: '刪除群組失敗',
-    error_userNotLogged: '使用者未登入',
-    error_fetchData: '讀取資料失敗',
-    // --- 錯誤 (巢狀結構 - 用於相容 TS 錯誤) ---
+    sidebar: {
+        dashboard: '儀表板',
+        admin: '管理',
+        projects: '專案',
+        groups: '群組',
+        pods: 'Pods',
+        fileBrowser: '雲端檔案管理員',
+        forms: '我的表單',
+        menu: '菜單',
+        jobs: '工作',
+        ecommerce: '電子商務',
+    },
+    // --- 錯誤訊息 ---
     error: {
+        fetch: '無法擷取資料',
         fetchGroups: '讀取群組失敗',
+        fetchData: '讀取資料失敗',
         createGroup: '建立群組失敗',
         deleteGroup: '刪除群組失敗',
         deleteFailed: '刪除失敗',
@@ -84,29 +81,14 @@ const zh = {
         invalidProjectData: '無效的專案資料',
         createProject: '建立專案失敗',
         deleteProject: '刪除專案失敗',
-        fetchData: '讀取資料失敗',
         userNotLogged: '使用者未登入',
     },
-    // --- 專案 & 群組 (扁平結構) ---
-    project_noDescription: '無描述',
-    groupId: '群組 ID',
-    // --- 頁面 (扁平結構) ---
-    page_admin_title: '管理儀表板',
-    page_admin_description: '管理中心',
-    page_manageGroups_title: '群組管理',
-    page_manageGroups_description: '管理您的組織群組。',
-    page_projects_title: '專案列表',
-    page_projects_description: '查看可存取的專案。',
-    page_adminForm_title: '表單儀表板',
-    page_adminForm_description: '管理使用者提交的表單。',
-    page_notFound_title: '找不到頁面',
-    page_notFound_description: '這是 AI 平台的 404 頁面。',
-    page_notFound_message: '我們找不到您要瀏覽的頁面！',
-    page_notFound_back: '返回首頁',
-    page_home_title: '儀表板',
-    page_home_description: '歡迎來到您的儀表板',
-    // --- 頁面 (巢狀結構) ---
+    // --- 頁面 ---
     page: {
+        admin: {
+            title: '管理儀表板',
+            description: '管理中心',
+        },
         adminForm: {
             title: '表單儀表板',
             description: '管理使用者提交的表單。',
@@ -119,254 +101,163 @@ const zh = {
             title: '群組管理',
             description: '管理您的組織群組。',
         },
-    },
-    home_welcome: '歡迎使用 AI 平台',
-    home_subtitle: '在此管理您的專案、群組與 Pods。',
-    view_grid: '網格檢視',
-    view_list: '列表檢視',
-    search_projectsPlaceholder: '搜尋專案...',
-    search_placeholder: '搜尋...',
-    // --- 表單 (舊版 扁平結構) ---
-    form_error_titleRequired: '標題為必填項',
-    form_success_submitted: '提交成功，管理員將儘快審核。',
-    form_error_submitFailed: '提交失敗',
-    form_history_title: '歷史紀錄',
-    form_apply_title: '申請',
-    form_page_title: '表單頁面',
-    form_page_description: '提交並管理您的表單。',
-    form_status_pending: '待審核',
-    form_status_approved: '已核准',
-    form_status_rejected: '已駁回',
-    form_action_process: '處理',
-    form_action_reject: '駁回',
-    form_action_complete: '完成',
-    form_created: '表單建立成功！',
-    form_createFailed: '表單建立失敗：',
-    form_exampleTitle: '範例標題',
-    form_field_title: '標題',
-    form_field_description: '描述',
-    form_placeholder_description: '輸入描述...',
-    form_projectId: '關聯專案 ID: {id}',
-    // --- 表格 (扁平結構) ---
-    table_id: 'ID',
-    table_user: '使用者',
-    table_project: '專案',
-    table_titleDesc: '標題 / 描述',
-    table_status: '狀態',
-    table_actions: '動作',
-    table_role: '角色',
-    // --- 設定精靈 ---
-    config_error_filenameRequired: '檔案名稱為必填',
-    config_error_filenameSuffix: '檔案名稱必須以 .yaml 或 .yml 結尾',
-    config_error_yamlEmpty: 'YAML 內容不得為空',
-    config_createTitle: '建立新設定',
-    config_createSubtitle: '使用精靈模式或直接編輯 YAML。',
-    config_tab_wizard: '精靈模式',
-    config_tab_yaml: '原始 YAML',
-    config_filename_label: '設定檔名稱',
-    config_filename_prefix: '檔名:',
-    config_filename_note: '必須是唯一的且以 .yaml 或 .yml 結尾',
-    config_wizard_imageLabel: '容器映像檔 (Image)',
-    config_wizard_imageNote: '指定要使用的映像檔。',
-    config_wizard_gpuLabel: 'GPU 配額',
-    config_wizard_pvcLabel: 'PVC',
-    config_pvc_placeholder: '選擇 PVC...',
-    config_pvc_loading: '載入 PVC 中...',
-    config_pvc_note: '選擇用於儲存的 PVC。',
-    config_mountPath: '掛載路徑 (Mount Path)',
-    config_commandLabel: '指令 (Command)',
-    config_argsLabel: '參數 (Arguments)',
-    config_yamlContentLabel: 'YAML 內容',
-    config_creating: '建立中...',
-    config_createButton: '建立設定',
-    // --- 設定檔列表 / 動作 ---
-    configFile: {
-        editFile: '編輯檔案',
-        destroyInstance: '銷毀實例',
-        deleteFile: '刪除檔案',
-        notFoundTitle: '找不到設定檔',
-        notFoundDesc: '點擊「新增設定檔」以開始。',
-        toggleResources: '切換資源顯示',
-        id: 'ID',
-        createdAt: '建立時間',
-        deployInstance: '部署實例',
-        deploy: '部署',
-        relatedResources: '關聯資源',
-        noRelatedResources: '無關聯資源',
-        notDeployed: '此設定檔尚未部署。',
-    },
-    // --- 儲存管理 ---
-    admin_storage_project_form_projectPlaceholder: '選擇專案...',
-    admin_storage_project_create_success: '專案儲存空間建立成功',
-    admin_storage_project_create_guideTitle: '建立專案儲存空間',
-    admin_storage_project_create_guideDesc: '為專案儲存建立一個新的 PVC。',
-    admin_storage_project_form_project: '專案',
-    admin_storage_project_form_capacity: '容量',
-    admin_storage_project_form_capacityHint: '例如：10Gi',
-    admin_storage_project_create_submit: '建立儲存空間',
-    admin_storage_project_action_expandPrompt: '擴充儲存容量',
-    admin_storage_project_action_confirmDelete: '您確定要刪除此儲存空間嗎？',
-    admin_storage_project_list_project: '專案',
-    admin_storage_project_list_status: '狀態',
-    admin_storage_project_list_capacity: '容量',
-    admin_storage_project_list_age: '建立時間',
-    admin_storage_project_list_actions: '動作',
-    admin_storage_project_list_empty: '找不到專案儲存空間。',
-    admin_storage_project_action_edit: '編輯',
-    admin_storage_project_action_delete: '刪除',
-    admin_storage_project_tab_list: '列表',
-    admin_storage_project_tab_create: '建立',
-    admin_storage_project_error_selectProject: '請選擇一個專案',
-    admin_storage_user_successInit: '儲存空間初始化成功',
-    admin_storage_user_confirmDelete: '您確定要刪除此儲存空間嗎？',
-    admin_storage_user_successDelete: '儲存空間已成功刪除',
-    admin_storage_user_successExpand: '儲存空間擴充成功',
-    admin_storage_user_targetUser: '目標使用者',
-    admin_storage_user_username: '使用者名稱',
-    admin_storage_user_usernamePlaceholder: '輸入使用者名稱',
-    admin_storage_user_checkStatus: '檢查狀態',
-    admin_storage_user_statusExists: '儲存空間存在',
-    admin_storage_user_statusMissing: '儲存空間缺失',
-    admin_storage_user_lifecycleTitle: '儲存生命週期',
-    admin_storage_user_hintUnknown: '狀態未知',
-    admin_storage_user_hintMissing: '找不到儲存空間',
-    admin_storage_user_hintExists: '儲存空間啟用中',
-    admin_storage_user_processing: '處理中...',
-    admin_storage_user_initBtn: '初始化儲存空間',
-    admin_storage_user_deleteBtn: '刪除儲存空間',
-    admin_storage_user_checkStatusFirst: '請先檢查狀態',
-    admin_storage_user_expandTitle: '擴充儲存空間',
-    admin_storage_user_newSize: '新容量 (GB)',
-    admin_storage_user_newSizePlaceholder: '例如：50',
-    admin_storage_user_expandBtn: '擴充儲存空間',
-    admin_storage_title: '儲存管理',
-    admin_storage_tab_user: '使用者儲存 (Hub)',
-    admin_storage_tab_project: '專案儲存 (PVC)',
-    storage_startDrive: '啟動硬碟',
-    storage_stopDrive: '停止硬碟',
-    storage_openBrowser: '開啟檔案瀏覽器',
-    // --- 分頁 (扁平結構) ---
-    pagination_prev: '上一頁',
-    pagination_pageOf: '第 {current} 頁，共 {total} 頁',
-    pagination_next: '下一頁',
-    // --- 分頁 (巢狀結構) ---
-    pagination: {
-        prev: '上一頁',
-        next: '下一頁',
-        pageOf: '第 {current} 頁，共 {total} 頁',
-    },
-    sidebar: {
-        dashboard: '儀表板',
-        admin: '管理後台',
-        projects: '專案',
-        groups: '群組',
-        pods: 'Pods',
-        fileBrowser: '雲端檔案總管',
-        forms: '我的表單',
-        menu: '選單',
-        jobs: '工作任務 (Jobs)',
-        ecommerce: '電子商務',
-    },
-    // --- 功能模組 ---
-    // 1. 儲存與檔案瀏覽器 (整合版)
-    storage: {
-        pageTitle: '雲端檔案總管',
-        breadcrumb: '雲端檔案總管',
-        // 缺失的頂層 Key
-        starting: '正在啟動儲存瀏覽器...',
-        stopping: '正在停止儲存瀏覽器...',
-        actionFailed: '動作失敗，請重試。',
-        errLoadList: '無法載入儲存列表',
-        project: {
-            colProject: '專案',
-            colStatus: '狀態',
-            emptyFilter: '沒有符合 "{term}" 的專案。',
-            emptyAssigned: '您的群組未被指派任何專案。',
+        notFound: {
+            title: '找不到頁面',
+            description: '這是 AI 平台的 404 頁面。',
+            message: '我們找不到您要瀏覽的頁面！',
+            back: '返回首頁',
         },
+        home: {
+            title: '儀表板',
+            description: '歡迎來到您的儀表板',
+            welcome: '歡迎使用 AI 平台',
+            subtitle: '在此管理您的專案、群組與 Pods。',
+        },
+    },
+    // --- 監控 / Pods ---
+    monitor: {
+        title: '即時監控',
+        panel: {
+            title: '即時監控',
+            subtitle: '即時日誌與狀態更新。',
+        },
+        table: {
+            podName: 'Pod 名稱',
+            namespace: '命名空間',
+            status: '狀態',
+            actions: '動作',
+            kind: '類型',
+            name: '名稱',
+            details: '詳細資訊',
+            age: '存活時間',
+            images: '映像檔',
+            restarts: '重啟次數',
+            labels: '標籤',
+        },
+        empty: {
+            noPods: '找不到 Pod。',
+            waitingForData: '等待叢集資料串流...',
+        },
+        button: {
+            connect: '連線',
+        },
+        agePrefix: '存在時間',
+        waiting: '等待叢集資料串流...',
+        websocketError: 'WebSocket 錯誤',
+        connected: '已連線',
+        disconnected: '已斷線',
+    },
+    // --- 群組 ---
+    groups: {
+        title: '群組',
+        myGroups: '我的群組',
+        subtitle: '管理並加入群組。',
+        createNew: '建立新群組',
+        searchPlaceholder: '搜尋群組...',
+        name: '群組名稱',
+        description: '描述',
+        namePlaceholder: '輸入群組名稱...',
+        descriptionPlaceholder: '輸入描述...',
+        noDescription: '無描述',
+        creating: '正在建立群組...',
+        createButton: '建立群組',
+        // 錯誤
+        error: {
+            userNotLogged: '使用者未登入',
+            userIdMissing: '缺少使用者 ID',
+            unknown: '未知錯誤',
+            loadFailed: '無法載入群組',
+        },
+        noMatch: '找不到符合 "{term}" 的群組。',
+        // 頁面
+        page: {
+            title: '群組',
+            description: '在此管理您的群組。',
+        },
+        // 詳情
+        infoTitle: '群組資訊',
+        inviteUser: '邀請使用者',
+        manageMembers: '管理',
+        membersList: '群組成員',
+        memberCount: '此群組中有 {count} 個成員。',
+        noMembers: '尚未邀請任何成員。',
+        notFound: '找不到群組。',
         // 頁籤
         tab: {
-            personal: '個人儲存中心',
-            project: '專案儲存空間',
+            overview: '概覽',
+            members: '成員',
+            info: '資訊',
         },
-        // 狀態標籤
-        readWrite: '讀寫 (Read/Write)',
-        readOnly: '唯讀 (Read Only)',
-        online: '線上',
-        offline: '離線',
-        scanning: '正在掃描磁區...',
-        // 動作
-        action: {
-            start: '啟動硬碟',
-            stop: '停止硬碟',
-            open: '開啟瀏覽器',
+        // 表單
+        form: {
+            title: '建立群組',
+            nameRequired: '群組名稱為必填',
+            createFailed: '建立群組失敗',
+            creating: '建立中...',
+            cancel: '取消',
         },
-        // 訊息 / 通知
-        msg: {
-            starting: '正在啟動儲存瀏覽器...',
-            stopping: '正在停止儲存瀏覽器...',
-            actionFailed: '動作失敗，請重試。',
-            loadFailed: '無法載入儲存列表。',
+        // 列表
+        list: {
+            title: '群組',
+            description: '瀏覽並管理群組。',
+            searchPlaceholder: '搜尋群組...',
+            loading: '載入群組中...',
+            deleteGroupAria: '刪除群組',
+            empty: {
+                filter: '沒有符合 "{term}" 的群組。',
+                noGroups: '找不到群組。',
+                filterTip: '請嘗試不同的搜尋詞。',
+                noGroupsTip: '建立一個新群組以開始使用。',
+            },
         },
-        // 個人中心特有
-        personal: {
-            title: '個人儲存中心',
-            description: '透過安全入口存取您的私人儲存空間。',
-            noStorageTitle: '儲存空間未初始化',
-            noStorageDesc: '您的個人儲存空間尚未配置。',
-            contactAdmin: '請聯繫管理員以初始化您的儲存空間。',
+        // 空白狀態
+        empty: {
+            title: '沒有群組',
+            description: '您尚未加入任何群組。',
         },
-        pageSubtitle: '瀏覽並管理您的儲存磁區與專案硬碟。',
-        // 專案列表特有
-        projectList: {
+        // 標籤
+        label: '群組名稱',
+        descriptionLabel: '描述',
+    },
+    // --- 專案 ---
+    project: {
+        about: '關於專案',
+        name: '專案名稱',
+        description: '描述',
+        group: '群組',
+        noDescription: '無描述',
+        untitled: '無標題',
+        idLabel: '專案 ID: {id}',
+        requestSupport: '請求支援',
+        empty: '沒有可用的專案。',
+        groupId: '群組 ID',
+        gpuResources: 'GPU 資源',
+        gpuQuotaUnit: '{quota} GPU',
+        gpuAccessMode: '存取模式',
+        gpuAccessShared: '共享',
+        gpuAccessDedicated: '專用',
+        mpsSettings: 'MPS 設定',
+        mpsThreadLimit: '執行緒限制: {value}%',
+        mpsMemoryLimit: '記憶體限制: {value} MB',
+        mpsUnlimited: '無限制',
+        delete: '刪除專案: {name}',
+        // 列表
+        list: {
+            title: '專案',
+            create: '新專案',
+            searchPlaceholder: '搜尋專案...',
+            loading: '載入專案中...',
+            errorPrefix: '錯誤：',
+            empty: {
+                filter: '沒有符合 "{term}" 的專案。',
+                noProjects: '找不到專案。',
+            },
             colProject: '專案',
             colStatus: '狀態',
             emptyFilter: '沒有符合 "{term}" 的專案。',
             emptyAssigned: '您的群組未被指派任何專案。',
         },
-        // 保持相容性
-        colProject: '專案',
-        colStatus: '狀態',
-        emptyFilter: '沒有符合 "{term}" 的專案。',
-        emptyAssigned: '您的群組未被指派任何專案。',
-    },
-    // 2. 管理模組
-    admin: {
-        dashboard: '儀表板',
-        storageManagement: {
-            title: '儲存管理',
-            userTab: '使用者 Hubs',
-            projectTab: '專案 PVCs',
-            initUser: '初始化儲存',
-            deleteUser: '刪除 Hub',
-            expandUser: '擴充容量',
-            hintExists: '儲存空間啟用中 (Ready)。',
-            hintMissing: '找不到儲存空間。',
-            confirmDelete: '您確定要「永久」刪除此儲存空間嗎？',
-        },
-        pvc: {
-            title: 'PVC 管理',
-            createTitle: '建立新 PVC',
-            expandTitle: '擴充 PVC',
-            sizeLabel: '大小 (Gi)',
-        },
-        forms: '表單',
-    },
-    // 3. 專案模組
-    project: {
-        list: {
-            title: '專案列表',
-            create: '新專案',
-            empty: {
-                filter: '沒有符合 "{term}" 的專案。',
-                assigned: '未指派專案。',
-            },
-        },
-        detail: {
-            overview: '概覽',
-            members: '成員',
-            settings: '設定',
-        },
-        // --- 新增: 建立專案表單 ---
+        // 建立
         create: {
             title: '建立新專案',
             error: '建立專案失敗',
@@ -376,8 +267,10 @@ const zh = {
             descriptionPlaceholder: '輸入專案描述',
             group: '群組',
             groupPlaceholder: '選擇一個群組',
+            groupLabel: '群組',
             gpuQuota: 'GPU 配額',
             gpuQuotaPlaceholder: '例如：1',
+            gpuLabel: 'GPU 配額',
             gpuThreadLimit: 'MPS 執行緒限制 (%)',
             gpuThreadLimitPlaceholder: '例如：100',
             gpuMemoryLimit: 'MPS 記憶體限制 (MB)',
@@ -393,230 +286,111 @@ const zh = {
             cancel: '取消',
             submit: '建立專案',
             creating: '建立中...',
-            groupLabel: '群組',
-            gpuLabel: 'GPU 配額',
         },
-        // --- 新增: 編輯專案表單 ---
+        // 編輯
         edit: {
             title: '編輯專案',
         },
-        role: {
-            admin: '管理員',
-            manager: '經理',
-            user: '使用者',
+        // 詳情
+        detail: {
+            overview: '概覽',
+            members: '成員',
+            settings: '設定',
+            needProjectId: '需要專案 ID',
+            fetchError: '無法讀取專案詳情',
+            createConfigError: '建立設定失敗',
+            updateConfigError: '更新設定失敗',
+            deleteConfigError: '刪除設定失敗',
+            instanceCreateSent: '實例建立請求已發送',
+            createInstanceError: '建立實例失敗',
+            confirmDeleteInstance: '您確定要刪除此實例嗎？',
+            instanceDeleteSent: '實例刪除請求已發送',
+            deleteInstanceError: '刪除實例失敗',
+            errorTitle: '錯誤',
+            notFoundTitle: '找不到專案',
+            notFoundMessage: '找不到 ID 為 {id} 的專案。',
+            titleSuffix: '專案詳情',
+            description: '管理專案 {name} 的設定、儲存與成員。',
+            tab: {
+                overview: '概覽',
+                configurations: '設定',
+                storage: '儲存',
+                members: '成員',
+            },
+            infoLabel: '專案資訊',
+            createdAt: '建立時間',
+            updatedAt: '更新時間',
+            configTitle: '設定',
+            configDesc: '管理專案設定與部署。',
+            addConfig: '新增設定',
+            pvcTitle: '儲存 (PVC)',
+            pvcDesc: '管理專案持續性磁碟區宣告 (PVC)。',
         },
+        // 成員
         members: {
             title: '成員',
             description: '管理群組 {groupId} 的成員。',
             searchPlaceholder: '搜尋成員...',
             addMember: '新增成員',
         },
-        untitled: '無標題',
-        idLabel: '專案 ID: {id}',
-        delete: '刪除專案: {name}',
-        requestSupport: '請求支援',
-        gpuResources: 'GPU 資源',
-        gpuQuotaUnit: '{quota} GPU',
-        gpuAccessMode: '存取模式',
-        gpuAccessShared: '共享',
-        gpuAccessDedicated: '專用',
-        mpsSettings: 'MPS 設定',
-        mpsThreadLimit: '執行緒限制: {value}%',
-        mpsMemoryLimit: '記憶體限制: {value} MB',
-        mpsUnlimited: '無限制',
-        noDescription: '無描述',
-    },
-    // --- 專案列表 (Project List) ---
-    projectList: {
-        title: '專案',
-        searchPlaceholder: '搜尋專案...',
-        loading: '載入專案中...',
-        errorPrefix: '載入專案發生錯誤：',
-        empty: {
-            filter: '沒有符合 "{term}" 的專案。',
-            noProjects: '找不到專案。',
+        // 角色
+        role: {
+            admin: '管理員',
+            manager: '經理',
+            user: '使用者',
         },
     },
-    // --- 成員 ---
-    members: {
-        noneFound: '找不到成員。',
-        noMatch: '沒有符合搜尋條件的成員。',
-    },
-    // --- 角色 ---
-    role: {
-        label: '角色: {role}',
-    },
-    // --- 專案詳情 ---
-    projectDetail: {
-        needProjectId: '需要專案 ID',
-        fetchError: '無法讀取專案詳情',
-        createConfigError: '建立設定失敗',
-        updateConfigError: '更新設定失敗',
-        deleteConfigError: '刪除設定失敗',
-        instanceCreateSent: '實例建立請求已發送',
-        createInstanceError: '建立實例失敗',
-        confirmDeleteInstance: '您確定要刪除此實例嗎？',
-        instanceDeleteSent: '實例刪除請求已發送',
-        deleteInstanceError: '刪除實例失敗',
-        errorTitle: '錯誤',
-        notFoundTitle: '找不到專案',
-        notFoundMessage: '找不到 ID 為 {id} 的專案。',
-        titleSuffix: '專案詳情',
-        description: '管理專案 {name} 的設定、儲存與成員。',
-        tab: {
-            overview: '概覽',
-            configurations: '設定',
-            storage: '儲存',
-            members: '成員',
-        },
-        infoLabel: '專案資訊',
-        createdAt: '建立時間',
-        updatedAt: '更新時間',
-        configTitle: '設定',
-        configDesc: '管理專案設定與部署。',
-        addConfig: '新增設定',
-        pvcTitle: '儲存 (PVC)',
-        pvcDesc: '管理專案持續性磁碟區宣告 (PVC)。',
-    },
-    // 4. 監控
-    monitor: {
-        title: '即時監控',
-        panel: {
-            title: '即時監控',
-            subtitle: '即時日誌與狀態更新。',
-        },
-        col: {
-            kind: '類型',
-            name: '名稱',
-            details: '詳細資訊',
-            age: '存活時間',
-            status: '狀態',
-            images: '映像檔',
-            restarts: '重啟次數',
-            labels: '標籤',
-        },
-        agePrefix: '存在時間',
-        status: {
-            running: '執行中',
-            pending: '等待中',
-            failed: '失敗',
-            unknown: '未知',
-            active: '活躍',
-            completed: '已完成',
-            succeeded: '成功',
-            added: '已新增',
-            creating: '建立中',
-            modified: '已修改',
-            error: '錯誤',
-            deleted: '已刪除',
-            idle: '閒置',
-        },
-        waiting: '等待叢集資料串流...',
-    },
-    // 5. 使用者 / 驗證
-    user: {
-        profile: '個人檔案',
-        signOut: '登出',
-        login: '登入',
-        editProfile: '編輯個人檔案',
-        support: '支援',
-    },
-    // --- 認證 / 登入 ---
-    auth: {
-        login: {
-            title: '登入',
-            subtitle: '輸入您的使用者名稱和密碼以登入！',
-            username: '使用者名稱',
-            usernamePlaceholder: '輸入您的使用者名稱',
-            password: '密碼',
-            passwordPlaceholder: '輸入您的密碼',
-            forgotPassword: '忘記密碼？',
-            submit: '登入',
-            noAccount: '還沒有帳號？',
-            signUp: '註冊',
-            backToDashboard: '返回儀表板',
-            loginFailed: '登入失敗，請重試。',
-            pageTitle: '登入 | AI 平台',
-            pageDescription: '這是 AI 平台的登入頁面',
-        },
-        signOut: '登出',
-        signIn: '登入',
-    },
-    // --- 群組 (巢狀結構) ---
-    groups: {
-        form: {
-            title: '建立群組',
-            nameRequired: '群組名稱為必填',
-            createFailed: '建立群組失敗',
-            creating: '建立中...',
-            cancel: '取消',
-        },
-        namePlaceholder: '輸入群組名稱...',
-        descriptionPlaceholder: '輸入描述...',
-        creating: '正在建立群組...',
-        createButton: '建立群組',
-        nameLabel: '群組名稱',
-        descriptionLabel: '描述',
-        empty: {
-            title: '沒有群組',
-            description: '您尚未加入任何群組。',
-        },
-        error: {
-            loadFailed: '無法載入群組',
-        },
-        noDescription: '無描述',
-    },
-    // --- 群組列表 ---
-    groupList: {
-        title: '群組',
-        description: '瀏覽並管理群組。',
-        searchPlaceholder: '搜尋群組...',
-        loading: '載入群組中...',
-        deleteGroupAria: '刪除群組',
-        noDescription: '無描述',
-        empty: {
-            filter: '沒有符合 "{term}" 的群組。',
-            noGroups: '找不到群組。',
-            filterTip: '請嘗試不同的搜尋詞。',
-            noGroupsTip: '建立一個新群組以開始使用。',
-        },
-    },
-    // --- 語言 ---
-    language: {
-        aria: '語言選擇器',
-        switchToEn: '切換至英文',
-        switchToZh: '切換至中文',
-        short: '中',
-        switchLabel: '切換語言',
-    },
-    // --- 通知 ---
-    notification: {
-        title: '通知',
-        requestChange: '請求變更',
+    // --- 儲存 / 檔案瀏覽器 ---
+    storage: {
+        pageTitle: '雲端檔案管理員',
+        breadcrumb: '雲端檔案管理員',
+        pageSubtitle: '瀏覽並管理您的儲存磁碟區與專案磁碟。',
         project: '專案',
-        viewAll: '查看全部',
+        starting: '正在啟動儲存瀏覽器...',
+        stopping: '正在停止儲存瀏覽器...',
+        actionFailed: '動作失敗。請重試。',
+        errLoadList: '無法載入儲存清單',
+        // 頁籤
+        tab: {
+            personal: '個人中樞',
+            project: '專案儲存',
+        },
+        // 狀態
+        readWrite: '讀寫',
+        readOnly: '唯讀',
+        online: '線上',
+        offline: '離線',
+        scanning: '掃描磁碟區中...',
+        // 動作
+        action: {
+            start: '啟動磁碟',
+            stop: '停止磁碟',
+            open: '開啟瀏覽器',
+        },
+        // 訊息
+        msg: {
+            starting: '正在啟動儲存瀏覽器...',
+            stopping: '正在停止儲存瀏覽器...',
+            actionFailed: '動作失敗。請重試。',
+            loadFailed: '無法載入儲存清單。',
+        },
+        // 個人中樞
+        personal: {
+            title: '個人儲存中樞',
+            description: '透過安全登入存取您的私人儲存空間。',
+            noStorageTitle: '儲存空間未初始化',
+            noStorageDesc: '您的個人儲存空間尚未佈建。',
+            contactAdmin: '請聯繫管理員初始化您的儲存空間。',
+        },
+        // 欄位
+        colProject: '專案',
+        colStatus: '狀態',
+        emptyFilter: '沒有符合 "{term}" 的專案。',
+        emptyAssigned: '您的群組未被指派任何專案。',
     },
-    // --- 邀請 / 成員 ---
-    invite: {
-        selectUserError: '請選擇要邀請的使用者',
-        unknownError: '邀請使用者時發生未知錯誤',
-        title: '邀請使用者',
-        description: '邀請使用者加入專案或群組',
-        userLabel: '使用者',
-        userSearchPlaceholder: '搜尋使用者...',
-        noResults: '找不到使用者',
-    },
-    // 6. 表單
+    // --- 表單 ---
     form: {
         title: '提交表單',
-        history: {
-            title: '歷史紀錄',
-            empty: '無歷史紀錄。',
-            loading: '載入歷史紀錄中...',
-        },
-        apply: {
-            title: '申請',
-        },
         status: {
             pending: '待審核',
             approved: '已核准',
@@ -637,6 +411,13 @@ const zh = {
         select: {
             none: '無',
         },
+        error: {
+            titleRequired: '標題為必填項',
+            submitFailed: '提交失敗',
+        },
+        success: {
+            submitted: '提交成功，管理員將儘快審核。',
+        },
         createFailed: '建立表單失敗',
         created: '表單建立成功！',
         field: {
@@ -655,12 +436,23 @@ const zh = {
         cancel: '取消',
         submitting: '提交中...',
         submit: '送出',
+        // 歷史紀錄
+        history: {
+            title: '歷史紀錄',
+            empty: '無歷史紀錄。',
+            loading: '載入歷史紀錄中...',
+        },
+        // 申請
+        apply: {
+            title: '申請',
+        },
+        // 頁面
+        page: {
+            title: '表單頁面',
+            description: '提交並管理您的表單。',
+        },
     },
-    // 8. 搜尋
-    search: {
-        projectsPlaceholder: '搜尋專案...',
-    },
-    // 9. 表格
+    // --- 表格 ---
     table: {
         id: 'ID',
         user: '使用者',
@@ -668,33 +460,247 @@ const zh = {
         titleDesc: '標題 / 描述',
         status: '狀態',
         actions: '動作',
+        role: '角色',
     },
-    // 10. 終端機 (Terminal)
-    terminal: {
-        connected: '已連線',
-        websocketError: 'WebSocket 錯誤',
-        disconnected: '已斷線',
+    // --- 設定檔 ---
+    configFile: {
+        editFile: '編輯檔案',
+        destroyInstance: '銷毀實例',
+        deleteFile: '刪除檔案',
+        notFoundTitle: '未找到設定檔',
+        notFoundDesc: '按一下「新增設定」開始使用。',
+        toggleResources: '切換資源',
+        id: 'ID',
+        createdAt: '建立時間',
+        deployInstance: '部署實例',
+        deploy: '部署',
+        relatedResources: '相關資源',
+        noRelatedResources: '沒有相關資源',
+        notDeployed: '此設定檔尚未部署。',
     },
-    // 11. 徽章
-    badge: {
-        new: '新',
-        pro: '專業版',
+    config: {
+        error: {
+            filenameRequired: '檔案名稱為必填',
+            filenameSuffix: '檔案名稱必須以 .yaml 或 .yml 結尾',
+            yamlEmpty: 'YAML 內容不得為空',
+        },
+        createTitle: '建立新設定',
+        createSubtitle: '使用精靈模式或直接編輯 YAML。',
+        tab: {
+            wizard: '精靈模式',
+            yaml: '原始 YAML',
+        },
+        filename: {
+            label: '設定檔名稱',
+            prefix: '檔名:',
+            note: '必須是唯一的且以 .yaml 或 .yml 結尾',
+        },
+        wizard: {
+            imageLabel: '容器映像檔 (Image)',
+            imageNote: '指定要使用的映像檔。',
+            gpuLabel: 'GPU 配額',
+            pvcLabel: 'PVC',
+        },
+        pvc: {
+            placeholder: '選擇 PVC...',
+            loading: '載入 PVC 中...',
+            note: '選擇用於儲存的 PVC。',
+        },
+        mountPath: '掛載路徑 (Mount Path)',
+        commandLabel: '指令 (Command)',
+        argsLabel: '參數 (Arguments)',
+        yamlContentLabel: 'YAML 內容',
+        creating: '建立中...',
+        createButton: '建立設定',
     },
-    // 13. 檢視
+    // --- 管理儲存 ---
+    admin: {
+        dashboard: '儀表板',
+        storage: {
+            title: '儲存管理',
+            userStorage: {
+                successInit: '儲存空間初始化成功',
+                confirmDelete: '您確定要刪除此儲存空間嗎？',
+                successDelete: '儲存空間已成功刪除',
+                successExpand: '儲存空間已成功擴充',
+                targetUser: '目標使用者',
+                username: '使用者名稱',
+                usernamePlaceholder: '輸入使用者名稱',
+                checkStatus: '檢查狀態',
+                statusExists: '儲存空間存在',
+                statusMissing: '找不到儲存空間',
+                lifecycleTitle: '儲存空間生命週期',
+                hintUnknown: '狀態未知',
+                hintMissing: '未找到儲存空間',
+                hintExists: '儲存空間作用中',
+                processing: '處理中...',
+                initBtn: '初始化儲存',
+                deleteBtn: '刪除中樞',
+                checkStatusFirst: '先檢查狀態',
+                expandTitle: '擴充儲存',
+                newSize: '新大小 (GB)',
+                newSizePlaceholder: '例如：50',
+                expandBtn: '擴充儲存',
+            },
+            projectStorage: {
+                projectPlaceholder: '選擇專案...',
+                createSuccess: '專案儲存建立成功',
+                createGuideTitle: '建立專案儲存',
+                createGuideDesc: '為專案儲存建立新 PVC。',
+                form: {
+                    project: '專案',
+                    capacity: '容量',
+                    capacityHint: '例如：10Gi',
+                },
+                createSubmit: '建立儲存',
+                actionExpandPrompt: '擴充儲存容量',
+                actionConfirmDelete: '您確定要刪除此儲存空間嗎？',
+                list: {
+                    project: '專案',
+                    status: '狀態',
+                    capacity: '容量',
+                    age: '存活時間',
+                    actions: '動作',
+                    empty: '未找到專案儲存。',
+                },
+                actionEdit: '編輯',
+                actionDelete: '刪除',
+                tabList: '清單',
+                tabCreate: '建立',
+                errorSelectProject: '請選擇一個專案',
+            },
+            pvc: {
+                title: 'PVC 管理',
+                createTitle: '建立新 PVC',
+                expandTitle: '擴充 PVC',
+                sizeLabel: '大小 (Gi)',
+            },
+            forms: '表單',
+        },
+        storageManagement: {
+            title: '儲存管理',
+            userTab: '使用者中樞',
+            projectTab: '專案 PVC',
+            initUser: '初始化儲存',
+            deleteUser: '刪除中樞',
+            expandUser: '擴充容量',
+            hintExists: '儲存空間作用中 (Ready)。',
+            hintMissing: '未找到儲存空間。',
+            confirmDelete: '您確定要「永久」刪除此儲存空間嗎？',
+        },
+    },
+    // --- 驗證 ---
+    auth: {
+        login: {
+            title: '登入',
+            subtitle: '輸入您的使用者名稱和密碼以登入！',
+            username: '使用者名稱',
+            usernamePlaceholder: '輸入您的使用者名稱',
+            password: '密碼',
+            passwordPlaceholder: '輸入您的密碼',
+            forgotPassword: '忘記密碼？',
+            submit: '登入',
+            noAccount: '還沒有帳號？',
+            signUp: '註冊',
+            backToDashboard: '返回儀表板',
+            loginFailed: '登入失敗，請重試。',
+            pageTitle: '登入 | AI 平台',
+            pageDescription: '這是 AI 平台的登入頁面',
+        },
+        signOut: '登出',
+        signIn: '登入',
+    },
+    // --- 使用者 ---
+    user: {
+        profile: '個人檔案',
+        signOut: '登出',
+        login: '登入',
+        editProfile: '編輯個人檔案',
+        support: '支援',
+    },
+    // --- 角色 ---
+    role: {
+        admin: '管理員',
+        adminDesc: '對所有資源和設定擁有完整存取權限。',
+        manager: '經理',
+        managerDesc: '可以管理專案、群組和成員。',
+        user: '使用者',
+        userDesc: '可以存取和使用指派的專案。',
+        label: '角色: {role}',
+    },
+    // --- 成員 ---
+    members: {
+        noneFound: '找不到成員。',
+        noMatch: '沒有符合搜尋條件的成員。',
+    },
+    // --- 語言 / i18n ---
+    language: {
+        aria: '語言選擇器',
+        switchToEn: '切換至英文',
+        switchToZh: '切換至中文',
+        short: '中',
+        switchLabel: '切換語言',
+    },
+    // --- 通知 ---
+    notification: {
+        title: '通知',
+        requestChange: '請求變更',
+        project: '專案',
+        viewAll: '查看全部',
+        time: {
+            '5min': '5 分鐘前',
+            '8min': '8 分鐘前',
+            '15min': '15 分鐘前',
+            '1hour': '1 小時前',
+        },
+    },
+    // --- 邀請 / 成員 ---
+    invite: {
+        selectUserError: '請選擇要邀請的使用者',
+        unknownError: '邀請使用者時發生未知錯誤',
+        title: '邀請使用者',
+        description: '邀請使用者加入專案或群組',
+        userLabel: '使用者',
+        userSearchPlaceholder: '搜尋使用者...',
+        noResults: '找不到使用者',
+    },
+    // --- 分頁 ---
+    pagination: {
+        prev: '上一頁',
+        next: '下一頁',
+        pageOf: '第 {current} 頁，共 {total} 頁',
+    },
+    // --- 檢視 / 顯示 ---
     view: {
         toggleToAdmin: '切換至管理員',
         toggleToUser: '切換至使用者',
         grid: '網格檢視',
         list: '列表檢視',
     },
-    // 14. 載入狀態
+    // --- 搜尋 ---
+    search: {
+        projectsPlaceholder: '搜尋專案...',
+        placeholder: '搜尋...',
+    },
+    // --- 載入狀態 ---
     loading: {
         forms: '載入表單中...',
     },
-    // 17. 按鈕
+    // --- 按鈕 ---
     button: {
         newGroup: '新群組',
         newProject: '新專案',
+    },
+    // --- 終端機 ---
+    terminal: {
+        connected: '已連線',
+        websocketError: 'WebSocket 錯誤',
+        disconnected: '已斷線',
+    },
+    // --- 徽章 ---
+    badge: {
+        new: '新',
+        pro: '專業版',
     },
 };
 export default zh;

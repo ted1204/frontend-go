@@ -57,17 +57,17 @@ const adminItems: NavItem[] = [
   },
   {
     icon: <TaskIcon />, // Use TaskIcon for Manage Projects
-    name: 'admin_manageProjects',
+    name: 'page.admin.manageProjects',
     path: '/admin/manage-projects',
   },
   {
     icon: <GroupIcon />, // Use GroupIcon for Manage Groups
-    name: 'admin_manageGroups',
+    name: 'page.admin.manageGroups',
     path: '/admin/manage-groups',
   },
   {
     icon: <BoxIcon />,
-    name: 'admin.forms',
+    name: 'page.admin.forms',
     path: '/admin/forms',
   },
   {

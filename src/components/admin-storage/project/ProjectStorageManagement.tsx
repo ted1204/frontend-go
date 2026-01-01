@@ -43,7 +43,7 @@ const ProjectStorageManagement: React.FC = () => {
               ${activeTab === 'list' ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'}
             `}
             />
-            {t('admin_storage_project_tab_list')}
+            {t('admin.storage.project.tab.list')}
           </button>
 
           <button
@@ -63,7 +63,7 @@ const ProjectStorageManagement: React.FC = () => {
               ${activeTab === 'create' ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'}
             `}
             />
-            {t('admin_storage_project_tab_create')}
+            {t('admin.storage.project.tab.create')}
           </button>
         </nav>
       </div>

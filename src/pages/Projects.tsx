@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '@nthucscc/utils';
 import { PageMeta, Pagination, SearchInput } from '@nthucscc/ui';
 
-import { PageBreadcrumb } from '../components/common/PageBreadCrumb';
+import { PageBreadcrumb } from '@nthucscc/ui';
 import { getProjects } from '../services/projectService';
 import { getGroupsByUser } from '../services/userGroupService';
 import { Project } from '../interfaces/project';
@@ -125,7 +125,7 @@ export default function Projects() {
                   setSearchTerm(val);
                   setCurrentPage(1);
                 }}
-                placeholder={t('search_projectsPlaceholder')}
+                placeholder={t('search.projectsPlaceholder')}
               />
             </div>
 

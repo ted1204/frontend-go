@@ -310,42 +310,42 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
             <tr>
               {visibleColumns.has('kind') && (
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
-                  {t('monitor.col.kind')}
+                  {t('monitor.table.kind')}
                 </th>
               )}
               {visibleColumns.has('name') && (
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('monitor.col.name')}
+                  {t('monitor.table.name')}
                 </th>
               )}
               {visibleColumns.has('details') && (
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('monitor.col.details')}
+                  {t('monitor.table.details')}
                 </th>
               )}
               {visibleColumns.has('images') && (
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('monitor.col.images')}
+                  {t('monitor.table.images')}
                 </th>
               )}
               {visibleColumns.has('labels') && (
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('monitor.col.labels')}
+                  {t('monitor.table.labels')}
                 </th>
               )}
               {visibleColumns.has('restarts') && (
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
-                  {t('monitor.col.restarts')}
+                  {t('monitor.table.restarts')}
                 </th>
               )}
               {visibleColumns.has('age') && (
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
-                  {t('monitor.col.age')}
+                  {t('monitor.table.age')}
                 </th>
               )}
               {visibleColumns.has('status') && (
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
-                  {t('monitor.col.status')}
+                  {t('monitor.table.status')}
                 </th>
               )}
             </tr>
