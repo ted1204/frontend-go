@@ -1,11 +1,13 @@
 // src/components/CreateProjectForm.tsx
 
 import React, { ChangeEvent, FormEvent, useState, useEffect, useRef } from 'react';
-import { useTranslation } from '@nthucscc/utils';
+import { useTranslation, SpinnerIcon, AlertIcon } from '@nthucscc/utils';
 
 // Assuming InputField and Button are properly defined components
 import InputField from './form/input/InputField';
 import Button from './ui/button/Button';
+import { MPSSettings } from './project/MPSSettings';
+import { GroupSelect } from './form/GroupSelect';
 
 // --- Conceptual Interface for Group Data (Must be defined in your app) ---
 interface GroupOption {
@@ -13,46 +15,6 @@ interface GroupOption {
   GroupName: string;
 }
 // ------------------------------------------------------------------------
-
-// SVG Components (Used for consistency and minimal style)
-const SpinnerIcon = ({ className = 'w-4 h-4' }) => (
-  <svg
-    className={`animate-spin ${className}`}
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-  >
-    <circle
-      className="opacity-25"
-      cx="12"
-      cy="12"
-      r="10"
-      stroke="currentColor"
-      strokeWidth="4"
-    ></circle>
-    <path
-      className="opacity-75"
-      fill="currentColor"
-      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-    ></path>
-  </svg>
-);
-const AlertIcon = ({ className = 'w-5 h-5' }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.398 16c-.77 1.333.192 3 1.732 3z"
-    />
-  </svg>
-);
 
 interface CreateProjectFormProps {
   projectName: string;
@@ -106,56 +68,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
   onSelectedGroupChange,
 }) => {
   const { t } = useTranslation();
-  // --- Local State for Search Dropdown ---
-  const [searchTerm, setSearchTerm] = useState(selectedGroupName);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // FIX: Defensive initialization of availableGroups
   const safeGroups = availableGroups || [];
-
-  // Filter logic runs whenever local search term changes
-  const filteredGroups = safeGroups.filter((group) =>
-    group.GroupName.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
-  // Synchronize local search term with external selectedGroupName
-  useEffect(() => {
-    setSearchTerm(selectedGroupName);
-  }, [selectedGroupName]);
-
-  // Handles group selection from the dropdown
-  const handleSelectGroup = (group: GroupOption) => {
-    onSelectedGroupChange(group.GID, group.GroupName);
-    setIsDropdownOpen(false);
-  };
-
-  // Handles input change in the search field
-  const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-    setIsDropdownOpen(true);
-
-    // Clear selected group in parent if user starts typing a new name
-    if (value !== selectedGroupName) {
-      onSelectedGroupChange(0, value); // Pass 0 for ID and the new text for name
-    }
-  };
-
-  // Logic to close dropdown when clicking outside of the search area
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-        // If nothing was selected, reset search input to the selected name
-        setSearchTerm(selectedGroupName);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [selectedGroupName]);
 
   // --- Modal Animation Logic (FIXED: Eliminates flash by using dedicated render state) ---
   const [shouldRender, setShouldRender] = useState(false);
@@ -350,75 +265,19 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
             </div>
 
             {gpuAccess.includes('shared') && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700">
-                <InputField
-                  type="number"
-                  label={t('project.create.mpsThreadLimit')}
-                  value={mpsLimit}
-                  onChange={onMpsLimitChange}
-                  placeholder="100"
-                  className="w-full"
-                  min="0"
-                  max="100"
-                  disabled={loading}
-                />
-                <InputField
-                  type="number"
-                  label={t('project.create.mpsMemoryLimit')}
-                  value={mpsMemory}
-                  onChange={onMpsMemoryChange}
-                  placeholder="0 (無限制)"
-                  className="w-full"
-                  min="0"
-                  disabled={loading}
-                />
-              </div>
+              <MPSSettings
+                mpsLimit={mpsLimit}
+                mpsMemory={mpsMemory}
+                onMpsLimitChange={onMpsLimitChange}
+                onMpsMemoryChange={onMpsMemoryChange}
+              />
             )}
 
-            <div className="space-y-1.5 text-left relative" ref={dropdownRef}>
-              <InputField
-                type="text"
-                id="group-search"
-                label={t('project.create.group')}
-                value={searchTerm}
-                onChange={handleSearchInputChange}
-                onFocus={() => setIsDropdownOpen(true)}
-                placeholder={t('project.create.groupPlaceholder')}
-                className="w-full"
-                required
-                disabled={loading}
-                style={{ borderColor: groupId > 0 ? '#4f46e5' : undefined }}
-              />
-
-              {isDropdownOpen && (
-                <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                  {filteredGroups.length > 0 ? (
-                    filteredGroups.map((group) => (
-                      <li
-                        key={group.GID}
-                        onClick={() => handleSelectGroup(group)}
-                        className="px-4 py-2 cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-violet-100 dark:hover:bg-violet-800 transition duration-100"
-                      >
-                        {group.GroupName}
-                        <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                          (ID: {group.GID})
-                        </span>
-                      </li>
-                    ))
-                  ) : (
-                    <li className="px-4 py-2 text-gray-500 dark:text-gray-400">
-                      {t('project.create.noGroupsFound')}
-                    </li>
-                  )}
-                </ul>
-              )}
-
-              {groupId > 0 && (
-                <p className="mt-1 text-sm text-green-600 dark:text-green-400">
-                  {t('project.create.selectedId')} {groupId}
-                </p>
-              )}
-            </div>
+            <GroupSelect
+              availableGroups={safeGroups}
+              selectedGroupName={selectedGroupName}
+              onSelectedGroupChange={onSelectedGroupChange}
+            />
 
             <div className="flex gap-3 pt-2">
               <Button
