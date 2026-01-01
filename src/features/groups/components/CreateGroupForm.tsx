@@ -3,8 +3,8 @@ import { useTranslation } from '@nthucscc/utils';
 
 // Assuming InputField is the component provided above,
 // and that InputFieldDefault is aliased to InputField here.
-import InputField from './form/input/InputField';
-import Button from './ui/button/Button';
+import { InputField } from '@/features/forms/components/form';
+import { Button } from '@nthucscc/ui';
 
 // SVG Components (omitted for brevity)
 const SpinnerIcon = ({ className = 'w-4 h-4' }) => (

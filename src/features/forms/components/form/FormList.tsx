@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form } from '../../interfaces/form';
+import { Form } from '@/core/interfaces/form';
 import FormCard from './FormCard';
 import { useTranslation } from '@nthucscc/utils';
 

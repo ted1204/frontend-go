@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from '../../icons';
-import Label from '../form/Label';
-import Input from '../form/input/InputFieldDefault';
-import Button from '../ui/button/Button';
-import { register } from '../../services/authService';
+import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from '../../../src/shared/icons';
+import Label from '../../../src/features/forms/components/form/Label';
+import Input from '../../../src/features/forms/components/form/input/InputFieldDefault';
+import Button from '../../ui/src/components/button/Button';
+import { register } from '../../../src/core/services/authService';
 
 export default function SignUpForm() {
   const [username, setUsername] = useState('');

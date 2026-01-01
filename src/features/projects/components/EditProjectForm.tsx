@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState, useEffect, useRef } from 'react';
 import { useTranslation } from '@nthucscc/utils';
-import InputField from './form/input/InputField';
-import Button from './ui/button/Button';
+import { InputField } from '@/features/forms/components/form';
+import { Button } from '@nthucscc/ui';
 
 const SpinnerIcon = ({ className = 'w-4 h-4' }) => (
   <svg

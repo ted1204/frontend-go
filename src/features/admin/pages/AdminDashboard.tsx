@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import { PageMeta } from '@nthucscc/ui';
+import { PageMeta } from '@nthucscc/components-shared';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import { useTranslation } from '@nthucscc/utils';
-import { GroupIcon, TaskIcon } from '../icons';
+import { GroupIcon, TaskIcon } from '@/shared/icons';
 
 export default function AdminDashboard() {
   const { t } = useTranslation();

@@ -11,14 +11,14 @@ import {
 } from '@heroicons/react/24/outline';
 
 // Fix 1: 匯入 ResourceMessage 型別介面
-import { WebSocketContext, ResourceMessage } from '../../context/WebSocketContext';
-import { getUsername } from '../../services/authService';
+import { WebSocketContext, ResourceMessage } from '@/core/context/WebSocketContext';
+import { getUsername } from '@/core/services/authService';
 import {
   openUserDrive,
   stopUserDrive,
   checkUserStorageStatus,
   getUserHubProxyUrl,
-} from '../../services/storageService';
+} from '@/core/services/storageService';
 import { StatusBadge } from './StorageComponents';
 
 export const PersonalHub: React.FC = () => {

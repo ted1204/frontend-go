@@ -1,4 +1,4 @@
-import GridShape from '../../components/common/GridShape';
+import GridShape from '../GridShape';
 import { Link } from 'react-router';
 import { PageMeta } from '@nthucscc/ui';
 import { useTranslation } from '@nthucscc/utils';

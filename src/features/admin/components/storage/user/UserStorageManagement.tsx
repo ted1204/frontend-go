@@ -17,8 +17,8 @@ import {
   expandUserStorage,
   deleteUserStorage,
   checkUserStorageStatus,
-} from '../../../services/storageService';
-import Button from '../../ui/button/Button';
+} from '@/core/services/storageService';
+import { Button } from '@nthucscc/ui';
 
 // Define possible states for the storage hub
 type StorageStatus = 'unknown' | 'exists' | 'missing';

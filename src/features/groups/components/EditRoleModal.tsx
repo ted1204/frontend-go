@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Fragment } from 'react';
 import { Dialog, Transition, RadioGroup } from '@headlessui/react';
-import { UserGroupUser } from '../interfaces/userGroup'; // Use the correct, consistent type
+import { UserGroupUser } from '@/core/interfaces/userGroup'; // Use the correct, consistent type
 
 // --- Helper Data & Components --- //
 

@@ -2,16 +2,21 @@
 
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { PageBreadcrumb } from '@nthucscc/ui';
-import { PageMeta } from '@nthucscc/ui';
-import { getGroups, createGroup, CreateGroupInput, deleteGroup } from '../services/groupService';
-import { Group } from '../interfaces/group';
+import { PageMeta } from '@nthucscc/components-shared';
+import {
+  getGroups,
+  createGroup,
+  CreateGroupInput,
+  deleteGroup,
+} from '@/core/services/groupService';
+import { Group } from '@/core/interfaces/group';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '@nthucscc/utils';
-import GroupList from '../components/GroupList';
-import CreateGroupForm from '../components/CreateGroupForm';
+import GroupList from '@/features/groups/components/GroupList';
+import CreateGroupForm from '@/features/groups/components/CreateGroupForm';
 import { Button } from '@nthucscc/ui';
 // Ensure this import path is correct
-import DeleteConfirmationModal from '../components/ui/modal/DeleteConfirmationModal';
+import { DeleteConfirmationModal } from '@nthucscc/ui';
 
 // SVG Icon for the New Group button
 const PlusIcon = ({ className = 'w-5 h-5' }) => (

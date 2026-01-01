@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from '@nthucscc/utils';
-import { Form } from '../../interfaces/form';
+import { Form } from '@/core/interfaces/form';
 import SearchBar from './SearchBar';
 import ViewModeToggle from './ViewModeToggle';
 import FormList from './FormList';

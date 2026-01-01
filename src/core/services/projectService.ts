@@ -9,7 +9,7 @@ import { MessageResponse } from '../response/response'; // Adjust the import pat
 import { Project } from '../interfaces/project';
 import { ConfigFile } from '../interfaces/configFile'; // Adjust the import path as necessary
 import { Resource } from '../interfaces/resource'; // Adjust the import path as necessary
-import { fetchWithAuth } from '../utils/api';
+import { fetchWithAuth } from '@/shared/utils/api';
 
 export const getProjects = async (): Promise<Project[]> => {
   try {

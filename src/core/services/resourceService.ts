@@ -1,7 +1,7 @@
 import { RESOURCES_URL, RESOURCE_BY_ID_URL, CONFIG_FILE_BY_ID_URL } from '../config/url';
 import { MessageResponse } from '../response/response';
 import { Resource } from '../interfaces/resource';
-import { fetchWithAuth } from '../utils/api';
+import { fetchWithAuth } from '@/shared/utils/api';
 
 export const getResourceById = async (id: number): Promise<Resource> => {
   try {

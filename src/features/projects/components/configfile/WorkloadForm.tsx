@@ -1,7 +1,7 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
-import { WorkloadResource, ContainerConfig } from '../../interfaces/configFile';
+import { WorkloadResource, ContainerConfig } from '@/core/interfaces/configFile';
 import ConfigMapManager from './ConfigMapManager';
-import { PVC } from '../../interfaces/pvc';
+import { PVC } from '@/core/interfaces/pvc';
 import ContainerForm from './ContainerForm';
 
 interface WorkloadFormProps {

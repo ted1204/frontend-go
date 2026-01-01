@@ -1,6 +1,6 @@
 import { API_BASE_URL } from '../config/url';
 import { Form, CreateFormRequest } from '../interfaces/form';
-import { fetchWithAuth as baseFetchWithAuth } from '../utils/api';
+import { fetchWithAuth as baseFetchWithAuth } from '@/shared/utils/api';
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
   const headers = {

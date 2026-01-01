@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import { useTranslation } from '@nthucscc/utils';
-import InputField from '../form/input/InputField';
+import { InputField } from '@/features/forms/components/form';
 
 interface GPUSettingsProps {
   gpuQuota: number;

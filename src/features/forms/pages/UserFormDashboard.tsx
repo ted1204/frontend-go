@@ -3,13 +3,13 @@ import { useEffect, useState, FormEvent } from 'react';
 import UserFormApply from '../components/form/UserFormApply';
 import UserFormHistory from '../components/form/UserFormHistory';
 import TabSwitcher from '../components/form/TabSwitcher';
-import { PageMeta } from '@nthucscc/ui';
+import { PageMeta } from '@nthucscc/components-shared';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import { useTranslation } from '@nthucscc/utils';
-import { getProjects } from '../services/projectService';
-import { createForm, getMyForms } from '../services/formService';
-import { Form } from '../interfaces/form';
-import { Project } from '../interfaces/project';
+import { getProjects } from '@/core/services/projectService';
+import { createForm, getMyForms } from '@/core/services/formService';
+import { Form } from '@/core/interfaces/form';
+import { Project } from '@/core/interfaces/project';
 
 type ViewMode = 'grid' | 'list';
 

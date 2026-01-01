@@ -1,7 +1,7 @@
 // src/components/add-config/MountManager.tsx
 import { PlusIcon, CubeIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { MountConfig, MountType, WizardData } from '../../interfaces/configFile';
-import { PVC } from '../../interfaces/pvc';
+import { MountConfig, MountType, WizardData } from '@/core/interfaces/configFile';
+import { PVC } from '@/core/interfaces/pvc';
 import MountRow from './MountRow';
 
 interface MountManagerProps {

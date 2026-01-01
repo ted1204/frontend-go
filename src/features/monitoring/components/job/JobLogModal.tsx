@@ -1,5 +1,5 @@
 import React from 'react';
-import { Job } from '../../services/jobService';
+import { Job } from '@/core/services/jobService';
 
 interface JobLogModalProps {
   job: Job | null;

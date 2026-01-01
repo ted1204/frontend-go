@@ -1,17 +1,17 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '@nthucscc/utils';
-import { PageMeta, Pagination, SearchInput } from '@nthucscc/ui';
+import { PageMeta, Pagination, SearchInput } from '@nthucscc/components-shared';
 
 import { PageBreadcrumb } from '@nthucscc/ui';
-import { getProjects } from '../services/projectService';
-import { getGroupsByUser } from '../services/userGroupService';
-import { Project } from '../interfaces/project';
+import { getProjects } from '@/core/services/projectService';
+import { getGroupsByUser } from '@/core/services/userGroupService';
+import { Project } from '@/core/interfaces/project';
 
 // Components
 import ProjectCard from '../components/project/ProjectCard';
 import ProjectListTable from '../components/project/ProjectListTable';
-import { GridIcon, ListIcon } from '../components/Icon';
+import { GridIcon, ListIcon } from '@nthucscc/ui';
 
 // Loading Skeleton
 const SkeletonLoader = ({ viewMode }: { viewMode: 'grid' | 'list' }) => {
@@ -168,8 +168,8 @@ export default function Projects() {
             {filteredProjects.length > itemsPerPage && (
               <div className="mt-6">
                 <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
+                  current={currentPage}
+                  total={totalPages}
                   onPageChange={setCurrentPage}
                 />
               </div>

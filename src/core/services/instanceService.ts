@@ -1,6 +1,6 @@
 import { INSTANCE_BY_ID_URL } from '../config/url';
 import { MessageResponse } from '../response/response'; // Adjust the import path as necessary
-import { fetchWithAuth } from '../utils/api';
+import { fetchWithAuth } from '@/shared/utils/api';
 
 export const instantiate = async (id: number): Promise<MessageResponse> => {
   try {

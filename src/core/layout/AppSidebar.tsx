@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useTranslation, LocaleKey } from '@nthucscc/utils';
-import { BoxIcon, ChevronDownIcon, GridIcon, GroupIcon, HorizontaLDots, TaskIcon } from '../icons';
+import {
+  BoxIcon,
+  ChevronDownIcon,
+  GridIcon,
+  GroupIcon,
+  HorizontaLDots,
+  TaskIcon,
+} from '../../shared/icons';
 import { useSidebar } from '../context/useSidebar';
 
 type NavItem = {

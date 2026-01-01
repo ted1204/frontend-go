@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@nthucscc/utils';
-import { Link } from 'react-router-dom'; // 修正 import
+import { Link } from 'react-router-dom';
 import { useSidebar } from '../context/useSidebar';
 import { useTranslation } from '@nthucscc/utils';
-import { ThemeToggleButton } from '../components/common/ThemeToggleButton';
-import NotificationDropdown from '../components/header/NotificationDropdown';
-import UserDropdown from '../components/header/UserDropdown';
+import { ThemeToggleButton } from '@nthucscc/components-shared';
+import NotificationDropdown from '@/shared/components/header/NotificationDropdown';
+import UserDropdown from '@/shared/components/header/UserDropdown';
 
 const LanguageButton: React.FC = () => {
   const { toggleLanguage, language } = useLanguage();

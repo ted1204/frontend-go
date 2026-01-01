@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form } from '../../interfaces/form';
+import { Form } from '@/core/interfaces/form';
 import { LocaleKey } from '@nthucscc/utils';
 
 interface FormCardProps {

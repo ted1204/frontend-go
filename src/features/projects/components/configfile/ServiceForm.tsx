@@ -1,5 +1,5 @@
 import { PlusIcon, TrashIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { ServiceResource, ServiceProtocol, KeyValuePair } from '../../interfaces/configFile';
+import { ServiceResource, ServiceProtocol, KeyValuePair } from '@/core/interfaces/configFile';
 
 interface ServiceFormProps {
   resource: ServiceResource;

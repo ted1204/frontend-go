@@ -1,10 +1,10 @@
 import React, { useEffect, useState, Fragment } from 'react';
-import { useGlobalWebSocket } from '../../context/useGlobalWebSocket';
-import { getUsername } from '../../services/authService';
-import { getProjectListByUser, getProjects } from '../../services/projectService';
-import { getGroupsByUser } from '../../services/userGroupService';
-import { Pagination } from '@nthucscc/ui';
-import { Project } from '../../interfaces/project';
+import { useGlobalWebSocket } from '@/core/context/useGlobalWebSocket';
+import { getUsername } from '@/core/services/authService';
+import { getProjectListByUser, getProjects } from '@/core/services/projectService';
+import { getGroupsByUser } from '@/core/services/userGroupService';
+import { Pagination } from '@nthucscc/components-shared';
+import { Project } from '@/core/interfaces/project';
 import { useTranslation } from '@nthucscc/utils';
 // English: Import WebSocketContext to access the connection pool functions
 
@@ -188,7 +188,7 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
           )}
         </tbody>
       </table>
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+      <Pagination current={currentPage} total={totalPages} onPageChange={setCurrentPage} />
     </div>
   );
 };

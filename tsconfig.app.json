@@ -23,6 +23,7 @@
     "types": ["vite/client", "node"],
     "baseUrl": ".",
     "paths": {
+      "@/*": ["src/*"],
       "@nthucscc/ui": ["packages/ui/src"],
       "@nthucscc/ui/*": ["packages/ui/src/*"],
       "@nthucscc/components-shared": ["packages/components-shared/src"],

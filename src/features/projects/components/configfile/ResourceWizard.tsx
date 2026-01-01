@@ -1,7 +1,7 @@
-import { ResourceItem, ResourceKind } from '../../interfaces/configFile';
+import { ResourceItem, ResourceKind } from '@/core/interfaces/configFile';
 import ResourceItemForm from './ResourceItemForm';
-import { createDefaultResource } from '../../utils/resourceFactories';
-import { PVC } from '../../interfaces/pvc';
+import { createDefaultResource } from '@/features/projects/utils/resourceFactories';
+import { PVC } from '@/core/interfaces/pvc';
 
 interface ResourceWizardProps {
   resources: ResourceItem[];

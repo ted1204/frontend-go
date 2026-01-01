@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import { useTranslation } from '@nthucscc/utils';
-import { ConfigFile } from '../interfaces/configFile';
-import { getPVCListByProject, checkUserStorageStatus } from '../services/storageService';
-import { getUsername } from '../services/authService';
-import { generateMultiDocYAML } from '../utils/k8sYamlGenerator';
+import { ConfigFile } from '@/core/interfaces/configFile';
+import { getPVCListByProject, checkUserStorageStatus } from '@/core/services/storageService';
+import { getUsername } from '@/core/services/authService';
+import { generateMultiDocYAML } from '@/features/projects/utils/k8sYamlGenerator';
 
 // Refactored Imports
-import BaseModal from './ui/modal/BaseModal';
+import { BaseModal } from '@nthucscc/ui';
 import ResourceWizard from './configfile/ResourceWizard';
-import { useConfigForm } from '../hooks/useConfigForm';
-import { PVC } from '../interfaces/pvc';
+import { useConfigForm } from '@/shared/hooks/useConfigForm';
+import { PVC } from '@/core/interfaces/pvc';
 
 interface EditConfigModalProps {
   isOpen: boolean;

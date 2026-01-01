@@ -8,7 +8,7 @@ import {
 import { MessageResponse } from '../response/response'; // Adjust the import path as necessary
 import { ConfigFile } from '../interfaces/configFile'; // Adjust the import path as necessary
 import { Resource } from '../interfaces/resource'; // Adjust the import path as necessary
-import { fetchWithAuth as baseFetchWithAuth } from '../utils/api';
+import { fetchWithAuth as baseFetchWithAuth } from '@/shared/utils/api';
 
 const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   const headers: Record<string, string> = {

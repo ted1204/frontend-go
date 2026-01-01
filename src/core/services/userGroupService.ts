@@ -7,7 +7,7 @@ import {
   UserGroupUser,
   UserGroupGroup,
 } from '../interfaces/userGroup';
-import { fetchWithAuth as baseFetchWithAuth } from '../utils/api';
+import { fetchWithAuth as baseFetchWithAuth } from '@/shared/utils/api';
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
   const headers: Record<string, string> = {

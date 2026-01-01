@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { UserGroupUser } from '../interfaces/userGroup';
-import { getUsersByGroup, getGroupsByUser, createUserGroup } from '../services/userGroupService';
-import { getUsers } from '../services/userService';
+import { UserGroupUser } from '@/core/interfaces/userGroup';
+import {
+  getUsersByGroup,
+  getGroupsByUser,
+  createUserGroup,
+} from '@/core/services/userGroupService';
+import { getUsers } from '@/core/services/userService';
 import InviteUserModal, { FormData } from './InviteUserModal';
-import { User } from '../interfaces/user';
+import { User } from '@/core/interfaces/user';
 import { useTranslation } from '@nthucscc/utils';
 
 interface ProjectMembersProps {

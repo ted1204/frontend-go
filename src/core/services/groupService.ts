@@ -1,7 +1,7 @@
 import { GROUPS_URL, GROUP_BY_ID_URL } from '../config/url';
 import { MessageResponse } from '../response/response'; // Adjust the import path as necessary
 import { Group } from '../interfaces/group'; // Adjust the import path as necessary
-import { fetchWithAuth } from '../utils/api';
+import { fetchWithAuth } from '@/shared/utils/api';
 
 export const getGroups = async (): Promise<Group[]> => {
   try {

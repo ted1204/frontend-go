@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { createForm } from '../services/formService';
+import { createForm } from '@/core/services/formService';
 import { useTranslation } from '@nthucscc/utils';
-import BaseModal from './ui/modal/BaseModal';
+import { BaseModal } from '@nthucscc/ui';
 
 interface CreateFormModalProps {
   isOpen: boolean;

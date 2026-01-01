@@ -5,8 +5,8 @@ import { toast } from 'react-hot-toast';
 import { CubeIcon, PencilSquareIcon, TrashIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
 // Services & Types
-import { getProjectStorages, deletePVC } from '../../../services/storageService';
-import { ProjectPVC } from '../../../interfaces/projectStorage';
+import { getProjectStorages, deletePVC } from '@/core/services/storageService';
+import { ProjectPVC } from '@/core/interfaces/projectStorage';
 // Global WebSocket (not used here)
 
 interface ProjectStorageListProps {

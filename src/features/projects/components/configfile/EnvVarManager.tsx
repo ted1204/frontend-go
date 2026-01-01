@@ -1,5 +1,5 @@
 import { PlusIcon, TrashIcon, CommandLineIcon } from '@heroicons/react/24/outline';
-import { EnvVar } from '../../interfaces/configFile';
+import { EnvVar } from '@/core/interfaces/configFile';
 
 interface EnvVarManagerProps {
   envVars: EnvVar[];

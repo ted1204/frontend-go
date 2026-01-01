@@ -1,7 +1,7 @@
 import { USERS_URL, USER_BY_ID_URL } from '../config/url';
 import { MessageResponse } from '../response/response';
 import { User, UserRequest } from '../interfaces/user';
-import { fetchWithAuth } from '../utils/api';
+import { fetchWithAuth } from '@/shared/utils/api';
 
 export const getUsers = async (): Promise<User[]> => {
   try {

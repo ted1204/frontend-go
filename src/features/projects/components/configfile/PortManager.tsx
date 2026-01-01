@@ -1,5 +1,5 @@
 import { PlusIcon, TrashIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
-import { ContainerPort } from '../../interfaces/configFile';
+import { ContainerPort } from '@/core/interfaces/configFile';
 
 interface PortManagerProps {
   ports: ContainerPort[];

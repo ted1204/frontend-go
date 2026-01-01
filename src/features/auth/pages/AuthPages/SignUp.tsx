@@ -1,6 +1,6 @@
-import { PageMeta } from '@nthucscc/ui';
+import { PageMeta } from '@nthucscc/components-shared';
 import AuthLayout from './AuthPageLayout';
-import SignUpForm from '../../components/auth/SignUpForm';
+import SignUpForm from '@nthucscc/components-shared/auth/SignUpForm';
 
 export default function SignUp() {
   return (

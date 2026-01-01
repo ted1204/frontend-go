@@ -1,6 +1,6 @@
 import React from 'react';
-import GridShape from '../../components/common/GridShape';
-import ThemeTogglerTwo from '../../components/common/ThemeTogglerTwo';
+import { GridShape } from '@nthucscc/ui';
+import { ThemeToggleButton } from '@nthucscc/components-shared';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -25,7 +25,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           </div>
         </div>
         <div className="fixed z-50 hidden bottom-6 right-6 sm:block">
-          <ThemeTogglerTwo />
+          <ThemeToggleButton />
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import {
   ServiceResource,
   ConfigMapResource,
   MountConfig,
-} from '../interfaces/configFile';
+} from '@/core/interfaces/configFile';
 
 export const generateMultiDocYAML = (resources: ResourceItem[]): string => {
   if (resources.length === 0) return '';

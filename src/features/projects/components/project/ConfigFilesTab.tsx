@@ -10,14 +10,14 @@ import {
   deleteConfigFile,
   createInstance,
   deleteInstance,
-} from '../../services/configFileService';
+} from '@/core/services/configFileService';
 
 // Interfaces
-import { Project } from '../../interfaces/project';
-import { ConfigFile } from '../../interfaces/configFile';
+import { Project } from '@/core/interfaces/project';
+import { ConfigFile } from '@/core/interfaces/configFile';
 
 // Components
-import Button from '../ui/button/Button';
+import { Button } from '@nthucscc/ui';
 import ConfigFileList from '../ConfigFileList';
 import AddConfigModal from '../AddConfigModal';
 import EditConfigModal from '../EditConfigModal';

@@ -5,7 +5,7 @@ import {
   ServiceResource,
   ConfigMapResource,
   ContainerConfig,
-} from '../interfaces/configFile';
+} from '@/core/interfaces/configFile';
 
 export const createDefaultContainer = (id: string, index: number): ContainerConfig => {
   return {

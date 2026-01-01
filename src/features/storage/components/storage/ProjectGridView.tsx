@@ -1,8 +1,8 @@
 import React from 'react';
 import { CircleStackIcon } from '@heroicons/react/24/outline';
 import { PermissionBadge, StatusBadge, StorageActionButtons } from './StorageComponents';
-import { ProjectPVC } from '../../interfaces/projectStorage';
-import type { ResourceMessage } from '../../hooks/useWebSocket';
+import { ProjectPVC } from '@/core/interfaces/projectStorage';
+import type { ResourceMessage } from '@/shared/hooks/useWebSocket';
 
 interface Props {
   data: ProjectPVC[];

@@ -7,8 +7,8 @@ import {
   WorkloadResource,
   ServiceResource,
   ConfigMapResource,
-} from '../../interfaces/configFile';
-import { PVC } from '../../interfaces/pvc';
+} from '@/core/interfaces/configFile';
+import { PVC } from '@/core/interfaces/pvc';
 
 // Import Sub-components
 import ConfigMapManager from './ConfigMapManager';

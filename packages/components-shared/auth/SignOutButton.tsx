@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '@nthucscc/utils';
-import { logout } from '../../services/authService';
+import { logout } from '../../../src/core/services/authService';
 
 interface SignOutButtonProps {
   onClick?: () => void;

@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Group } from '../interfaces/group';
-import { getGroups } from '../services/groupService';
-import { getGroupsByUser } from '../services/userGroupService';
-import { PageMeta } from '@nthucscc/ui';
+import { Group } from '@/core/interfaces/group';
+import { getGroups } from '@/core/services/groupService';
+import { getGroupsByUser } from '@/core/services/userGroupService';
+import { PageMeta } from '@nthucscc/components-shared';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import { useTranslation } from '@nthucscc/utils';
-import { Pagination, SearchInput } from '@nthucscc/ui';
+import { Pagination, SearchInput } from '@nthucscc/components-shared';
 
 // Components
 import GroupCard from '../components/groups/GroupCard';
@@ -105,11 +105,7 @@ export default function Groups() {
             <GroupCard key={group.GID} group={group} onClick={() => handleGroupClick(group.GID)} />
           ))}
         </div>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+        <Pagination current={currentPage} total={totalPages} onPageChange={setCurrentPage} />
       </>
     );
   };

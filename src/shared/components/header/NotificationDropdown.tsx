@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Dropdown } from '../ui/dropdown/Dropdown';
-import { DropdownItem } from '../ui/dropdown/DropdownItem';
+import { Dropdown } from '@nthucscc/ui';
+import { DropdownItem } from '@nthucscc/ui';
 import { Link } from 'react-router';
 import { useTranslation } from '@nthucscc/utils';
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getAllForms, updateFormStatus } from '../services/formService';
-import { Form, FormStatus } from '../interfaces/form';
-import { PageMeta } from '@nthucscc/ui';
+import { getAllForms, updateFormStatus } from '@/core/services/formService';
+import { Form, FormStatus } from '@/core/interfaces/form';
+import { PageMeta } from '@nthucscc/components-shared';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import { useTranslation } from '@nthucscc/utils';
 

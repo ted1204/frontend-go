@@ -4,10 +4,10 @@ import React, { ChangeEvent, FormEvent, useState, useEffect, useRef } from 'reac
 import { useTranslation, SpinnerIcon, AlertIcon } from '@nthucscc/utils';
 
 // Assuming InputField and Button are properly defined components
-import InputField from './form/input/InputField';
-import Button from './ui/button/Button';
+import { InputField } from '@/features/forms/components/form';
+import { Button } from '@nthucscc/ui';
 import { MPSSettings } from './project/MPSSettings';
-import { GroupSelect } from './form/GroupSelect';
+import { GroupSelect } from '@/features/forms/components/form';
 
 // --- Conceptual Interface for Group Data (Must be defined in your app) ---
 interface GroupOption {

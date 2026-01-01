@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from '@nthucscc/utils';
-import { SearchInput } from '@nthucscc/ui';
+import { SearchInput } from '@nthucscc/components-shared';
 
 interface SearchBarProps {
   value: string;

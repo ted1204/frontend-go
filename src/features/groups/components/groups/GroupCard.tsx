@@ -1,8 +1,8 @@
 // src/components/groups/GroupCard.tsx
 
 import React from 'react';
-import useTranslation from '../../../packages/utils/src/hooks/useTranslation';
-import { Group } from '../../interfaces/group';
+import { useTranslation } from '@nthucscc/utils';
+import { Group } from '@/core/interfaces/group';
 
 interface GroupCardProps {
   group: Group;

@@ -44,3 +44,5 @@ export const DropdownItem: React.FC<DropdownItemProps> = ({
     </button>
   );
 };
+
+export default DropdownItem;

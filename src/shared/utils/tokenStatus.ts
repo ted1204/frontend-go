@@ -1,5 +1,5 @@
 // Utility to check token status and auto-logout if expired
-import { API_BASE_URL } from '../config/url';
+import { API_BASE_URL } from '@/core/config/url';
 
 export async function checkTokenStatus() {
   try {

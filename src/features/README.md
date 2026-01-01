@@ -5,6 +5,7 @@ Feature-based architecture for better code organization and maintainability.
 ## Structure
 
 Each feature contains:
+
 - `components/` - Feature-specific React components
 - `pages/` - Feature route pages
 - `services/` (optional) - Feature-specific API services

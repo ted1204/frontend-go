@@ -1,7 +1,7 @@
-import { PageMeta } from '@nthucscc/ui';
+import { PageMeta } from '@nthucscc/components-shared';
 import { useTranslation } from '@nthucscc/utils';
 import AuthLayout from './AuthPageLayout';
-import SignInForm from '../../components/auth/SignInForm';
+import SignInForm from '@nthucscc/components-shared/auth/SignInForm';
 
 export default function SignIn() {
   const { t } = useTranslation();

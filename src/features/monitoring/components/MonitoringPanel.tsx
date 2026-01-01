@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from '@nthucscc/utils';
 // Ensure you have this constant. If not, define it locally:
 // const SYSTEM_POD_PREFIXES = ['kube-', 'coredns', 'etcd', 'calico', 'ingress'];
-import { SYSTEM_POD_PREFIXES } from '../config/constants';
+import { SYSTEM_POD_PREFIXES } from '@/core/config/constants';
 
 // --- Type Definitions ---
 

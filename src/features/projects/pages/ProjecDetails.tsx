@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom'; // Add Link
 import { useTranslation } from '@nthucscc/utils';
-import { PageMeta } from '@nthucscc/ui';
+import { PageMeta } from '@nthucscc/components-shared';
 import { ChartBarIcon, Cog6ToothIcon, CubeIcon, UsersIcon } from '@heroicons/react/24/outline';
 
 // Services & Context
-import { getProjectById } from '../services/projectService';
-import { getUsername } from '../services/authService';
-import { useGlobalWebSocket } from '../context/useGlobalWebSocket';
-import { Project } from '../interfaces/project';
+import { getProjectById } from '@/core/services/projectService';
+import { getUsername } from '@/core/services/authService';
+import { useGlobalWebSocket } from '@/core/context/useGlobalWebSocket';
+import { Project } from '@/core/interfaces/project';
 
 // Components
 import { PageBreadcrumb } from '@nthucscc/ui';
-import MonitoringPanel from '../components/MonitoringPanel';
+import MonitoringPanel from '@/features/monitoring/components/MonitoringPanel';
 import ConfigFilesTab from '../components/project/ConfigFilesTab';
-import { ProjectStorageManager } from '../components/storage/ProjectStorageManager';
+import { ProjectStorageManager } from '@/features/storage/components/storage/ProjectStorageManager';
 // Remove ProjectMembers import
-import CreateFormModal from '../components/CreateFormModal';
+import CreateFormModal from '@/features/forms/components/CreateFormModal';
 
 export default function ProjectDetail() {
   const { t } = useTranslation();

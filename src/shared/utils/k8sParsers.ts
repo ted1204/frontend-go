@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import yaml from 'js-yaml';
-import { createDefaultResource } from './resourceFactories'; // 假設既有
+import { createDefaultResource } from '@/features/projects/utils/resourceFactories'; // 假設既有
 import {
   ResourceItem,
   ResourceKind,
   ConfigMapResource,
   ServiceResource,
   WorkloadResource,
-} from '../interfaces/configFile';
+} from '@/core/interfaces/configFile';
 
 // 解析單個 YAML Doc 為 ResourceItem
 const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {

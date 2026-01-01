@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronDownIcon, TrashIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline';
-import type { ContainerConfig, WizardData } from '../../interfaces/configFile';
-import { PVC } from '../../interfaces/pvc';
+import type { ContainerConfig, WizardData } from '@/core/interfaces/configFile';
+import { PVC } from '@/core/interfaces/pvc';
 
 // Import managers
 import MountManager from './MountManager';

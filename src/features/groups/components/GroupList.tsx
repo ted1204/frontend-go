@@ -2,8 +2,8 @@
 
 import React, { ChangeEvent, useState, useEffect } from 'react';
 import { useTranslation, LocaleKey } from '@nthucscc/utils';
-import { Group } from '../interfaces/group'; // Adjust import based on your structure
-import { Pagination } from '@nthucscc/ui';
+import { Group } from '@/core/interfaces/group'; // Adjust import based on your structure
+import { Pagination } from '@nthucscc/components-shared';
 
 // --- SVG Icons --- //
 
@@ -221,11 +221,7 @@ const GroupList: React.FC<GroupListProps> = ({
             </li>
           ))}
         </ul>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+        <Pagination current={currentPage} total={totalPages} onPageChange={setCurrentPage} />
       </>
     );
   };

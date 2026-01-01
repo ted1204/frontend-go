@@ -5,11 +5,11 @@ import { toast } from 'react-hot-toast';
 import { ServerIcon, CubeIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 
 // Services
-import { createProjectStorage } from '../../../services/storageService'; // 引用整合後的 service
-import { getProjects } from '../../../services/projectService'; // 假設你有這個 Service 取得專案列表
+import { createProjectStorage } from '@/core/services/storageService'; // 引用整合後的 service
+import { getProjects } from '@/core/services/projectService'; // 假設你有這個 Service 取得專案列表
 
 // Types
-import { Project } from '../../../interfaces/project'; // 假設你有這個 Interface
+import { Project } from '@/core/interfaces/project'; // 假設你有這個 Interface
 
 interface ProjectStorageCreateProps {
   onCancel: () => void;

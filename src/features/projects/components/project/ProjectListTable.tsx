@@ -1,7 +1,7 @@
 import React from 'react';
-import { Project } from '../../interfaces/project';
+import { Project } from '@/core/interfaces/project';
 import { useTranslation } from '@nthucscc/utils';
-import { FolderIcon } from '../Icon';
+import { FolderIcon } from '@nthucscc/ui';
 
 interface ProjectListTableProps {
   projects: Project[];

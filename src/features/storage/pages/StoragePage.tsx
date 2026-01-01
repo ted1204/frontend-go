@@ -5,8 +5,8 @@ import { useTranslation } from '@nthucscc/utils';
 import { ServerStackIcon, UserCircleIcon, CubeIcon } from '@heroicons/react/24/outline';
 
 // Components
-import ProjectStorageManagement from '../components/admin-storage/project/ProjectStorageManagement';
-import UserStorageManagement from '../components/admin-storage/user/UserStorageManagement';
+import ProjectStorageManagement from '@/features/admin/components/storage/project/ProjectStorageManagement';
+import UserStorageManagement from '@/features/admin/components/storage/user/UserStorageManagement';
 
 type MainTab = 'user' | 'project';
 

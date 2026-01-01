@@ -3,8 +3,8 @@
 import React, { useState, Fragment } from 'react';
 import { useTranslation } from '@nthucscc/utils';
 import { Dialog, Transition } from '@headlessui/react';
-import { Group } from '../../interfaces/group';
-import { createGroup } from '../../services/groupService'; // Assuming you have this service function
+import { Group } from '@/core/interfaces/group';
+import { createGroup } from '@/core/services/groupService'; // Assuming you have this service function
 
 interface CreateGroupModalProps {
   isOpen: boolean;

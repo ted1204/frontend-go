@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from '@nthucscc/utils';
 import { PageBreadcrumb } from '@nthucscc/ui';
-import { PageMeta } from '@nthucscc/ui';
+import { PageMeta } from '@nthucscc/components-shared';
 import { UserCircleIcon, CubeIcon } from '@heroicons/react/24/outline';
 
 // Import the decoupled components
 import { PersonalHub } from '../components/storage/PersonalHub';
-import { ProjectStorageManager } from '../components/storage/ProjectStorageManager';
+import { ProjectStorageManager } from '@/features/storage/components/storage/ProjectStorageManager';
 
 // --- Main Page Component ---
 // Acts as a shell to switch between Personal and Project storage views.

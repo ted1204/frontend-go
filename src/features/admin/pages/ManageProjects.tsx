@@ -1,24 +1,24 @@
 // src/pages/ManageProjects.tsx
 
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import { Project } from '../interfaces/project';
-import ProjectList from '../components/project/ProjectListTable';
+import { Project } from '@/core/interfaces/project';
+import ProjectList from '@/features/projects/components/project/ProjectListTable';
 import {
   getProjects,
   createProject,
   deleteProject,
   CreateProjectDTO,
-} from '../services/projectService';
+} from '@/core/services/projectService';
 // removed unused import: useNavigate
-import EditProjectForm from '../components/EditProjectForm';
-import CreateProjectForm from '../components/CreateProjectForm';
+import EditProjectForm from '@/features/projects/components/EditProjectForm';
+import CreateProjectForm from '@/features/projects/components/CreateProjectForm';
 import { Button } from '@nthucscc/ui';
-import DeleteConfirmationModal from '../components/ui/modal/DeleteConfirmationModal';
-import { updateProject, UpdateProjectInput } from '../services/projectService';
+import { DeleteConfirmationModal } from '@nthucscc/ui';
+import { updateProject, UpdateProjectInput } from '@/core/services/projectService';
 
-import { getGroups } from '../services/groupService';
+import { getGroups } from '@/core/services/groupService';
 import { useTranslation } from '@nthucscc/utils';
-import { useProjectFormState } from '../hooks/useProjectFormState';
+import { useProjectFormState } from '@/shared/hooks/useProjectFormState';
 // --- Conceptual Group Interfaces (Must be defined in your app) ---
 interface GroupOption {
   GID: number;

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { getJobs, Job } from '../services/jobService';
-import { getJobLog } from '../services/jobLogService';
-import { submitJob, SubmitJobRequest } from '../services/jobSubmitService';
+import { getJobs, Job } from '@/core/services/jobService';
+import { getJobLog } from '@/core/services/jobLogService';
+import { submitJob, SubmitJobRequest } from '@/core/services/jobSubmitService';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import JobCard from '../components/job/JobCard';
 import JobLogModal from '../components/job/JobLogModal';
 import JobApplyModal from '../components/job/JobApplyModal';
-import ViewModeToggle from '../components/form/ViewModeToggle';
-import SearchInput from '../components/common/SearchInput';
-import Pagination from '../components/common/Pagination';
+import { ViewModeToggle } from '@/features/forms/components/form';
+import { SearchInput } from '@nthucscc/components-shared';
+import { Pagination } from '@nthucscc/components-shared';
 
 const Jobs: React.FC = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -163,7 +163,7 @@ const Jobs: React.FC = () => {
           </table>
         </div>
       )}
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+      <Pagination current={currentPage} total={totalPages} onPageChange={setCurrentPage} />
       <JobApplyModal
         open={showApply}
         onClose={() => {

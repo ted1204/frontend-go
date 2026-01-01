@@ -1,10 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Auth Pages
 import { SignIn, SignUp } from './features/auth/pages';
 
 // Admin Pages
-import { AdminDashboard, AdminFormDashboard, ManageProjects, ManageGroups } from './features/admin/pages';
+import {
+  AdminDashboard,
+  AdminFormDashboard,
+  ManageProjects,
+  ManageGroups,
+} from './features/admin/pages';
 
 // Groups Pages
 import { Groups } from './features/groups/pages';
@@ -23,7 +28,7 @@ import { StoragePage, BrowserPage, TerminalWrapper } from './features/storage/pa
 import { PodTables, Jobs } from './features/monitoring/pages';
 
 // Shared Components from packages
-import { NotFound, Home, ScrollToTop } from '@nthucscc/ui';
+import { NotFound, ScrollToTop } from '@nthucscc/ui';
 import { PrivateRoute, PublicRoute } from '@nthucscc/components-shared';
 
 // Core
@@ -45,7 +50,7 @@ export default function App() {
           {/* Protected Routes */}
           <Route element={<PrivateRoute />}>
             <Route element={<AppLayout />}>
-              <Route index path="/" element={<Home />} />
+              <Route index path="/" element={<Navigate to="/projects" replace />} />
               <Route path="/groups" element={<Groups />} />
               <Route path="/groups/:id" element={<GroupDetail />} />
               <Route path="/projects" element={<Projects />} />

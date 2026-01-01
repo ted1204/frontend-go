@@ -1,22 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { Group } from '../interfaces/group';
-import { User } from '../interfaces/user';
-import { UserGroupUser } from '../interfaces/userGroup';
-import { getGroupById } from '../services/groupService';
-import { getUsers } from '../services/userService';
+import { Group } from '@/core/interfaces/group';
+import { User } from '@/core/interfaces/user';
+import { UserGroupUser } from '@/core/interfaces/userGroup';
+import { getGroupById } from '@/core/services/groupService';
+import { getUsers } from '@/core/services/userService';
 import {
   createUserGroup,
   getUsersByGroup,
   deleteUserGroup,
   updateUserGroup,
-} from '../services/userGroupService';
+} from '@/core/services/userGroupService';
 
-import { PageMeta } from '@nthucscc/ui';
+import { PageMeta } from '@nthucscc/components-shared';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import InviteUserModal, { FormData } from '../components/InviteUserModal';
 import EditRoleModal from '../components/EditRoleModal';
-import Button from '../components/ui/button/Button';
+import { Button } from '@nthucscc/ui';
 
 import {
   IdentificationIcon,

@@ -17,7 +17,7 @@ import {
   CreateProjectStoragePayload,
   CreateStorageResponse,
 } from '../interfaces/projectStorage';
-import { fetchWithAuth as baseFetchWithAuth } from '../utils/api';
+import { fetchWithAuth as baseFetchWithAuth } from '@/shared/utils/api';
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
   const headers = {

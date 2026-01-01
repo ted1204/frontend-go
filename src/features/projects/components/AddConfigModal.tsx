@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import { useTranslation } from '@nthucscc/utils'; // 假設的路徑
-import { Project } from '../interfaces/project';
-import { PVC } from '../interfaces/pvc';
-import { getPVCListByProject, checkUserStorageStatus } from '../services/storageService';
-import { getUsername } from '../services/authService';
-import { generateMultiDocYAML } from '../utils/k8sYamlGenerator';
+import { Project } from '@/core/interfaces/project';
+import { PVC } from '@/core/interfaces/pvc';
+import { getPVCListByProject, checkUserStorageStatus } from '@/core/services/storageService';
+import { getUsername } from '@/core/services/authService';
+import { generateMultiDocYAML } from '@/features/projects/utils/k8sYamlGenerator';
 
 // Shared Components & Hooks
-import BaseModal from './ui/modal/BaseModal';
+import { BaseModal } from '@nthucscc/ui';
 import ResourceWizard from './configfile/ResourceWizard';
-import { useConfigForm } from '../hooks/useConfigForm';
+import { useConfigForm } from '@/shared/hooks/useConfigForm';
 
 interface AddConfigModalProps {
   isOpen: boolean;

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ResourceItem, ConfigFile } from '../interfaces/configFile';
+import { ResourceItem, ConfigFile } from '@/core/interfaces/configFile';
 import { parseK8sYaml } from '../utils/k8sParsers';
-import { generateMultiDocYAML } from '../utils/k8sYamlGenerator';
+import { generateMultiDocYAML } from '@/features/projects/utils/k8sYamlGenerator';
 
 export type TabType = 'wizard' | 'yaml';
 

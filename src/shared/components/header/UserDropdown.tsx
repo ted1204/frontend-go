@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { DropdownItem } from '../ui/dropdown/DropdownItem';
-import { Dropdown } from '../ui/dropdown/Dropdown';
-import SignOutButton from '../auth/SignOutButton';
+import { DropdownItem } from '@nthucscc/ui';
+import { Dropdown } from '@nthucscc/ui';
+import { SignOutButton } from './SignOutButton';
 import { useTranslation } from '@nthucscc/utils';
 
 export default function UserDropdown() {

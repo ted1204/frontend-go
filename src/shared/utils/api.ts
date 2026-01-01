@@ -1,4 +1,4 @@
-import { ErrorResponse } from '../response/response';
+import { ErrorResponse } from '@/core/response/response';
 
 export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   const headers = {

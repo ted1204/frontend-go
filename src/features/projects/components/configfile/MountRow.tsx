@@ -1,7 +1,7 @@
 // src/components/add-config/MountRow.tsx
 import { TrashIcon } from '@heroicons/react/24/outline';
-import { MountConfig } from '../../interfaces/configFile';
-import { PVC } from '../../interfaces/pvc';
+import { MountConfig } from '@/core/interfaces/configFile';
+import { PVC } from '@/core/interfaces/pvc';
 
 interface MountRowProps {
   mount: MountConfig;

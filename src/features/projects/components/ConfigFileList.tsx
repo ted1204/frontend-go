@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from '@nthucscc/utils';
-import { ConfigFile } from '../interfaces/configFile';
-import { Resource } from '../interfaces/resource';
-import { getResourcesByConfigFile } from '../services/resourceService';
+import { ConfigFile } from '@/core/interfaces/configFile';
+import { Resource } from '@/core/interfaces/resource';
+import { getResourcesByConfigFile } from '@/core/services/resourceService';
 
 // --- Helper Components ---
 

@@ -3,17 +3,17 @@ import { useTranslation } from '@nthucscc/utils';
 import { toast } from 'react-hot-toast';
 import { MagnifyingGlassIcon, Squares2X2Icon, Bars4Icon } from '@heroicons/react/24/outline';
 
-import { WebSocketContext } from '../../context/WebSocketContext';
+import { WebSocketContext } from '@/core/context/WebSocketContext';
 import {
   getMyProjectStorages,
   startProjectFileBrowser,
   stopProjectFileBrowser,
   getProjectStorageProxyUrl,
-} from '../../services/storageService';
+} from '@/core/services/storageService';
 
 import { ProjectTableView } from './ProjectTableView';
 import { ProjectGridView } from './ProjectGridView';
-import { ProjectPVC } from '../../interfaces/projectStorage';
+import { ProjectPVC } from '@/core/interfaces/projectStorage';
 
 // --- Manager Component ---
 // Handles data fetching, filtering, view switching, and action dispatching.
