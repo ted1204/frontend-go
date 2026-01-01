@@ -1,27 +1,34 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import SignIn from './pages/AuthPages/SignIn';
-import SignUp from './pages/AuthPages/SignUp';
-import NotFound from './pages/OtherPage/NotFound';
-import PodTables from './pages/Tables/MonitoringTables';
-import AppLayout from './layout/AppLayout';
-import { ScrollToTop } from './components/common/ScrollToTop';
-import Home from './pages/Dashboard/Home';
-import Groups from './pages/Groups';
-import Projects from './pages/Projects';
-import GroupDetail from './components/GroupDetail';
-import ProjectDetail from './pages/ProjecDetails';
-import ManageProjects from './pages/ManageProjects';
-import ManageGroups from './pages/ManageGroups';
-import PrivateRoute from './components/PrivateRoute';
-import PublicRoute from './components/PublicRoute';
-import TerminalWrapper from './pages/Terminal/TerminalPage';
-import BrowserPage from './pages/BrowserPage';
-import AdminFormDashboard from './pages/AdminFormDashboard';
-import AdminDashboard from './pages/AdminDashboard';
-import StoragePage from './pages/StoragePage';
-import UserFormDashboard from './pages/UserFormDashboard';
-import Jobs from './pages/Jobs';
-import { AuthProvider } from './context/AuthContext';
+
+// Auth Pages
+import { SignIn, SignUp } from './features/auth/pages';
+
+// Admin Pages
+import { AdminDashboard, AdminFormDashboard, ManageProjects, ManageGroups } from './features/admin/pages';
+
+// Groups Pages
+import { Groups } from './features/groups/pages';
+import GroupDetail from './features/groups/components/GroupDetail';
+
+// Projects Pages
+import { Projects, ProjectDetail } from './features/projects/pages';
+
+// Forms Pages
+import { UserFormDashboard } from './features/forms/pages';
+
+// Storage Pages
+import { StoragePage, BrowserPage, TerminalWrapper } from './features/storage/pages';
+
+// Monitoring Pages
+import { PodTables, Jobs } from './features/monitoring/pages';
+
+// Shared Components from packages
+import { NotFound, Home, ScrollToTop } from '@nthucscc/ui';
+import { PrivateRoute, PublicRoute } from '@nthucscc/components-shared';
+
+// Core
+import AppLayout from './core/layout/AppLayout';
+import { AuthProvider } from './core/context/AuthContext';
 
 export default function App() {
   return (

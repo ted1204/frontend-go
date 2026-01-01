@@ -1,4 +1,4 @@
-import { useTheme } from '../../src/context/useTheme';
+import { useTheme } from '../../context/useTheme';
 
 export const ThemeToggleButton: React.FC = () => {
   const { toggleTheme } = useTheme();
@@ -39,5 +39,3 @@ export const ThemeToggleButton: React.FC = () => {
     </button>
   );
 };
-
-export default ThemeToggleButton;
