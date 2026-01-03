@@ -8,5 +8,16 @@ import { ReactComponent as ChevronLeftIcon } from './chevron-left.svg?react';
 import { ReactComponent as EyeCloseIcon } from './eye-close.svg?react';
 import { ReactComponent as EyeIcon } from './eye.svg?react';
 import { ReactComponent as MoreDotIcon } from './moredot.svg?react';
-export { BoxIcon, ChevronDownIcon, GridIcon, GroupIcon, HorizontaLDots, TaskIcon, ChevronLeftIcon, EyeCloseIcon, EyeIcon, MoreDotIcon, };
+export {
+  BoxIcon,
+  ChevronDownIcon,
+  GridIcon,
+  GroupIcon,
+  HorizontaLDots,
+  TaskIcon,
+  ChevronLeftIcon,
+  EyeCloseIcon,
+  EyeIcon,
+  MoreDotIcon,
+};
 //# sourceMappingURL=index.d.ts.map

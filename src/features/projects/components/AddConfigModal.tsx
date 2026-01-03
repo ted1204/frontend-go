@@ -3,7 +3,11 @@ import MonacoEditor from 'react-monaco-editor';
 import { useTranslation } from '@nthucscc/utils'; // 假設的路徑
 import { Project } from '@/core/interfaces/project';
 import { PVC } from '@/core/interfaces/pvc';
-import { getPVCListByProject, checkUserStorageStatus, getMyProjectStorages } from '@/core/services/storageService';
+import {
+  getPVCListByProject,
+  checkUserStorageStatus,
+  getMyProjectStorages,
+} from '@/core/services/storageService';
 import { getUsername } from '@/core/services/authService';
 import { generateMultiDocYAML } from '@/features/projects/utils/k8sYamlGenerator';
 
@@ -78,30 +82,40 @@ export default function AddConfigModal({
         // Ensure both are arrays
         const projectPvcsArray = Array.isArray(projectPvcs) ? projectPvcs : [];
         const pvcsArray = Array.isArray(allMyPvcs) ? allMyPvcs : [];
-        
+
         console.log('[AddConfigModal] Project PVCs:', projectPvcsArray);
         console.log('[AddConfigModal] My Project Storages:', pvcsArray);
-        
+
         // Convert ProjectPVC to PVC format and merge
         const convertedAllMyPvcs = pvcsArray
-          .map((proj: { name?: string; pvcName?: string; pvc_name?: string; namespace?: string; capacity?: string; Capacity?: string; status?: string }) => {
-            const name =
-              proj.name ||
-              proj.pvcName ||
-              proj.pvc_name ||
-              (proj.namespace ? `pvc-${proj.namespace}` : '');
-            const size = proj.capacity || proj.Capacity || '';
-            return {
-              name,
-              namespace: proj.namespace,
-              size,
-              status: proj.status || '',
-            };
-          })
+          .map(
+            (proj: {
+              name?: string;
+              pvcName?: string;
+              pvc_name?: string;
+              namespace?: string;
+              capacity?: string;
+              Capacity?: string;
+              status?: string;
+            }) => {
+              const name =
+                proj.name ||
+                proj.pvcName ||
+                proj.pvc_name ||
+                (proj.namespace ? `pvc-${proj.namespace}` : '');
+              const size = proj.capacity || proj.Capacity || '';
+              return {
+                name,
+                namespace: proj.namespace,
+                size,
+                status: proj.status || '',
+              };
+            },
+          )
           .filter((pvc: { name: string }) => pvc.name);
-        
+
         console.log('[AddConfigModal] Converted PVCs:', convertedAllMyPvcs);
-        
+
         const merged = [
           ...projectPvcsArray.filter((p) => p.name),
           ...convertedAllMyPvcs.filter((pvc) => !projectPvcsArray.some((p) => p.name === pvc.name)),

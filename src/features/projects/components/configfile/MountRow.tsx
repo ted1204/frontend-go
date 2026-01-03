@@ -72,10 +72,12 @@ const MountRow = ({
         {mount.type === 'project-pvc' && mount.pvcName && (
           <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
             <p>
-              Gateway exports /exports/{mount.pvcName}; use subPath "/" (or leave empty) to mount the root of that share in your workload.
+              Gateway exports /exports/{mount.pvcName}; use subPath "/" (or leave empty) to mount
+              the root of that share in your workload.
             </p>
             <p className="text-amber-600 dark:text-amber-400">
-              ⚠️ PVC must support ReadWriteMany for multiple Pods (e.g., FileBrowser + your workload) to access simultaneously.
+              ⚠️ PVC must support ReadWriteMany for multiple Pods (e.g., FileBrowser + your
+              workload) to access simultaneously.
             </p>
           </div>
         )}

@@ -135,7 +135,9 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
                 podName,
               }) => (
                 <tr key={`${podKey}-${container}`} className="bg-gray-50 dark:bg-gray-800/60">
-                  <td className="pl-14 pr-6 py-2 text-sm text-gray-700 dark:text-gray-300">{container}</td>
+                  <td className="pl-14 pr-6 py-2 text-sm text-gray-700 dark:text-gray-300">
+                    {container}
+                  </td>
                   <td className="px-6 py-2"></td>
                   <td className="px-6 py-2"></td>
                   <td className="px-6 py-2 text-right">

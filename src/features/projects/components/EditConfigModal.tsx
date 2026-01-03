@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import { useTranslation } from '@nthucscc/utils';
 import { ConfigFile } from '@/core/interfaces/configFile';
-import { getPVCListByProject, checkUserStorageStatus, getMyProjectStorages } from '@/core/services/storageService';
+import {
+  getPVCListByProject,
+  checkUserStorageStatus,
+  getMyProjectStorages,
+} from '@/core/services/storageService';
 import { getUsername } from '@/core/services/authService';
 import { generateMultiDocYAML } from '@/features/projects/utils/k8sYamlGenerator';
 
@@ -61,23 +65,32 @@ export default function EditConfigModal({
         // Ensure both are arrays
         const projectPvcsArray = Array.isArray(projectPvcs) ? projectPvcs : [];
         const pvcsArray = Array.isArray(allMyPvcs) ? allMyPvcs : [];
-        
+
         console.log('[EditConfigModal] Project PVCs:', projectPvcsArray);
         console.log('[EditConfigModal] My Project Storages:', pvcsArray);
-        
+
         // Convert ProjectPVC to PVC format and merge
-        const convertedAllMyPvcs = pvcsArray.map((proj: { name?: string; pvcName?: string; namespace?: string; capacity?: string; Capacity?: string; status?: string }) => ({
-          name: proj.name || proj.pvcName,
-          namespace: proj.namespace,
-          size: proj.capacity || proj.Capacity,
-          status: proj.status,
-        }));
-        
+        const convertedAllMyPvcs = pvcsArray.map(
+          (proj: {
+            name?: string;
+            pvcName?: string;
+            namespace?: string;
+            capacity?: string;
+            Capacity?: string;
+            status?: string;
+          }) => ({
+            name: proj.name || proj.pvcName,
+            namespace: proj.namespace,
+            size: proj.capacity || proj.Capacity,
+            status: proj.status,
+          }),
+        );
+
         console.log('[EditConfigModal] Converted PVCs:', convertedAllMyPvcs);
-        
+
         const merged = [
           ...projectPvcsArray,
-          ...convertedAllMyPvcs.filter(pvc => !projectPvcsArray.some(p => p.name === pvc.name))
+          ...convertedAllMyPvcs.filter((pvc) => !projectPvcsArray.some((p) => p.name === pvc.name)),
         ];
         console.log('[EditConfigModal] Merged PVCs:', merged);
         setProjectPvcs(merged);

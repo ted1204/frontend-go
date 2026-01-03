@@ -140,7 +140,9 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
             placeholder="e.g. data-1"
             className="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           />
-          <p className="mt-1 text-xs text-gray-500">Unique per project; exports as /exports/&lt;name&gt;.</p>
+          <p className="mt-1 text-xs text-gray-500">
+            Unique per project; exports as /exports/&lt;name&gt;.
+          </p>
           {projects
             .find((proj) => proj.PID.toString() === selectedProjectId)
             ?.Storages?.some((s: { name: string }) => s.name === pvcName.trim()) && (

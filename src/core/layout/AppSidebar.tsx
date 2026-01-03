@@ -118,7 +118,9 @@ const AppSidebar: React.FC = () => {
     if (userData) {
       const parsedData = JSON.parse(userData);
       const roleValue = (
-        parsedData.role || parsedData.Role || (Array.isArray(parsedData.roles) ? parsedData.roles[0] : '')
+        parsedData.role ||
+        parsedData.Role ||
+        (Array.isArray(parsedData.roles) ? parsedData.roles[0] : '')
       )
         .toString()
         .toLowerCase();

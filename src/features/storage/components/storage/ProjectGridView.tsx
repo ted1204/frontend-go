@@ -36,7 +36,10 @@ export const ProjectGridView: React.FC<Props> = ({
         );
         // Allow manage if global flag or storage role is admin/manager
         const canManageRow =
-          canManage || ['admin', 'manager'].includes(((storage as unknown as { role?: string }).role?.toLowerCase?.() || ''));
+          canManage ||
+          ['admin', 'manager'].includes(
+            (storage as unknown as { role?: string }).role?.toLowerCase?.() || '',
+          );
 
         return (
           <div
@@ -60,7 +63,12 @@ export const ProjectGridView: React.FC<Props> = ({
                   </div>
                   <div className="text-xs text-gray-500 mt-1 space-y-0.5">
                     <div>NS: {storage.namespace}</div>
-                    <div>PVC: {(storage as unknown as { pvcList?: string[] }).pvcList?.join(', ') || storage.pvcName || '-'}</div>
+                    <div>
+                      PVC:{' '}
+                      {(storage as unknown as { pvcList?: string[] }).pvcList?.join(', ') ||
+                        storage.pvcName ||
+                        '-'}
+                    </div>
                   </div>
                 </div>
               </div>

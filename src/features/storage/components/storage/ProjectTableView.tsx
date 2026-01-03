@@ -71,7 +71,10 @@ export const ProjectTableView: React.FC<Props> = ({
             );
             // Allow manage if global flag or storage role is admin/manager
             const canManageRow =
-              canManage || ['admin', 'manager'].includes(((storage as unknown as { role?: string }).role?.toLowerCase?.() || ''));
+              canManage ||
+              ['admin', 'manager'].includes(
+                (storage as unknown as { role?: string }).role?.toLowerCase?.() || '',
+              );
 
             return (
               <tr
@@ -89,7 +92,10 @@ export const ProjectTableView: React.FC<Props> = ({
                       </div>
                       <div className="text-xs text-gray-500">NS: {storage.namespace}</div>
                       <div className="text-xs text-gray-500">
-                        PVC: {(storage as unknown as { pvcList?: string[] }).pvcList?.join(', ') || storage.pvcName || '-'}
+                        PVC:{' '}
+                        {(storage as unknown as { pvcList?: string[] }).pvcList?.join(', ') ||
+                          storage.pvcName ||
+                          '-'}
                       </div>
                     </div>
                   </div>

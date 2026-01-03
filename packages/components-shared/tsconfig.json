@@ -5,10 +5,5 @@
     "declaration": false,
     "noEmit": true
   },
-  "include": [
-    "*.tsx",
-    "*.ts",
-    "auth/*.tsx",
-    "auth/*.ts"
-  ]
+  "include": ["*.tsx", "*.ts", "auth/*.tsx", "auth/*.ts"]
 }

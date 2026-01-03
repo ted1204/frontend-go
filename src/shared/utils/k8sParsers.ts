@@ -80,11 +80,11 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
         // Find the corresponding volume definition to determine type
         const volumes = templateSpec.volumes || [];
         const volumeDef = volumes.find((v: any) => v.name === m.name);
-        
+
         // Determine mount type based on volume definition
         let mountType: 'project-pvc' | 'user-storage' = 'project-pvc';
         let pvcName = m.name || '';
-        
+
         if (volumeDef) {
           if (volumeDef.nfs) {
             // NFS volume - check if it's user storage placeholder
@@ -95,7 +95,7 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
             pvcName = volumeDef.persistentVolumeClaim.claimName || m.name;
           }
         }
-        
+
         return {
           id: `${id}-c-${ci}-m-${mi}`,
           mountPath: m.mountPath,

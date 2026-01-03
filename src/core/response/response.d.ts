@@ -1,12 +1,12 @@
 export interface ErrorResponse {
-    error: string;
+  error: string;
 }
 export interface MessageResponse {
-    message: string;
+  message: string;
 }
 export interface LoginResponse {
-    user_id: number;
-    username: string;
-    is_super_admin: boolean;
+  user_id: number;
+  username: string;
+  is_super_admin: boolean;
 }
 //# sourceMappingURL=response.d.ts.map

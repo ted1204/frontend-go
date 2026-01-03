@@ -164,5 +164,14 @@ export const TrashIcon: React.FC<IconProps> = ({ size = 20, className = '', ...p
   </svg>
 );
 
-const Icon = { FolderIcon, GridIcon, ListIcon, UserGroupIcon, PlusIcon, SearchIcon, PencilIcon, TrashIcon };
+const Icon = {
+  FolderIcon,
+  GridIcon,
+  ListIcon,
+  UserGroupIcon,
+  PlusIcon,
+  SearchIcon,
+  PencilIcon,
+  TrashIcon,
+};
 export default Icon;

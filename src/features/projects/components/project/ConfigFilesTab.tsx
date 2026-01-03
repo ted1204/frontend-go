@@ -72,7 +72,8 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
       await fetchConfigs(); // Refresh list
     } catch (err) {
       console.error('Error creating config file:', err);
-      const errorMessage = err instanceof Error ? err.message : t('project.detail.createConfigError');
+      const errorMessage =
+        err instanceof Error ? err.message : t('project.detail.createConfigError');
       console.error('Error message:', errorMessage);
       setError(errorMessage);
       alert('創建配置文件失敗: ' + errorMessage); // 临时添加 alert 确保能看到错误

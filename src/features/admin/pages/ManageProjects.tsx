@@ -262,7 +262,6 @@ export default function ManageProjects() {
     <div className="relative">
       {/* Page Container with improved spacing */}
       <div className="min-h-screen rounded-xl border border-gray-100 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900 xl:p-12">
-        
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
