@@ -143,7 +143,7 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
           <p className="mt-1 text-xs text-gray-500">Unique per project; exports as /exports/&lt;name&gt;.</p>
           {projects
             .find((proj) => proj.PID.toString() === selectedProjectId)
-            ?.Storages?.some((s: any) => s.name === pvcName.trim()) && (
+            ?.Storages?.some((s: { name: string }) => s.name === pvcName.trim()) && (
             <p className="mt-1 text-xs text-red-500">Name already used in this project.</p>
           )}
         </div>

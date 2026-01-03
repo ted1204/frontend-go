@@ -84,7 +84,7 @@ export default function AddConfigModal({
         
         // Convert ProjectPVC to PVC format and merge
         const convertedAllMyPvcs = pvcsArray
-          .map((proj: any) => {
+          .map((proj: { name?: string; pvcName?: string; pvc_name?: string; namespace?: string; capacity?: string; Capacity?: string; status?: string }) => {
             const name =
               proj.name ||
               proj.pvcName ||
@@ -98,7 +98,7 @@ export default function AddConfigModal({
               status: proj.status || '',
             };
           })
-          .filter((pvc: any) => pvc.name);
+          .filter((pvc: { name: string }) => pvc.name);
         
         console.log('[AddConfigModal] Converted PVCs:', convertedAllMyPvcs);
         

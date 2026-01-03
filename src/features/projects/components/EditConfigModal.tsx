@@ -66,7 +66,7 @@ export default function EditConfigModal({
         console.log('[EditConfigModal] My Project Storages:', pvcsArray);
         
         // Convert ProjectPVC to PVC format and merge
-        const convertedAllMyPvcs = pvcsArray.map((proj: any) => ({
+        const convertedAllMyPvcs = pvcsArray.map((proj: { name?: string; pvcName?: string; namespace?: string; capacity?: string; Capacity?: string; status?: string }) => ({
           name: proj.name || proj.pvcName,
           namespace: proj.namespace,
           size: proj.capacity || proj.Capacity,

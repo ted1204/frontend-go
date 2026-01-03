@@ -249,7 +249,7 @@ export const getProjectStorages = async (): Promise<ProjectPVC[]> => {
     const list = Array.isArray(result) ? result : [];
 
     // Normalize fields to ProjectPVC shape
-    return list.map((item: any) => {
+    return list.map((item: Record<string, unknown>) => {
       const capacityRaw = item.capacity ?? item.Capacity ?? '';
       const capacity = typeof capacityRaw === 'number' ? `${capacityRaw}Gi` : capacityRaw;
       return {
@@ -332,7 +332,7 @@ export const getMyProjectStorages = async (): Promise<ProjectPVC[]> => {
     const rawList = Array.isArray(result) ? result : [];
 
     // Normalize backend fields to frontend interface
-    const pvcs: ProjectPVC[] = rawList.map((item: any) => {
+    const pvcs: ProjectPVC[] = rawList.map((item: Record<string, unknown>) => {
       const capacityRaw = item.capacity ?? item.Capacity ?? '';
       const capacity = typeof capacityRaw === 'number' ? `${capacityRaw}Gi` : capacityRaw;
       return {
