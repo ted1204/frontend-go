@@ -79,10 +79,10 @@ export default function EditConfigModal({
             Capacity?: string;
             status?: string;
           }) => ({
-            name: proj.name || proj.pvcName,
-            namespace: proj.namespace,
-            size: proj.capacity || proj.Capacity,
-            status: proj.status,
+            name: proj.name || proj.pvcName || '',
+            namespace: proj.namespace || '',
+            size: proj.capacity || proj.Capacity || '',
+            status: proj.status || '',
           }),
         );
 

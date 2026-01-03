@@ -106,7 +106,7 @@ export default function AddConfigModal({
               const size = proj.capacity || proj.Capacity || '';
               return {
                 name,
-                namespace: proj.namespace,
+                namespace: proj.namespace || '',
                 size,
                 status: proj.status || '',
               };

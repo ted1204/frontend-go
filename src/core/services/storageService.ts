@@ -334,17 +334,21 @@ export const getMyProjectStorages = async (): Promise<ProjectPVC[]> => {
     // Normalize backend fields to frontend interface
     const pvcs: ProjectPVC[] = rawList.map((item: Record<string, unknown>) => {
       const capacityRaw = item.capacity ?? item.Capacity ?? '';
-      const capacity = typeof capacityRaw === 'number' ? `${capacityRaw}Gi` : capacityRaw;
+      const capacity = typeof capacityRaw === 'number' ? `${capacityRaw}Gi` : String(capacityRaw);
+      const statusValue = String(item.status ?? '');
+      const status = (['Bound', 'Pending', 'Lost', 'Terminating'].includes(statusValue)
+        ? statusValue
+        : 'Pending') as 'Bound' | 'Pending' | 'Lost' | 'Terminating';
       return {
         id: String(item.id ?? item.ID ?? item.project_id ?? item.projectId ?? ''),
-        pvcName: item.pvcName ?? item.pvc_name ?? item.name ?? '',
-        projectName: item.projectName ?? item.project_name ?? '',
-        namespace: item.namespace ?? '',
+        pvcName: String(item.pvcName ?? item.pvc_name ?? item.name ?? ''),
+        projectName: String(item.projectName ?? item.project_name ?? ''),
+        namespace: String(item.namespace ?? ''),
         capacity,
-        status: item.status ?? '',
-        accessMode: item.accessMode ?? item.access_mode ?? '',
-        createdAt: item.createdAt ?? item.created_at ?? '',
-        role: item.role ?? item.Role ?? '',
+        status,
+        accessMode: String(item.accessMode ?? item.access_mode ?? ''),
+        createdAt: String(item.createdAt ?? item.created_at ?? ''),
+        role: String(item.role ?? item.Role ?? ''),
       };
     });
 

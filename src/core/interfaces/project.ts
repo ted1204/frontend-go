@@ -9,4 +9,5 @@ export interface Project {
   MPSMemory?: number;
   CreatedAt: string;
   UpdatedAt: string;
+  Storages?: { name: string; capacity?: string; status?: string }[];
 }
