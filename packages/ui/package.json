@@ -2,14 +2,12 @@
   "name": "@nthucscc/ui",
   "version": "0.0.0",
   "private": true,
-  "main": "dist/ui/index.js",
-  "module": "dist/ui/index.js",
-  "types": "dist/ui/index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "exports": {
     ".": {
-      "import": "./dist/ui/index.js",
-      "require": "./dist/ui/index.js",
-      "types": "./dist/ui/index.d.ts"
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
     }
   },
   "scripts": {
@@ -19,5 +17,8 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "@nthucscc/utils": "*"
+  }
 }
