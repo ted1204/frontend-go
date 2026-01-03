@@ -7,11 +7,12 @@
     "outDir": "../../build/ui",
     "noEmit": false,
     "tsBuildInfoFile": "../../.tsbuildinfo/ui.tsbuildinfo",
-    "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
       "@nthucscc/ui": ["./src"],
-      "@nthucscc/ui/*": ["./src/*"]
+      "@nthucscc/ui/*": ["./src/*"],
+      "@nthucscc/utils": ["../utils/src"],
+      "@nthucscc/utils/*": ["../utils/src/*"]
     }
   },
   "references": [{ "path": "../utils" }],
