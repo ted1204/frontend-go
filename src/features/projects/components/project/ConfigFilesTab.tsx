@@ -66,11 +66,16 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
   const handleCreate = async (data: { filename: string; raw_yaml: string }) => {
     setActionLoading(true);
     try {
+      console.log('Creating config file with data:', { ...data, project_id: projectId });
       await createConfigFile({ ...data, project_id: projectId });
       setIsCreateModalOpen(false);
       await fetchConfigs(); // Refresh list
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('project.detail.createConfigError'));
+      console.error('Error creating config file:', err);
+      const errorMessage = err instanceof Error ? err.message : t('project.detail.createConfigError');
+      console.error('Error message:', errorMessage);
+      setError(errorMessage);
+      alert('創建配置文件失敗: ' + errorMessage); // 临时添加 alert 确保能看到错误
     } finally {
       setActionLoading(false);
     }
@@ -126,6 +131,8 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
     try {
       await deleteInstance(id);
       alert(t('project.detail.instanceDeleteSent'));
+      // Refresh the config files list to update instance counts
+      await fetchConfigs();
     } catch (err) {
       alert(err instanceof Error ? err.message : t('project.detail.deleteInstanceError'));
     } finally {

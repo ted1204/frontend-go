@@ -117,10 +117,16 @@ const AppSidebar: React.FC = () => {
     const userData = localStorage.getItem('userData');
     if (userData) {
       const parsedData = JSON.parse(userData);
+      const roleValue = (
+        parsedData.role || parsedData.Role || (Array.isArray(parsedData.roles) ? parsedData.roles[0] : '')
+      )
+        .toString()
+        .toLowerCase();
       const isSuperAdmin = parsedData.is_super_admin === true;
-      setIsAdmin(isSuperAdmin);
+      const isAdminLike = isSuperAdmin || roleValue === 'admin' || roleValue === 'manager';
+      setIsAdmin(isAdminLike);
       if (
-        isSuperAdmin &&
+        isAdminLike &&
         window.location.pathname.startsWith('/admin') &&
         localStorage.getItem('viewMode') === null &&
         !hasManuallySwitchedToUser.current // Block auto-switch if user manually switched to user view

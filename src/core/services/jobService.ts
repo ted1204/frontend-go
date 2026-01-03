@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/k8s/jobs';
+const API_URL = '/api/v1/jobs';
 
 export interface Job {
   ID: number;

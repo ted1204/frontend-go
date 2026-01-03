@@ -119,7 +119,7 @@ export const getGroupsByUser = async (u_id: number): Promise<UserGroupGroup[]> =
     });
     const successResponse = response as GetGroupsByUserResponse;
     const userData = successResponse.data[u_id.toString()];
-    return userData.Groups || [];
+    return userData?.Groups || [];
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : 'Failed to fetch groups by user.');
   }

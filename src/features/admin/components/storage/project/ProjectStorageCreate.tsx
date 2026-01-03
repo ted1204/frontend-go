@@ -25,6 +25,7 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
   // Form State
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
   const [selectedProjectName, setSelectedProjectName] = useState<string>('');
+  const [pvcName, setPvcName] = useState<string>('');
   const [capacity, setCapacity] = useState<number>(10);
 
   // 1. 載入專案列表供選擇
@@ -59,12 +60,17 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
       toast.error(t('admin.storage.project.errorSelectProject'));
       return;
     }
+    if (!pvcName.trim()) {
+      toast.error('Please enter a storage name');
+      return;
+    }
 
     setLoading(true);
     try {
       await createProjectStorage({
         projectId: Number(selectedProjectId),
         projectName: selectedProjectName,
+        name: pvcName.trim(),
         capacity: capacity,
       });
 
@@ -113,13 +119,33 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
                   ? 'Loading projects...'
                   : t('admin.storage.project.form.projectPlaceholder')}
               </option>
-              {projects.map((p) => (
-                <option key={p.PID} value={p.PID}>
+              {projects.map((p, index) => (
+                <option key={`${p.PID}-${index}`} value={p.PID}>
                   {p.ProjectName} (ID: {p.PID})
                 </option>
               ))}
             </select>
           </div>
+        </div>
+
+        {/* Capacity Input */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Storage Name (PVC)
+          </label>
+          <input
+            type="text"
+            value={pvcName}
+            onChange={(e) => setPvcName(e.target.value)}
+            placeholder="e.g. data-1"
+            className="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          />
+          <p className="mt-1 text-xs text-gray-500">Unique per project; exports as /exports/&lt;name&gt;.</p>
+          {projects
+            .find((proj) => proj.PID.toString() === selectedProjectId)
+            ?.Storages?.some((s: any) => s.name === pvcName.trim()) && (
+            <p className="mt-1 text-xs text-red-500">Name already used in this project.</p>
+          )}
         </div>
 
         {/* Capacity Input */}

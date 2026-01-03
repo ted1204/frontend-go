@@ -258,6 +258,7 @@ const en = {
     about: 'About Project',
     list: {
       title: 'Projects',
+      description: 'Browse and manage all projects',
       create: 'New Project',
       searchPlaceholder: 'Search projects...',
       loading: 'Loading projects...',
@@ -561,12 +562,18 @@ const en = {
 
   // --- Role ---
   role: {
-    admin: 'Administrator',
-    adminDesc: 'Full access to all resources and settings.',
-    manager: 'Manager',
-    managerDesc: 'Can manage projects, groups, and members.',
-    user: 'User',
-    userDesc: 'Can access and use assigned projects.',
+    admin: {
+      name: 'Administrator',
+      desc: 'Full access to all resources and settings.',
+    },
+    manager: {
+      name: 'Manager',
+      desc: 'Can manage projects, groups, and members.',
+    },
+    user: {
+      name: 'User',
+      desc: 'Can access and use assigned projects.',
+    },
     label: 'Role: {role}',
   },
 
@@ -686,8 +693,10 @@ const en = {
   // --- Pagination ---
   pagination: {
     prev: 'Previous',
+    previous: 'Previous',
     next: 'Next',
     pageOf: 'Page {current} of {total}',
+    pageInfo: 'Page {current} of {total}',
   },
 
   // --- View / Display ---

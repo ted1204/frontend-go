@@ -3,7 +3,7 @@ import MonacoEditor from 'react-monaco-editor';
 import { useTranslation } from '@nthucscc/utils'; // 假設的路徑
 import { Project } from '@/core/interfaces/project';
 import { PVC } from '@/core/interfaces/pvc';
-import { getPVCListByProject, checkUserStorageStatus } from '@/core/services/storageService';
+import { getPVCListByProject, checkUserStorageStatus, getMyProjectStorages } from '@/core/services/storageService';
 import { getUsername } from '@/core/services/authService';
 import { generateMultiDocYAML } from '@/features/projects/utils/k8sYamlGenerator';
 
@@ -68,14 +68,50 @@ export default function AddConfigModal({
       // 讀取外部數據
       const pid = project?.PID ?? projectId ?? 0;
       Promise.all([
+        // Get PVCs for this specific project
         getPVCListByProject(pid).catch(() => []),
-        getUsername() ? checkUserStorageStatus(getUsername()!) : false,
-      ]).then(([pvcs, storage]) => {
-        setProjectPvcs(Array.isArray(pvcs) ? pvcs : []);
+        // Get all project storages the user has access to
+        getMyProjectStorages().catch(() => []),
+        // Check user storage
+        getUsername() ? checkUserStorageStatus(getUsername()!) : Promise.resolve(false),
+      ]).then(([projectPvcs, allMyPvcs, storage]) => {
+        // Ensure both are arrays
+        const projectPvcsArray = Array.isArray(projectPvcs) ? projectPvcs : [];
+        const pvcsArray = Array.isArray(allMyPvcs) ? allMyPvcs : [];
+        
+        console.log('[AddConfigModal] Project PVCs:', projectPvcsArray);
+        console.log('[AddConfigModal] My Project Storages:', pvcsArray);
+        
+        // Convert ProjectPVC to PVC format and merge
+        const convertedAllMyPvcs = pvcsArray
+          .map((proj: any) => {
+            const name =
+              proj.name ||
+              proj.pvcName ||
+              proj.pvc_name ||
+              (proj.namespace ? `pvc-${proj.namespace}` : '');
+            const size = proj.capacity || proj.Capacity || '';
+            return {
+              name,
+              namespace: proj.namespace,
+              size,
+              status: proj.status || '',
+            };
+          })
+          .filter((pvc: any) => pvc.name);
+        
+        console.log('[AddConfigModal] Converted PVCs:', convertedAllMyPvcs);
+        
+        const merged = [
+          ...projectPvcsArray.filter((p) => p.name),
+          ...convertedAllMyPvcs.filter((pvc) => !projectPvcsArray.some((p) => p.name === pvc.name)),
+        ];
+        console.log('[AddConfigModal] Merged PVCs:', merged);
+        setProjectPvcs(merged);
         setHasUserStorage(!!storage);
       });
     }
-  }, [isOpen, projectId, setFilename, setRawYaml, setResources, setError]);
+  }, [isOpen, projectId, setFilename, setRawYaml, setResources, setError, project]);
 
   // 處理編輯器主題
   useEffect(() => {

@@ -7,11 +7,13 @@ export interface ProjectPVC {
   status: 'Bound' | 'Pending' | 'Lost' | 'Terminating';
   accessMode: string; // e.g., "ReadWriteMany"
   createdAt: string; // ISO Date string
+  role?: string; // Project membership role (admin/manager/member)
 }
 
 export interface CreateProjectStoragePayload {
   projectId: number;
   projectName: string;
+  name: string;
   capacity: number; // Size in Gi
 }
 

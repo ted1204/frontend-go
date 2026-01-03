@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { API_BASE_URL } from '../config/url';
+import { API_BASE_URL, LOGOUT_URL } from '../config/url';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -32,16 +32,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .then((res) => {
         if (res.status === 200) {
           setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-          localStorage.removeItem('userData');
-          localStorage.removeItem('username');
+          return;
         }
+        // Token/cookie invalid: proactively clear server session cookie
+        setIsAuthenticated(false);
+        localStorage.removeItem('userData');
+        localStorage.removeItem('username');
+        fetch(LOGOUT_URL, { method: 'POST', credentials: 'include' }).catch(() => {});
       })
       .catch(() => {
         setIsAuthenticated(false);
         localStorage.removeItem('userData');
         localStorage.removeItem('username');
+        fetch(LOGOUT_URL, { method: 'POST', credentials: 'include' }).catch(() => {});
       })
       .finally(() => setLoading(false));
   }, []);

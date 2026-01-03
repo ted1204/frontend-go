@@ -83,7 +83,7 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
         <thead className="bg-gray-50 dark:bg-gray-800/50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {t('admin.storage.project.list.project')}
+              {t('admin.storage.project.list.project')} / PVC
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               {t('admin.storage.project.list.status')}
@@ -107,9 +107,9 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
               </td>
             </tr>
           ) : (
-            pvcs.map((pvc) => (
+            pvcs.map((pvc, index) => (
               <tr
-                key={pvc.pvcName}
+                key={`${pvc.pvcName}-${index}`}
                 className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
               >
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -119,7 +119,8 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
                       <div className="text-sm font-medium text-gray-900 dark:text-white">
                         {pvc.projectName || `Project ${pvc.id}`}
                       </div>
-                      <div className="text-xs text-gray-500">{pvc.namespace}</div>
+                      <div className="text-xs text-gray-500">NS: {pvc.namespace}</div>
+                      <div className="text-xs text-gray-500">PVC: {pvc.pvcName}</div>
                     </div>
                   </div>
                 </td>

@@ -263,6 +263,7 @@ const zh = {
     // 列表
     list: {
       title: '專案',
+      description: '瀏覽並管理所有專案',
       create: '新專案',
       searchPlaceholder: '搜尋專案...',
       loading: '載入專案中...',
@@ -662,12 +663,18 @@ const zh = {
 
   // --- 角色 ---
   role: {
-    admin: '管理員',
-    adminDesc: '對所有資源和設定擁有完整存取權限。',
-    manager: '經理',
-    managerDesc: '可以管理專案、群組和成員。',
-    user: '使用者',
-    userDesc: '可以存取和使用指派的專案。',
+    admin: {
+      name: '管理員',
+      desc: '對所有資源和設定擁有完整存取權限。',
+    },
+    manager: {
+      name: '經理',
+      desc: '可以管理專案、群組和成員。',
+    },
+    user: {
+      name: '使用者',
+      desc: '可以存取和使用指派的專案。',
+    },
     label: '角色: {role}',
   },
 
@@ -714,8 +721,10 @@ const zh = {
   // --- 分頁 ---
   pagination: {
     prev: '上一頁',
+    previous: '上一頁',
     next: '下一頁',
     pageOf: '第 {current} 頁，共 {total} 頁',
+    pageInfo: '第 {current} 頁，共 {total} 頁',
   },
 
   // --- 檢視 / 顯示 ---

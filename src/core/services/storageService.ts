@@ -246,8 +246,24 @@ export const getProjectStorages = async (): Promise<ProjectPVC[]> => {
     // Matches common API patterns: { data: [...] } or just [...]
     const result = response.data !== undefined ? response.data : response;
 
-    // 3. Type guard: Ensure the final result is always an array to prevent .map() crashes in UI
-    return Array.isArray(result) ? result : [];
+    const list = Array.isArray(result) ? result : [];
+
+    // Normalize fields to ProjectPVC shape
+    return list.map((item: any) => {
+      const capacityRaw = item.capacity ?? item.Capacity ?? '';
+      const capacity = typeof capacityRaw === 'number' ? `${capacityRaw}Gi` : capacityRaw;
+      return {
+        id: String(item.id ?? item.ID ?? item.project_id ?? item.projectId ?? ''),
+        pvcName: item.pvcName ?? item.pvc_name ?? item.name ?? '',
+        projectName: item.projectName ?? item.project_name ?? '',
+        namespace: item.namespace ?? '',
+        capacity,
+        status: item.status ?? '',
+        accessMode: item.accessMode ?? item.access_mode ?? '',
+        createdAt: item.createdAt ?? item.created_at ?? '',
+        role: item.role ?? item.Role ?? '',
+      } as ProjectPVC;
+    });
   } catch (error) {
     console.error('getProjectStorages error:', error);
     throw new Error(error instanceof Error ? error.message : 'Failed to fetch project storages.');
@@ -262,13 +278,29 @@ export const createProjectStorage = async (
   payload: CreateProjectStoragePayload,
 ): Promise<CreateStorageResponse> => {
   try {
+    // Convert camelCase to snake_case for backend compatibility
+    const backendPayload = {
+      project_id: payload.projectId,
+      project_name: payload.projectName,
+      name: payload.name,
+      capacity: payload.capacity,
+    };
     const response = await fetchWithAuth(PROJECT_STORAGE_BASE_URL, {
       method: 'POST',
-      body: JSON.stringify(payload),
+      body: JSON.stringify(backendPayload),
     });
     return (response.data || response) as CreateStorageResponse;
   } catch (error: unknown) {
-    const err = error as { response?: { data?: { error?: string } }; message?: string };
+    const err = error as {
+      response?: { status?: number; data?: { error?: string } };
+      message?: string;
+    };
+
+    if (err.response?.status === 409) {
+      // backend likely signals duplicate PVC name or existing storage
+      throw new Error('Project storage already exists (duplicate name).');
+    }
+
     const msg = err.response?.data?.error || err.message || 'Failed to create project storage.';
     throw new Error(msg);
   }
@@ -297,7 +329,26 @@ export const getMyProjectStorages = async (): Promise<ProjectPVC[]> => {
     });
 
     const result = response.data !== undefined ? response.data : response;
-    return Array.isArray(result) ? result : [];
+    const rawList = Array.isArray(result) ? result : [];
+
+    // Normalize backend fields to frontend interface
+    const pvcs: ProjectPVC[] = rawList.map((item: any) => {
+      const capacityRaw = item.capacity ?? item.Capacity ?? '';
+      const capacity = typeof capacityRaw === 'number' ? `${capacityRaw}Gi` : capacityRaw;
+      return {
+        id: String(item.id ?? item.ID ?? item.project_id ?? item.projectId ?? ''),
+        pvcName: item.pvcName ?? item.pvc_name ?? item.name ?? '',
+        projectName: item.projectName ?? item.project_name ?? '',
+        namespace: item.namespace ?? '',
+        capacity,
+        status: item.status ?? '',
+        accessMode: item.accessMode ?? item.access_mode ?? '',
+        createdAt: item.createdAt ?? item.created_at ?? '',
+        role: item.role ?? item.Role ?? '',
+      };
+    });
+
+    return pvcs;
   } catch (error) {
     console.error('getMyProjectStorages error:', error);
     throw new Error('Failed to fetch your project storages.');

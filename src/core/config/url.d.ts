@@ -1,5 +1,6 @@
 export declare const API_BASE_URL: string;
 export declare const BASE_URL: string;
+export declare const GET_NS_MONITORING_URL: (ns: string) => string;
 export declare const LOGIN_URL: string;
 export declare const REGISTER_URL: string;
 export declare const LOGOUT_URL: string;
@@ -26,11 +27,13 @@ export declare const PVC_GET_URL: (namespace: string, name: string) => string;
 export declare const PVC_DELETE_URL: (namespace: string, name: string) => string;
 export declare const PVC_FILEBROWSER_START_URL: string;
 export declare const PVC_FILEBROWSER_STOP_URL: string;
-export declare const PROJECTS_BY_USER_URL: (id: number) => string;
+export declare const PROJECTS_BY_USER_URL: () => string;
 export declare const USERS_URL: string;
 export declare const USER_BY_ID_URL: (id: number) => string;
 export declare const INSTANCE_URL: string;
 export declare const INSTANCE_BY_ID_URL: (id: number) => string;
 export declare const WEBSOCKET_MONITORING_URL: (namespace: string) => string;
 export declare const WEBSOCKET_USER_MONITORING_URL: () => string;
+export declare const USER_DRIVE_URL: string;
+export declare const PROJECT_DRIVE_LIST: string;
 //# sourceMappingURL=url.d.ts.map

@@ -12,7 +12,7 @@ export { default as GridShape } from './GridShape';
 export { ScrollToTop } from './ScrollToTop';
 
 // Complex Components - export individual icons
-export { FolderIcon, GridIcon, ListIcon, UserGroupIcon } from './Icon';
+export { FolderIcon, GridIcon, ListIcon, UserGroupIcon, PlusIcon, SearchIcon, PencilIcon, TrashIcon } from './Icon';
 
 // UI Elements
 export { Dropdown } from './dropdown/Dropdown';

@@ -11,6 +11,7 @@ interface Props {
   loadingState: Record<string, boolean>; // Loading status per project ID
   onAction: (id: string, action: 'start' | 'stop') => void;
   onOpen: (id: string) => void;
+  canManage: boolean;
 }
 
 // --- Table View Component ---
@@ -21,6 +22,7 @@ export const ProjectTableView: React.FC<Props> = ({
   loadingState,
   onAction,
   onOpen,
+  canManage,
 }) => {
   const { t } = useTranslation();
 
@@ -58,7 +60,7 @@ export const ProjectTableView: React.FC<Props> = ({
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-          {data.map((storage) => {
+          {data.map((storage, idx) => {
             // Filter WS messages for this specific namespace
             const msgs = messages.filter((m) => m.ns === storage.namespace);
             // Check if any pod exists (Running, Pending, Error, etc.)
@@ -67,10 +69,13 @@ export const ProjectTableView: React.FC<Props> = ({
             const isOnline = msgs.some(
               (m) => m.kind === 'Pod' && m.status === 'Running' && m.name.includes('filebrowser'),
             );
+            // Allow manage if global flag or storage role is admin/manager
+            const canManageRow =
+              canManage || ['admin', 'manager'].includes((storage as any).role?.toLowerCase?.() || '');
 
             return (
               <tr
-                key={storage.id}
+                key={`${storage.id}-${storage.pvcName || idx}`}
                 className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
               >
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -83,6 +88,9 @@ export const ProjectTableView: React.FC<Props> = ({
                         {storage.projectName}
                       </div>
                       <div className="text-xs text-gray-500">NS: {storage.namespace}</div>
+                      <div className="text-xs text-gray-500">
+                        PVC: {(storage as any).pvcList?.join(', ') || storage.pvcName || '-'}
+                      </div>
                     </div>
                   </div>
                 </td>
@@ -101,6 +109,7 @@ export const ProjectTableView: React.FC<Props> = ({
                     isLoading={!!loadingState[storage.id]}
                     onAction={onAction}
                     onOpen={onOpen}
+                    canManage={canManageRow}
                     compact={true}
                   />
                 </td>

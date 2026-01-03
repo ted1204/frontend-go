@@ -8,5 +8,5 @@ export interface SubmitJobRequest {
 }
 
 export const submitJob = async (data: SubmitJobRequest): Promise<void> => {
-  await axios.post('/api/k8s/jobs', data);
+  await axios.post('/api/v1/jobs', data);
 };

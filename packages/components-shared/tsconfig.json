@@ -1,13 +1,14 @@
 {
   "extends": "../../tsconfig.app.json",
   "compilerOptions": {
-    "composite": true,
-    "emitDeclarationOnly": true,
-    "declaration": true,
-    "declarationMap": true,
-    "outDir": "../../build/components-shared",
-    "noEmit": true,
-    "tsBuildInfoFile": "../../build/components-shared/.tsbuildinfo"
+    "skipLibCheck": true,
+    "declaration": false,
+    "noEmit": true
   },
-  "include": ["src"]
+  "include": [
+    "*.tsx",
+    "*.ts",
+    "auth/*.tsx",
+    "auth/*.ts"
+  ]
 }

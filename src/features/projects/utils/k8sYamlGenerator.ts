@@ -120,8 +120,11 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
           c.mounts.forEach((m) => {
             allMounts.push(m);
             // 決定 Volume 名稱：如果是 user-storage 給固定名稱，project storage 用 PVC 名稱
-            const volName = m.type === 'user-storage' ? 'user-home' : m.pvcName || 'vol';
+            const volName = m.type === 'user-storage' ? 'user-home' : (m.pvcName || 'vol').replace(/[^a-z0-9-]/g, '-').toLowerCase();
             yaml += `${indent}    - name: ${volName}\n${indent}      mountPath: ${m.mountPath}\n`;
+            if (m.subPath) {
+              yaml += `${indent}      subPath: ${m.subPath}\n`;
+            }
           });
         }
       });
@@ -137,7 +140,7 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
         const uniqueVols = new Set<string>();
 
         allMounts.forEach((m) => {
-          const volName = m.type === 'user-storage' ? 'user-home' : m.pvcName || 'vol';
+          const volName = m.type === 'user-storage' ? 'user-home' : (m.pvcName || 'vol').replace(/[^a-z0-9-]/g, '-').toLowerCase();
 
           if (uniqueVols.has(volName)) return; // Skip duplicates
           uniqueVols.add(volName);
@@ -146,7 +149,8 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
           if (m.type === 'user-storage') {
             yaml += `${volInnerPrefix}nfs:\n${volInnerInner}server: "{{nfsServer}}"\n${volInnerInner}path: /\n`;
           } else {
-            yaml += `${volInnerPrefix}persistentVolumeClaim:\n${volInnerInner}claimName: ${m.pvcName}\n`;
+            // Project storage: use NFS gateway export root (/exports/<pvcName>)
+            yaml += `${volInnerPrefix}nfs:\n${volInnerInner}server: "{{projectNfsServer}}"\n${volInnerInner}path: "/exports/${m.pvcName}"\n`;
           }
         });
       }

@@ -84,7 +84,7 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
 
     return (
       <span
-        className={`inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium ${colorClasses}`}
+        className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-medium ${colorClasses}`}
       >
         <span className={`h-1.5 w-1.5 rounded-full ${dotClasses}`}></span>
         {status}
@@ -97,16 +97,16 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
       <table className="min-w-full text-sm text-left">
         <thead className="text-xs text-gray-500 uppercase bg-gray-50 dark:bg-gray-700/50 dark:text-gray-400">
           <tr>
-            <th scope="col" className="px-6 py-3 w-2/5">
+            <th scope="col" className="px-6 py-2 w-2/5">
               {t('monitor.table.podName')}
             </th>
-            <th scope="col" className="px-6 py-3 w-1/5">
+            <th scope="col" className="px-6 py-2 w-1/5">
               {t('monitor.table.namespace')}
             </th>
-            <th scope="col" className="px-6 py-3 w-1/5">
+            <th scope="col" className="px-6 py-2 w-1/5">
               {t('monitor.table.status')}
             </th>
-            <th scope="col" className="px-6 py-3 w-1/5 text-right">
+            <th scope="col" className="px-6 py-2 w-1/5 text-right">
               {t('monitor.table.actions')}
             </th>
           </tr>
@@ -135,19 +135,19 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
                 podName,
               }) => (
                 <tr key={`${podKey}-${container}`} className="bg-gray-50 dark:bg-gray-800/60">
-                  <td className="pl-14 pr-6 py-3 text-gray-700 dark:text-gray-300">{container}</td>
-                  <td className="px-6 py-3"></td>
-                  <td className="px-6 py-3"></td>
-                  <td className="px-6 py-3 text-right">
+                  <td className="pl-14 pr-6 py-2 text-sm text-gray-700 dark:text-gray-300">{container}</td>
+                  <td className="px-6 py-2"></td>
+                  <td className="px-6 py-2"></td>
+                  <td className="px-6 py-2 text-right">
                     <button
                       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                         e.stopPropagation();
                         handleConnectTerminal(podName, container);
                       }}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors duration-150"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors duration-150"
                     >
-                      <TerminalIcon className="w-4 h-4" />
-                      {t('monitor.button.connect')}
+                      <TerminalIcon className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">{t('monitor.button.connect')}</span>
                     </button>
                   </td>
                 </tr>
@@ -159,19 +159,19 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
                     className="hover:bg-gray-50 dark:hover:bg-gray-800/60 cursor-pointer"
                     onClick={() => togglePodExpand(pod.name)}
                   >
-                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <td className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                       <div className="flex items-center">
                         <ChevronDownIcon
-                          className={`h-5 w-5 mr-2 text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                          className={`h-4 w-4 mr-2 text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
                         />
                         {pod.name}
                       </div>
                     </td>
-                    <td className="px-6 py-4">{namespace}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-2 text-sm">{namespace}</td>
+                    <td className="px-6 py-2">
                       <StatusBadge status={pod.status} />
                     </td>
-                    <td className="px-6 py-4"></td>
+                    <td className="px-6 py-2"></td>
                   </tr>
                   {isExpanded &&
                     pod.containers.map((container: string) => (

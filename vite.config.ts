@@ -20,6 +20,7 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
       '@nthucscc/ui': resolve(__dirname, 'packages/ui/src/index.ts'),
       '@nthucscc/utils': resolve(__dirname, 'packages/utils/src/index.ts'),
+      '@nthucscc/components-shared': resolve(__dirname, 'packages/components-shared'),
     },
   },
   build: {

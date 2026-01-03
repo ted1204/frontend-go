@@ -12,7 +12,7 @@ import {
 // removed unused import: useNavigate
 import EditProjectForm from '@/features/projects/components/EditProjectForm';
 import CreateProjectForm from '@/features/projects/components/CreateProjectForm';
-import { Button } from '@nthucscc/ui';
+import { Button, PlusIcon, SearchIcon } from '@nthucscc/ui';
 import { DeleteConfirmationModal } from '@nthucscc/ui';
 import { updateProject, UpdateProjectInput } from '@/core/services/projectService';
 
@@ -25,19 +25,6 @@ interface GroupOption {
   GroupName: string;
 }
 // ----------------------------------------------------------------
-
-const PlusIcon = ({ className = 'w-5 h-5' }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-  </svg>
-);
 
 export default function ManageProjects() {
   const { t } = useTranslation();
@@ -83,6 +70,19 @@ export default function ManageProjects() {
       });
       setIsEditModalOpen(true);
     }
+  };
+
+  const handleEditProject = (project: Project) => {
+    setProjectToEdit(project);
+    formHandlers.loadProjectData({
+      projectName: project.ProjectName,
+      description: project.Description || '',
+      gpuQuota: project.GPUQuota || 0,
+      gpuAccess: project.GPUAccess ? project.GPUAccess.split(',') : ['shared'],
+      mpsLimit: project.MPSLimit || 100,
+      mpsMemory: project.MPSMemory || 0,
+    });
+    setIsEditModalOpen(true);
   };
 
   const handleCloseEditModal = () => {
@@ -260,19 +260,43 @@ export default function ManageProjects() {
 
   return (
     <div className="relative">
-      {/* Assume PageMeta and PageBreadcrumb here */}
+      {/* Page Container with improved spacing */}
+      <div className="min-h-screen rounded-xl border border-gray-100 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900 xl:p-12">
+        
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            {t('project.list.title')}
+          </h1>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            {t('project.list.description') || 'Manage and organize all projects'}
+          </p>
+        </div>
 
-      <div className="min-h-screen rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 xl:p-10">
-        {/* Top Action Bar: Create Button */}
-        <div className="flex justify-end mb-8">
+        {/* Action Bar: Search and Create Button */}
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Search Input */}
+          <div className="relative flex-1 max-w-md">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <SearchIcon size={20} className="text-gray-400" />
+            </div>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              placeholder={t('project.list.searchPlaceholder')}
+              className="block w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-3 text-sm text-gray-900 placeholder-gray-400 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500"
+            />
+          </div>
+
+          {/* Create Project Button */}
           <Button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            // Disable button if loading or performing other actions
             disabled={loading || actionLoading}
-            className="flex items-center space-x-2 px-4 py-2 text-sm font-semibold bg-violet-600 text-white rounded-lg shadow-md hover:bg-violet-700 transition duration-150 focus:outline-none focus:ring-4 focus:ring-violet-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-150 hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-500 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <PlusIcon className="w-5 h-5" />
+            <PlusIcon size={20} />
             <span>{t('button.newProject')}</span>
           </Button>
         </div>
@@ -282,14 +306,15 @@ export default function ManageProjects() {
           projects={filteredProjects}
           error={error}
           onProjectClick={handleProjectClick}
-          // Pass new handler that accepts Project object
+          onEditProject={handleEditProject}
           onDeleteProject={handleDeleteClick}
           searchTerm={searchTerm}
           isActionLoading={actionLoading}
           onSearchChange={handleSearchChange}
         />
       </div>
-      {/* Project Creation Modal (Conditional Rendering) */}
+
+      {/* Project Creation Modal */}
       <CreateProjectForm
         projectName={formState.projectName}
         description={formState.description}
@@ -317,6 +342,7 @@ export default function ManageProjects() {
         onSelectedGroupChange={formHandlers.onSelectedGroupChange}
       />
 
+      {/* Project Edit Modal */}
       <EditProjectForm
         projectName={formState.projectName}
         description={formState.description}
@@ -337,14 +363,14 @@ export default function ManageProjects() {
         onSubmit={handleUpdateProject}
       />
 
-      {/* 7. Render Delete Confirmation Modal */}
+      {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
         item={projectToDelete}
         itemType="Project"
-        loading={actionLoading} // Use actionLoading to lock buttons inside modal
+        loading={actionLoading}
       />
     </div>
   );

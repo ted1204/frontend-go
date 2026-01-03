@@ -76,13 +76,34 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
         value: String(e.value),
       })),
       envFrom: (c.envFrom || []).map((ef: any) => ef.configMapRef?.name || ''),
-      mounts: (c.volumeMounts || []).map((m: any, mi: number) => ({
-        id: `${id}-c-${ci}-m-${mi}`,
-        mountPath: m.mountPath,
-        pvcName: m.name || '',
-        type: 'project-pvc',
-        subPath: '',
-      })),
+      mounts: (c.volumeMounts || []).map((m: any, mi: number) => {
+        // Find the corresponding volume definition to determine type
+        const volumes = templateSpec.volumes || [];
+        const volumeDef = volumes.find((v: any) => v.name === m.name);
+        
+        // Determine mount type based on volume definition
+        let mountType: 'project-pvc' | 'user-storage' = 'project-pvc';
+        let pvcName = m.name || '';
+        
+        if (volumeDef) {
+          if (volumeDef.nfs) {
+            // NFS volume - check if it's user storage placeholder
+            mountType = 'user-storage';
+            pvcName = ''; // NFS doesn't use PVC name
+          } else if (volumeDef.persistentVolumeClaim) {
+            mountType = 'project-pvc';
+            pvcName = volumeDef.persistentVolumeClaim.claimName || m.name;
+          }
+        }
+        
+        return {
+          id: `${id}-c-${ci}-m-${mi}`,
+          mountPath: m.mountPath,
+          pvcName: pvcName,
+          type: mountType,
+          subPath: m.subPath || '',
+        };
+      }),
     }));
 
     workload.replicas = spec.replicas || workload.replicas;

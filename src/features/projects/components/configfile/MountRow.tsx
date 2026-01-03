@@ -46,28 +46,45 @@ const MountRow = ({
 
         {mount.type === 'user-storage' ? (
           <div className="flex items-center rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-700/50 dark:text-gray-400 cursor-not-allowed">
-            <span className="truncate">Home Drive ({'{{username}}'})</span>
+            <span className="truncate">Home Drive ({'{{nfsServer}}'})</span>
           </div>
         ) : (
           <select
             value={mount.pvcName || ''}
-            onChange={(e) => onChange(mount.id, 'pvcName', e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              onChange(mount.id, 'pvcName', value);
+              // Auto-fill subPath to match PVC name when selecting project storage (gateway subpath = pvc)
+              if (!mount.subPath && value) {
+                onChange(mount.id, 'subPath', value);
+              }
+            }}
             className="block w-full rounded-md border-gray-300 bg-white py-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
           >
             <option value="">-- Select PVC --</option>
-            {projectPvcs.map((p) => (
-              <option key={p.name} value={p.name}>
+            {projectPvcs.map((p, idx) => (
+              <option key={`pvc-${idx}-${p.name}`} value={p.name}>
                 {p.name} ({p.size})
               </option>
             ))}
           </select>
+        )}
+        {mount.type === 'project-pvc' && mount.pvcName && (
+          <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+            <p>
+              Gateway exports /exports/{mount.pvcName}; use subPath "/" (or leave empty) to mount the root of that share in your workload.
+            </p>
+            <p className="text-amber-600 dark:text-amber-400">
+              ⚠️ PVC must support ReadWriteMany for multiple Pods (e.g., FileBrowser + your workload) to access simultaneously.
+            </p>
+          </div>
         )}
       </div>
 
       {/* 3. Source Subpath */}
       <div className="flex-1 space-y-1 min-w-[120px]">
         <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-          Source Subpath
+          Source Subpath (gateway exports /exports/&lt;pvc&gt;)
         </label>
         <input
           type="text"

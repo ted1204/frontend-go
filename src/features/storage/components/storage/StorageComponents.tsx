@@ -62,6 +62,7 @@ interface ActionButtonsProps {
   onAction: (id: string, action: 'start' | 'stop') => void; // Handler for start/stop
   onOpen: (id: string) => void; // Handler for opening the proxy
   compact?: boolean; // If true, renders smaller buttons for Table View
+  canManage?: boolean; // Admin can start/stop
 }
 
 // --- Storage Action Buttons ---
@@ -75,8 +76,10 @@ export const StorageActionButtons: React.FC<ActionButtonsProps> = ({
   onAction,
   onOpen,
   compact,
+  canManage = true,
 }) => {
   const { t } = useTranslation();
+  const manageDisabled = isLoading || !canManage;
 
   // Common styling for buttons
   const baseBtnClass =
@@ -90,9 +93,13 @@ export const StorageActionButtons: React.FC<ActionButtonsProps> = ({
       {!podExists ? (
         <button
           onClick={() => onAction(pId, 'start')}
-          disabled={isLoading}
-          className={`${baseBtnClass} ${sizeClass} bg-blue-600 hover:bg-blue-700 text-white shadow-sm`}
-          title={t('storage.action.start')}
+          disabled={manageDisabled}
+          className={`${baseBtnClass} ${sizeClass} ${
+            manageDisabled
+              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
+          }`}
+          title={canManage ? t('storage.action.start') : 'Admin only'}
         >
           {isLoading ? (
             <span className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -104,9 +111,13 @@ export const StorageActionButtons: React.FC<ActionButtonsProps> = ({
       ) : (
         <button
           onClick={() => onAction(pId, 'stop')}
-          disabled={isLoading}
-          className={`${baseBtnClass} ${sizeClass} bg-red-50 hover:bg-red-100 text-red-600 border border-red-200`}
-          title={t('storage.action.stop')}
+          disabled={manageDisabled}
+          className={`${baseBtnClass} ${sizeClass} ${
+            manageDisabled
+              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              : 'bg-red-50 hover:bg-red-100 text-red-600 border border-red-200'
+          }`}
+          title={canManage ? t('storage.action.stop') : 'Admin only'}
         >
           {isLoading ? (
             <span className="h-3 w-3 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />

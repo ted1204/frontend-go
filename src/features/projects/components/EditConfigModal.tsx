@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import { useTranslation } from '@nthucscc/utils';
 import { ConfigFile } from '@/core/interfaces/configFile';
-import { getPVCListByProject, checkUserStorageStatus } from '@/core/services/storageService';
+import { getPVCListByProject, checkUserStorageStatus, getMyProjectStorages } from '@/core/services/storageService';
 import { getUsername } from '@/core/services/authService';
 import { generateMultiDocYAML } from '@/features/projects/utils/k8sYamlGenerator';
 
@@ -49,16 +49,42 @@ export default function EditConfigModal({
 
   // Load external data
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && selectedConfig) {
       Promise.all([
-        getPVCListByProject(0).catch(() => []),
-        getUsername() ? checkUserStorageStatus(getUsername()!) : false,
-      ]).then(([pvcs, storage]) => {
-        setProjectPvcs(Array.isArray(pvcs) ? pvcs : []);
+        // Get PVCs for this specific project
+        getPVCListByProject(selectedConfig.ProjectID).catch(() => []),
+        // Get all project storages the user has access to
+        getMyProjectStorages().catch(() => []),
+        // Check user storage
+        getUsername() ? checkUserStorageStatus(getUsername()!) : Promise.resolve(false),
+      ]).then(([projectPvcs, allMyPvcs, storage]) => {
+        // Ensure both are arrays
+        const projectPvcsArray = Array.isArray(projectPvcs) ? projectPvcs : [];
+        const pvcsArray = Array.isArray(allMyPvcs) ? allMyPvcs : [];
+        
+        console.log('[EditConfigModal] Project PVCs:', projectPvcsArray);
+        console.log('[EditConfigModal] My Project Storages:', pvcsArray);
+        
+        // Convert ProjectPVC to PVC format and merge
+        const convertedAllMyPvcs = pvcsArray.map((proj: any) => ({
+          name: proj.name || proj.pvcName,
+          namespace: proj.namespace,
+          size: proj.capacity || proj.Capacity,
+          status: proj.status,
+        }));
+        
+        console.log('[EditConfigModal] Converted PVCs:', convertedAllMyPvcs);
+        
+        const merged = [
+          ...projectPvcsArray,
+          ...convertedAllMyPvcs.filter(pvc => !projectPvcsArray.some(p => p.name === pvc.name))
+        ];
+        console.log('[EditConfigModal] Merged PVCs:', merged);
+        setProjectPvcs(merged);
         setHasUserStorage(!!storage);
       });
     }
-  }, [isOpen]);
+  }, [isOpen, selectedConfig]);
 
   // Handle Theme
   useEffect(() => {

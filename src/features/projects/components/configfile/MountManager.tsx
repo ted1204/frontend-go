@@ -33,14 +33,15 @@ const MountManager = ({
       return;
     }
 
+    const defaultPVC =
+      defaultType === 'project-pvc' && projectPvcs.length > 0 ? projectPvcs[0].name : undefined;
+
     const newMount: MountConfig = {
       id: Date.now().toString(),
       type: defaultType,
-      subPath: '/',
+      subPath: defaultPVC ? defaultPVC : '',
       mountPath: '/data',
-      // If default is project, pre-select the first PVC if available
-      pvcName:
-        defaultType === 'project-pvc' && projectPvcs.length > 0 ? projectPvcs[0].name : undefined,
+      pvcName: defaultPVC,
     };
 
     setWizardData((prev) => ({ ...prev, mounts: [...prev.mounts, newMount] }));
@@ -60,11 +61,16 @@ const MountManager = ({
         if (m.id !== id) return m;
         // Reset pvcName if switching to user-storage
         if (field === 'type' && value === 'user-storage') {
-          return { ...m, type: value as MountType, pvcName: undefined };
+          return { ...m, type: value as MountType, pvcName: undefined, subPath: '' };
         }
         // Auto-select first PVC if switching to project-pvc
         if (field === 'type' && value === 'project-pvc' && !m.pvcName && projectPvcs.length > 0) {
-          return { ...m, type: value as MountType, pvcName: projectPvcs[0].name };
+          const first = projectPvcs[0].name;
+          return { ...m, type: value as MountType, pvcName: first, subPath: first };
+        }
+        // When pvc changes, set subPath to pvc default if empty
+        if (field === 'pvcName') {
+          return { ...m, pvcName: value, subPath: value ? value : '' };
         }
         return { ...m, [field]: value };
       }),

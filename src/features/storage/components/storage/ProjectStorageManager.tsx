@@ -20,6 +20,7 @@ import { ProjectPVC } from '@/core/interfaces/projectStorage';
 export const ProjectStorageManager: React.FC = () => {
   const { t } = useTranslation();
   const { connectToNamespace, messages } = useContext(WebSocketContext)!;
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // -- State Management --
   const [storages, setStorages] = useState<ProjectPVC[]>([]);
@@ -30,12 +31,28 @@ export const ProjectStorageManager: React.FC = () => {
 
   // -- Initial Data Fetch --
   useEffect(() => {
+    const userData = localStorage.getItem('userData');
+    if (userData) {
+      try {
+        const parsed = JSON.parse(userData);
+        const role = (parsed.role || '').toLowerCase();
+        const isAdminLike = role === 'admin' || role === 'manager';
+        setIsAdmin(parsed.is_super_admin === true || isAdminLike);
+      } catch (e) {
+        console.warn('[ProjectStorageManager] failed to parse userData', e);
+      }
+    }
+
     const init = async () => {
       try {
         const data = (await getMyProjectStorages()) as ProjectPVC[];
-        setStorages(data || []);
-        // Auto-connect to all project namespaces for live status
-        data?.forEach((s: ProjectPVC) => {
+        // Filter out personal hubs (user-<name>-storage) — only show shared project storage
+        const projectOnly = (data || []).filter(
+          (s) => !/^user-.*-storage$/i.test(s.namespace || ''),
+        );
+        setStorages(projectOnly);
+        // Auto-connect to project namespaces for live status
+        projectOnly.forEach((s: ProjectPVC) => {
           if (s.namespace) connectToNamespace(s.namespace);
         });
       } catch (err: unknown) {
@@ -75,14 +92,31 @@ export const ProjectStorageManager: React.FC = () => {
     window.open(getProjectStorageProxyUrl(pId), '_blank');
   };
 
+  // -- Derive grouped list by project (one entry per project, aggregates PVC names)
+  const groupedStorages = useMemo(() => {
+    const map = new Map<string, ProjectPVC & { pvcList: string[] }>();
+    storages.forEach((s) => {
+      const key = s.id;
+      if (!map.has(key)) {
+        map.set(key, { ...s, pvcList: s.pvcName ? [s.pvcName] : [] });
+      } else {
+        const item = map.get(key)!;
+        if (s.pvcName && !item.pvcList.includes(s.pvcName)) {
+          item.pvcList.push(s.pvcName);
+        }
+      }
+    });
+    return Array.from(map.values());
+  }, [storages]);
+
   // -- Search Filter --
   const filteredStorages = useMemo(() => {
-    return storages.filter(
+    return groupedStorages.filter(
       (s) =>
-        s.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.namespace.toLowerCase().includes(searchTerm.toLowerCase()),
+        (s.projectName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (s.namespace || '').toLowerCase().includes(searchTerm.toLowerCase()),
     );
-  }, [storages, searchTerm]);
+  }, [groupedStorages, searchTerm]);
 
   if (loading)
     return (
@@ -133,6 +167,7 @@ export const ProjectStorageManager: React.FC = () => {
             loadingState={isActionLoading}
             onAction={handleAction}
             onOpen={handleOpen}
+            canManage={isAdmin}
           />
         ) : (
           <ProjectGridView
@@ -141,6 +176,7 @@ export const ProjectStorageManager: React.FC = () => {
             loadingState={isActionLoading}
             onAction={handleAction}
             onOpen={handleOpen}
+            canManage={isAdmin}
           />
         )
       ) : (
