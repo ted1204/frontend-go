@@ -336,9 +336,9 @@ export const getMyProjectStorages = async (): Promise<ProjectPVC[]> => {
       const capacityRaw = item.capacity ?? item.Capacity ?? '';
       const capacity = typeof capacityRaw === 'number' ? `${capacityRaw}Gi` : String(capacityRaw);
       const statusValue = String(item.status ?? '');
-      const status = (['Bound', 'Pending', 'Lost', 'Terminating'].includes(statusValue)
-        ? statusValue
-        : 'Pending') as 'Bound' | 'Pending' | 'Lost' | 'Terminating';
+      const status = (
+        ['Bound', 'Pending', 'Lost', 'Terminating'].includes(statusValue) ? statusValue : 'Pending'
+      ) as 'Bound' | 'Pending' | 'Lost' | 'Terminating';
       return {
         id: String(item.id ?? item.ID ?? item.project_id ?? item.projectId ?? ''),
         pvcName: String(item.pvcName ?? item.pvc_name ?? item.name ?? ''),
