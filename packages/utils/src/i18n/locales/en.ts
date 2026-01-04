@@ -17,6 +17,7 @@ const en = {
 
   // --- Common / Shared ---
   common: {
+    refresh: 'Refresh',
     // Actions
     create: 'Create',
     edit: 'Edit',
@@ -42,6 +43,9 @@ const en = {
     noData: 'No data found.',
     untitled: 'Untitled',
     confirmDelete: 'Are you sure you want to delete?',
+    live: 'Live',
+    reset: 'Reset',
+    apply: 'Apply Filters',
   },
 
   // --- Status ---
@@ -111,15 +115,13 @@ const en = {
       forms: 'Forms Management',
       auditLogs: {
         title: 'Audit Logs',
-        description: 'Review security and change events',
+        description: 'System security and change tracking',
         breadcrumb: 'Audit Logs',
-        heroLabel: 'Observability',
-        heroTitle: 'Trace every admin action with confidence',
-        heroDesc:
-          'Filter by user, resource, action, or time range. Quickly inspect before/after payloads to validate changes.',
-        total: 'Total entries',
-        liveHint: 'Live data from /audit/logs',
-        empty: 'No audit logs found for the selected filters.',
+        heading: 'Audit Trails',
+        subHeading: 'Monitor and analyze administrative actions and resource changes.',
+        count: 'Showing latest {{count}} records',
+        emptyTitle: 'No logs found',
+        emptyDesc: 'Adjust filters to see more results.',
       },
     },
     projects: {
@@ -747,6 +749,28 @@ const en = {
   button: {
     newGroup: 'New Group',
     newProject: 'New Project',
+  },
+
+  // --- Audit ---
+  filter: {
+    title: 'Filter Criteria',
+    userId: 'User ID',
+    resource: 'Resource',
+    action: 'Action',
+    limit: 'Rows',
+    dateRange: 'Time Range',
+    placeholder: {
+      userId: 'Search by ID...',
+      resource: 'e.g. project, user',
+      action: 'e.g. create, update',
+    },
+  },
+  log: {
+    noDescription: 'No description recorded',
+    view: 'View Changes',
+    hide: 'Hide Details',
+    before: 'Before',
+    after: 'After',
   },
 } as const;
 

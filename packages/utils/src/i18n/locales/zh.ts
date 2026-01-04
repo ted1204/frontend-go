@@ -17,6 +17,7 @@ const zh = {
 
   // --- 通用 / 共享 ---
   common: {
+    refresh: '重整',
     // 動作
     create: '建立',
     edit: '編輯',
@@ -101,15 +102,14 @@ const zh = {
       title: '管理儀表板',
       description: '管理中心',
       auditLogs: {
-        title: '稽核日誌',
-        description: '檢視安全與變更事件',
-        breadcrumb: '稽核日誌',
-        heroLabel: '觀測性',
-        heroTitle: '完整追蹤每個管理操作',
-        heroDesc: '可依使用者、資源、動作或時間範圍篩選，快速檢視前後內容確認變更。',
-        total: '總筆數',
-        liveHint: '從 /audit/logs 即時取得',
-        empty: '目前沒有符合條件的稽核記錄。',
+        title: '審計日誌',
+        description: '系統安全與變更追蹤',
+        breadcrumb: '審計日誌',
+        heading: '系統軌跡',
+        subHeading: '監控並分析管理操作與資源變更。',
+        count: '顯示最近 {{count}} 筆記錄',
+        emptyTitle: '未找到日誌',
+        emptyDesc: '請調整篩選條件以查看更多結果。',
       },
     },
     adminForm: {
@@ -774,6 +774,28 @@ const zh = {
   badge: {
     new: '新',
     pro: '專業版',
+  },
+
+  // --- 審計 ---
+  filter: {
+    title: '篩選條件',
+    userId: '用戶 ID',
+    resource: '資源類型',
+    action: '動作',
+    limit: '顯示筆數',
+    dateRange: '時間範圍',
+    placeholder: {
+      userId: '搜尋 ID...',
+      resource: '例如：project, user',
+      action: '例如：create, update',
+    },
+  },
+  log: {
+    noDescription: '未記錄描述',
+    view: '查看變更',
+    hide: '隱藏詳情',
+    before: '變更前',
+    after: '變更後',
   },
 } as const;
 
