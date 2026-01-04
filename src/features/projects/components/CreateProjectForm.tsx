@@ -249,18 +249,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                     {t('project.create.gpuAccessShared')}
                   </span>
                 </label>
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={gpuAccess.includes('dedicated')}
-                    onChange={() => onGpuAccessChange('dedicated')}
-                    className="form-checkbox h-5 w-5 text-violet-600 rounded border-gray-300 focus:ring-violet-500 dark:border-gray-600 dark:bg-gray-700"
-                    disabled={loading}
-                  />
-                  <span className="text-gray-700 dark:text-gray-300">
-                    {t('project.create.gpuAccessDedicated')}
-                  </span>
-                </label>
               </div>
             </div>
 

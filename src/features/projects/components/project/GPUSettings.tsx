@@ -17,7 +17,7 @@ export const GPUSettings: React.FC<GPUSettingsProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const gpuAccessOptions = ['shared', 'dedicated'];
+  const gpuAccessOptions = ['shared'];
 
   return (
     <div className="space-y-4 border-t pt-4">

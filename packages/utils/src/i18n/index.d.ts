@@ -224,7 +224,6 @@ declare const resources: {
       readonly gpuQuotaUnit: '{quota} GPU(s)';
       readonly gpuAccessMode: 'Access Mode';
       readonly gpuAccessShared: 'Shared';
-      readonly gpuAccessDedicated: 'Dedicated';
       readonly mpsSettings: 'MPS Settings';
       readonly mpsThreadLimit: 'Thread Limit: {value}%';
       readonly mpsMemoryLimit: 'Memory Limit: {value} MB';
@@ -264,7 +263,6 @@ declare const resources: {
         readonly gpuMemoryLimitPlaceholder: 'e.g. 1024';
         readonly gpuAccessMode: 'GPU Access Mode';
         readonly gpuAccessShared: 'Shared (MPS)';
-        readonly gpuAccessDedicated: 'Dedicated';
         readonly mpsSettings: 'MPS Settings';
         readonly mpsThreadLimit: 'Thread Limit';
         readonly mpsMemoryLimit: 'Memory Limit';
@@ -876,7 +874,6 @@ declare const resources: {
       readonly gpuQuotaUnit: '{quota} GPU';
       readonly gpuAccessMode: '存取模式';
       readonly gpuAccessShared: '共享';
-      readonly gpuAccessDedicated: '專用';
       readonly mpsSettings: 'MPS 設定';
       readonly mpsThreadLimit: '執行緒限制: {value}%';
       readonly mpsMemoryLimit: '記憶體限制: {value} MB';
@@ -916,7 +913,6 @@ declare const resources: {
         readonly gpuMemoryLimitPlaceholder: '例如：1024';
         readonly gpuAccessMode: 'GPU 存取模式';
         readonly gpuAccessShared: '共享 (MPS)';
-        readonly gpuAccessDedicated: '專用';
         readonly mpsSettings: 'MPS 設定';
         readonly mpsThreadLimit: '執行緒限制';
         readonly mpsMemoryLimit: '記憶體限制';
