@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 import { CubeIcon, PencilSquareIcon, TrashIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
 // Services & Types
-import { getProjectStorages, deletePVC } from '@/core/services/storageService';
+import { getProjectStorages, deleteProjectStorage } from '@/core/services/storageService';
 import { ProjectPVC } from '@/core/interfaces/projectStorage';
 // Global WebSocket (not used here)
 
@@ -45,10 +45,10 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
     }
   };
 
-  const handleDelete = async (namespace: string, pvcName: string) => {
+  const handleDelete = async (pid: string) => {
     if (confirm(t('admin.storage.project.actionConfirmDelete'))) {
       try {
-        await deletePVC(namespace, pvcName);
+        await deleteProjectStorage(pid);
         toast.success(t('common.success'));
         fetchData(); // Reload list after delete
       } catch (err: unknown) {
@@ -154,7 +154,7 @@ const ProjectStorageList: React.FC<ProjectStorageListProps> = ({ refreshTrigger 
                       <PencilSquareIcon className="h-4 w-4" />
                     </button>
                     <button
-                      onClick={() => handleDelete(pvc.namespace, pvc.pvcName)}
+                      onClick={() => handleDelete(pvc.id)}
                       className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 flex items-center gap-1"
                       title={t('admin.storage.project.actionDelete')}
                     >

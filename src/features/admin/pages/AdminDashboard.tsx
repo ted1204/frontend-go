@@ -6,6 +6,10 @@ import { GroupIcon, TaskIcon } from '@/shared/icons';
 
 export default function AdminDashboard() {
   const { t } = useTranslation();
+  const translate = (key: string, fallback: string) => {
+    const translator = t as unknown as (k: string) => string | undefined;
+    return translator(key) || fallback;
+  };
   return (
     <div>
       <PageMeta
@@ -30,6 +34,26 @@ export default function AdminDashboard() {
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {t('page.admin.description')}
+              </p>
+            </div>
+          </div>
+        </Link>
+
+        {/* Audit Logs Card */}
+        <Link
+          to="/admin/audit-logs"
+          className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
+        >
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 text-slate-700 dark:bg-slate-900/50 dark:text-slate-300">
+              <GroupIcon className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-slate-700 dark:group-hover:text-slate-200">
+                {translate('page.admin.auditLogs.title', 'Audit Logs')}
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {translate('page.admin.auditLogs.subtitle', 'Trace every sensitive change')}
               </p>
             </div>
           </div>

@@ -155,8 +155,8 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
           if (m.type === 'user-storage') {
             yaml += `${volInnerPrefix}nfs:\n${volInnerInner}server: "{{nfsServer}}"\n${volInnerInner}path: /\n`;
           } else {
-            // Project storage: use NFS gateway export root (/exports/<pvcName>)
-            yaml += `${volInnerPrefix}nfs:\n${volInnerInner}server: "{{projectNfsServer}}"\n${volInnerInner}path: "/exports/${m.pvcName}"\n`;
+            // Project storage: use project NFS server with root path
+            yaml += `${volInnerPrefix}nfs:\n${volInnerInner}server: "{{projectNfsServer}}"\n${volInnerInner}path: /\n`;
           }
         });
       }

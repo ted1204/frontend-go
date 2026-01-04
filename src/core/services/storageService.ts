@@ -179,6 +179,16 @@ export const deleteUserStorage = async (username: string): Promise<void> => {
   }
 };
 
+export const deleteProjectStorage = async (pid: string): Promise<void> => {
+  try {
+    await fetchWithAuth(`${API_BASE_URL}/k8s/storage/projects/${pid}`, {
+      method: 'DELETE',
+    });
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Failed to delete project storage.');
+  }
+};
+
 export const checkUserStorageStatus = async (username: string): Promise<boolean> => {
   try {
     const response = await fetchWithAuth(`${API_BASE_URL}/k8s/users/${username}/storage/status`, {

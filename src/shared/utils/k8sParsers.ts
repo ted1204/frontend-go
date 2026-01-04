@@ -31,6 +31,11 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
 
   if (kind === 'Service') {
     const svc = res as ServiceResource;
+
+    // Parse service type and headless mode
+    svc.serviceType = (docObj.spec?.type as 'ClusterIP' | 'NodePort') || 'ClusterIP';
+    svc.headless = docObj.spec?.clusterIP === 'None';
+
     svc.selectors = [];
     if (docObj.spec?.selector) {
       Object.entries(docObj.spec.selector).forEach(([k, v], i) =>
@@ -77,22 +82,39 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
       })),
       envFrom: (c.envFrom || []).map((ef: any) => ef.configMapRef?.name || ''),
       mounts: (c.volumeMounts || []).map((m: any, mi: number) => {
-        // Find the corresponding volume definition to determine type
         const volumes = templateSpec.volumes || [];
         const volumeDef = volumes.find((v: any) => v.name === m.name);
 
-        // Determine mount type based on volume definition
         let mountType: 'project-pvc' | 'user-storage' = 'project-pvc';
         let pvcName = m.name || '';
 
-        if (volumeDef) {
-          if (volumeDef.nfs) {
-            // NFS volume - check if it's user storage placeholder
+        if (volumeDef?.persistentVolumeClaim) {
+          mountType = 'project-pvc';
+          pvcName = volumeDef.persistentVolumeClaim.claimName || m.name;
+        } else if (volumeDef?.nfs) {
+          const rawPath = String(volumeDef.nfs.path || '');
+          const cleanedPath = rawPath.replace(/\/+$/, '');
+          const serverHint = String(volumeDef.nfs.server || '');
+
+          // Check if it's user storage (nfsServer with root path)
+          if (serverHint === '{{nfsServer}}' && (cleanedPath === '' || cleanedPath === '/')) {
             mountType = 'user-storage';
-            pvcName = ''; // NFS doesn't use PVC name
-          } else if (volumeDef.persistentVolumeClaim) {
+            pvcName = '';
+          } else if (serverHint === '{{projectNfsServer}}') {
+            // Project storage NFS server - extract PVC name from volume name
             mountType = 'project-pvc';
-            pvcName = volumeDef.persistentVolumeClaim.claimName || m.name;
+            pvcName = m.name || '';
+          } else {
+            // Legacy: Check if path contains /exports/ or /srv/ pattern
+            const projectMatch = cleanedPath.match(/^\/?(?:exports|srv)\/(.+)$/);
+            if (projectMatch) {
+              mountType = 'project-pvc';
+              pvcName = projectMatch[1];
+            } else {
+              // Fallback: treat unknown NFS as project storage
+              mountType = 'project-pvc';
+              pvcName = m.name || cleanedPath;
+            }
           }
         }
 

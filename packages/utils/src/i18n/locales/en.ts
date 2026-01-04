@@ -5,6 +5,11 @@
  */
 
 const en = {
+  // --- Loading ---
+  loading: {
+    default: 'Loading...',
+    forms: 'Loading forms...',
+  },
   // --- Brand ---
   brand: {
     name: 'AI Platform',
@@ -104,6 +109,18 @@ const en = {
       manageProjects: 'Manage Projects',
       manageGroups: 'Manage Groups',
       forms: 'Forms Management',
+      auditLogs: {
+        title: 'Audit Logs',
+        description: 'Review security and change events',
+        breadcrumb: 'Audit Logs',
+        heroLabel: 'Observability',
+        heroTitle: 'Trace every admin action with confidence',
+        heroDesc:
+          'Filter by user, resource, action, or time range. Quickly inspect before/after payloads to validate changes.',
+        total: 'Total entries',
+        liveHint: 'Live data from /audit/logs',
+        empty: 'No audit logs found for the selected filters.',
+      },
     },
     projects: {
       title: 'Projects',
@@ -711,11 +728,6 @@ const en = {
   search: {
     projectsPlaceholder: 'Search projects...',
     placeholder: 'Search...',
-  },
-
-  // --- Loading ---
-  loading: {
-    forms: 'Loading forms...',
   },
 
   // --- Terminal ---

@@ -5,6 +5,11 @@
  */
 
 const zh = {
+  // --- 載入狀態 ---
+  loading: {
+    default: '載入中...',
+    forms: '正在載入表單...',
+  },
   // --- 品牌 / 全域 ---
   brand: {
     name: 'AI 平台',
@@ -95,6 +100,17 @@ const zh = {
     admin: {
       title: '管理儀表板',
       description: '管理中心',
+      auditLogs: {
+        title: '稽核日誌',
+        description: '檢視安全與變更事件',
+        breadcrumb: '稽核日誌',
+        heroLabel: '觀測性',
+        heroTitle: '完整追蹤每個管理操作',
+        heroDesc: '可依使用者、資源、動作或時間範圍篩選，快速檢視前後內容確認變更。',
+        total: '總筆數',
+        liveHint: '從 /audit/logs 即時取得',
+        empty: '目前沒有符合條件的稽核記錄。',
+      },
     },
     adminForm: {
       title: '表單儀表板',
@@ -739,11 +755,6 @@ const zh = {
   search: {
     projectsPlaceholder: '搜尋專案...',
     placeholder: '搜尋...',
-  },
-
-  // --- 載入狀態 ---
-  loading: {
-    forms: '載入表單中...',
   },
 
   // --- 按鈕 ---

@@ -39,8 +39,8 @@ const MountManager = ({
     const newMount: MountConfig = {
       id: Date.now().toString(),
       type: defaultType,
-      subPath: defaultPVC ? defaultPVC : '',
-      mountPath: '/data',
+      subPath: '',
+      mountPath: '/',
       pvcName: defaultPVC,
     };
 
@@ -66,11 +66,11 @@ const MountManager = ({
         // Auto-select first PVC if switching to project-pvc
         if (field === 'type' && value === 'project-pvc' && !m.pvcName && projectPvcs.length > 0) {
           const first = projectPvcs[0].name;
-          return { ...m, type: value as MountType, pvcName: first, subPath: first };
+          return { ...m, type: value as MountType, pvcName: first, subPath: '' };
         }
-        // When pvc changes, set subPath to pvc default if empty
+        // When pvc changes, keep subPath empty (root directory)
         if (field === 'pvcName') {
-          return { ...m, pvcName: value, subPath: value ? value : '' };
+          return { ...m, pvcName: value, subPath: '' };
         }
         return { ...m, [field]: value };
       }),

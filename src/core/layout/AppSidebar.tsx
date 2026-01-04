@@ -10,7 +10,6 @@ import {
   TaskIcon,
 } from '../../shared/icons';
 import { useSidebar } from '../context/useSidebar';
-
 type NavItem = {
   name: LocaleKey;
   icon: React.ReactNode;
@@ -66,6 +65,11 @@ const adminItems: NavItem[] = [
     icon: <TaskIcon />, // Use TaskIcon for Manage Projects
     name: 'page.admin.manageProjects',
     path: '/admin/manage-projects',
+  },
+  {
+    icon: <GridIcon />, // Audit logs
+    name: 'page.admin.auditLogs.title',
+    path: '/admin/audit-logs',
   },
   {
     icon: <GroupIcon />, // Use GroupIcon for Manage Groups

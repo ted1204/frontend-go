@@ -7,6 +7,7 @@ import { SignIn, SignUp } from './features/auth/pages';
 import {
   AdminDashboard,
   AdminFormDashboard,
+  AdminAuditLogs,
   ManageProjects,
   ManageGroups,
 } from './features/admin/pages';
@@ -57,6 +58,7 @@ export default function App() {
               <Route path="/projects/:id" element={<ProjectDetail />} />
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
               <Route path="/admin/manage-projects" element={<ManageProjects />} />
               <Route path="/admin/manage-groups" element={<ManageGroups />} />
               <Route path="/admin/forms" element={<AdminFormDashboard />} />

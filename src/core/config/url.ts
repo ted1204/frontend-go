@@ -43,6 +43,8 @@ export const CONFIG_FILES_BY_PROJECT_URL = (id: number) =>
 //resources
 export const RESOURCES_URL = `${API_BASE_URL}/resources`;
 export const RESOURCE_BY_ID_URL = (id: number) => `${API_BASE_URL}/resources/${id}`;
+// audit
+export const AUDIT_LOGS_URL = `${API_BASE_URL}/audit/logs`;
 // projects
 export const PROJECTS_URL = `${API_BASE_URL}/projects`;
 export const PROJECT_BY_ID_URL = (id: number) => `${API_BASE_URL}/projects/${id}`;
