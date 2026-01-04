@@ -23,15 +23,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
 
-      - name: Cache TypeScript buildinfo files
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/*.tsbuildinfo
-          key: ${{ runner.os }}-tsbuildinfo-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-tsbuildinfo-
-
       - name: Install dependencies
         run: npm ci
 
@@ -41,8 +32,10 @@ jobs:
       - name: Format check
         run: npm run format:check
 
-      - name: TypeScript build (composite)
-        run: npx tsc -b --verbose
+      - name: TypeScript clean + build (composite)
+        run: |
+          npx tsc -b --clean
+          npx tsc -b --verbose
 
       - name: Build packages
         run: |
