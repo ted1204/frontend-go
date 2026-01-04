@@ -13,8 +13,8 @@ const LanguageButton: React.FC = () => {
     <button
       onClick={() => toggleLanguage()}
       className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full dropdown-toggle hover:text-gray-700 h-11 w-11 hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
-      aria-label="切換語言"
-      title={language === 'zh' ? '切換為英文' : 'Switch to 中文'}
+      aria-label="Toggle Language"
+      title={language === 'zh' ? 'Switch to English' : 'Switch to Chinese'}
     >
       <svg
         className="fill-current"
@@ -30,7 +30,7 @@ const LanguageButton: React.FC = () => {
         />
       </svg>
       <span className="absolute -bottom-0.5 -right-0.5 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-medium leading-3 rounded-full bg-red-600 text-white">
-        {language === 'zh' ? '中' : 'EN'}
+        {language === 'zh' ? 'ZH' : 'EN'}
       </span>
     </button>
   );
@@ -189,7 +189,7 @@ const AppHeader: React.FC = () => {
             <NotificationDropdown />
             {/* <!-- Notification Menu Area --> */}
           </div>
-          {/* 添加使用者名字顯示 */}
+          {/* Display username */}
           {username && <span className="text-gray-700 dark:text-white/90 text-sm">{username}</span>}
           <UserDropdown />
         </div>

@@ -87,7 +87,7 @@ export default function Groups() {
     if (loading) return <LoadingState />;
     if (error) return <ErrorState message={error} />;
 
-    // 如果沒有任何群組，顯示 EmptyState (不帶 Action)
+    // If no groups exist, show EmptyState (without action)
     if (groups.length === 0) return <EmptyState onActionClick={() => {}} />;
 
     if (filteredGroups.length === 0) {

@@ -110,12 +110,12 @@ export default function EditConfigModal({
   }, []);
 
   const handleSave = () => {
-    if (!filename.trim()) return setError('檔名為必填。');
+    if (!filename.trim()) return setError('Filename is required.');
 
     // Ensure we send the latest data regardless of current tab
     const finalYaml = activeTab === 'wizard' ? generateMultiDocYAML(resources) : rawYaml;
 
-    if (!finalYaml.trim()) return setError('YAML 內容不能為空。');
+    if (!finalYaml.trim()) return setError('YAML content cannot be empty.');
     onSave({ filename, raw_yaml: finalYaml });
   };
 
@@ -179,20 +179,20 @@ export default function EditConfigModal({
 
       {/* Footer Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <span className="text-sm text-red-600 dark:text-red-400">{error && `錯誤: ${error}`}</span>
+        <span className="text-sm text-red-600 dark:text-red-400">{error && `Error: ${error}`}</span>
         <div className="flex gap-3 w-full sm:w-auto">
           <button
             onClick={onClose}
             className="w-full sm:w-auto px-4 py-2 border rounded-md hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-white"
           >
-            取消
+            Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={actionLoading}
             className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 disabled:opacity-50"
           >
-            {actionLoading ? '儲存中...' : '儲存變更'}
+            {actionLoading ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </div>

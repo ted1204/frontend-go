@@ -1,5 +1,70 @@
-import en from './locales/en';
-import zh from './locales/zh';
+// Import English modules
+import { common as enCommon } from './locales/en/common';
+import { status as enStatus } from './locales/en/status';
+import { navigation as enNavigation } from './locales/en/navigation';
+import { errors as enErrors } from './locales/en/errors';
+import { auth as enAuth } from './locales/en/auth';
+import { groups as enGroups } from './locales/en/groups';
+import { projects as enProjects } from './locales/en/projects';
+import { storage as enStorage } from './locales/en/storage';
+import { admin as enAdmin } from './locales/en/admin';
+import { monitor as enMonitor } from './locales/en/monitor';
+import { forms as enForms } from './locales/en/forms';
+import { members as enMembers } from './locales/en/members';
+import { pages as enPages } from './locales/en/pages';
+import { misc as enMisc } from './locales/en/misc';
+
+// Import Chinese modules
+import { common as zhCommon } from './locales/zh/common';
+import { status as zhStatus } from './locales/zh/status';
+import { navigation as zhNavigation } from './locales/zh/navigation';
+import { errors as zhErrors } from './locales/zh/errors';
+import { auth as zhAuth } from './locales/zh/auth';
+import { groups as zhGroups } from './locales/zh/groups';
+import { projects as zhProjects } from './locales/zh/projects';
+import { storage as zhStorage } from './locales/zh/storage';
+import { admin as zhAdmin } from './locales/zh/admin';
+import { monitor as zhMonitor } from './locales/zh/monitor';
+import { forms as zhForms } from './locales/zh/forms';
+import { members as zhMembers } from './locales/zh/members';
+import { pages as zhPages } from './locales/zh/pages';
+import { misc as zhMisc } from './locales/zh/misc';
+
+// Merge all English modules
+const en = {
+  ...enCommon,
+  ...enStatus,
+  ...enNavigation,
+  ...enErrors,
+  ...enAuth,
+  ...enGroups,
+  ...enProjects,
+  ...enStorage,
+  ...enAdmin,
+  ...enMonitor,
+  ...enForms,
+  ...enMembers,
+  ...enPages,
+  ...enMisc,
+} as const;
+
+// Merge all Chinese modules
+const zh = {
+  ...zhCommon,
+  ...zhStatus,
+  ...zhNavigation,
+  ...zhErrors,
+  ...zhAuth,
+  ...zhGroups,
+  ...zhProjects,
+  ...zhStorage,
+  ...zhAdmin,
+  ...zhMonitor,
+  ...zhForms,
+  ...zhMembers,
+  ...zhPages,
+  ...zhMisc,
+} as const;
 
 // Define the resource map
 const resources = { en, zh } as const;
@@ -17,6 +82,9 @@ type Path<T> = T extends object
 // Automatically derive all valid keys from the English source file
 export type LocaleKey = Path<typeof en>;
 export type Locale = 'en' | 'zh';
+
+// Export en and zh for type inference (used in type system)
+export { en, zh };
 
 /**
  * Helper function to resolve a dot-notation path in a nested object.

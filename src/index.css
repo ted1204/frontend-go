@@ -38,39 +38,39 @@ layer(base);
 }
 
 .xterm .xterm-viewport {
-  /* xterm.js 預設是 scroll，我們將其改回 auto */
+  /* xterm.js default is scroll, change to auto */
   overflow-y: auto !important;
 
-  /* 確保其背景與外部容器一致，避免白邊 */
+  /* Ensure background matches container to avoid white edges */
   background-color: #1f2937 !important;
 }
 
-/* 2. 隱藏常駐的滾動條軌道 (達到溢出才顯示的效果) */
-/* 僅在內容溢出時，瀏覽器才會顯示滑塊 */
+/* 2. Hide persistent scrollbar track (show only on overflow) */
+/* Browser shows scrollbar only when content overflows */
 
 /* Webkit (Chrome, Safari) */
 .xterm .xterm-viewport::-webkit-scrollbar {
-  width: 8px; /* 設置一個寬度 */
+  width: 8px; /* Set width */
   height: 8px;
 }
 
 .xterm .xterm-viewport::-webkit-scrollbar-track {
-  /* 當內容不足時，軌道背景設為透明/與終端機背景色一致，使其不可見 */
+  /* Track background transparent/matches terminal to be invisible when not scrolling */
   background: #1f2937;
 }
 
 .xterm .xterm-viewport::-webkit-scrollbar-thumb {
-  /* 滑塊顏色，只有內容溢出時會顯示 */
+  /* Scrollbar thumb color, shown only on overflow */
   background-color: #4b5563; /* Tailwind gray-600 */
   border-radius: 4px;
-  border: 2px solid #1f2937; /* 軌道邊界 */
+  border: 2px solid #1f2937; /* Track border */
 }
 
 /* Firefox */
 .xterm .xterm-viewport {
-  /* 這是 Firefox 的滾動條樣式，使其變細並透明化 */
+  /* Firefox scrollbar style - thin and transparent */
   scrollbar-width: thin;
-  scrollbar-color: #4b5563 #1f2937; /* 滑塊顏色 軌道顏色 */
+  scrollbar-color: #4b5563 #1f2937; /* thumb color track color */
 }
 
 @theme {

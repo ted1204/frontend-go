@@ -10,7 +10,7 @@ import {
   ServerStackIcon,
 } from '@heroicons/react/24/outline';
 
-// Fix 1: 匯入 ResourceMessage 型別介面
+// Fix 1: Import ResourceMessage type interface
 import { WebSocketContext, ResourceMessage } from '@/core/context/WebSocketContext';
 import { getUsername } from '@/core/services/authService';
 import {
@@ -44,7 +44,7 @@ export const PersonalHub: React.FC = () => {
   const nsMessages = getNamespaceMessages(personalNs);
 
   // 2. Check Pod Status
-  // Fix 2: 明確告訴 TypeScript，useMemo 回傳的是 ResourceMessage 或 undefined
+  // Fix 2: Explicitly tell TypeScript that useMemo returns ResourceMessage or undefined
   const personalPod = useMemo<ResourceMessage | undefined>(() => {
     return nsMessages.find((m) => {
       if (m.kind !== 'Pod' || !m.name) return false;
@@ -59,7 +59,7 @@ export const PersonalHub: React.FC = () => {
 
   const podExists = !!personalPod;
 
-  // Fix 3: 這裡的 metadata 存取現在是安全的，因為 TypeScript 知道 personalPod 是 ResourceMessage
+  // Fix 3: Metadata access is now safe because TypeScript knows personalPod is ResourceMessage
   const isTerminating = !!personalPod?.metadata?.deletionTimestamp;
   const isOnline = personalPod?.status === 'Running' && !isTerminating;
 

@@ -32,7 +32,7 @@ const UserFormApply: React.FC<UserFormApplyProps> = ({
   const { t } = useTranslation();
   return (
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800 p-6 mb-8">
-      <h3 className="mb-4 text-xl font-semibold">{t('form.apply.title') || '申請'}</h3>
+      <h3 className="mb-4 text-xl font-semibold">{t('form.apply.title') || 'Apply'}</h3>
       {error && <div className="mb-4 text-sm text-red-600">{error}</div>}
       {success && <div className="mb-4 text-sm text-green-600">{success}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">

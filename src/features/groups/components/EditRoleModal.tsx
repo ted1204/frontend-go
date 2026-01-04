@@ -8,19 +8,19 @@ import { UserGroupUser } from '@/core/interfaces/userGroup'; // Use the correct,
 
 const roles = [
   {
-    name: '管理員',
+    name: 'Administrator',
     value: 'admin' as const,
-    description: '擁有所有資源和設定的完整權限。',
+    description: 'Full permissions for all resources and settings.',
   },
   {
-    name: '專案管理者',
+    name: 'Project Manager',
     value: 'manager' as const,
-    description: '可以管理成員和特定資源。',
+    description: 'Can manage members and specific resources.',
   },
   {
-    name: '一般使用者',
+    name: 'User',
     value: 'user' as const,
-    description: '可以檢視和互動指派的資源。',
+    description: 'Can view and interact with assigned resources.',
   },
 ];
 
@@ -69,7 +69,7 @@ export default function EditRoleModal({ isOpen, onClose, user, onUpdate }: EditR
       await onUpdate(selectedRole);
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : '更新角色失敗。');
+      setError(err instanceof Error ? err.message : 'Failed to update role.');
     } finally {
       setIsSubmitting(false);
     }
@@ -119,10 +119,10 @@ export default function EditRoleModal({ isOpen, onClose, user, onUpdate }: EditR
                 as="h3"
                 className="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
               >
-                編輯角色
+                Edit Role
               </Dialog.Title>
               <Dialog.Description className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                變更權限等級：{' '}
+                Change permission level for:{' '}
                 <span className="font-medium text-gray-800 dark:text-gray-200">
                   {user.Username}
                 </span>
@@ -186,14 +186,14 @@ export default function EditRoleModal({ isOpen, onClose, user, onUpdate }: EditR
                   onClick={handleClose}
                   className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500 dark:ring-0"
                 >
-                  取消
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
                   className="inline-flex justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? '更新中...' : '更新角色'}
+                  {isSubmitting ? 'Updating...' : 'Update Role'}
                 </button>
               </div>
             </Dialog.Panel>

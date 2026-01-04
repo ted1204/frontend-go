@@ -1,0 +1,40 @@
+/**
+ * Common translations - Brand, Loading, General UI
+ */
+export const common = {
+  loading: {
+    default: 'Loading...',
+    forms: 'Loading forms...',
+  },
+  brand: {
+    name: 'AI Platform',
+  },
+  common: {
+    refresh: 'Refresh',
+    create: 'Create',
+    edit: 'Edit',
+    delete: 'Delete',
+    cancel: 'Cancel',
+    submit: 'Submit',
+    save: 'Save',
+    search: 'Search...',
+    remove: 'Remove',
+    actions: 'Actions',
+    loading: 'Loading...',
+    submitting: 'Submitting...',
+    success: 'Success',
+    error: 'Error',
+    id: 'ID',
+    name: 'Name',
+    description: 'Description',
+    status: 'Status',
+    createdAt: 'Created At',
+    updatedAt: 'Updated At',
+    noData: 'No data found.',
+    untitled: 'Untitled',
+    confirmDelete: 'Are you sure you want to delete?',
+    live: 'Live',
+    reset: 'Reset',
+    apply: 'Apply Filters',
+  },
+} as const;

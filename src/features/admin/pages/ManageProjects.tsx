@@ -229,7 +229,7 @@ export default function ManageProjects() {
   };
 
   /**
-   * 6. 處理確認刪除 (執行 API)
+   * 6. Handle delete confirmation (execute API)
    */
   const handleConfirmDelete = async () => {
     if (!projectToDelete) return;

@@ -20,7 +20,7 @@ metadata:
     if (res.kind === 'Pod' || res.kind === 'Deployment') {
       const wl = res as WorkloadResource;
       const isDeploy = res.kind === 'Deployment';
-      // Deployment 的 spec 在比較深層，縮排不同
+      // Deployment spec is at a deeper level, different indentation
       const indent = isDeploy ? '        ' : '    ';
       // Helper to serialize selectors into label blocks
       const serializeLabels = (
@@ -59,7 +59,7 @@ metadata:
       const containersHeader = isDeploy ? `      containers:\n` : `  containers:\n`;
       yaml += containersHeader;
 
-      // 用來收集所有 Container 的 Mounts，最後在 Pod Level 定義 Volumes
+      // Collect all Container Mounts, define Volumes at Pod Level later
       const allMounts: MountConfig[] = [];
 
       wl.containers.forEach((c) => {
@@ -67,13 +67,13 @@ metadata:
 ${indent}  image: "${c.image || 'ubuntu:latest'}"
 ${indent}  imagePullPolicy: ${c.imagePullPolicy}
 `;
-        // Command (處理 JSON array 字串或一般文字)
+        // Command (handle JSON array string or plain text)
         if (c.command) {
           const cmdStr = c.command.trim().startsWith('[') ? c.command : `["${c.command}"]`;
           yaml += `${indent}  command: ${cmdStr}\n`;
         }
 
-        // Args (處理多行文字區塊 | 或 JSON array)
+        // Args (handle multiline text block | or JSON array)
         if (c.args) {
           if (c.args.includes('\n')) {
             // Multiline block scalar
@@ -119,7 +119,7 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
           yaml += `${indent}  volumeMounts:\n`;
           c.mounts.forEach((m) => {
             allMounts.push(m);
-            // 決定 Volume 名稱：如果是 user-storage 給固定名稱，project storage 用 PVC 名稱
+            // Determine Volume name: use fixed name for user-storage, PVC name for project storage
             const volName =
               m.type === 'user-storage'
                 ? 'user-home'
@@ -132,7 +132,7 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
         }
       });
 
-      // 3. Volumes Definition (Pod Level) - 去除重複
+      // 3. Volumes Definition (Pod Level) - Remove duplicates
       if (allMounts.length > 0) {
         const volumesHeader = isDeploy ? `      volumes:\n` : `  volumes:\n`;
         const volItemPrefix = isDeploy ? `        ` : `    `;

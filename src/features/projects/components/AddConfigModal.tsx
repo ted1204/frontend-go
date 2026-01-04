@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
-import { useTranslation } from '@nthucscc/utils'; // 假設的路徑
+import { useTranslation } from '@nthucscc/utils'; // Assumed path
 import { Project } from '@/core/interfaces/project';
 import { PVC } from '@/core/interfaces/pvc';
 import {
@@ -41,7 +41,7 @@ export default function AddConfigModal({
 }: AddConfigModalProps) {
   const { t } = useTranslation();
 
-  // 重複使用 hook，傳入 null 代表沒有初始 config
+  // Reuse hook, pass null to indicate no initial config
   const {
     filename,
     setFilename,
@@ -56,12 +56,12 @@ export default function AddConfigModal({
     setError,
   } = useConfigForm(null, isOpen);
 
-  // 外部數據狀態
+  // External data state
   const [projectPvcs, setProjectPvcs] = useState<PVC[]>([]);
   const [hasUserStorage, setHasUserStorage] = useState(false);
   const [editorTheme, setEditorTheme] = useState('vs-light');
 
-  // 初始化：當 Modal 打開時重置表單
+  // Initialize: reset form when modal opens
   useEffect(() => {
     if (isOpen) {
       setFilename('');
@@ -69,7 +69,7 @@ export default function AddConfigModal({
       setResources([]);
       setError(null);
 
-      // 讀取外部數據
+      // Read external data
       const pid = project?.PID ?? projectId ?? 0;
       Promise.all([
         // Get PVCs for this specific project
@@ -127,7 +127,7 @@ export default function AddConfigModal({
     }
   }, [isOpen, projectId, setFilename, setRawYaml, setResources, setError, project]);
 
-  // 處理編輯器主題
+  // Handle editor theme
   useEffect(() => {
     const updateTheme = () =>
       setEditorTheme(document.documentElement.classList.contains('dark') ? 'vs-dark' : 'vs-light');
@@ -139,13 +139,13 @@ export default function AddConfigModal({
 
   const handleSubmit = () => {
     if (!filename.trim()) {
-      return setError(t('config.error.filenameRequired') || '請輸入檔案名稱');
+      return setError(t('config.error.filenameRequired') || 'Please enter filename');
     }
 
     const finalYaml = activeTab === 'wizard' ? generateMultiDocYAML(resources) : rawYaml;
 
     if (!finalYaml.trim()) {
-      return setError(t('config.error.yamlEmpty') || '內容不能為空');
+      return setError(t('config.error.yamlEmpty') || 'Content cannot be empty');
     }
 
     const cb = onConfirm ?? onCreate;
@@ -156,15 +156,15 @@ export default function AddConfigModal({
     <BaseModal
       isOpen={isOpen}
       onClose={onClose}
-      title={t('config.createTitle') || '新增設定檔'}
-      subtitle={t('config.createSubtitle') || '使用精靈模式或直接編寫 YAML'}
+      title={t('config.createTitle') || 'Add Config File'}
+      subtitle={t('config.createSubtitle') || 'Use wizard mode or write YAML directly'}
       maxWidth="max-w-7xl"
     >
       <div className="flex flex-col h-[75vh]">
-        {/* 檔名輸入區 (新增模式特有) */}
+        {/* Filename input area (specific to add mode) */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            {t('config.filename.label') || '檔案名稱'} <span className="text-red-500">*</span>
+            {t('config.filename.label') || 'Filename'} <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -201,7 +201,7 @@ export default function AddConfigModal({
           </nav>
         </div>
 
-        {/* Content Area - 自動填滿剩餘高度 */}
+        {/* Content Area - Auto-fill remaining height */}
         <div className="flex-grow overflow-hidden relative">
           {activeTab === 'wizard' ? (
             <div className="h-full overflow-y-auto pr-2">
@@ -235,14 +235,14 @@ export default function AddConfigModal({
         {/* Footer Actions */}
         <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4 flex-shrink-0">
           <span className="text-sm text-red-600 dark:text-red-400 font-medium">
-            {error && `錯誤: ${error}`}
+            {error && `Error: ${error}`}
           </span>
           <div className="flex gap-3 w-full sm:w-auto">
             <button
               onClick={onClose}
               className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700"
             >
-              {t('common.cancel') || '取消'}
+              {t('common.cancel') || 'Cancel'}
             </button>
             <button
               onClick={handleSubmit}
@@ -250,8 +250,8 @@ export default function AddConfigModal({
               className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 disabled:opacity-50 transition-colors shadow-sm"
             >
               {loading || actionLoading
-                ? t('config.creating') || '建立中...'
-                : t('common.create') || '建立'}
+                ? t('config.creating') || 'Creating...'
+                : t('common.create') || 'Create'}
             </button>
           </div>
         </div>

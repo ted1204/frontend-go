@@ -76,7 +76,7 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
         err instanceof Error ? err.message : t('project.detail.createConfigError');
       console.error('Error message:', errorMessage);
       setError(errorMessage);
-      alert('創建配置文件失敗: ' + errorMessage); // 临时添加 alert 确保能看到错误
+      alert('Failed to create config file: ' + errorMessage); // Temporary alert to ensure error is visible
     } finally {
       setActionLoading(false);
     }

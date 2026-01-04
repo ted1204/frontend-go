@@ -32,8 +32,8 @@ export default function ResourceWizard({
 
   return (
     <div className="space-y-6">
-      {/* Toolbar - 還原您原始提供的樣式 
-        (不同顏色的按鈕、虛線外框、置中)
+      {/* Toolbar - Restore original style
+        (Different colored buttons, dashed border, centered)
       */}
       <div className="flex flex-wrap gap-3 p-4 rounded-xl border border-dashed border-gray-300 bg-white/50 dark:border-gray-600 dark:bg-gray-800/50 justify-center">
         <button

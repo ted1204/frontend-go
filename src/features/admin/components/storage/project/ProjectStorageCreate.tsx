@@ -5,15 +5,15 @@ import { toast } from 'react-hot-toast';
 import { ServerIcon, CubeIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 
 // Services
-import { createProjectStorage } from '@/core/services/storageService'; // 引用整合後的 service
-import { getProjects } from '@/core/services/projectService'; // 假設你有這個 Service 取得專案列表
+import { createProjectStorage } from '@/core/services/storageService'; // Reference to integrated service
+import { getProjects } from '@/core/services/projectService'; // Assume you have this Service to get project list
 
 // Types
-import { Project } from '@/core/interfaces/project'; // 假設你有這個 Interface
+import { Project } from '@/core/interfaces/project'; // Assume you have this Interface
 
 interface ProjectStorageCreateProps {
   onCancel: () => void;
-  onSuccess: () => void; // 新增成功後的回調
+  onSuccess: () => void; // Callback after successful creation
 }
 
 const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, onSuccess }) => {
@@ -28,7 +28,7 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
   const [pvcName, setPvcName] = useState<string>('');
   const [capacity, setCapacity] = useState<number>(10);
 
-  // 1. 載入專案列表供選擇
+  // 1. Load project list for selection
   useEffect(() => {
     const loadProjects = async () => {
       setFetchingProjects(true);
@@ -53,7 +53,7 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
     setSelectedProjectName(p ? p.ProjectName : '');
   };
 
-  // 2. 提交表單建立儲存
+  // 2. Submit form to create storage
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedProjectId) {
@@ -75,7 +75,7 @@ const ProjectStorageCreate: React.FC<ProjectStorageCreateProps> = ({ onCancel, o
       });
 
       toast.success(t('admin.storage.project.createSuccess'));
-      onSuccess(); // 通知父層刷新並切換 Tab
+      onSuccess(); // Notify parent to refresh and switch Tab
     } catch (err: unknown) {
       const e = err as { message?: string };
       toast.error(e.message || 'Failed to create storage');

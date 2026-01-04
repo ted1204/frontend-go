@@ -240,7 +240,7 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({ isOpen, onClose, user
               <div className="mt-5">
                 <RadioGroup value={selectedRole} onChange={setSelectedRole}>
                   <RadioGroup.Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    角色 <span className="text-red-500">*</span>
+                    Role <span className="text-red-500">*</span>
                   </RadioGroup.Label>
                   <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
                     {roles.map((role) => (
@@ -292,14 +292,14 @@ const InviteUserModal: React.FC<InviteUserModalProps> = ({ isOpen, onClose, user
                   onClick={handleClose}
                   className="rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500 dark:ring-0"
                 >
-                  取消
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || !selectedUser}
                   className="inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {isSubmitting ? '邀請中...' : '邀請成員'}
+                  {isSubmitting ? 'Inviting...' : 'Invite Member'}
                 </button>
               </div>
             </Dialog.Panel>

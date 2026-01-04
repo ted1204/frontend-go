@@ -14,7 +14,7 @@ import { Project } from '@/core/interfaces/project';
 type ViewMode = 'grid' | 'list';
 
 export default function UserFormDashboard() {
-  // 新增 tab 狀態: 'history' 或 'apply'
+  // Add tab state: 'history' or 'apply'
   const [tab, setTab] = useState<'history' | 'apply'>('history');
   const { t } = useTranslation();
   const [projects, setProjects] = useState<Project[]>([]);

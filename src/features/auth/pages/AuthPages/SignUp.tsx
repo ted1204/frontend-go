@@ -5,7 +5,7 @@ import SignUpForm from '@nthucscc/components-shared/auth/SignUpForm';
 export default function SignUp() {
   return (
     <>
-      <PageMeta title="註冊 | AI 平台" description="這是 AI 平台的註冊頁面" />
+      <PageMeta title="Sign Up | AI Platform" description="Sign up page for AI Platform" />
       <AuthLayout>
         <SignUpForm />
       </AuthLayout>

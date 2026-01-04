@@ -13,7 +13,7 @@ const ProjectStorageManagement: React.FC = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabKey>('list');
 
-  // 增加 Refresh Trigger：當新增成功時，這個數字+1，通知 List 重新撈資料
+  // Add Refresh Trigger: when creation succeeds, this number +1, notify List to re-fetch data
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleCreateSuccess = () => {
@@ -72,10 +72,10 @@ const ProjectStorageManagement: React.FC = () => {
       <div className="p-6">
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
           {activeTab === 'list' ? (
-            // 將 refreshTrigger 傳入
+            // Pass refreshTrigger
             <ProjectStorageList refreshTrigger={refreshTrigger} />
           ) : (
-            // 傳入 onSuccess callback
+            // Pass onSuccess callback
             <ProjectStorageCreate
               onCancel={() => setActiveTab('list')}
               onSuccess={handleCreateSuccess}

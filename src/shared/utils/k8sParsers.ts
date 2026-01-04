@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import yaml from 'js-yaml';
-import { createDefaultResource } from '@/features/projects/utils/resourceFactories'; // 假設既有
+import { createDefaultResource } from '@/features/projects/utils/resourceFactories'; // Assume existing
 import {
   ResourceItem,
   ResourceKind,
@@ -9,7 +9,7 @@ import {
   WorkloadResource,
 } from '@/core/interfaces/configFile';
 
-// 解析單個 YAML Doc 為 ResourceItem
+// Parse a single YAML Doc into ResourceItem
 const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
   const kind: ResourceKind = (docObj.kind as ResourceKind) || 'ConfigMap';
   const id = `parsed-${idx}-${Date.now()}`;
@@ -55,7 +55,7 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
   if (kind === 'Pod' || kind === 'Deployment') {
     const workload = res as WorkloadResource;
     const spec = docObj.spec || {};
-    // Deployment 結構不同，需找到 template spec
+    // Deployment structure is different, need to find template spec
     const templateSpec = spec.template?.spec || spec;
     const containers = templateSpec.containers || [];
 
@@ -130,7 +130,7 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
 
     workload.replicas = spec.replicas || workload.replicas;
 
-    // 解析 Labels/Selectors
+    // Parse Labels/Selectors
     workload.selectors = [];
     const labels = spec.selector?.matchLabels || docObj.metadata?.labels || spec.selector || {};
     Object.entries(labels).forEach(([k, v], i) => {
