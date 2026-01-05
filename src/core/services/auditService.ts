@@ -24,12 +24,17 @@ export const getAuditLogs = async (query: AuditLogQuery = {}): Promise<AuditLog[
 
   const url = params.toString() ? `${AUDIT_LOGS_URL}?${params.toString()}` : AUDIT_LOGS_URL;
   const response = await fetchWithAuth(url, { method: 'GET' });
-  
+
   let logs: AuditLog[] = [];
   if (Array.isArray(response)) {
     logs = response as AuditLog[];
-  } else if (response && typeof response === 'object' && 'data' in response && Array.isArray((response as any).data)) {
-    logs = (response as any).data as AuditLog[];
+  } else if (
+    response &&
+    typeof response === 'object' &&
+    'data' in response &&
+    Array.isArray((response as { data: unknown[] }).data)
+  ) {
+    logs = (response as { data: AuditLog[] }).data;
   }
 
   return logs.map(normalizeLog);

@@ -158,10 +158,16 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
           <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
-                <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-white sm:pl-6">
+                <th
+                  scope="col"
+                  className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-white sm:pl-6"
+                >
                   {t('project.images.colImage')}
                 </th>
-                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white">
+                <th
+                  scope="col"
+                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white"
+                >
                   {t('project.images.colType')}
                 </th>
                 <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
@@ -172,7 +178,10 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
               {images.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                  <td
+                    colSpan={3}
+                    className="py-4 text-center text-sm text-gray-500 dark:text-gray-400"
+                  >
                     {t('project.images.noImages')}
                   </td>
                 </tr>
@@ -231,10 +240,12 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
             <p className="font-medium mb-1">{t('project.images.about.title')}</p>
             <ul className="list-disc list-inside space-y-1 text-xs text-gray-600 dark:text-gray-400">
               <li>
-                <strong>{t('project.images.about.globalLabel')}</strong> {t('project.images.about.globalDesc')}
+                <strong>{t('project.images.about.globalLabel')}</strong>{' '}
+                {t('project.images.about.globalDesc')}
               </li>
               <li>
-                <strong>{t('project.images.about.projectLabel')}</strong> {t('project.images.about.projectDesc')}
+                <strong>{t('project.images.about.projectLabel')}</strong>{' '}
+                {t('project.images.about.projectDesc')}
               </li>
               <li>{t('project.images.about.accessible')}</li>
               <li>{t('project.images.about.allowed')}</li>

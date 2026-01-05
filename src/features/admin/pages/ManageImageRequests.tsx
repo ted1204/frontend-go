@@ -249,7 +249,10 @@ export default function ManageImageRequests() {
             </h3>
             <div className="mb-4">
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                Image: <span className="font-mono">{selectedRequest.Name}:{selectedRequest.Tag}</span>
+                Image:{' '}
+                <span className="font-mono">
+                  {selectedRequest.Name}:{selectedRequest.Tag}
+                </span>
               </p>
               {modalType === 'approve' && (
                 <label className="flex items-center gap-2 mb-3">

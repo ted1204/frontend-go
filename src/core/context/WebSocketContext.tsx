@@ -140,7 +140,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       }
     };
 
-    ws.onclose = (_e) => {
+    ws.onclose = () => {
       // console.log(`[WS Pool] Closed ${ns} (Code: ${e.code})`);
       delete sockets.current[ns];
     };

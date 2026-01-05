@@ -64,10 +64,7 @@ export default function UserImageRequests() {
 
   return (
     <div>
-      <PageMeta
-        title="My Image Requests"
-        description="Submit and track container image requests"
-      />
+      <PageMeta title="My Image Requests" description="Submit and track container image requests" />
       <PageBreadcrumb pageTitle="Image Requests" />
 
       <div className="mb-6">

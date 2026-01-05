@@ -70,9 +70,7 @@ export default function ManageImages() {
 
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex items-center justify-between px-4 py-6 md:px-6 xl:px-7.5">
-          <h4 className="text-xl font-semibold text-black dark:text-white">
-            Allowed Images
-          </h4>
+          <h4 className="text-xl font-semibold text-black dark:text-white">Allowed Images</h4>
           <button
             onClick={() => setIsPullModalOpen(true)}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
@@ -125,9 +123,7 @@ export default function ManageImages() {
                 </span>
               </div>
               <div className="col-span-1 flex items-center">
-                <p className="text-sm text-black dark:text-white">
-                  {img.ProjectID || '-'}
-                </p>
+                <p className="text-sm text-black dark:text-white">{img.ProjectID || '-'}</p>
               </div>
               <div className="col-span-1 flex items-center justify-end">
                 <button
@@ -180,9 +176,7 @@ export default function ManageImages() {
               Pull Image on Cluster
             </h3>
             <div className="mb-4">
-              <label className="mb-2.5 block text-black dark:text-white">
-                Image Name
-              </label>
+              <label className="mb-2.5 block text-black dark:text-white">Image Name</label>
               <input
                 type="text"
                 placeholder="e.g. nginx"
@@ -192,9 +186,7 @@ export default function ManageImages() {
               />
             </div>
             <div className="mb-6">
-              <label className="mb-2.5 block text-black dark:text-white">
-                Tag
-              </label>
+              <label className="mb-2.5 block text-black dark:text-white">Tag</label>
               <input
                 type="text"
                 placeholder="e.g. latest"

@@ -1,10 +1,6 @@
 import { USER_GROUP_URL, USER_GROUP_BY_GROUP_URL, USER_GROUP_BY_USER_URL } from '../config/url';
 import { MessageResponse } from '../response/response';
-import {
-  UserGroup,
-  UserGroupUser,
-  UserGroupGroup,
-} from '../interfaces/userGroup';
+import { UserGroup, UserGroupUser, UserGroupGroup } from '../interfaces/userGroup';
 import { fetchWithAuth as baseFetchWithAuth } from '@/shared/utils/api';
 
 const fetchWithAuth = async (url: string, options: RequestInit) => {
@@ -101,16 +97,16 @@ export const getUsersByGroup = async (g_id: number): Promise<UserGroupUser[]> =>
     const response = await fetchWithAuth(`${USER_GROUP_BY_GROUP_URL}?g_id=${g_id}`, {
       method: 'GET',
     });
-    
+
     // Backend returns map[uint]map[string]interface{} directly
     // Check if it's wrapped in a data property or is the direct map
     const dataMap = response?.data || response;
-    
+
     if (!dataMap || typeof dataMap !== 'object') {
       console.warn('getUsersByGroup: Invalid response format');
       return [];
     }
-    
+
     // The response is a map keyed by group ID
     const groupData = dataMap[g_id.toString()] || dataMap[g_id];
     return groupData?.Users ?? [];
@@ -125,17 +121,17 @@ export const getGroupsByUser = async (u_id: number): Promise<UserGroupGroup[]> =
     const response = await fetchWithAuth(`${USER_GROUP_BY_USER_URL}?u_id=${u_id}`, {
       method: 'GET',
     });
-    
+
     // console.log('getGroupsByUser raw response:', response);
-    
+
     // Backend returns an array of UserGroup objects
     // [{ UID: 1, GID: 1, Role: 'admin', ... }]
-    
+
     if (!response || !Array.isArray(response)) {
       console.warn('getGroupsByUser: Expected array response');
       return [];
     }
-    
+
     // Transform UserGroup[] to UserGroupGroup[]
     // We need to fetch group names separately or just return GID and Role
     const groups: UserGroupGroup[] = response.map((ug: UserGroup) => ({
@@ -143,7 +139,7 @@ export const getGroupsByUser = async (u_id: number): Promise<UserGroupGroup[]> =
       GroupName: '', // Backend doesn't return this in the array format
       Role: ug.Role as 'admin' | 'manager' | 'user',
     }));
-    
+
     // console.log('getGroupsByUser transformed groups:', groups);
     return groups;
   } catch (error) {

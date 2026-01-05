@@ -42,28 +42,48 @@ export const getAllowedImages = async (projectId?: number): Promise<AllowedImage
     method: 'GET',
   });
   // console.log('getAllowedImages response:', response);
-  
+
   // Handle both { data: [...] } and direct array responses
-  let rawData: any[] = [];
+  let rawData: RawAllowedImage[] = [];
   if (Array.isArray(response)) {
-    rawData = response;
-  } else if (response?.data && Array.isArray(response.data)) {
-    rawData = response.data;
+    rawData = response as RawAllowedImage[];
+  } else if (
+    response &&
+    typeof response === 'object' &&
+    'data' in response &&
+    Array.isArray((response as { data: unknown[] }).data)
+  ) {
+    rawData = (response as { data: RawAllowedImage[] }).data;
   } else {
     console.warn('getAllowedImages: Unexpected response format', response);
     return [];
   }
-  
+
   // Normalize field names (backend returns lowercase, frontend expects PascalCase)
-  return rawData.map((img: any) => ({
-    ID: img.ID || img.id,
-    Name: img.Name || img.name,
-    Tag: img.Tag || img.tag,
+  return rawData.map((img) => ({
+    ID: img.ID || img.id || 0,
+    Name: img.Name || img.name || '',
+    Tag: img.Tag || img.tag || '',
     ProjectID: img.ProjectID || img.project_id,
     IsGlobal: img.IsGlobal ?? img.is_global ?? false,
-    CreatedAt: img.CreatedAt || img.created_at || img.CreatedAt,
+    CreatedAt: img.CreatedAt || img.created_at || '',
   }));
 };
+
+interface RawAllowedImage {
+  id?: number;
+  ID?: number;
+  name?: string;
+  Name?: string;
+  tag?: string;
+  Tag?: string;
+  project_id?: number;
+  ProjectID?: number;
+  is_global?: boolean;
+  IsGlobal?: boolean;
+  created_at?: string;
+  CreatedAt?: string;
+}
 
 // Add image directly to a project (for project managers)
 export const addProjectImage = async (

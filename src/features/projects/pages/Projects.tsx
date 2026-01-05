@@ -72,15 +72,15 @@ export default function Projects() {
 
         // console.log('All projects:', allProjects);
         // console.log('User groups:', userGroups);
-        
+
         const userGroupIds = new Set(userGroups.map((ug) => ug.GID));
         // console.log('User group IDs:', userGroupIds);
-        
+
         const filtered = allProjects.filter((p) => {
           // console.log(`Checking project ${p.ProjectName} with GID:`, p.GID);
           return userGroupIds.has(p.GID);
         });
-        
+
         // console.log('Filtered projects:', filtered);
         setProjects(filtered);
       } catch (err) {

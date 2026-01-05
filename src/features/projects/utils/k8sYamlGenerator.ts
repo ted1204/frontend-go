@@ -101,9 +101,7 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
         // Resources (CPU, Memory, GPU)
         if (c.resources) {
           const hasRequests =
-            c.resources.requests?.cpu ||
-            c.resources.requests?.memory ||
-            c.resources.requests?.gpu;
+            c.resources.requests?.cpu || c.resources.requests?.memory || c.resources.requests?.gpu;
           const hasLimits =
             c.resources.limits?.cpu || c.resources.limits?.memory || c.resources.limits?.gpu;
 
