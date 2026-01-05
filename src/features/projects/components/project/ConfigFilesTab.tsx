@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@nthucscc/utils';
 import { PlusIcon } from '@heroicons/react/24/outline';
+import { useGroupPermissions } from '@/shared/hooks/useGroupPermissions';
 
 // Services
 import {
@@ -29,6 +30,9 @@ interface ConfigFilesTabProps {
 const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
   const { t } = useTranslation();
   const projectId = project.PID;
+
+  // Check permissions for the project's group
+  const { canManage } = useGroupPermissions(project.GID);
 
   // --- State ---
   const [configFiles, setConfigFiles] = useState<ConfigFile[]>([]);
@@ -159,14 +163,16 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
               {t('project.detail.configDesc')}
             </p>
           </div>
-          <Button
-            onClick={() => setIsCreateModalOpen(true)}
-            disabled={actionLoading}
-            className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-800 shadow-sm transition-all duration-150 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-          >
-            <PlusIcon className="h-5 w-5" />
-            {actionLoading ? t('common.loading') : t('project.detail.addConfig')}
-          </Button>
+          {canManage && (
+            <Button
+              onClick={() => setIsCreateModalOpen(true)}
+              disabled={actionLoading}
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-800 shadow-sm transition-all duration-150 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+            >
+              <PlusIcon className="h-5 w-5" />
+              {actionLoading ? t('common.loading') : t('project.detail.addConfig')}
+            </Button>
+          )}
         </div>
 
         {/* Content */}
@@ -190,6 +196,7 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
               onCreateInstance={handleCreateInstance}
               onDeleteInstance={handleDeleteInstance}
               actionLoading={actionLoading}
+              canManage={canManage}
             />
           )}
         </div>

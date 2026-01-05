@@ -22,14 +22,15 @@ const ChevronIcon = ({ isOpen }: { isOpen: boolean }) => (
 
 // The "More Actions" dropdown menu component (kebab menu)
 // It is self-contained and handles its own state.
+// Only shows Edit and Delete configfile (manager only)
 const MoreActionsButton = ({
   onEdit,
   onDelete,
-  onDeleteInstance,
+  canManage = true,
 }: {
   onEdit: () => void;
   onDelete: () => void;
-  onDeleteInstance: () => void;
+  canManage?: boolean;
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -45,6 +46,11 @@ const MoreActionsButton = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Don't render the button if user cannot manage
+  if (!canManage) {
+    return null;
+  }
 
   return (
     <div className="relative" ref={menuRef}>
@@ -76,15 +82,6 @@ const MoreActionsButton = ({
           >
             {t('configFile.editFile')}
           </button>
-          <button
-            onClick={() => {
-              onDeleteInstance();
-              setIsOpen(false);
-            }}
-            className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-          >
-            {t('configFile.destroyInstance')}
-          </button>
           <div className="my-1 h-px bg-gray-100 dark:bg-gray-700" />
           <button
             onClick={() => {
@@ -109,6 +106,7 @@ interface ConfigFileListProps {
   onCreateInstance: (id: number) => void;
   onDeleteInstance: (id: number) => void;
   actionLoading: boolean;
+  canManage?: boolean;
 }
 
 // --- Main Component ---
@@ -119,6 +117,7 @@ export default function ConfigFileList({
   onCreateInstance,
   onDeleteInstance,
   actionLoading,
+  canManage = true, // Default to true for backward compatibility
 }: ConfigFileListProps) {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState<Record<number, boolean>>({});
@@ -181,8 +180,8 @@ export default function ConfigFileList({
             </div>
 
             {/* Refined Action Area: Minimalist and Clean */}
-            <div className="flex flex-shrink-0 items-center gap-4">
-              {/* Primary Action: Deploy */}
+            <div className="flex flex-shrink-0 items-center gap-3">
+              {/* Primary Action: Deploy Instance (all users) */}
               <button
                 onClick={() => onCreateInstance(cf.CFID)}
                 disabled={actionLoading}
@@ -192,11 +191,21 @@ export default function ConfigFileList({
                 {t('configFile.deploy')}
               </button>
 
-              {/* Secondary Actions in a Dropdown */}
+              {/* Destroy Instance (all users) */}
+              <button
+                onClick={() => onDeleteInstance(cf.CFID)}
+                disabled={actionLoading}
+                className="text-sm font-semibold text-red-600 transition-colors hover:text-red-800 disabled:cursor-not-allowed disabled:opacity-50 dark:text-red-500 dark:hover:text-red-400"
+                title={t('configFile.destroyInstance')}
+              >
+                {t('configFile.destroy')}
+              </button>
+
+              {/* Management Actions Dropdown (manager only) */}
               <MoreActionsButton
                 onEdit={() => onEdit(cf)}
                 onDelete={() => onDelete(cf.CFID)}
-                onDeleteInstance={() => onDeleteInstance(cf.CFID)}
+                canManage={canManage}
               />
             </div>
           </div>

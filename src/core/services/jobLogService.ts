@@ -1,6 +1,28 @@
-import axios from 'axios';
+import { JOB_LOGS_URL } from '../config/url';
+import { fetchWithAuth } from '@/shared/utils/api';
 
 export const getJobLog = async (jobId: number): Promise<string> => {
-  const response = await axios.get(`/api/v1/jobs/${jobId}/logs`);
-  return response.data?.log || '';
+  const response = await fetchWithAuth(JOB_LOGS_URL(jobId));
+  const payload = (response as { data?: unknown }).data ?? response;
+
+  if (Array.isArray((payload as { logs?: unknown })?.logs)) {
+    return ((payload as { logs: string[] }).logs as string[]).join('\n');
+  }
+
+  if (Array.isArray(payload)) {
+    return (payload as Array<{ Content?: string; content?: string }>)
+      .map((log) => log.Content ?? log.content ?? '')
+      .filter(Boolean)
+      .join('\n');
+  }
+
+  if (typeof (payload as { log?: unknown })?.log === 'string') {
+    return (payload as { log: string }).log as string;
+  }
+
+  if (typeof payload === 'string') {
+    return payload;
+  }
+
+  return '';
 };

@@ -46,6 +46,7 @@ export const storage = {
   configFile: {
     editFile: 'Edit file',
     destroyInstance: 'Destroy instance',
+    destroy: 'Destroy',
     deleteFile: 'Delete file',
     notFoundTitle: 'No config files found',
     notFoundDesc: 'Click "Add Config" to get started.',
@@ -66,6 +67,8 @@ export const storage = {
     },
     createTitle: 'Create New Config',
     createSubtitle: 'Use wizard or edit YAML directly.',
+    editTitle: 'Edit Configuration',
+    editSubtitle: 'Modify configuration using wizard or YAML editor.',
     tab: {
       wizard: 'Wizard Mode',
       yaml: 'Raw YAML',
@@ -92,5 +95,7 @@ export const storage = {
     yamlContentLabel: 'YAML Content',
     creating: 'Creating...',
     createButton: 'Create Config',
+    saving: 'Saving...',
+    saveButton: 'Save Changes',
   },
 } as const;

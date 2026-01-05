@@ -1,4 +1,5 @@
-import axios from 'axios';
+import { JOBS_URL } from '../config/url';
+import { fetchWithAuth } from '@/shared/utils/api';
 
 export interface SubmitJobRequest {
   name: string;
@@ -8,5 +9,9 @@ export interface SubmitJobRequest {
 }
 
 export const submitJob = async (data: SubmitJobRequest): Promise<void> => {
-  await axios.post('/api/v1/jobs', data);
+  await fetchWithAuth(JOBS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
 };

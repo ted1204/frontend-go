@@ -8,6 +8,10 @@ const getHostname = () => {
 const HOSTNAME = getHostname();
 export const API_BASE_URL = `http://${HOSTNAME}:30080`;
 export const BASE_URL = `${HOSTNAME}:30080`;
+const WS_PROTOCOL =
+  typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const WS_HOST =
+  typeof window !== 'undefined' && HOSTNAME !== 'localhost' ? window.location.host : BASE_URL;
 
 export const GET_NS_MONITORING_URL = (ns: string) => {
   // English: Detect if we are on local development to append the correct port (30080)
@@ -63,6 +67,12 @@ export const PVC_DELETE_URL = (namespace: string, name: string) =>
 export const PVC_FILEBROWSER_START_URL = `${API_BASE_URL}/k8s/filebrowser/start`;
 export const PVC_FILEBROWSER_STOP_URL = `${API_BASE_URL}/k8s/filebrowser/stop`;
 export const PROJECTS_BY_USER_URL = () => `${API_BASE_URL}/projects/by-user`;
+// jobs
+export const JOBS_URL = `${API_BASE_URL}/jobs`;
+export const JOB_BY_ID_URL = (id: number) => `${JOBS_URL}/${id}`;
+export const JOB_LOGS_URL = (id: number) => `${JOBS_URL}/${id}/logs`;
+export const JOBS_WS_URL = () => `${WS_PROTOCOL}//${WS_HOST}/ws/jobs`;
+export const JOB_LOGS_WS_URL = (id: number) => `${WS_PROTOCOL}//${WS_HOST}/ws/jobs/${id}/logs`;
 // users
 export const USERS_URL = `${API_BASE_URL}/users`;
 export const USER_BY_ID_URL = (id: number) => `${API_BASE_URL}/users/${id}`;

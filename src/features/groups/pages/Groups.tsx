@@ -7,12 +7,14 @@ import { PageMeta } from '@nthucscc/components-shared';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import { useTranslation } from '@nthucscc/utils';
 import { Pagination, SearchInput } from '@nthucscc/components-shared';
+import { canCreateGroup } from '@/shared/utils/permissions';
 
 // Components
 import GroupCard from '../components/groups/GroupCard';
 import LoadingState from '../components/groups/LoadingState';
 import ErrorState from '../components/groups/ErrorState';
 import EmptyState from '../components/groups/EmptyState';
+import CreateGroupModal from '../components/groups/CreateGroupModal';
 
 export default function Groups() {
   const { t } = useTranslation();
@@ -22,11 +24,15 @@ export default function Groups() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   // UI States
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
+
+  // Permission check
+  const showCreateButton = canCreateGroup();
 
   // --- Data Fetching Effect --- //
   useEffect(() => {
@@ -67,6 +73,11 @@ export default function Groups() {
   // --- Handlers --- //
   const handleGroupClick = (groupId: number) => {
     navigate(`/groups/${groupId}`);
+  };
+
+  const handleGroupCreated = (newGroup: Group) => {
+    setGroups((prev) => [...prev, newGroup]);
+    setIsCreateModalOpen(false);
   };
 
   // --- Filtering and Pagination --- //
@@ -124,17 +135,39 @@ export default function Groups() {
             </h2>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{t('groups.subtitle')}</p>
           </div>
-          <div className="w-full sm:w-auto">
+          <div className="flex w-full sm:w-auto gap-3 items-center">
             <SearchInput
               value={searchTerm}
               onChange={setSearchTerm}
               placeholder={t('groups.searchPlaceholder')}
             />
-            {/* Create Button Removed */}
+            {showCreateButton && (
+              <button
+                onClick={() => setIsCreateModalOpen(true)}
+                className="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 whitespace-nowrap"
+              >
+                <svg
+                  className="-ml-0.5 mr-1.5 h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                </svg>
+                {t('groups.createNew')}
+              </button>
+            )}
           </div>
         </div>
         {renderContent()}
       </div>
+
+      {/* Create Group Modal */}
+      <CreateGroupModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onGroupCreated={handleGroupCreated}
+      />
     </>
   );
 }

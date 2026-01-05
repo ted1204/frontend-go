@@ -46,6 +46,7 @@ export const storage = {
   configFile: {
     editFile: '編輯檔案',
     destroyInstance: '銷毀實例',
+    destroy: '銷毀',
     deleteFile: '刪除檔案',
     notFoundTitle: '未找到設定檔',
     notFoundDesc: '按一下「新增設定」開始使用。',
@@ -66,6 +67,8 @@ export const storage = {
     },
     createTitle: '建立新設定',
     createSubtitle: '使用精靈模式或直接編輯 YAML。',
+    editTitle: '編輯設定',
+    editSubtitle: '使用精靈模式或 YAML 編輯器修改設定。',
     tab: {
       wizard: '精靈模式',
       yaml: '原始 YAML',
@@ -92,5 +95,7 @@ export const storage = {
     yamlContentLabel: 'YAML 內容',
     creating: '建立中...',
     createButton: '建立設定',
+    saving: '儲存中...',
+    saveButton: '儲存變更',
   },
 } as const;

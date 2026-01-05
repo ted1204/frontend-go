@@ -19,7 +19,7 @@ export default function CreateFormModal({ isOpen, onClose, projectId }: CreateFo
     e.preventDefault();
     setLoading(true);
     try {
-      await createForm({ title, description, project_id: projectId });
+      await createForm({ title, description, project_id: projectId, tag: '' });
       alert(t('form.created'));
       onClose();
       setTitle('');

@@ -1,4 +1,5 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useEffect } from 'react';
+import { getAllowedImages, AllowedImage } from '@/core/services/imageService';
 
 interface JobApplyModalProps {
   open: boolean;
@@ -26,6 +27,26 @@ const JobApplyModal: React.FC<JobApplyModalProps> = ({
   const [image, setImage] = useState('');
   const [namespace, setNamespace] = useState('default');
   const [priority, setPriority] = useState('normal');
+  const [allowedImages, setAllowedImages] = useState<AllowedImage[]>([]);
+  const [loadingImages, setLoadingImages] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      loadAllowedImages();
+    }
+  }, [open]);
+
+  const loadAllowedImages = async () => {
+    setLoadingImages(true);
+    try {
+      const images = await getAllowedImages();
+      setAllowedImages(images);
+    } catch (err) {
+      console.error('Failed to load allowed images:', err);
+    } finally {
+      setLoadingImages(false);
+    }
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -57,12 +78,36 @@ const JobApplyModal: React.FC<JobApplyModalProps> = ({
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Image</label>
-            <input
-              className="w-full rounded border px-3 py-2 bg-white dark:bg-gray-700"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              required
-            />
+            {loadingImages ? (
+              <div className="text-sm text-gray-500">Loading images...</div>
+            ) : allowedImages.length > 0 ? (
+              <select
+                className="w-full rounded border px-3 py-2 bg-white dark:bg-gray-700"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+                required
+              >
+                <option value="">Select an image...</option>
+                {allowedImages.map((img) => (
+                  <option key={img.ID} value={`${img.Name}:${img.Tag}`}>
+                    {img.Name}:{img.Tag}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div>
+                <input
+                  className="w-full rounded border px-3 py-2 bg-white dark:bg-gray-700"
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                  placeholder="e.g., ubuntu:22.04"
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  No pre-approved images. Contact admin to add images.
+                </p>
+              </div>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Namespace</label>

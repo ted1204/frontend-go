@@ -86,6 +86,7 @@ export default function UserFormDashboard() {
         project_id: selectedProject,
         title: title.trim(),
         description,
+        tag: '',
       });
       setSuccess(t('form.success.submitted'));
       setTitle('');

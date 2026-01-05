@@ -102,6 +102,7 @@ export default function GroupDetail() {
   const [group, setGroup] = useState<Group | null>(null);
   const [groupUsers, setGroupUsers] = useState<UserGroupUser[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [canManage, setCanManage] = useState(false);
 
   // UI State
   const [loading, setLoading] = useState(true);
@@ -119,6 +120,28 @@ export default function GroupDetail() {
     try {
       const userGroupsData = await getUsersByGroup(parseInt(id));
       setGroupUsers(userGroupsData);
+
+      // Check if current user has manage permissions for group members
+      // Only admin (not manager) can manage group members
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        const { user_id: userId, is_super_admin } = JSON.parse(userData);
+
+        // Super admins can always manage
+        if (is_super_admin === true) {
+          setCanManage(true);
+          return;
+        }
+
+        // Check if user is admin (NOT manager) in this group
+        // Manager can only manage configfiles and storage, not members
+        const currentUserInGroup = userGroupsData.find((u) => u.UID === userId);
+        if (currentUserInGroup && currentUserInGroup.Role === 'admin') {
+          setCanManage(true);
+        } else {
+          setCanManage(false);
+        }
+      }
     } catch (err) {
       console.warn('refetchGroupUsers error', err);
     }
@@ -220,16 +243,18 @@ export default function GroupDetail() {
         {/* --- MEMBERS TAB --- */}
         {activeTab === 'members' && (
           <div className="space-y-6">
-            {/* Action Bar */}
-            <div className="flex justify-end">
-              <Button
-                onClick={() => setIsInviteModalOpen(true)}
-                className="inline-flex items-center gap-2"
-              >
-                <PlusIcon className="h-5 w-5" />
-                {t('groups.inviteUser')}
-              </Button>
-            </div>
+            {/* Action Bar - Only show invite button if user can manage */}
+            {canManage && (
+              <div className="flex justify-end">
+                <Button
+                  onClick={() => setIsInviteModalOpen(true)}
+                  className="inline-flex items-center gap-2"
+                >
+                  <PlusIcon className="h-5 w-5" />
+                  {t('groups.inviteUser')}
+                </Button>
+              </div>
+            )}
 
             {/* Members Table */}
             <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800 overflow-hidden">
@@ -280,18 +305,22 @@ export default function GroupDetail() {
                             <RoleBadge role={user.Role} />
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button
-                              onClick={() => setSelectedUserToEdit(user)}
-                              className="mr-4 text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                            >
-                              {t('common.edit')}
-                            </button>
-                            <button
-                              onClick={() => handleDeleteUser(user.UID)}
-                              className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                            >
-                              {t('common.remove')}
-                            </button>
+                            {canManage && (
+                              <>
+                                <button
+                                  onClick={() => setSelectedUserToEdit(user)}
+                                  className="mr-4 text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                                >
+                                  {t('common.edit')}
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteUser(user.UID)}
+                                  className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                >
+                                  {t('common.remove')}
+                                </button>
+                              </>
+                            )}
                           </td>
                         </tr>
                       ))}
