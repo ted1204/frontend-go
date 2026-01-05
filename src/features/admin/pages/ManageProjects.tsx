@@ -197,7 +197,6 @@ export default function ManageProjects() {
       g_id: formState.groupId,
       gpu_quota: formState.gpuQuota,
       gpu_access: formState.gpuAccess.join(','),
-      mps_limit: formState.mpsLimit,
       mps_memory: formState.mpsMemory,
     };
 

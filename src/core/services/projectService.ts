@@ -53,6 +53,8 @@ export interface CreateProjectDTO {
   description?: string;
   g_id: number;
   gpu_quota?: number;
+  gpu_access?: string;
+  mps_memory?: number;
 }
 
 export const createProject = async (input: CreateProjectDTO): Promise<Project> => {
@@ -61,6 +63,8 @@ export const createProject = async (input: CreateProjectDTO): Promise<Project> =
   formData.append('g_id', input.g_id.toString());
   if (input.description) formData.append('description', input.description);
   if (input.gpu_quota !== undefined) formData.append('gpu_quota', input.gpu_quota.toString());
+  if (input.gpu_access) formData.append('gpu_access', input.gpu_access);
+  if (input.mps_memory !== undefined) formData.append('mps_memory', input.mps_memory.toString());
 
   try {
     const response = await fetchWithAuth(PROJECTS_URL, {

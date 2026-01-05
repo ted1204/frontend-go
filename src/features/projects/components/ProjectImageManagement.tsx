@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   getAllowedImages,
   addProjectImage,
+  removeProjectImage,
   AllowedImage,
   AddProjectImageInput,
 } from '@/core/services/imageService';
@@ -56,6 +57,17 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
       await loadImages();
     } finally {
       setAdding(false);
+    }
+  };
+
+  const handleRemoveImage = async (imageId: number) => {
+    if (!confirm('Are you sure you want to remove this image from the project?')) return;
+    try {
+      await removeProjectImage(projectId, imageId);
+      setImages((prev) => prev.filter((img) => img.ID !== imageId));
+    } catch (err) {
+      alert('Failed to remove image: ' + (err instanceof Error ? err.message : String(err)));
+      await loadImages();
     }
   };
 
@@ -186,7 +198,7 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
                         <button
                           className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                           title="Remove image"
-                          onClick={() => alert('Delete functionality not implemented yet')}
+                          onClick={() => handleRemoveImage(img.ID)}
                         >
                           <TrashIcon className="h-5 w-5" aria-hidden="true" />
                         </button>

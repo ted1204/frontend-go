@@ -6,7 +6,6 @@ import { useTranslation, SpinnerIcon, AlertIcon } from '@nthucscc/utils';
 // Assuming InputField and Button are properly defined components
 import { InputField } from '@/features/forms/components/form';
 import { Button } from '@nthucscc/ui';
-import { MPSSettings } from './project/MPSSettings';
 import { GroupSelect } from '@/features/forms/components/form';
 
 // --- Conceptual Interface for Group Data (Must be defined in your app) ---
@@ -48,9 +47,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
   description,
   groupId,
   gpuQuota,
-  gpuAccess,
-  mpsLimit,
-  mpsMemory,
   loading,
   error,
   isOpen,
@@ -58,9 +54,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
   onProjectNameChange,
   onDescriptionChange,
   onGpuQuotaChange,
-  onGpuAccessChange,
-  onMpsLimitChange,
-  onMpsMemoryChange,
   onSubmit,
 
   availableGroups,

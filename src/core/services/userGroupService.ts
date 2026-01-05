@@ -1,8 +1,6 @@
 import { USER_GROUP_URL, USER_GROUP_BY_GROUP_URL, USER_GROUP_BY_USER_URL } from '../config/url';
 import { MessageResponse } from '../response/response';
 import {
-  GetGroupsByUserResponse,
-  GetUsersByGroupResponse,
   UserGroup,
   UserGroupUser,
   UserGroupGroup,

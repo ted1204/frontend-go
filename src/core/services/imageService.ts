@@ -82,6 +82,13 @@ export const addProjectImage = async (
   return response;
 };
 
+// Remove image from project (for project managers)
+export const removeProjectImage = async (projectId: number, imageId: number): Promise<void> => {
+  await fetchWithAuth(`${API_BASE_URL}/projects/${projectId}/images/${imageId}`, {
+    method: 'DELETE',
+  });
+};
+
 // Delete an allowed image (admin only)
 export const deleteAllowedImage = async (id: number): Promise<void> => {
   await fetchWithAuth(`${API_BASE_URL}/images/allowed/${id}`, {
