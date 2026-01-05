@@ -6,7 +6,7 @@ export const login = async (username: string, password: string): Promise<LoginRe
   const formData = new URLSearchParams();
   formData.append('username', username);
   formData.append('password', password);
-  console.log('in logging');
+  // console.log('in logging');
   try {
     const response = await fetch(LOGIN_URL, {
       method: 'POST',
@@ -41,10 +41,17 @@ export const logout = async (): Promise<void> => {
       throw new Error(errorData.error || `Logout failed with status ${response.status}`);
     }
 
-    localStorage.removeItem('username');
+    localStorage.clear();
     sessionStorage.clear();
+    
+    document.cookie.split(';').forEach(cookie => {
+      const eqPos = cookie.indexOf('=');
+      const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+      document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+      document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=' + window.location.hostname;
+    });
 
-    console.log('Logged out successfully');
+    // console.log('Logged out successfully');
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : 'Logout failed, please try again.');
   }

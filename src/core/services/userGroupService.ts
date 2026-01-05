@@ -103,8 +103,18 @@ export const getUsersByGroup = async (g_id: number): Promise<UserGroupUser[]> =>
     const response = await fetchWithAuth(`${USER_GROUP_BY_GROUP_URL}?g_id=${g_id}`, {
       method: 'GET',
     });
-    const successResponse = response as GetUsersByGroupResponse;
-    const groupData = successResponse.data[g_id.toString()];
+    
+    // Backend returns map[uint]map[string]interface{} directly
+    // Check if it's wrapped in a data property or is the direct map
+    const dataMap = response?.data || response;
+    
+    if (!dataMap || typeof dataMap !== 'object') {
+      console.warn('getUsersByGroup: Invalid response format');
+      return [];
+    }
+    
+    // The response is a map keyed by group ID
+    const groupData = dataMap[g_id.toString()] || dataMap[g_id];
     return groupData?.Users ?? [];
   } catch (error) {
     console.error('Fetch users by group error:', error);
@@ -117,10 +127,29 @@ export const getGroupsByUser = async (u_id: number): Promise<UserGroupGroup[]> =
     const response = await fetchWithAuth(`${USER_GROUP_BY_USER_URL}?u_id=${u_id}`, {
       method: 'GET',
     });
-    const successResponse = response as GetGroupsByUserResponse;
-    const userData = successResponse.data[u_id.toString()];
-    return userData?.Groups || [];
+    
+    // console.log('getGroupsByUser raw response:', response);
+    
+    // Backend returns an array of UserGroup objects
+    // [{ UID: 1, GID: 1, Role: 'admin', ... }]
+    
+    if (!response || !Array.isArray(response)) {
+      console.warn('getGroupsByUser: Expected array response');
+      return [];
+    }
+    
+    // Transform UserGroup[] to UserGroupGroup[]
+    // We need to fetch group names separately or just return GID and Role
+    const groups: UserGroupGroup[] = response.map((ug: UserGroup) => ({
+      GID: ug.GID,
+      GroupName: '', // Backend doesn't return this in the array format
+      Role: ug.Role as 'admin' | 'manager' | 'user',
+    }));
+    
+    // console.log('getGroupsByUser transformed groups:', groups);
+    return groups;
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to fetch groups by user.');
+    console.error('Fetch groups by user error:', error);
+    return [];
   }
 };

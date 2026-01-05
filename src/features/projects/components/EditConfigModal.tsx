@@ -66,8 +66,8 @@ export default function EditConfigModal({
         const projectPvcsArray = Array.isArray(projectPvcs) ? projectPvcs : [];
         const pvcsArray = Array.isArray(allMyPvcs) ? allMyPvcs : [];
 
-        console.log('[EditConfigModal] Project PVCs:', projectPvcsArray);
-        console.log('[EditConfigModal] My Project Storages:', pvcsArray);
+        // console.log('[EditConfigModal] Project PVCs:', projectPvcsArray);
+        // console.log('[EditConfigModal] My Project Storages:', pvcsArray);
 
         // Convert ProjectPVC to PVC format and merge
         const convertedAllMyPvcs = pvcsArray.map(
@@ -86,13 +86,13 @@ export default function EditConfigModal({
           }),
         );
 
-        console.log('[EditConfigModal] Converted PVCs:', convertedAllMyPvcs);
+        // console.log('[EditConfigModal] Converted PVCs:', convertedAllMyPvcs);
 
         const merged = [
           ...projectPvcsArray,
           ...convertedAllMyPvcs.filter((pvc) => !projectPvcsArray.some((p) => p.name === pvc.name)),
         ];
-        console.log('[EditConfigModal] Merged PVCs:', merged);
+        // console.log('[EditConfigModal] Merged PVCs:', merged);
         setProjectPvcs(merged);
         setHasUserStorage(!!storage);
       });

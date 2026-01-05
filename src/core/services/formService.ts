@@ -15,21 +15,21 @@ export const createForm = async (data: CreateFormRequest): Promise<Form> => {
     method: 'POST',
     body: JSON.stringify(data),
   });
-  return response.data;
+  return response.data || response;
 };
 
 export const getMyForms = async (): Promise<Form[]> => {
   const response = await fetchWithAuth(`${API_BASE_URL}/forms/my`, {
     method: 'GET',
   });
-  return response.data;
+  return response.data || response;
 };
 
 export const getAllForms = async (): Promise<Form[]> => {
   const response = await fetchWithAuth(`${API_BASE_URL}/forms`, {
     method: 'GET',
   });
-  return response.data;
+  return response.data || response;
 };
 
 export const updateFormStatus = async (id: number, status: string): Promise<Form> => {
@@ -37,7 +37,7 @@ export const updateFormStatus = async (id: number, status: string): Promise<Form
     method: 'PATCH',
     body: JSON.stringify({ status }),
   });
-  return response.data;
+  return response.data || response;
 };
 
 // Message-related functions
@@ -49,12 +49,12 @@ export const createFormMessage = async (
     method: 'POST',
     body: JSON.stringify(data),
   });
-  return response.data;
+  return response.data || response;
 };
 
 export const getFormMessages = async (formId: number): Promise<FormMessage[]> => {
   const response = await fetchWithAuth(`${API_BASE_URL}/forms/${formId}/messages`, {
     method: 'GET',
   });
-  return response.data;
+  return response.data || response;
 };

@@ -98,6 +98,46 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
           });
         }
 
+        // Resources (CPU, Memory, GPU)
+        if (c.resources) {
+          const hasRequests =
+            c.resources.requests?.cpu ||
+            c.resources.requests?.memory ||
+            c.resources.requests?.gpu;
+          const hasLimits =
+            c.resources.limits?.cpu || c.resources.limits?.memory || c.resources.limits?.gpu;
+
+          if (hasRequests || hasLimits) {
+            yaml += `${indent}  resources:\n`;
+
+            if (hasRequests) {
+              yaml += `${indent}    requests:\n`;
+              if (c.resources.requests?.cpu) {
+                yaml += `${indent}      cpu: "${c.resources.requests.cpu}"\n`;
+              }
+              if (c.resources.requests?.memory) {
+                yaml += `${indent}      memory: "${c.resources.requests.memory}"\n`;
+              }
+              if (c.resources.requests?.gpu) {
+                yaml += `${indent}      nvidia.com/gpu: "${c.resources.requests.gpu}"\n`;
+              }
+            }
+
+            if (hasLimits) {
+              yaml += `${indent}    limits:\n`;
+              if (c.resources.limits?.cpu) {
+                yaml += `${indent}      cpu: "${c.resources.limits.cpu}"\n`;
+              }
+              if (c.resources.limits?.memory) {
+                yaml += `${indent}      memory: "${c.resources.limits.memory}"\n`;
+              }
+              if (c.resources.limits?.gpu) {
+                yaml += `${indent}      nvidia.com/gpu: "${c.resources.limits.gpu}"\n`;
+              }
+            }
+          }
+        }
+
         // Env
         if (c.env.length > 0) {
           yaml += `${indent}  env:\n`;

@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '@nthucscc/utils';
 import { logout } from '../../../src/core/services/authService';
+import { useAuth } from '../../../src/core/context/AuthContext';
 
 interface SignOutButtonProps {
   onClick?: () => void;
@@ -10,12 +11,22 @@ interface SignOutButtonProps {
 export default function SignOutButton({ onClick }: SignOutButtonProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { setIsAuthenticated } = useAuth();
 
-  const handleLogout = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
-    logout();
-    onClick?.();
-    navigate('/signin');
+    try {
+      await logout();
+      setIsAuthenticated(false);
+      onClick?.();
+      navigate('/signin');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      localStorage.clear();
+      sessionStorage.clear();
+      setIsAuthenticated(false);
+      navigate('/signin');
+    }
   };
 
   return (

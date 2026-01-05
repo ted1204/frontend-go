@@ -71,12 +71,12 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
 
     const url = GET_NS_MONITORING_URL(ns);
-    console.log(`%c[WS Pool] Opening Connection: ${ns}`, 'color: #10b981; font-weight: bold;');
+    // console.log(`%c[WS Pool] Opening Connection: ${ns}`, 'color: #10b981; font-weight: bold;');
 
     const ws = new WebSocket(url);
 
     ws.onopen = () => {
-      console.log(`[WS Pool] Connected to ${ns}.`);
+      // console.log(`[WS Pool] Connected to ${ns}.`);
       // If backend requires a subscription signal, send it here.
       // ws.send(JSON.stringify({ action: 'subscribe', namespace: ns }));
     };
@@ -141,7 +141,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
 
     ws.onclose = (e) => {
-      console.log(`[WS Pool] Closed ${ns} (Code: ${e.code})`);
+      // console.log(`[WS Pool] Closed ${ns} (Code: ${e.code})`);
       delete sockets.current[ns];
     };
 

@@ -37,10 +37,32 @@ export const getAllowedImages = async (projectId?: number): Promise<AllowedImage
   const url = projectId
     ? `${API_BASE_URL}/images/allowed?project_id=${projectId}`
     : `${API_BASE_URL}/images/allowed`;
+  // console.log('Fetching allowed images from:', url);
   const response = await fetchWithAuth(url, {
     method: 'GET',
   });
-  return response.data || [];
+  // console.log('getAllowedImages response:', response);
+  
+  // Handle both { data: [...] } and direct array responses
+  let rawData: any[] = [];
+  if (Array.isArray(response)) {
+    rawData = response;
+  } else if (response?.data && Array.isArray(response.data)) {
+    rawData = response.data;
+  } else {
+    console.warn('getAllowedImages: Unexpected response format', response);
+    return [];
+  }
+  
+  // Normalize field names (backend returns lowercase, frontend expects PascalCase)
+  return rawData.map((img: any) => ({
+    ID: img.ID || img.id,
+    Name: img.Name || img.name,
+    Tag: img.Tag || img.tag,
+    ProjectID: img.ProjectID || img.project_id,
+    IsGlobal: img.IsGlobal ?? img.is_global ?? false,
+    CreatedAt: img.CreatedAt || img.created_at || img.CreatedAt,
+  }));
 };
 
 // Add image directly to a project (for project managers)
@@ -55,50 +77,78 @@ export const addProjectImage = async (
     },
     body: JSON.stringify(input),
   });
-  return response.data;
+  // Handle both { data: {...} } and direct object responses
+  if (response?.data) return response.data;
+  return response;
+};
+
+// Delete an allowed image (admin only)
+export const deleteAllowedImage = async (id: number): Promise<void> => {
+  await fetchWithAuth(`${API_BASE_URL}/images/allowed/${id}`, {
+    method: 'DELETE',
+  });
+};
+
+// Trigger image pull (admin only)
+export const pullImage = async (name: string, tag: string): Promise<void> => {
+  await fetchWithAuth(`${API_BASE_URL}/images/pull`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name, tag }),
+  });
 };
 
 // Submit a new image request
 export const requestImage = async (input: CreateImageRequestInput): Promise<ImageRequest> => {
-  const response = await fetchWithAuth(`${API_BASE_URL}/images/request`, {
+  const response = await fetchWithAuth(`${API_BASE_URL}/image-requests`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(input),
   });
-  return response.data;
+  if (response?.data) return response.data;
+  return response;
 };
 
 // Get all image requests (admin only)
 export const getImageRequests = async (status?: string): Promise<ImageRequest[]> => {
   const url = status
-    ? `${API_BASE_URL}/images/requests?status=${status}`
-    : `${API_BASE_URL}/images/requests`;
+    ? `${API_BASE_URL}/image-requests?status=${status}`
+    : `${API_BASE_URL}/image-requests`;
   const response = await fetchWithAuth(url, {
     method: 'GET',
   });
-  return response.data || [];
+  // Handle both { data: [...] } and direct array responses
+  if (Array.isArray(response)) return response;
+  if (response?.data && Array.isArray(response.data)) return response.data;
+  return [];
 };
 
 // Approve an image request (admin only)
-export const approveImageRequest = async (id: number, note: string): Promise<void> => {
-  await fetchWithAuth(`${API_BASE_URL}/images/requests/${id}/approve`, {
-    method: 'POST',
+export const approveImageRequest = async (
+  id: number,
+  note: string,
+  isGlobal: boolean = false,
+): Promise<void> => {
+  await fetchWithAuth(`${API_BASE_URL}/image-requests/${id}/approve`, {
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ status: 'approved', note }),
+    body: JSON.stringify({ note, is_global: isGlobal }),
   });
 };
 
 // Reject an image request (admin only)
 export const rejectImageRequest = async (id: number, note: string): Promise<void> => {
-  await fetchWithAuth(`${API_BASE_URL}/images/requests/${id}/reject`, {
-    method: 'POST',
+  await fetchWithAuth(`${API_BASE_URL}/image-requests/${id}/reject`, {
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ status: 'rejected', note }),
+    body: JSON.stringify({ note }),
   });
 };

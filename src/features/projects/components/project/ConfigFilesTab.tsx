@@ -70,7 +70,7 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
   const handleCreate = async (data: { filename: string; raw_yaml: string }) => {
     setActionLoading(true);
     try {
-      console.log('Creating config file with data:', { ...data, project_id: projectId });
+      // console.log('Creating config file with data:', { ...data, project_id: projectId });
       await createConfigFile({ ...data, project_id: projectId });
       setIsCreateModalOpen(false);
       await fetchConfigs(); // Refresh list

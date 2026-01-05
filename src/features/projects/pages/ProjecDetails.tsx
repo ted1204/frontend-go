@@ -15,6 +15,7 @@ import { PageBreadcrumb } from '@nthucscc/ui';
 import MonitoringPanel from '@/features/monitoring/components/MonitoringPanel';
 import ConfigFilesTab from '../components/project/ConfigFilesTab';
 import { ProjectStorageManager } from '@/features/storage/components/storage/ProjectStorageManager';
+import ProjectImageManagement from '../components/ProjectImageManagement';
 // Remove ProjectMembers import
 import CreateFormModal from '@/features/forms/components/CreateFormModal';
 
@@ -74,6 +75,7 @@ export default function ProjectDetail() {
               icon: Cog6ToothIcon,
             },
             { id: 'storage', label: t('project.detail.tab.storage'), icon: CubeIcon },
+            { id: 'images', label: 'Images', icon: CubeIcon },
             // Removed Members Tab
           ].map((tab) => (
             <button
@@ -171,6 +173,13 @@ export default function ProjectDetail() {
         {activeTab === 'storage' && (
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <ProjectStorageManager />
+          </div>
+        )}
+
+        {/* --- Images Tab --- */}
+        {activeTab === 'images' && (
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <ProjectImageManagement projectId={project.PID} />
           </div>
         )}
       </div>

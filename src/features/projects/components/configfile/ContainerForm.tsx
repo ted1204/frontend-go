@@ -177,6 +177,254 @@ const ContainerForm = ({
               <p className="text-[9px] text-gray-400">Multiline strings supported</p>
             </div>
           </div>
+
+          {/* Resources Section */}
+          <div className="space-y-3 p-4 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700/50 dark:to-gray-800/50 border border-blue-200 dark:border-gray-600">
+            <div className="flex items-center gap-2">
+              <svg
+                className="w-5 h-5 text-blue-600 dark:text-blue-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                />
+              </svg>
+              <label className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                Resource Limits
+              </label>
+            </div>
+            <p className="text-xs text-gray-600 dark:text-gray-400 -mt-1">
+              Define CPU, Memory, and GPU resource requirements
+            </p>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Requests Column */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 pb-2 border-b border-blue-300 dark:border-gray-600">
+                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                  <label className="text-xs font-bold uppercase text-green-700 dark:text-green-400">
+                    Requests (Minimum)
+                  </label>
+                </div>
+
+                {/* CPU Request */}
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-gray-700 dark:text-gray-300">
+                    <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M13 7H7v6h6V7z" />
+                      <path
+                        fillRule="evenodd"
+                        d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1V9H2a1 1 0 010-2h1V5a2 2 0 012-2h2V2zM5 5h10v10H5V5z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    CPU
+                  </label>
+                  <input
+                    type="text"
+                    value={container.resources?.requests?.cpu || ''}
+                    onChange={(e) =>
+                      handleChange('resources', {
+                        ...container.resources,
+                        requests: {
+                          ...container.resources?.requests,
+                          cpu: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="e.g., 100m, 0.5, 2"
+                    className="block w-full rounded-lg border-gray-300 bg-white dark:bg-gray-800 py-2 px-3 text-sm shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:border-gray-600 dark:text-white placeholder-gray-400"
+                  />
+                </div>
+
+                {/* Memory Request */}
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-gray-700 dark:text-gray-300">
+                    <svg className="w-4 h-4 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M3 12v3c0 1.657 3.134 3 7 3s7-1.343 7-3v-3c0 1.657-3.134 3-7 3s-7-1.343-7-3z" />
+                      <path d="M3 7v3c0 1.657 3.134 3 7 3s7-1.343 7-3V7c0 1.657-3.134 3-7 3S3 8.657 3 7z" />
+                      <path d="M17 5c0 1.657-3.134 3-7 3S3 6.657 3 5s3.134-3 7-3 7 1.343 7 3z" />
+                    </svg>
+                    Memory
+                  </label>
+                  <input
+                    type="text"
+                    value={container.resources?.requests?.memory || ''}
+                    onChange={(e) =>
+                      handleChange('resources', {
+                        ...container.resources,
+                        requests: {
+                          ...container.resources?.requests,
+                          memory: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="e.g., 128Mi, 1Gi, 2Gi"
+                    className="block w-full rounded-lg border-gray-300 bg-white dark:bg-gray-800 py-2 px-3 text-sm shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:border-gray-600 dark:text-white placeholder-gray-400"
+                  />
+                </div>
+
+                {/* GPU Request */}
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-gray-700 dark:text-gray-300">
+                    <svg
+                      className="w-4 h-4 text-yellow-500"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    GPU
+                  </label>
+                  <input
+                    type="text"
+                    value={container.resources?.requests?.gpu || ''}
+                    onChange={(e) =>
+                      handleChange('resources', {
+                        ...container.resources,
+                        requests: {
+                          ...container.resources?.requests,
+                          gpu: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="e.g., 1, 2"
+                    className="block w-full rounded-lg border-gray-300 bg-white dark:bg-gray-800 py-2 px-3 text-sm shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:border-gray-600 dark:text-white placeholder-gray-400"
+                  />
+                </div>
+              </div>
+
+              {/* Limits Column */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 pb-2 border-b border-blue-300 dark:border-gray-600">
+                  <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                  <label className="text-xs font-bold uppercase text-red-700 dark:text-red-400">
+                    Limits (Maximum)
+                  </label>
+                </div>
+
+                {/* CPU Limit */}
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-gray-700 dark:text-gray-300">
+                    <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M13 7H7v6h6V7z" />
+                      <path
+                        fillRule="evenodd"
+                        d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1V9H2a1 1 0 010-2h1V5a2 2 0 012-2h2V2zM5 5h10v10H5V5z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    CPU
+                  </label>
+                  <input
+                    type="text"
+                    value={container.resources?.limits?.cpu || ''}
+                    onChange={(e) =>
+                      handleChange('resources', {
+                        ...container.resources,
+                        limits: {
+                          ...container.resources?.limits,
+                          cpu: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="e.g., 200m, 1, 4"
+                    className="block w-full rounded-lg border-gray-300 bg-white dark:bg-gray-800 py-2 px-3 text-sm shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:border-gray-600 dark:text-white placeholder-gray-400"
+                  />
+                </div>
+
+                {/* Memory Limit */}
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-gray-700 dark:text-gray-300">
+                    <svg className="w-4 h-4 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M3 12v3c0 1.657 3.134 3 7 3s7-1.343 7-3v-3c0 1.657-3.134 3-7 3s-7-1.343-7-3z" />
+                      <path d="M3 7v3c0 1.657 3.134 3 7 3s7-1.343 7-3V7c0 1.657-3.134 3-7 3S3 8.657 3 7z" />
+                      <path d="M17 5c0 1.657-3.134 3-7 3S3 6.657 3 5s3.134-3 7-3 7 1.343 7 3z" />
+                    </svg>
+                    Memory
+                  </label>
+                  <input
+                    type="text"
+                    value={container.resources?.limits?.memory || ''}
+                    onChange={(e) =>
+                      handleChange('resources', {
+                        ...container.resources,
+                        limits: {
+                          ...container.resources?.limits,
+                          memory: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="e.g., 256Mi, 2Gi, 4Gi"
+                    className="block w-full rounded-lg border-gray-300 bg-white dark:bg-gray-800 py-2 px-3 text-sm shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:border-gray-600 dark:text-white placeholder-gray-400"
+                  />
+                </div>
+
+                {/* GPU Limit */}
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-gray-700 dark:text-gray-300">
+                    <svg
+                      className="w-4 h-4 text-yellow-500"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    GPU
+                  </label>
+                  <input
+                    type="text"
+                    value={container.resources?.limits?.gpu || ''}
+                    onChange={(e) =>
+                      handleChange('resources', {
+                        ...container.resources,
+                        limits: {
+                          ...container.resources?.limits,
+                          gpu: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="e.g., 1, 2"
+                    className="block w-full rounded-lg border-gray-300 bg-white dark:bg-gray-800 py-2 px-3 text-sm shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:border-gray-600 dark:text-white placeholder-gray-400"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2 mt-3 p-3 bg-blue-100/50 dark:bg-gray-700/50 rounded-lg border border-blue-200 dark:border-gray-600">
+              <svg
+                className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+                <strong>Note:</strong> Leave fields empty to skip resource limits. GPU uses{' '}
+                <code className="px-1 py-0.5 bg-gray-200 dark:bg-gray-800 rounded text-xs">
+                  nvidia.com/gpu
+                </code>{' '}
+                resource. Limits should be greater than or equal to requests.
+              </p>
+            </div>
+          </div>
         </div>
       )}
     </div>

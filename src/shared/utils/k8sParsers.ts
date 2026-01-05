@@ -126,6 +126,24 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
           subPath: m.subPath || '',
         };
       }),
+      resources: c.resources
+        ? {
+            requests: c.resources.requests
+              ? {
+                  cpu: c.resources.requests.cpu || undefined,
+                  memory: c.resources.requests.memory || undefined,
+                  gpu: c.resources.requests['nvidia.com/gpu'] || undefined,
+                }
+              : undefined,
+            limits: c.resources.limits
+              ? {
+                  cpu: c.resources.limits.cpu || undefined,
+                  memory: c.resources.limits.memory || undefined,
+                  gpu: c.resources.limits['nvidia.com/gpu'] || undefined,
+                }
+              : undefined,
+          }
+        : undefined,
     }));
 
     workload.replicas = spec.replicas || workload.replicas;

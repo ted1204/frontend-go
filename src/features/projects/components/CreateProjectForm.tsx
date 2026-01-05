@@ -193,7 +193,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
                 type="number"
                 label={t('project.create.gpuQuota')}
@@ -204,62 +204,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                 min="0"
                 disabled={loading}
               />
-
-              <InputField
-                type="number"
-                label={t('project.create.gpuThreadLimit')}
-                value={mpsLimit}
-                onChange={onMpsLimitChange}
-                placeholder={t('project.create.gpuThreadLimitPlaceholder')}
-                className="w-full"
-                min="0"
-                max="100"
-                disabled={loading}
-              />
-
-              <InputField
-                type="number"
-                label={t('project.create.gpuMemoryLimit')}
-                value={mpsMemory}
-                onChange={onMpsMemoryChange}
-                placeholder={t('project.create.gpuMemoryLimitPlaceholder')}
-                className="w-full"
-                min="0"
-                disabled={loading}
-              />
             </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {t('project.create.gpuAccessMode')}
-                </div>
-                <div className="text-xs text-gray-500">{t('project.create.mpsSettings')}</div>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={gpuAccess.includes('shared')}
-                    onChange={() => onGpuAccessChange('shared')}
-                    className="form-checkbox h-5 w-5 text-violet-600 rounded border-gray-300 focus:ring-violet-500 dark:border-gray-600 dark:bg-gray-700"
-                    disabled={loading}
-                  />
-                  <span className="text-gray-700 dark:text-gray-300">
-                    {t('project.create.gpuAccessShared')}
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            {gpuAccess.includes('shared') && (
-              <MPSSettings
-                mpsLimit={mpsLimit}
-                mpsMemory={mpsMemory}
-                onMpsLimitChange={onMpsLimitChange}
-                onMpsMemoryChange={onMpsMemoryChange}
-              />
-            )}
 
             <GroupSelect
               availableGroups={safeGroups}

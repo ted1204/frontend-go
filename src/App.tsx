@@ -10,6 +10,8 @@ import {
   AdminAuditLogs,
   ManageProjects,
   ManageGroups,
+  ManageImageRequests,
+  ManageImages,
 } from './features/admin/pages';
 
 // Groups Pages
@@ -17,7 +19,7 @@ import { Groups } from './features/groups/pages';
 import GroupDetail from './features/groups/components/GroupDetail';
 
 // Projects Pages
-import { Projects, ProjectDetail } from './features/projects/pages';
+import { Projects, ProjectDetail, UserImageRequests } from './features/projects/pages';
 
 // Forms Pages
 import { UserFormDashboard } from './features/forms/pages';
@@ -56,12 +58,15 @@ export default function App() {
               <Route path="/groups/:id" element={<GroupDetail />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/projects/:id" element={<ProjectDetail />} />
+              <Route path="/image-requests" element={<UserImageRequests />} />
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
               <Route path="/admin/manage-projects" element={<ManageProjects />} />
               <Route path="/admin/manage-groups" element={<ManageGroups />} />
               <Route path="/admin/forms" element={<AdminFormDashboard />} />
+              <Route path="/admin/image-requests" element={<ManageImageRequests />} />
+              <Route path="/admin/manage-images" element={<ManageImages />} />
               <Route path="/admin/storage-management" element={<StoragePage />} />
               <Route path="/my-forms" element={<UserFormDashboard />} />
               <Route path="/pod-tables" element={<PodTables />} />

@@ -32,7 +32,7 @@ export default function UserFormDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-  const filteredForms = myForms.filter(
+  const filteredForms = (myForms || []).filter(
     (form) =>
       form.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (form.description && form.description.toLowerCase().includes(searchTerm.toLowerCase())),

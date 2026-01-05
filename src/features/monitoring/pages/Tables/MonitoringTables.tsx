@@ -222,10 +222,13 @@ export default function PodTablesPage() {
               getProjects(),
               getGroupsByUser(userId),
             ]);
+            // console.log('All projects:', allProjects);
+            // console.log('User groups:', userGroups);
             const userGroupIds = userGroups.map((g: { GID: number | string }) => g.GID);
             const userProjects = (allProjects || []).filter((p: Project) =>
               userGroupIds.includes(p.GID),
             );
+            // console.log('Filtered user projects:', userProjects);
             userProjects.forEach((p: Project) => {
               const ns = `proj-${p.PID}-${username}`;
               connectToNamespace(ns);

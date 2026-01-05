@@ -61,6 +61,18 @@ export interface ContainerConfig {
   env: EnvVar[];
   envFrom: string[]; // List of ConfigMap names
   mounts: MountConfig[];
+  resources?: {
+    requests?: {
+      cpu?: string;
+      memory?: string;
+      gpu?: string;
+    };
+    limits?: {
+      cpu?: string;
+      memory?: string;
+      gpu?: string;
+    };
+  };
 }
 
 // [Updated] Workload (Supports Multiple Containers)

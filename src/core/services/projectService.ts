@@ -16,8 +16,12 @@ export const getProjects = async (): Promise<Project[]> => {
     const response = await fetchWithAuth(PROJECTS_URL, {
       method: 'GET',
     });
-    return response as Project[];
+    // Handle different response structures (standardized data wrapper)
+    const data = response.data !== undefined ? response.data : response;
+    // Ensure we return an array for the UI to map over
+    return Array.isArray(data) ? data : [];
   } catch (error) {
+    console.error('getProjects error:', error);
     throw new Error(error instanceof Error ? error.message : 'Failed to fetch projects.');
   }
 };
@@ -49,9 +53,6 @@ export interface CreateProjectDTO {
   description?: string;
   g_id: number;
   gpu_quota?: number;
-  gpu_access?: string;
-  mps_limit?: number;
-  mps_memory?: number;
 }
 
 export const createProject = async (input: CreateProjectDTO): Promise<Project> => {
@@ -60,9 +61,6 @@ export const createProject = async (input: CreateProjectDTO): Promise<Project> =
   formData.append('g_id', input.g_id.toString());
   if (input.description) formData.append('description', input.description);
   if (input.gpu_quota !== undefined) formData.append('gpu_quota', input.gpu_quota.toString());
-  if (input.gpu_access) formData.append('gpu_access', input.gpu_access);
-  if (input.mps_limit) formData.append('mps_limit', input.mps_limit.toString());
-  if (input.mps_memory) formData.append('mps_memory', input.mps_memory.toString());
 
   try {
     const response = await fetchWithAuth(PROJECTS_URL, {

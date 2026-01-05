@@ -23,7 +23,7 @@ export const GET_NS_MONITORING_URL = (ns: string) => {
   // Based on your logs, the endpoint is directly at /ws/monitoring
   const finalUrl = `${protocol}//${host}/ws/monitoring/${ns}`;
 
-  console.log(`%c[WS Debug] Target URL: ${finalUrl}`, 'color: #10b981; font-weight: bold;');
+  // console.log(`%c[WS Debug] Target URL: ${finalUrl}`, 'color: #10b981; font-weight: bold;');
   return finalUrl;
 };
 // auth
