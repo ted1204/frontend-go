@@ -1,5 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
-import { getAllowedImages, deleteAllowedImage, AllowedImage, getFailedPullJobs, FailedPullJob } from '@/core/services/imageService';
+import {
+  getAllowedImages,
+  deleteAllowedImage,
+  AllowedImage,
+  getFailedPullJobs,
+  FailedPullJob,
+  getActivePullJobs,
+  ActivePullJob,
+} from '@/core/services/imageService';
 import { PageMeta } from '@nthucscc/components-shared';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import { API_BASE_URL, BASE_URL } from '@/core/config/url';
@@ -37,6 +45,26 @@ export default function ManageImages() {
       // Load failed jobs when loading images
       const failed = await getFailedPullJobs(10);
       setFailedJobs(failed);
+      // Load active pull jobs and reconnect to them
+      const active = await getActivePullJobs();
+      if (active.length > 0) {
+        const activeMap = new Map<string, PullJobStatus>();
+        active.forEach((job) => {
+          activeMap.set(job.job_id, {
+            job_id: job.job_id,
+            image: `${job.image_name}:${job.image_tag}`,
+            status: (job.status as 'pending' | 'pulling' | 'completed' | 'failed') || 'pending',
+            progress: job.progress,
+            message: job.message,
+            timestamp: job.updated_at,
+          });
+          // Reconnect to WebSocket for this job if still pulling
+          if (job.status === 'pending' || job.status === 'pulling') {
+            connectWebSocket(job.job_id);
+          }
+        });
+        setPullJobStatuses(activeMap);
+      }
     } catch (err) {
       console.error('Failed to load images:', err);
     } finally {

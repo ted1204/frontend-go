@@ -208,18 +208,44 @@ export interface FailedPullJob {
   updated_at: string;
 }
 
+export interface ActivePullJob {
+  job_id: string;
+  image_name: string;
+  image_tag: string;
+  status: string;
+  progress: number;
+  message: string;
+  updated_at: string;
+}
+
 // Get failed pull jobs (admin only)
 export const getFailedPullJobs = async (limit: number = 10): Promise<FailedPullJob[]> => {
   const response = await fetchWithAuth(`${API_BASE_URL}/images/pull-failed?limit=${limit}`, {
     method: 'GET',
   });
-  
+
   // Handle both { data: [...] } and direct array responses
   if (Array.isArray(response)) {
     return response as FailedPullJob[];
   }
   if (response?.data && Array.isArray(response.data)) {
     return response.data as FailedPullJob[];
+  }
+  return [];
+};
+
+// Get active pull jobs (admin only)
+export const getActivePullJobs = async (): Promise<ActivePullJob[]> => {
+  const response = await fetchWithAuth(`${API_BASE_URL}/images/pull-active`, {
+    method: 'GET',
+  });
+
+  // Handle both { data: [...] } and direct array responses
+  if (Array.isArray(response)) {
+    return response as ActivePullJob[];
+  }
+  if (response?.data && Array.isArray(response.data)) {
+    return response.data as ActivePullJob[];
   }
   return [];
 };
