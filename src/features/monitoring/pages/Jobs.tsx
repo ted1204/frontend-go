@@ -256,12 +256,41 @@ const Jobs: React.FC = () => {
           <ViewModeToggle viewMode={viewMode} setViewMode={setViewMode} />
           <SearchInput value={search} onChange={setSearch} placeholder="Search jobs..." />
         </div>
-        <button
-          className="px-4 py-2 bg-violet-600 text-white rounded hover:bg-violet-700"
-          onClick={() => setShowApply(true)}
-        >
-          Submit Job
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded transition-colors"
+            onClick={fetchJobs}
+            title="Refresh Jobs"
+          >
+            <svg
+              className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+          </button>
+          <button
+            className="px-4 py-2 bg-violet-600 text-white rounded hover:bg-violet-700 flex items-center gap-2 shadow-sm"
+            onClick={() => setShowApply(true)}
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Submit Job
+          </button>
+        </div>
       </div>
       {loading ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

@@ -4,6 +4,12 @@
 export const forms = {
   form: {
     title: 'Submit Form',
+    subtitle: 'Create a new form request or report',
+    type: {
+      general: 'General',
+      bug: 'Bug Report',
+      feature: 'Feature Request',
+    },
     status: {
       pending: 'Pending',
       approved: 'Approved',
@@ -36,6 +42,7 @@ export const forms = {
     field: {
       title: 'Title',
       description: 'Description',
+      tag: 'Custom Tag (Optional)',
     },
     exampleTitle: 'Example Title',
     placeholder: {
@@ -44,6 +51,7 @@ export const forms = {
         base: 'Enter description...',
         long: 'Enter detailed description...',
       },
+      tag: 'e.g. urgent, frontend, etc.',
     },
     projectId: 'Project ID: {id}',
     cancel: 'Cancel',
