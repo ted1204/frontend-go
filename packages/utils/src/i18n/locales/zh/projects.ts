@@ -29,14 +29,13 @@ export const projects = {
       searchPlaceholder: '搜尋專案...',
       loading: '載入專案中...',
       errorPrefix: '錯誤：',
+      colProject: '專案',
+      colStatus: '狀態',
       empty: {
         filter: '沒有符合 "{term}" 的專案。',
         noProjects: '找不到專案。',
+        assigned: '您的群組未被指派任何專案。',
       },
-      colProject: '專案',
-      colStatus: '狀態',
-      emptyFilter: '沒有符合 "{term}" 的專案。',
-      emptyAssigned: '您的群組未被指派任何專案。',
     },
     create: {
       title: '建立新專案',

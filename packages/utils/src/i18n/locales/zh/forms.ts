@@ -2,8 +2,20 @@
  * Form and Audit log translations
  */
 export const forms = {
+  // Top-level keys for backward compatibility
+  form_status_pending: '待審核',
+  form_status_approved: '已核准',
+  form_status_rejected: '已駁回',
+  form_status_processing: '處理中',
+  form_status_completed: '已完成',
   form: {
     title: '提交表單',
+    subtitle: '建立新的表單請求或報告',
+    type: {
+      general: '一般',
+      bug: '錯誤回報',
+      feature: '功能需求',
+    },
     status: {
       pending: '待審核',
       approved: '已核准',
@@ -11,12 +23,6 @@ export const forms = {
       processing: '處理中',
       completed: '已完成',
     },
-    // Underscore format for backward compatibility
-    form_status_pending: '待審核',
-    form_status_approved: '已核准',
-    form_status_rejected: '已駁回',
-    form_status_processing: '處理中',
-    form_status_completed: '已完成',
     action: {
       process: '處理',
       reject: '駁回',
@@ -42,6 +48,7 @@ export const forms = {
     field: {
       title: '標題',
       description: '描述',
+      tag: '自訂標籤（選填）',
     },
     exampleTitle: '範例標題',
     placeholder: {
@@ -50,6 +57,7 @@ export const forms = {
         base: '輸入描述...',
         long: '輸入詳細描述...',
       },
+      tag: '例如：緊急、前端等',
     },
     projectId: '專案 ID: {id}',
     cancel: '取消',

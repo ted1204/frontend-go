@@ -21,6 +21,16 @@ export const monitor = {
       restarts: '重啟次數',
       labels: '標籤',
     },
+    col: {
+      kind: '類型',
+      name: '名稱',
+      status: '狀態',
+      age: '存活時間',
+      details: '詳細資訊',
+      images: '映像檔',
+      restarts: '重啟次數',
+      labels: '標籤',
+    },
     empty: {
       noPods: '找不到 Pod。',
       waitingForData: '等待叢集資料串流...',

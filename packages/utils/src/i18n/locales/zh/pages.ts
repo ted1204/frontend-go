@@ -17,6 +17,7 @@ export const pages = {
       forms: '表單管理',
       auditLogs: {
         title: '審計日誌',
+        subtitle: '系統安全與變更追蹤',
         description: '系統安全與變更追蹤',
         breadcrumb: '審計日誌',
         heading: '系統軌跡',
