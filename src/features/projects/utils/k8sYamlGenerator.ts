@@ -44,7 +44,7 @@ metadata:
         yaml += serializeLabels(wl.selectors, '  ');
         yaml += `spec:\n  replicas: ${wl.replicas || 1}\n  selector:\n    matchLabels:\n`;
         // selector.matchLabels (indent deeper)
-        yaml += serializeLabels(wl.selectors, '      ').replace(/labels:\n/, '');
+        yaml += serializeLabels(wl.selectors, '  ').replace(/labels:\n/, '');
         yaml += `  template:\n    metadata:\n`;
         // template.metadata.labels
         yaml += serializeLabels(wl.selectors, '      ');

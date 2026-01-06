@@ -10,20 +10,11 @@ export const API_BASE_URL = `http://${HOSTNAME}:30080`;
 export const BASE_URL = `${HOSTNAME}:30080`;
 const WS_PROTOCOL =
   typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-const WS_HOST =
-  typeof window !== 'undefined' && HOSTNAME !== 'localhost' ? window.location.host : BASE_URL;
+// Always use BASE_URL for WebSocket connections (includes correct port 30080)
+const WS_HOST = BASE_URL;
 
 export const GET_NS_MONITORING_URL = (ns: string) => {
-  // English: Detect if we are on local development to append the correct port (30080)
-  const isLocal = HOSTNAME === 'localhost';
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const host = isLocal ? BASE_URL : window.location.host;
-
-  // English: Construct the final URL. Make sure there is NO leading /api/v1 if not needed.
-  // Based on your logs, the endpoint is directly at /ws/monitoring
-  const finalUrl = `${protocol}//${host}/ws/monitoring/${ns}`;
-
-  // console.log(`%c[WS Debug] Target URL: ${finalUrl}`, 'color: #10b981; font-weight: bold;');
+  const finalUrl = `${WS_PROTOCOL}//${WS_HOST}/ws/monitoring/${ns}`;
   return finalUrl;
 };
 // auth
@@ -81,8 +72,8 @@ export const INSTANCE_URL = `${API_BASE_URL}/instance`;
 export const INSTANCE_BY_ID_URL = (id: number) => `${INSTANCE_URL}/${id}`;
 // websocket
 export const WEBSOCKET_MONITORING_URL = (namespace: string) =>
-  `ws://${BASE_URL}/ws/monitoring/${namespace}`; // Adjust protocol if needed
-export const WEBSOCKET_USER_MONITORING_URL = () => `ws://${BASE_URL}/ws/monitoring`; // Adjust protocol if needed
+  `${WS_PROTOCOL}//${WS_HOST}/ws/monitoring/${namespace}`;
+export const WEBSOCKET_USER_MONITORING_URL = () => `${WS_PROTOCOL}//${WS_HOST}/ws/monitoring`;
 
 // storage
 export const USER_DRIVE_URL = `${API_BASE_URL}/k8s/users/browse`;

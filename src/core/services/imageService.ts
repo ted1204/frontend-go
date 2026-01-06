@@ -8,6 +8,7 @@ export interface AllowedImage {
   ProjectID?: number;
   IsGlobal: boolean;
   CreatedAt: string;
+  IsPulled: boolean;
 }
 
 export interface ImageRequest {
@@ -67,6 +68,7 @@ export const getAllowedImages = async (projectId?: number): Promise<AllowedImage
     ProjectID: img.ProjectID || img.project_id,
     IsGlobal: img.IsGlobal ?? img.is_global ?? false,
     CreatedAt: img.CreatedAt || img.created_at || '',
+    IsPulled: img.IsPulled ?? img.is_pulled ?? false,
   }));
 };
 
@@ -83,6 +85,8 @@ interface RawAllowedImage {
   IsGlobal?: boolean;
   created_at?: string;
   CreatedAt?: string;
+  is_pulled?: boolean;
+  IsPulled?: boolean;
 }
 
 // Add image directly to a project (for project managers)

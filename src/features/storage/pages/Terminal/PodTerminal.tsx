@@ -1,9 +1,19 @@
 import React, { useEffect, useRef } from 'react';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
-import { BASE_URL } from '@/core/config/url';
 import 'xterm/css/xterm.css';
 import { useTranslation } from '@nthucscc/utils';
+
+const getWsUrl = () => {
+  if (typeof window !== 'undefined') {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const hostname = window.location.hostname;
+    const isLocal = hostname === 'localhost';
+    const host = isLocal ? `${hostname}:30080` : window.location.host;
+    return `${protocol}//${host}`;
+  }
+  return 'ws://localhost:30080';
+};
 
 // Define the message structure for communication with the backend.
 interface TerminalMessage {
@@ -73,7 +83,8 @@ const TerminalPage: React.FC<TerminalProps> = ({
     term.current.open(terminalRef.current);
 
     // 2. Establish the WebSocket Connection.
-    const wsUrl = `ws://${BASE_URL}/ws/exec?namespace=${encodeURIComponent(
+    const WS_BASE = getWsUrl();
+    const wsUrl = `${WS_BASE}/ws/exec?namespace=${encodeURIComponent(
       namespace,
     )}&pod=${encodeURIComponent(pod)}&container=${encodeURIComponent(
       container,
