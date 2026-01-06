@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { getAllowedImages, deleteAllowedImage, AllowedImage } from '@/core/services/imageService';
 import { PageMeta } from '@nthucscc/components-shared';
 import { PageBreadcrumb } from '@nthucscc/ui';
-import { BASE_URL } from '@/core/config/url';
+import { API_BASE_URL, BASE_URL } from '@/core/config/url';
 
 interface PullJobStatus {
   job_id: string;
@@ -139,7 +139,7 @@ export default function ManageImages() {
       const imageNames = selectedImgs.map((img) => `${img.Name}:${img.Tag}`);
 
       // Call API to pull multiple images
-      const response = await fetch(`${BASE_URL}/images/pull`, {
+      const response = await fetch(`${API_BASE_URL}/images/pull`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
