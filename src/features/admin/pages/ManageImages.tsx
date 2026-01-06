@@ -3,6 +3,7 @@ import { getAllowedImages, deleteAllowedImage, AllowedImage } from '@/core/servi
 import { PageMeta } from '@nthucscc/components-shared';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import { API_BASE_URL, BASE_URL } from '@/core/config/url';
+import { fetchWithAuth } from '@/shared/utils/api';
 
 interface PullJobStatus {
   job_id: string;
@@ -139,20 +140,13 @@ export default function ManageImages() {
       const imageNames = selectedImgs.map((img) => `${img.Name}:${img.Tag}`);
 
       // Call API to pull multiple images
-      const response = await fetch(`${API_BASE_URL}/images/pull`, {
+      const data = await fetchWithAuth(`${API_BASE_URL}/images/pull`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
         },
         body: JSON.stringify({ names: imageNames } as PullImageRequest),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to pull images');
-      }
-
-      const data = await response.json();
       const jobIds = data.data?.job_ids || [];
 
       // Connect WebSocket for each job to monitor progress
