@@ -61,15 +61,30 @@ export const getAllowedImages = async (projectId?: number): Promise<AllowedImage
   }
 
   // Normalize field names (backend returns lowercase, frontend expects PascalCase)
-  return rawData.map((img) => ({
-    ID: img.ID || img.id || 0,
-    Name: img.Name || img.name || '',
-    Tag: img.Tag || img.tag || '',
-    ProjectID: img.ProjectID || img.project_id,
-    IsGlobal: img.IsGlobal ?? img.is_global ?? false,
-    CreatedAt: img.CreatedAt || img.created_at || '',
-    IsPulled: img.IsPulled ?? img.is_pulled ?? false,
-  }));
+  return rawData.map((img) => {
+    const rawName = img.Name || img.name || '';
+    const explicitTag = img.Tag || img.tag || '';
+
+    let normalizedName = rawName;
+    let normalizedTag = explicitTag;
+
+    // If backend returned name with tag (e.g., repo:tag), split to avoid duplicate display
+    if (rawName.includes(':')) {
+      const [base, tagFromName] = rawName.split(':', 2);
+      normalizedName = base;
+      if (!normalizedTag) normalizedTag = tagFromName;
+    }
+
+    return {
+      ID: img.ID || img.id || 0,
+      Name: normalizedName,
+      Tag: normalizedTag,
+      ProjectID: img.ProjectID || img.project_id,
+      IsGlobal: img.IsGlobal ?? img.is_global ?? false,
+      CreatedAt: img.CreatedAt || img.created_at || '',
+      IsPulled: img.IsPulled ?? img.is_pulled ?? false,
+    } as AllowedImage;
+  });
 };
 
 interface RawAllowedImage {
