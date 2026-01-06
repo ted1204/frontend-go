@@ -6,7 +6,6 @@ import {
   getFailedPullJobs,
   FailedPullJob,
   getActivePullJobs,
-  ActivePullJob,
 } from '@/core/services/imageService';
 import { PageMeta } from '@nthucscc/components-shared';
 import { PageBreadcrumb } from '@nthucscc/ui';
