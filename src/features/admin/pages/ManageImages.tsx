@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { getAllowedImages, deleteAllowedImage, AllowedImage } from '@/core/services/imageService';
+import { getAllowedImages, deleteAllowedImage, AllowedImage, getFailedPullJobs, FailedPullJob } from '@/core/services/imageService';
 import { PageMeta } from '@nthucscc/components-shared';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import { API_BASE_URL, BASE_URL } from '@/core/config/url';
@@ -26,6 +26,7 @@ export default function ManageImages() {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [pullJobStatuses, setPullJobStatuses] = useState<Map<string, PullJobStatus>>(new Map());
+  const [failedJobs, setFailedJobs] = useState<FailedPullJob[]>([]);
   const wsConnectionsRef = useRef<Map<string, WebSocket>>(new Map());
 
   const loadImages = async () => {
@@ -33,6 +34,9 @@ export default function ManageImages() {
       setLoading(true);
       const data = await getAllowedImages();
       setImages(data);
+      // Load failed jobs when loading images
+      const failed = await getFailedPullJobs(10);
+      setFailedJobs(failed);
     } catch (err) {
       console.error('Failed to load images:', err);
     } finally {
@@ -239,6 +243,38 @@ export default function ManageImages() {
                       />
                     </div>
                   )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Failed Pull Jobs History */}
+      {failedJobs.length > 0 && (
+        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900/30 dark:bg-red-900/20">
+          <h3 className="mb-3 font-semibold text-red-900 dark:text-red-300">
+            Failed Pull Jobs ({failedJobs.length})
+          </h3>
+          <div className="space-y-2">
+            {failedJobs.map((job) => (
+              <div
+                key={job.job_id}
+                className="flex items-center gap-3 rounded-lg bg-white p-3 dark:bg-gray-800"
+              >
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      {job.image_name}:{job.image_tag}
+                    </span>
+                    <span className="text-xs font-mono text-gray-500 dark:text-gray-400">
+                      {job.job_id}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-red-700 dark:text-red-300">{job.message}</p>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    {new Date(job.updated_at).toLocaleString()}
+                  </p>
                 </div>
               </div>
             ))}
