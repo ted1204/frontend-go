@@ -1,15 +1,17 @@
 import React from 'react';
 import { Form } from '@/core/interfaces/form';
 import { LocaleKey } from '@nthucscc/utils';
+import { ChatBubbleLeftIcon } from '@heroicons/react/24/outline';
 
 interface FormCardProps {
   form: Form;
   statusText: (s?: string) => string;
   t: (key: LocaleKey, vars?: Record<string, string | number>) => string;
+  onViewDetails?: (form: Form) => void;
 }
 
-const FormCard: React.FC<FormCardProps> = ({ form, statusText, t }) => (
-  <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800 flex flex-col gap-2">
+const FormCard: React.FC<FormCardProps> = ({ form, statusText, t, onViewDetails }) => (
+  <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800 flex flex-col gap-2 hover:shadow-md transition-shadow">
     <div className="flex items-center gap-2 mb-2">
       <span
         className={`inline-block w-2 h-2 rounded-full ${form.status === 'Completed' ? 'bg-green-500' : form.status === 'Rejected' ? 'bg-red-500' : form.status === 'Processing' ? 'bg-yellow-400' : 'bg-gray-400'}`}
@@ -30,6 +32,15 @@ const FormCard: React.FC<FormCardProps> = ({ form, statusText, t }) => (
         {t('common.createdAt')}: {new Date(form.CreatedAt).toLocaleDateString()}
       </span>
     </div>
+    {onViewDetails && (
+      <button
+        onClick={() => onViewDetails(form)}
+        className="mt-3 w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
+      >
+        <ChatBubbleLeftIcon className="h-4 w-4" />
+        {t('form.viewDetails')}
+      </button>
+    )}
   </div>
 );
 

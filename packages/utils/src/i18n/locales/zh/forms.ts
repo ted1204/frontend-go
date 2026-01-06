@@ -48,8 +48,17 @@ export const forms = {
     projectId: '專案 ID: {id}',
     cancel: '取消',
     submitting: '提交中...',
-    submit: '送出',
-    history: {
+    submit: '送出',    viewDetails: '查看詳情與留言',
+    viewMessages: '留言',
+    messages: {
+      title: '留言',
+      empty: '尚無留言。開始對話吧！',
+      loading: '載入留言中...',
+      placeholder: '輸入您的留言...',
+      send: '送出',
+      sending: '送出中...',
+      completed: '此表單已完成，無法再新增留言。',
+    },    history: {
       title: '歷史紀錄',
       empty: '無歷史紀錄。',
       loading: '載入歷史紀錄中...',

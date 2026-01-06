@@ -1,15 +1,35 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getAllForms, updateFormStatus } from '@/core/services/formService';
 import { Form, FormStatus } from '@/core/interfaces/form';
+import FormDetailModal from '@/features/forms/components/FormDetailModal';
 import { PageMeta } from '@nthucscc/components-shared';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import { useTranslation } from '@nthucscc/utils';
+import { ChatBubbleLeftIcon } from '@heroicons/react/24/outline';
 
 export default function AdminFormDashboard() {
   const { t } = useTranslation();
   const [tickets, setTickets] = useState<Form[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Modal state
+  const [selectedForm, setSelectedForm] = useState<Form | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Get user_id from localStorage
+  const getCurrentUserId = () => {
+    try {
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        const parsed = JSON.parse(userData);
+        return parsed.user_id || 0;
+      }
+    } catch (e) {
+      console.error('Failed to parse userData:', e);
+    }
+    return 0;
+  };
 
   const fetchTickets = useCallback(async () => {
     try {
@@ -67,6 +87,16 @@ export default function AdminFormDashboard() {
       default:
         return status;
     }
+  };
+
+  const handleViewDetails = (form: Form) => {
+    setSelectedForm(form);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedForm(null);
   };
 
   if (loading)
@@ -143,7 +173,14 @@ export default function AdminFormDashboard() {
                     </span>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap">
+                      <button
+                        onClick={() => handleViewDetails(ticket)}
+                        className="flex items-center gap-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-medium transition-colors"
+                      >
+                        <ChatBubbleLeftIcon className="h-3 w-3" />
+                        {t('form.viewMessages')}
+                      </button>
                       {ticket.status === FormStatus.Pending && (
                         <>
                           <button
@@ -176,6 +213,14 @@ export default function AdminFormDashboard() {
           </table>
         </div>
       </div>
+
+      {/* Form Detail Modal with Messages */}
+      <FormDetailModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        form={selectedForm}
+        currentUserId={getCurrentUserId()}
+      />
     </div>
   );
 }

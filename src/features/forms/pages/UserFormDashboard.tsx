@@ -3,6 +3,7 @@ import { useEffect, useState, FormEvent } from 'react';
 import UserFormApply from '../components/form/UserFormApply';
 import UserFormHistory from '../components/form/UserFormHistory';
 import TabSwitcher from '../components/form/TabSwitcher';
+import FormDetailModal from '../components/FormDetailModal';
 import { PageMeta } from '@nthucscc/components-shared';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import { useTranslation } from '@nthucscc/utils';
@@ -32,6 +33,25 @@ export default function UserFormDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  
+  // Modal state
+  const [selectedForm, setSelectedForm] = useState<Form | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Get user_id from localStorage
+  const getCurrentUserId = () => {
+    try {
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        const parsed = JSON.parse(userData);
+        return parsed.user_id || 0;
+      }
+    } catch (e) {
+      console.error('Failed to parse userData:', e);
+    }
+    return 0;
+  };
+
   const filteredForms = (myForms || []).filter(
     (form) =>
       form.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -101,6 +121,16 @@ export default function UserFormDashboard() {
 
   const statusText = (s?: string) => (s ? t(`form_status_${s.toLowerCase()}` as any) : '');
 
+  const handleViewDetails = (form: Form) => {
+    setSelectedForm(form);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedForm(null);
+  };
+
   return (
     <div>
       <TabSwitcher
@@ -128,6 +158,7 @@ export default function UserFormDashboard() {
           totalPages={totalPages}
           setCurrentPage={setCurrentPage}
           statusText={statusText}
+          onViewDetails={handleViewDetails}
         />
       )}
       {tab === 'apply' && (
@@ -145,6 +176,14 @@ export default function UserFormDashboard() {
           handleSubmit={handleSubmit}
         />
       )}
+
+      {/* Form Detail Modal with Messages */}
+      <FormDetailModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        form={selectedForm}
+        currentUserId={getCurrentUserId()}
+      />
     </div>
   );
 }

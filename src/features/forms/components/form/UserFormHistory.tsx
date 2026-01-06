@@ -19,6 +19,7 @@ interface UserFormHistoryProps {
   totalPages: number;
   setCurrentPage: (p: number) => void;
   statusText: (s?: string) => string;
+  onViewDetails?: (form: Form) => void;
 }
 
 const UserFormHistory: React.FC<UserFormHistoryProps> = ({
@@ -32,6 +33,7 @@ const UserFormHistory: React.FC<UserFormHistoryProps> = ({
   totalPages,
   setCurrentPage,
   statusText,
+  onViewDetails,
 }) => {
   const { t } = useTranslation();
 
@@ -51,7 +53,7 @@ const UserFormHistory: React.FC<UserFormHistoryProps> = ({
         <div className="py-8 text-center text-gray-400">{t('form.history.loading')}</div>
       ) : (
         <>
-          <FormList viewMode={viewMode} currentForms={currentForms} statusText={statusText} />
+          <FormList viewMode={viewMode} currentForms={currentForms} statusText={statusText} onViewDetails={onViewDetails} />
 
           <PaginationWrapper
             currentPage={currentPage}

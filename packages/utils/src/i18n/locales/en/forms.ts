@@ -57,6 +57,17 @@ export const forms = {
     cancel: 'Cancel',
     submitting: 'Submitting...',
     submit: 'Submit',
+    viewDetails: 'View Details & Messages',
+    viewMessages: 'Messages',
+    messages: {
+      title: 'Messages',
+      empty: 'No messages yet. Start a conversation!',
+      loading: 'Loading messages...',
+      placeholder: 'Type your message...',
+      send: 'Send',
+      sending: 'Sending...',
+      completed: 'This form is completed. No more messages can be added.',
+    },
     history: {
       title: 'History',
       empty: 'No history found.',

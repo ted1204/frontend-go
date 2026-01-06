@@ -2,14 +2,16 @@ import React from 'react';
 import { Form } from '@/core/interfaces/form';
 import FormCard from './FormCard';
 import { useTranslation } from '@nthucscc/utils';
+import { ChatBubbleLeftIcon } from '@heroicons/react/24/outline';
 
 interface FormListProps {
   viewMode: 'grid' | 'list';
   currentForms: Form[];
   statusText: (s?: string) => string;
+  onViewDetails?: (form: Form) => void;
 }
 
-const FormList: React.FC<FormListProps> = ({ viewMode, currentForms, statusText }) => {
+const FormList: React.FC<FormListProps> = ({ viewMode, currentForms, statusText, onViewDetails }) => {
   const { t } = useTranslation();
 
   if (currentForms.length === 0) {
@@ -19,7 +21,7 @@ const FormList: React.FC<FormListProps> = ({ viewMode, currentForms, statusText 
   return viewMode === 'grid' ? (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {currentForms.map((f) => (
-        <FormCard key={f.ID} form={f} statusText={statusText} t={t} />
+        <FormCard key={f.ID} form={f} statusText={statusText} t={t} onViewDetails={onViewDetails} />
       ))}
     </div>
   ) : (
@@ -32,11 +34,12 @@ const FormList: React.FC<FormListProps> = ({ viewMode, currentForms, statusText 
             <th className="px-4 py-2">{t('form.label.project')}</th>
             <th className="px-4 py-2">{t('table.status')}</th>
             <th className="px-4 py-2">{t('common.createdAt')}</th>
+            {onViewDetails && <th className="px-4 py-2">{t('table.actions')}</th>}
           </tr>
         </thead>
         <tbody>
           {currentForms.map((f) => (
-            <tr key={f.ID} className="border-t">
+            <tr key={f.ID} className="border-t hover:bg-gray-50 dark:hover:bg-gray-800/50">
               <td className="px-4 py-2 font-medium text-gray-800 dark:text-white">{f.title}</td>
               <td className="px-4 py-2 text-gray-600 dark:text-gray-300">{f.description}</td>
               <td className="px-4 py-2">{f.project?.ProjectName || '-'}</td>
@@ -48,6 +51,17 @@ const FormList: React.FC<FormListProps> = ({ viewMode, currentForms, statusText 
                 </span>
               </td>
               <td className="px-4 py-2">{new Date(f.CreatedAt).toLocaleDateString()}</td>
+              {onViewDetails && (
+                <td className="px-4 py-2">
+                  <button
+                    onClick={() => onViewDetails(f)}
+                    className="flex items-center gap-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-medium transition-colors"
+                  >
+                    <ChatBubbleLeftIcon className="h-3 w-3" />
+                    {t('form.viewDetails')}
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
