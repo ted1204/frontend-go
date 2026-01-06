@@ -18,6 +18,7 @@ export const navigation = {
     menu: '菜單',
     jobs: '工作',
     ecommerce: '電子商務',
+    manageImages: '管理映像檔',
   },
   view: {
     toggleToAdmin: '切換至管理員',

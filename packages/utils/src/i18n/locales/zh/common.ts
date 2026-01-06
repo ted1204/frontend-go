@@ -33,5 +33,16 @@ export const common = {
     noData: '無資料。',
     untitled: '無標題',
     confirmDelete: '您確定要刪除嗎？',
+    live: '即時',
+    reset: '重設',
+    apply: '套用篩選',
+  },
+  deleteConfirmation: {
+    title: '刪除 {itemType}',
+    message: '您確定要永久刪除 {itemType}：',
+    irreversible: '此動作無法復原。',
+    dataLoss: '所有相關資料可能會遺失。',
+    confirmButton: '刪除 {itemType}',
+    deleting: '刪除中...',
   },
 } as const;

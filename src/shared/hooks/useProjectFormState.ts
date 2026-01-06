@@ -5,7 +5,6 @@ export interface ProjectFormState {
   description: string;
   gpuQuota: number;
   gpuAccess: string[];
-  mpsLimit: number;
   mpsMemory: number;
   groupId: number;
   selectedGroupName: string;
@@ -16,7 +15,6 @@ export interface ProjectFormHandlers {
   onDescriptionChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   onGpuQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onGpuAccessChange: (access: string) => void;
-  onMpsLimitChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onMpsMemoryChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onSelectedGroupChange: (groupId: number, groupName: string) => void;
   resetForm: () => void;
@@ -32,7 +30,6 @@ export const useProjectFormState = (): [ProjectFormState, ProjectFormHandlers] =
   const [description, setDescription] = useState('');
   const [gpuQuota, setGpuQuota] = useState<number>(0);
   const [gpuAccess, setGpuAccess] = useState<string[]>(['shared']);
-  const [mpsLimit, setMpsLimit] = useState<number>(100);
   const [mpsMemory, setMpsMemory] = useState<number>(0);
   const [groupId, setGroupId] = useState<number>(0);
   const [selectedGroupName, setSelectedGroupName] = useState('');
@@ -42,7 +39,6 @@ export const useProjectFormState = (): [ProjectFormState, ProjectFormHandlers] =
     description,
     gpuQuota,
     gpuAccess,
-    mpsLimit,
     mpsMemory,
     groupId,
     selectedGroupName,
@@ -60,7 +56,6 @@ export const useProjectFormState = (): [ProjectFormState, ProjectFormHandlers] =
         return [...prev, access];
       });
     },
-    onMpsLimitChange: (e: ChangeEvent<HTMLInputElement>) => setMpsLimit(Number(e.target.value)),
     onMpsMemoryChange: (e: ChangeEvent<HTMLInputElement>) => setMpsMemory(Number(e.target.value)),
     onSelectedGroupChange: (id: number, name: string) => {
       setGroupId(id);
@@ -71,7 +66,6 @@ export const useProjectFormState = (): [ProjectFormState, ProjectFormHandlers] =
       setDescription('');
       setGpuQuota(0);
       setGpuAccess(['shared']);
-      setMpsLimit(100);
       setMpsMemory(0);
       setGroupId(0);
       setSelectedGroupName('');
@@ -81,7 +75,6 @@ export const useProjectFormState = (): [ProjectFormState, ProjectFormHandlers] =
       if (data.description !== undefined) setDescription(data.description);
       if (data.gpuQuota !== undefined) setGpuQuota(data.gpuQuota);
       if (data.gpuAccess !== undefined) setGpuAccess(data.gpuAccess);
-      if (data.mpsLimit !== undefined) setMpsLimit(data.mpsLimit);
       if (data.mpsMemory !== undefined) setMpsMemory(data.mpsMemory);
       if (data.groupId !== undefined) setGroupId(data.groupId);
       if (data.selectedGroupName !== undefined) setSelectedGroupName(data.selectedGroupName);

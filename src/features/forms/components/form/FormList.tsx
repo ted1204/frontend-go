@@ -11,7 +11,12 @@ interface FormListProps {
   onViewDetails?: (form: Form) => void;
 }
 
-const FormList: React.FC<FormListProps> = ({ viewMode, currentForms, statusText, onViewDetails }) => {
+const FormList: React.FC<FormListProps> = ({
+  viewMode,
+  currentForms,
+  statusText,
+  onViewDetails,
+}) => {
   const { t } = useTranslation();
 
   if (currentForms.length === 0) {

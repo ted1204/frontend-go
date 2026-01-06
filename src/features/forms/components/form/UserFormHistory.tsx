@@ -53,7 +53,12 @@ const UserFormHistory: React.FC<UserFormHistoryProps> = ({
         <div className="py-8 text-center text-gray-400">{t('form.history.loading')}</div>
       ) : (
         <>
-          <FormList viewMode={viewMode} currentForms={currentForms} statusText={statusText} onViewDetails={onViewDetails} />
+          <FormList
+            viewMode={viewMode}
+            currentForms={currentForms}
+            statusText={statusText}
+            onViewDetails={onViewDetails}
+          />
 
           <PaginationWrapper
             currentPage={currentPage}

@@ -20,8 +20,6 @@ interface CreateProjectFormProps {
   description: string;
   groupId: number;
   gpuQuota: number;
-  gpuAccess: string[];
-  mpsLimit: number;
   mpsMemory: number;
   loading: boolean;
   error: string | null;
@@ -30,8 +28,6 @@ interface CreateProjectFormProps {
   onProjectNameChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onDescriptionChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   onGpuQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onGpuAccessChange: (access: string) => void;
-  onMpsLimitChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onMpsMemoryChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onGroupIdChange: (e: ChangeEvent<HTMLInputElement>) => void; // Kept for compatibility
   onSubmit: (e: FormEvent) => void;
@@ -47,6 +43,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
   description,
   groupId,
   gpuQuota,
+  mpsMemory,
   loading,
   error,
   isOpen,
@@ -54,6 +51,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
   onProjectNameChange,
   onDescriptionChange,
   onGpuQuotaChange,
+  onMpsMemoryChange,
   onSubmit,
 
   availableGroups,
@@ -193,6 +191,16 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
                 value={gpuQuota}
                 onChange={onGpuQuotaChange}
                 placeholder={t('project.create.gpuQuotaPlaceholder')}
+                className="w-full"
+                min="0"
+                disabled={loading}
+              />
+              <InputField
+                type="number"
+                label={t('project.create.gpuMemoryLimit')}
+                value={mpsMemory}
+                onChange={onMpsMemoryChange}
+                placeholder={t('project.create.gpuMemoryLimitPlaceholder')}
                 className="w-full"
                 min="0"
                 disabled={loading}

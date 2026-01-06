@@ -128,10 +128,9 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
     new Set(['kind', 'name', 'details', 'status', 'age']),
   );
 
-  const safeMessages = Array.isArray(messages) ? messages : [];
-
   // 2. Data Aggregation & Filtering Logic (Optimized for WebSocket stream)
   const currentResources = useMemo(() => {
+    const safeMessages = Array.isArray(messages) ? messages : [];
     const resourceMap = new Map<string, ResourceMessage>();
 
     safeMessages.forEach((msg) => {
@@ -156,7 +155,7 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
       }
       return a.name.localeCompare(b.name);
     });
-  }, [safeMessages]);
+  }, [messages]);
 
   // Toggle column visibility with MAX limit
   const toggleColumn = (col: ColumnKey) => {

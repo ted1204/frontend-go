@@ -12,6 +12,9 @@ export const pages = {
     admin: {
       title: '管理儀表板',
       description: '管理中心',
+      manageProjects: '專案管理',
+      manageGroups: '群組管理',
+      forms: '表單管理',
       auditLogs: {
         title: '審計日誌',
         description: '系統安全與變更追蹤',

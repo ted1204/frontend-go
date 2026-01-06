@@ -11,6 +11,12 @@ export const forms = {
       processing: '處理中',
       completed: '已完成',
     },
+    // Underscore format for backward compatibility
+    form_status_pending: '待審核',
+    form_status_approved: '已核准',
+    form_status_rejected: '已駁回',
+    form_status_processing: '處理中',
+    form_status_completed: '已完成',
     action: {
       process: '處理',
       reject: '駁回',
@@ -48,7 +54,8 @@ export const forms = {
     projectId: '專案 ID: {id}',
     cancel: '取消',
     submitting: '提交中...',
-    submit: '送出',    viewDetails: '查看詳情與留言',
+    submit: '送出',
+    viewDetails: '查看詳情與留言',
     viewMessages: '留言',
     messages: {
       title: '留言',
@@ -58,7 +65,8 @@ export const forms = {
       send: '送出',
       sending: '送出中...',
       completed: '此表單已完成，無法再新增留言。',
-    },    history: {
+    },
+    history: {
       title: '歷史紀錄',
       empty: '無歷史紀錄。',
       loading: '載入歷史紀錄中...',

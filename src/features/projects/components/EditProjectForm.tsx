@@ -48,7 +48,6 @@ interface EditProjectFormProps {
   description: string;
   gpuQuota: number;
   gpuAccess: string[];
-  mpsLimit: number;
   mpsMemory: number;
   loading: boolean;
   error: string | null;
@@ -58,7 +57,6 @@ interface EditProjectFormProps {
   onDescriptionChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   onGpuQuotaChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onGpuAccessChange: (access: string) => void;
-  onMpsLimitChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onMpsMemoryChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: FormEvent) => void;
 }
@@ -68,7 +66,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = ({
   description,
   gpuQuota,
   gpuAccess,
-  mpsLimit,
   mpsMemory,
   loading,
   error,
@@ -78,7 +75,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = ({
   onDescriptionChange,
   onGpuQuotaChange,
   onGpuAccessChange,
-  onMpsLimitChange,
   onMpsMemoryChange,
   onSubmit,
 }) => {
@@ -192,7 +188,7 @@ const EditProjectForm: React.FC<EditProjectFormProps> = ({
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
                 type="number"
                 label={t('project.create.gpuQuota')}
@@ -201,17 +197,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = ({
                 placeholder={t('project.create.gpuQuotaPlaceholder')}
                 className="w-full"
                 min="0"
-                disabled={loading}
-              />
-              <InputField
-                type="number"
-                label={t('project.create.gpuThreadLimit')}
-                value={mpsLimit}
-                onChange={onMpsLimitChange}
-                placeholder={t('project.create.gpuThreadLimitPlaceholder')}
-                className="w-full"
-                min="0"
-                max="100"
                 disabled={loading}
               />
               <InputField
@@ -245,35 +230,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = ({
                 </label>
               </div>
             </div>
-
-            {gpuAccess.includes('shared') && (
-              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700">
-                <div className="col-span-2 text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                  {t('project.create.mpsSettings')}
-                </div>
-                <InputField
-                  type="number"
-                  label={t('project.create.mpsThreadLimit')}
-                  value={mpsLimit}
-                  onChange={onMpsLimitChange}
-                  placeholder="100"
-                  className="w-full"
-                  min="0"
-                  max="100"
-                  disabled={loading}
-                />
-                <InputField
-                  type="number"
-                  label={t('project.create.mpsMemoryLimit')}
-                  value={mpsMemory}
-                  onChange={onMpsMemoryChange}
-                  placeholder="0 (unlimited)"
-                  className="w-full"
-                  min="0"
-                  disabled={loading}
-                />
-              </div>
-            )}
 
             <div className="pt-2">
               <Button

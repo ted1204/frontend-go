@@ -65,7 +65,6 @@ export default function ManageProjects() {
         description: project.Description || '',
         gpuQuota: project.GPUQuota || 0,
         gpuAccess: project.GPUAccess ? project.GPUAccess.split(',') : ['shared'],
-        mpsLimit: project.MPSLimit || 100,
         mpsMemory: project.MPSMemory || 0,
       });
       setIsEditModalOpen(true);
@@ -79,7 +78,6 @@ export default function ManageProjects() {
       description: project.Description || '',
       gpuQuota: project.GPUQuota || 0,
       gpuAccess: project.GPUAccess ? project.GPUAccess.split(',') : ['shared'],
-      mpsLimit: project.MPSLimit || 100,
       mpsMemory: project.MPSMemory || 0,
     });
     setIsEditModalOpen(true);
@@ -101,7 +99,6 @@ export default function ManageProjects() {
       description: formState.description,
       gpu_quota: formState.gpuQuota,
       gpu_access: formState.gpuAccess.join(','),
-      mps_limit: formState.mpsLimit,
       mps_memory: formState.mpsMemory,
     };
 
@@ -318,8 +315,6 @@ export default function ManageProjects() {
         description={formState.description}
         groupId={formState.groupId}
         gpuQuota={formState.gpuQuota}
-        gpuAccess={formState.gpuAccess}
-        mpsLimit={formState.mpsLimit}
         mpsMemory={formState.mpsMemory}
         loading={actionLoading}
         error={error}
@@ -328,8 +323,6 @@ export default function ManageProjects() {
         onProjectNameChange={formHandlers.onProjectNameChange}
         onDescriptionChange={formHandlers.onDescriptionChange}
         onGpuQuotaChange={formHandlers.onGpuQuotaChange}
-        onGpuAccessChange={formHandlers.onGpuAccessChange}
-        onMpsLimitChange={formHandlers.onMpsLimitChange}
         onMpsMemoryChange={formHandlers.onMpsMemoryChange}
         onGroupIdChange={() => {
           /* No operation */
@@ -346,7 +339,6 @@ export default function ManageProjects() {
         description={formState.description}
         gpuQuota={formState.gpuQuota}
         gpuAccess={formState.gpuAccess}
-        mpsLimit={formState.mpsLimit}
         mpsMemory={formState.mpsMemory}
         loading={actionLoading}
         error={error}
@@ -356,7 +348,6 @@ export default function ManageProjects() {
         onDescriptionChange={formHandlers.onDescriptionChange}
         onGpuQuotaChange={formHandlers.onGpuQuotaChange}
         onGpuAccessChange={formHandlers.onGpuAccessChange}
-        onMpsLimitChange={formHandlers.onMpsLimitChange}
         onMpsMemoryChange={formHandlers.onMpsMemoryChange}
         onSubmit={handleUpdateProject}
       />

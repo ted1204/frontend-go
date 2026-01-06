@@ -130,13 +130,9 @@ export default function FormDetailModal({
           {/* Messages List */}
           <div className="space-y-3 mb-4 max-h-96 overflow-y-auto">
             {loadingMessages ? (
-              <div className="text-center py-8 text-gray-500">
-                {t('form.messages.loading')}
-              </div>
+              <div className="text-center py-8 text-gray-500">{t('form.messages.loading')}</div>
             ) : messages.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                {t('form.messages.empty')}
-              </div>
+              <div className="text-center py-8 text-gray-500">{t('form.messages.empty')}</div>
             ) : (
               messages.map((msg) => {
                 const isMyMessage = msg.user_id === currentUserId;

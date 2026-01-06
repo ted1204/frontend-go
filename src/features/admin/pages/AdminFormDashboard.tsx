@@ -12,11 +12,11 @@ export default function AdminFormDashboard() {
   const [tickets, setTickets] = useState<Form[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Modal state
   const [selectedForm, setSelectedForm] = useState<Form | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   // Get user_id from localStorage
   const getCurrentUserId = () => {
     try {

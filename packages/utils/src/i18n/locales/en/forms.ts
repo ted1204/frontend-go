@@ -17,6 +17,12 @@ export const forms = {
       processing: 'Processing',
       completed: 'Completed',
     },
+    // Underscore format for backward compatibility
+    form_status_pending: 'Pending',
+    form_status_approved: 'Approved',
+    form_status_rejected: 'Rejected',
+    form_status_processing: 'Processing',
+    form_status_completed: 'Completed',
     action: {
       process: 'Process',
       reject: 'Reject',

@@ -33,11 +33,11 @@ export default function UserFormDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-  
+
   // Modal state
   const [selectedForm, setSelectedForm] = useState<Form | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   // Get user_id from localStorage
   const getCurrentUserId = () => {
     try {

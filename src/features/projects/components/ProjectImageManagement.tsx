@@ -38,6 +38,7 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
 
   useEffect(() => {
     loadImages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
 
   const handleAddImage = async (e: React.FormEvent) => {

@@ -37,4 +37,12 @@ export const common = {
     reset: 'Reset',
     apply: 'Apply Filters',
   },
+  deleteConfirmation: {
+    title: 'Delete {itemType}',
+    message: 'Are you sure you want to permanently delete {itemType}:',
+    irreversible: 'This action cannot be undone.',
+    dataLoss: 'All related data may be lost.',
+    confirmButton: 'Delete {itemType}',
+    deleting: 'Deleting...',
+  },
 } as const;

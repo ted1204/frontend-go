@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { useTranslation } from '@nthucscc/utils';
 // Assuming the Button component is available via relative path
 import Button from '../button/Button';
 
@@ -36,6 +37,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   itemType,
   loading = false,
 }) => {
+  const { t } = useTranslation();
   const modalRef = useRef<HTMLDivElement>(null);
 
   // Handle ESC key press to close the modal
@@ -125,19 +127,19 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
                   className="text-lg leading-6 font-bold text-gray-900 dark:text-white"
                   id="modal-title"
                 >
-                  刪除 {itemType}
+                  {t('deleteConfirmation.title', { itemType })}
                 </h3>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    您確定要永久刪除 {itemType}：
+                    {t('deleteConfirmation.message', { itemType })}
                     <span className="font-semibold text-gray-700 dark:text-gray-200">
                       {' '}
                       "{itemName}"
                     </span>
-                    ? 此動作無法復原。
+                    ? {t('deleteConfirmation.irreversible')}
                   </p>
                   <p className="mt-2 text-xs font-medium text-red-600 dark:text-red-500">
-                    所有相關資料可能會遺失。
+                    {t('deleteConfirmation.dataLoss')}
                   </p>
                 </div>
               </div>
@@ -156,7 +158,9 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
                           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm
                           disabled:opacity-50 disabled:cursor-not-allowed transition duration-150"
             >
-              {loading ? '刪除中...' : `刪除 ${itemType}`}
+              {loading
+                ? t('deleteConfirmation.deleting')
+                : t('deleteConfirmation.confirmButton', { itemType })}
             </Button>
 
             {/* Cancel Button (Secondary action) */}
@@ -169,7 +173,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
                           dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600
                           disabled:opacity-50 disabled:cursor-not-allowed transition duration-150"
             >
-              取消
+              {t('common.cancel')}
             </Button>
           </div>
         </div>
