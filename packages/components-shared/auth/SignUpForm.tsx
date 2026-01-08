@@ -5,6 +5,7 @@ import Label from '../../../src/features/forms/components/form/Label';
 import Input from '../../../src/features/forms/components/form/input/InputFieldDefault';
 import Button from '../../ui/src/components/button/Button';
 import { register } from '../../../src/core/services/authService';
+import { useTranslation } from '../../utils/src/hooks/useTranslation';
 
 export default function SignUpForm() {
   const [username, setUsername] = useState('');
@@ -14,13 +15,14 @@ export default function SignUpForm() {
   const [lname, setLname] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Basic validation
     if (!username || !password) {
-      alert('請填寫使用者名稱和密碼欄位。');
+      alert(t('auth.signup.validationMissingUsernamePassword'));
       return;
     }
 
@@ -35,33 +37,32 @@ export default function SignUpForm() {
         type: 'origin', // Default to 'origin' as per Swagger enum
         status: 'online', // Default to 'online' as per Swagger enum
       });
-      alert(data.message || '註冊成功！請登入。');
+      alert(data.message || t('auth.signup.registerSuccess'));
       navigate('/signin');
     } catch (err) {
-      console.error('Registration error:', err);
-      alert(err instanceof Error ? err.message : '註冊失敗，請重試。');
+      alert(err instanceof Error ? err.message : t('auth.signup.registerFailed'));
     }
   };
 
   return (
     <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-1/2 no-scrollbar">
-      <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
+          <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
         <Link
           to="/"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <ChevronLeftIcon className="size-5" />
-          返回儀表板
+          {t('auth.login.backToDashboard')}
         </Link>
       </div>
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              註冊
+              {t('auth.signup.title')}
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              輸入您的電子郵件和密碼以註冊！
+              {t('auth.signup.subtitle')}
             </p>
           </div>
           <div>
@@ -123,13 +124,13 @@ export default function SignUpForm() {
                   {/* First Name */}
                   <div className="sm:col-span-1">
                     <Label>
-                      名字<span className="text-error-500"></span>
+                      {t('auth.signup.firstName')}<span className="text-error-500"></span>
                     </Label>
                     <Input
                       type="text"
                       id="fname"
                       name="fname"
-                      placeholder="輸入您的名字"
+                      placeholder={t('auth.signup.firstName')}
                       value={fname}
                       onChange={(e) => setFname(e.target.value)}
                     />
@@ -137,13 +138,13 @@ export default function SignUpForm() {
                   {/* Last Name */}
                   <div className="sm:col-span-1">
                     <Label>
-                      姓氏<span className="text-error-500"></span>
+                      {t('auth.signup.lastName')}<span className="text-error-500"></span>
                     </Label>
                     <Input
                       type="text"
                       id="lname"
                       name="lname"
-                      placeholder="輸入您的姓氏"
+                      placeholder={t('auth.signup.lastName')}
                       value={lname}
                       onChange={(e) => setLname(e.target.value)}
                     />
@@ -152,13 +153,13 @@ export default function SignUpForm() {
                 {/* Username */}
                 <div>
                   <Label>
-                    使用者名稱<span className="text-error-500">*</span>
+                    {t('auth.signup.username')}<span className="text-error-500">*</span>
                   </Label>
                   <Input
                     type="text"
                     id="username"
                     name="username"
-                    placeholder="輸入您的使用者名稱"
+                    placeholder={t('auth.signup.usernamePlaceholder')}
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                   />
@@ -166,13 +167,13 @@ export default function SignUpForm() {
                 {/* Email */}
                 <div>
                   <Label>
-                    電子郵件<span className="text-error-500"></span>
+                    {t('auth.signup.email')}<span className="text-error-500"></span>
                   </Label>
                   <Input
                     type="email"
                     id="email"
                     name="email"
-                    placeholder="輸入您的電子郵件"
+                    placeholder={t('auth.signup.emailPlaceholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -180,11 +181,11 @@ export default function SignUpForm() {
                 {/* Password */}
                 <div>
                   <Label>
-                    密碼<span className="text-error-500">*</span>
+                    {t('auth.signup.password')}<span className="text-error-500">*</span>
                   </Label>
                   <div className="relative">
                     <Input
-                      placeholder="輸入您的密碼"
+                      placeholder={t('auth.signup.passwordPlaceholder')}
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -222,19 +223,19 @@ export default function SignUpForm() {
                 {/* Button */}
                 <div>
                   <Button className="w-full" size="sm" type="submit">
-                    註冊
+                    {t('auth.signup.submit')}
                   </Button>
                 </div>
               </div>
             </form>
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                已經有帳號？{' '}
+                {t('auth.signup.alreadyHaveAccount')}{' '}
                 <Link
                   to="/signin"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
                 >
-                  登入
+                  {t('auth.signup.signIn')}
                 </Link>
               </p>
             </div>

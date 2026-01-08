@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
 import { logout } from '../../../core/services/authService';
 import { useAuth } from '../../../core/context/AuthContext';
+import { useTranslation } from '../../../../packages/utils/src/hooks/useTranslation';
 
 interface SignOutButtonProps {
   className?: string;
@@ -10,6 +11,7 @@ interface SignOutButtonProps {
 export const SignOutButton = ({ className = '', onClick }: SignOutButtonProps) => {
   const navigate = useNavigate();
   const { setIsAuthenticated } = useAuth();
+  const { t } = useTranslation();
 
   const handleSignOut = async () => {
     try {
@@ -29,7 +31,7 @@ export const SignOutButton = ({ className = '', onClick }: SignOutButtonProps) =
 
   return (
     <button onClick={handleSignOut} className={className}>
-      Sign Out
+      {t('auth.signOut')}
     </button>
   );
 };

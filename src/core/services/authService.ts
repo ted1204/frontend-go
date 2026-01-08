@@ -2,6 +2,12 @@ import { LOGIN_URL, REGISTER_URL, LOGOUT_URL } from '../config/url'; // Adjust t
 import { ErrorResponse, MessageResponse, LoginResponse } from '../response/response'; // Adjust the import path as necessary
 import { RegisterInput } from '../interfaces/auth'; // Adjust the import path as necessary
 
+const appendIfPresent = (formData: URLSearchParams, key: string, value: string | undefined) => {
+  if (value !== undefined && value !== null && value !== '') {
+    formData.append(key, value);
+  }
+};
+
 export const login = async (username: string, password: string): Promise<LoginResponse> => {
   const formData = new URLSearchParams();
   formData.append('username', username);
@@ -40,7 +46,7 @@ export const logout = async (): Promise<void> => {
       const errorData = await response.json();
       throw new Error(errorData.error || `Logout failed with status ${response.status}`);
     }
-
+    
     localStorage.clear();
     sessionStorage.clear();
 
@@ -62,10 +68,10 @@ export const register = async (input: RegisterInput): Promise<MessageResponse> =
   const formData = new URLSearchParams();
   formData.append('username', input.username);
   formData.append('password', input.password);
-  if (input.email) formData.append('email', input.email);
-  if (input.full_name) formData.append('full_name', input.full_name);
-  if (input.type) formData.append('type', input.type);
-  if (input.status) formData.append('status', input.status);
+  appendIfPresent(formData, 'email', input.email);
+  appendIfPresent(formData, 'full_name', input.full_name);
+  appendIfPresent(formData, 'type', input.type);
+  appendIfPresent(formData, 'status', input.status);
 
   try {
     const response = await fetch(REGISTER_URL, {
@@ -76,7 +82,7 @@ export const register = async (input: RegisterInput): Promise<MessageResponse> =
       body: formData.toString(),
       credentials: 'include',
     });
-
+    console.log(formData.toString())
     if (!response.ok) {
       const errorData: ErrorResponse = await response.json();
       throw new Error(errorData.error || `Registration failed with status ${response.status}`);
@@ -85,6 +91,7 @@ export const register = async (input: RegisterInput): Promise<MessageResponse> =
     const data: MessageResponse = await response.json();
     return data;
   } catch (error) {
+    console.log(formData.toString())
     throw new Error(
       error instanceof Error ? error.message : 'Registration failed, please try again.',
     );
