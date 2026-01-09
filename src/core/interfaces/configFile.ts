@@ -20,8 +20,8 @@ export interface MountConfig {
   id: string;
   type: MountType;
   pvcName?: string;
-  subPath: string;
-  mountPath: string;
+  // Support multiple subPath -> mountPath pairs for the same volume
+  subPaths: { id: string; subPath: string; mountPath: string }[];
 }
 
 export interface EnvVar {
@@ -47,6 +47,7 @@ export interface BaseResource {
   id: string;
   kind: ResourceKind;
   name: string;
+  annotations?: KeyValuePair[];
 }
 
 // [New] Container Definition

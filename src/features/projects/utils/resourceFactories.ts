@@ -33,6 +33,7 @@ export const createDefaultResource = (
         id,
         kind: 'Service',
         name: baseName,
+        annotations: [],
         headless: false,
         serviceType: 'ClusterIP',
         ports: [{ id: `${id}-p1`, name: 'http', port: 80, targetPort: 80, protocol: 'TCP' }],
@@ -44,6 +45,7 @@ export const createDefaultResource = (
         id,
         kind: 'ConfigMap',
         name: baseName,
+        annotations: [],
         data: [],
       } as ConfigMapResource;
 
@@ -53,6 +55,7 @@ export const createDefaultResource = (
         id,
         kind: kind,
         name: baseName,
+        annotations: [],
         replicas: 1,
         containers: [createDefaultContainer(`${id}-c1`, 1)],
         selectors: [{ id: `${id}-s1`, key: 'app', value: baseName }],

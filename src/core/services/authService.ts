@@ -46,7 +46,7 @@ export const logout = async (): Promise<void> => {
       const errorData = await response.json();
       throw new Error(errorData.error || `Logout failed with status ${response.status}`);
     }
-    
+
     localStorage.clear();
     sessionStorage.clear();
 
@@ -82,7 +82,7 @@ export const register = async (input: RegisterInput): Promise<MessageResponse> =
       body: formData.toString(),
       credentials: 'include',
     });
-    console.log(formData.toString())
+    console.log(formData.toString());
     if (!response.ok) {
       const errorData: ErrorResponse = await response.json();
       throw new Error(errorData.error || `Registration failed with status ${response.status}`);
@@ -91,7 +91,7 @@ export const register = async (input: RegisterInput): Promise<MessageResponse> =
     const data: MessageResponse = await response.json();
     return data;
   } catch (error) {
-    console.log(formData.toString())
+    console.log(formData.toString());
     throw new Error(
       error instanceof Error ? error.message : 'Registration failed, please try again.',
     );

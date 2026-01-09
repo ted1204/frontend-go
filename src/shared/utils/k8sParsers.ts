@@ -18,6 +18,14 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
   const res: ResourceItem = createDefaultResource(kind, id, baseName);
   if (docObj.metadata?.name) res.name = docObj.metadata.name;
 
+  // Generic: capture metadata.annotations if present on any resource
+  (res as any).annotations = [];
+  if (docObj.metadata?.annotations) {
+    Object.entries(docObj.metadata.annotations).forEach(([k, v], i) =>
+      (res as any).annotations.push({ id: `${id}-a-${i}`, key: String(k), value: String(v) }),
+    );
+  }
+
   if (kind === 'ConfigMap') {
     const cm = res as ConfigMapResource;
     cm.data = [];
@@ -69,7 +77,19 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
           ? c.command
           : JSON.stringify(c.command)
         : '',
-      args: c.args ? (Array.isArray(c.args) ? JSON.stringify(c.args) : String(c.args)) : '',
+      args: (() => {
+        if (!c.args) return '';
+        if (Array.isArray(c.args)) {
+          // If it's a single-item array and that item is a multiline string,
+          // keep the raw multiline string so the generator can split into list entries.
+          if (c.args.length === 1 && typeof c.args[0] === 'string') {
+            return String(c.args[0]);
+          }
+          // Otherwise preserve as a JSON array string
+          return JSON.stringify(c.args);
+        }
+        return String(c.args);
+      })(),
       ports: (c.ports || []).map((p: any, pi: number) => ({
         id: `${id}-c-${ci}-p-${pi}`,
         port: p.containerPort || p.port || 0,
@@ -81,51 +101,60 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
         value: String(e.value),
       })),
       envFrom: (c.envFrom || []).map((ef: any) => ef.configMapRef?.name || ''),
-      mounts: (c.volumeMounts || []).map((m: any, mi: number) => {
+      mounts: (() => {
         const volumes = templateSpec.volumes || [];
-        const volumeDef = volumes.find((v: any) => v.name === m.name);
+        const vm = c.volumeMounts || [];
+        const grouped: Record<string, any> = {};
+        vm.forEach((m: any, mi: number) => {
+          const volumeDef = volumes.find((v: any) => v.name === m.name);
 
-        let mountType: 'project-pvc' | 'user-storage' = 'project-pvc';
-        let pvcName = m.name || '';
+          let mountType: 'project-pvc' | 'user-storage' = 'project-pvc';
+          let pvcName = m.name || '';
 
-        if (volumeDef?.persistentVolumeClaim) {
-          mountType = 'project-pvc';
-          pvcName = volumeDef.persistentVolumeClaim.claimName || m.name;
-        } else if (volumeDef?.nfs) {
-          const rawPath = String(volumeDef.nfs.path || '');
-          const cleanedPath = rawPath.replace(/\/+$/, '');
-          const serverHint = String(volumeDef.nfs.server || '');
-
-          // Check if it's user storage (nfsServer with root path)
-          if (serverHint === '{{nfsServer}}' && (cleanedPath === '' || cleanedPath === '/')) {
-            mountType = 'user-storage';
-            pvcName = '';
-          } else if (serverHint === '{{projectNfsServer}}') {
-            // Project storage NFS server - extract PVC name from volume name
+          if (volumeDef?.persistentVolumeClaim) {
             mountType = 'project-pvc';
-            pvcName = m.name || '';
-          } else {
-            // Legacy: Check if path contains /exports/ or /srv/ pattern
-            const projectMatch = cleanedPath.match(/^\/?(?:exports|srv)\/(.+)$/);
-            if (projectMatch) {
+            pvcName = volumeDef.persistentVolumeClaim.claimName || m.name;
+          } else if (volumeDef?.nfs) {
+            const rawPath = String(volumeDef.nfs.path || '');
+            const cleanedPath = rawPath.replace(/\/+$/, '');
+            const serverHint = String(volumeDef.nfs.server || '');
+
+            if (serverHint === '{{nfsServer}}' && (cleanedPath === '' || cleanedPath === '/')) {
+              mountType = 'user-storage';
+              pvcName = '';
+            } else if (serverHint === '{{projectNfsServer}}') {
               mountType = 'project-pvc';
-              pvcName = projectMatch[1];
+              pvcName = m.name || '';
             } else {
-              // Fallback: treat unknown NFS as project storage
-              mountType = 'project-pvc';
-              pvcName = m.name || cleanedPath;
+              const projectMatch = cleanedPath.match(/^\/?(?:exports|srv)\/(.+)$/);
+              if (projectMatch) {
+                mountType = 'project-pvc';
+                pvcName = projectMatch[1];
+              } else {
+                mountType = 'project-pvc';
+                pvcName = m.name || cleanedPath;
+              }
             }
           }
-        }
 
-        return {
-          id: `${id}-c-${ci}-m-${mi}`,
-          mountPath: m.mountPath,
-          pvcName: pvcName,
-          type: mountType,
-          subPath: m.subPath || '',
-        };
-      }),
+          if (!grouped[m.name]) {
+            grouped[m.name] = {
+              id: `${id}-c-${ci}-m-${mi}`,
+              pvcName,
+              type: mountType,
+              subPaths: [],
+            };
+          }
+
+          grouped[m.name].subPaths.push({
+            id: `${id}-c-${ci}-m-${mi}-${grouped[m.name].subPaths.length}`,
+            subPath: m.subPath || '',
+            mountPath: m.mountPath,
+          });
+        });
+
+        return Object.keys(grouped).map((k) => ({ ...grouped[k] }));
+      })(),
       resources: c.resources
         ? {
             requests: c.resources.requests

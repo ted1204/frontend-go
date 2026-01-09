@@ -39,9 +39,8 @@ const MountManager = ({
     const newMount: MountConfig = {
       id: Date.now().toString(),
       type: defaultType,
-      subPath: '',
-      mountPath: '/',
       pvcName: defaultPVC,
+      subPaths: [{ id: Date.now().toString() + '-s', subPath: '', mountPath: '/' }],
     };
 
     setWizardData((prev) => ({ ...prev, mounts: [...prev.mounts, newMount] }));
@@ -54,25 +53,42 @@ const MountManager = ({
     }));
   };
 
-  const updateMount = (id: string, field: keyof MountConfig, value: string) => {
+  const updateMount = (id: string, field: keyof MountConfig, value: unknown) => {
     setWizardData((prev) => ({
       ...prev,
       mounts: prev.mounts.map((m) => {
         if (m.id !== id) return m;
         // Reset pvcName if switching to user-storage
         if (field === 'type' && value === 'user-storage') {
-          return { ...m, type: value as MountType, pvcName: undefined, subPath: '' };
+          return {
+            ...m,
+            type: value as MountType,
+            pvcName: undefined,
+            subPaths: [{ id: Date.now().toString() + '-s', subPath: '', mountPath: '/' }],
+          };
         }
         // Auto-select first PVC if switching to project-pvc
         if (field === 'type' && value === 'project-pvc' && !m.pvcName && projectPvcs.length > 0) {
           const first = projectPvcs[0].name;
-          return { ...m, type: value as MountType, pvcName: first, subPath: '' };
+          return {
+            ...m,
+            type: value as MountType,
+            pvcName: first,
+            subPaths: [{ id: Date.now().toString() + '-s', subPath: '', mountPath: '/' }],
+          };
         }
         // When pvc changes, keep subPath empty (root directory)
         if (field === 'pvcName') {
-          return { ...m, pvcName: value, subPath: '' };
+          return {
+            ...m,
+            pvcName: value as string,
+            subPaths: [{ id: Date.now().toString() + '-s', subPath: '', mountPath: '/' }],
+          };
         }
-        return { ...m, [field]: value };
+        if (field === 'subPaths') {
+          return { ...m, subPaths: value as MountConfig['subPaths'] };
+        }
+        return m;
       }),
     }));
   };

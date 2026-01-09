@@ -46,7 +46,7 @@ export default function SignUpForm() {
 
   return (
     <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-1/2 no-scrollbar">
-          <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
+      <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
         <Link
           to="/"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
@@ -61,9 +61,7 @@ export default function SignUpForm() {
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
               {t('auth.signup.title')}
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {t('auth.signup.subtitle')}
-            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('auth.signup.subtitle')}</p>
           </div>
           <div>
             {/* <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
@@ -124,7 +122,8 @@ export default function SignUpForm() {
                   {/* First Name */}
                   <div className="sm:col-span-1">
                     <Label>
-                      {t('auth.signup.firstName')}<span className="text-error-500"></span>
+                      {t('auth.signup.firstName')}
+                      <span className="text-error-500"></span>
                     </Label>
                     <Input
                       type="text"
@@ -138,7 +137,8 @@ export default function SignUpForm() {
                   {/* Last Name */}
                   <div className="sm:col-span-1">
                     <Label>
-                      {t('auth.signup.lastName')}<span className="text-error-500"></span>
+                      {t('auth.signup.lastName')}
+                      <span className="text-error-500"></span>
                     </Label>
                     <Input
                       type="text"
@@ -153,7 +153,8 @@ export default function SignUpForm() {
                 {/* Username */}
                 <div>
                   <Label>
-                    {t('auth.signup.username')}<span className="text-error-500">*</span>
+                    {t('auth.signup.username')}
+                    <span className="text-error-500">*</span>
                   </Label>
                   <Input
                     type="text"
@@ -167,7 +168,8 @@ export default function SignUpForm() {
                 {/* Email */}
                 <div>
                   <Label>
-                    {t('auth.signup.email')}<span className="text-error-500"></span>
+                    {t('auth.signup.email')}
+                    <span className="text-error-500"></span>
                   </Label>
                   <Input
                     type="email"
@@ -181,7 +183,8 @@ export default function SignUpForm() {
                 {/* Password */}
                 <div>
                   <Label>
-                    {t('auth.signup.password')}<span className="text-error-500">*</span>
+                    {t('auth.signup.password')}
+                    <span className="text-error-500">*</span>
                   </Label>
                   <div className="relative">
                     <Input

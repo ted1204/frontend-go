@@ -1,5 +1,5 @@
 // src/components/add-config/MountRow.tsx
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { MountConfig } from '@/core/interfaces/configFile';
 import { PVC } from '@/core/interfaces/pvc';
 
@@ -8,7 +8,7 @@ interface MountRowProps {
   projectPvcs: PVC[];
   hasUserStorage: boolean; // NEW: Status of user storage
   hasProjectStorage: boolean; // NEW: Status of project storage
-  onChange: (id: string, field: keyof MountConfig, value: string) => void;
+  onChange: (id: string, field: keyof MountConfig, value: unknown) => void;
   onRemove: (id: string) => void;
 }
 
@@ -73,39 +73,68 @@ const MountRow = ({
         )}
       </div>
 
-      {/* 3. Source Subpath */}
-      <div className="flex-1 space-y-1 min-w-[120px]">
+      {/* 3. Source Subpaths (support multiple subPath -> mountPath pairs) */}
+      <div className="flex-1 space-y-1 min-w-[200px]">
         <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-          Source Subpath
+          Source Subpaths
         </label>
-        {mount.type === 'user-storage' || mount.type === 'project-pvc' ? (
-          <div className="flex items-center rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-700/50 dark:text-gray-400 cursor-not-allowed">
-            <span className="truncate">/</span>
+        <div className="space-y-2">
+          {mount.subPaths?.map((sp) => (
+            <div key={sp.id} className="flex items-center gap-2">
+              <input
+                type="text"
+                placeholder="Source subPath (e.g., data)"
+                value={sp.subPath}
+                onChange={(e) => {
+                  const next = mount.subPaths.map((s) =>
+                    s.id === sp.id ? { ...s, subPath: e.target.value } : s,
+                  );
+                  onChange(mount.id, 'subPaths', next);
+                }}
+                className="block w-1/2 rounded-md border-gray-300 py-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+              />
+              <input
+                type="text"
+                placeholder="Container path (e.g., /data)"
+                value={sp.mountPath}
+                onChange={(e) => {
+                  const next = mount.subPaths.map((s) =>
+                    s.id === sp.id ? { ...s, mountPath: e.target.value } : s,
+                  );
+                  onChange(mount.id, 'subPaths', next);
+                }}
+                className="block w-1/2 rounded-md border-blue-200 bg-blue-50/50 py-2 text-sm font-mono text-gray-800 focus:border-blue-500 focus:ring-blue-500 dark:border-blue-900/50 dark:bg-blue-900/10 dark:text-white"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const next = (mount.subPaths || []).filter((s) => s.id !== sp.id);
+                  onChange(mount.id, 'subPaths', next);
+                }}
+                className="p-1 text-gray-400 hover:text-red-500"
+                title="Remove subpath"
+              >
+                <TrashIcon className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+
+          <div>
+            <button
+              type="button"
+              onClick={() => {
+                const newEntry = { id: Date.now().toString(), subPath: '', mountPath: '/' };
+                onChange(mount.id, 'subPaths', [...(mount.subPaths || []), newEntry]);
+              }}
+              className="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-xs text-gray-700 hover:bg-gray-200"
+            >
+              <PlusIcon className="h-4 w-4" /> Add Subpath
+            </button>
           </div>
-        ) : (
-          <input
-            type="text"
-            placeholder="/"
-            value={mount.subPath}
-            onChange={(e) => onChange(mount.id, 'subPath', e.target.value)}
-            className="block w-full rounded-md border-gray-300 py-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
-          />
-        )}
+        </div>
       </div>
 
-      {/* 4. Container Mount Path */}
-      <div className="flex-1 space-y-1 min-w-[140px]">
-        <label className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-          Container Path
-        </label>
-        <input
-          type="text"
-          placeholder="/"
-          value={mount.mountPath}
-          onChange={(e) => onChange(mount.id, 'mountPath', e.target.value)}
-          className="block w-full rounded-md border-blue-200 bg-blue-50/50 py-2 text-sm font-mono text-gray-800 focus:border-blue-500 focus:ring-blue-500 dark:border-blue-900/50 dark:bg-blue-900/10 dark:text-white"
-        />
-      </div>
+      {/* Note: container mount paths are handled per-subpath above. */}
 
       {/* Remove Button */}
       <div className="pt-6 sm:pt-0 sm:mt-6">
