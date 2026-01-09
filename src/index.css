@@ -3,13 +3,46 @@ layer(base);
 
 @import 'tailwindcss';
 @tailwind base;
-@tailwind components;
+
+/* Webfonts: Meslo (Patched Nerd Font) and FiraCode fallbacks */
+@font-face {
+  font-family: 'MesloLGS NF';
+  src:
+    local('MesloLGS NF'),
+    url('/fonts/Meslo-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MesloLGS NF';
+  src: url('/fonts/Meslo-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'FiraCode Nerd Font';
+  src:
+    local('Fira Code'),
+    local('FiraCode'),
+    url('/fonts/FiraCode-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'FiraCode Nerd Font';
+  src: url('/fonts/FiraCode-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind utilities;
 @custom-variant dark (&:is(.dark *));
-
 @layer utilities {
   .fade-in-0 {
-    opacity: 0;
     animation: fadeIn 0.3s ease-out forwards;
   }
 
@@ -37,40 +70,34 @@ layer(base);
   }
 }
 
+/* Enforce monospace font to prevent glyph misalignment */
+.xterm-viewport,
+.xterm-screen {
+  font-family: 'MesloLGS NF', 'Fira Code', Consolas, monospace !important;
+  font-variant-ligatures: none;
+}
+
+/* Ensure xterm background is transparent so the container color shows through */
 .xterm .xterm-viewport {
-  /* xterm.js default is scroll, change to auto */
+  background-color: transparent !important;
   overflow-y: auto !important;
-
-  /* Ensure background matches container to avoid white edges */
-  background-color: #1f2937 !important;
 }
 
-/* 2. Hide persistent scrollbar track (show only on overflow) */
-/* Browser shows scrollbar only when content overflows */
-
-/* Webkit (Chrome, Safari) */
-.xterm .xterm-viewport::-webkit-scrollbar {
-  width: 8px; /* Set width */
-  height: 8px;
+/* Custom Scrollbar styled for RGB(16, 24, 40) */
+.xterm-viewport::-webkit-scrollbar {
+  width: 12px;
 }
-
-.xterm .xterm-viewport::-webkit-scrollbar-track {
-  /* Track background transparent/matches terminal to be invisible when not scrolling */
-  background: #1f2937;
+.xterm-viewport::-webkit-scrollbar-track {
+  background: transparent;
 }
-
-.xterm .xterm-viewport::-webkit-scrollbar-thumb {
-  /* Scrollbar thumb color, shown only on overflow */
-  background-color: #4b5563; /* Tailwind gray-600 */
-  border-radius: 4px;
-  border: 2px solid #1f2937; /* Track border */
+.xterm-viewport::-webkit-scrollbar-thumb {
+  background-color: #475467; /* A lighter slate gray for visibility */
+  border-radius: 6px;
+  /* Key: This border matches the container background exactly to create padding */
+  border: 3px solid #101828;
 }
-
-/* Firefox */
-.xterm .xterm-viewport {
-  /* Firefox scrollbar style - thin and transparent */
-  scrollbar-width: thin;
-  scrollbar-color: #4b5563 #1f2937; /* thumb color track color */
+.xterm-viewport::-webkit-scrollbar-thumb:hover {
+  background-color: #98a2b3;
 }
 
 @theme {

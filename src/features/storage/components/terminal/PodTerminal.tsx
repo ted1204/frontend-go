@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
+import { WebglAddon } from 'xterm-addon-webgl';
 import { BASE_URL } from '@/core/config/url';
 import 'xterm/css/xterm.css';
 import { useTranslation } from '@nthucscc/utils';
 
-// Define the message structure for communication with the backend.
 interface TerminalMessage {
   type: 'stdin' | 'stdout' | 'resize';
   data?: string;
@@ -19,6 +19,7 @@ interface TerminalProps {
   container: string;
   command?: string;
   tty?: boolean;
+  onClosed?: () => void;
 }
 
 const TerminalPage: React.FC<TerminalProps> = ({
@@ -27,38 +28,56 @@ const TerminalPage: React.FC<TerminalProps> = ({
   container,
   command = 'bash',
   tty = true,
+  onClosed,
 }) => {
   const terminalRef = useRef<HTMLDivElement>(null);
+
+  // Refs
   const term = useRef<Terminal | null>(null);
   const socket = useRef<WebSocket | null>(null);
-  const fitAddon = useRef(new FitAddon());
+  const fitAddon = useRef<FitAddon | null>(null);
+  const webglAddon = useRef<WebglAddon | null>(null);
+  const resizeObserver = useRef<ResizeObserver | null>(null);
 
   const { t } = useTranslation();
 
+  const writeStatus = (message: string, color: 'green' | 'red' | 'yellow') => {
+    if (!term.current) return;
+    const colors = {
+      green: '\x1b[1;32m',
+      red: '\x1b[1;31m',
+      yellow: '\x1b[1;33m',
+    };
+    const reset = '\x1b[0m';
+    term.current.writeln(`${colors[color]}➜ ${message}${reset}`);
+  };
+
   useEffect(() => {
-    // t is used inside websocket event handlers below
     if (!terminalRef.current) return;
-    // 1. Initialize the Terminal with a modern, dark theme.
-    term.current = new Terminal({
+
+    // 1. Initialize Terminal
+    const terminalInstance = new Terminal({
       cursorBlink: true,
       fontSize: 14,
-      letterSpacing: 0.5,
-      lineHeight: 1.3,
-      fontFamily: '"FiraCode Nerd Font", Consolas, "Courier New", monospace',
+      lineHeight: 1.2,
+      letterSpacing: 1,
+      fontFamily: '"MesloLGS NF", "FiraCode-Retina", "Fira Code", monospace',
+      fontWeight: '500',
+      allowTransparency: false,
       theme: {
-        background: 'transparent',
-        foreground: '#d4d4d4',
-        cursor: '#a9b7c6',
-        selectionBackground: '#525252',
-        black: '#000000',
+        background: '#101828', // Matches RGB(16, 24, 40)
+        foreground: '#EAECF0',
+        cursor: '#ffffff',
+        selectionBackground: 'rgba(255, 255, 255, 0.3)',
+        black: '#101828',
         red: '#ef5350',
-        green: '#c3e88d',
-        yellow: '#ffcb6b',
-        blue: '#82aaff',
-        magenta: '#c792ea',
-        cyan: '#89ddff',
+        green: '#4caf50',
+        yellow: '#ffeb3b',
+        blue: '#42a5f5',
+        magenta: '#ab47bc',
+        cyan: '#26c6da',
         white: '#ffffff',
-        brightBlack: '#546e7a',
+        brightBlack: '#707070',
         brightRed: '#ff5370',
         brightGreen: '#c3e88d',
         brightYellow: '#ffcb6b',
@@ -68,11 +87,27 @@ const TerminalPage: React.FC<TerminalProps> = ({
         brightWhite: '#ffffff',
       },
     });
+    term.current = terminalInstance;
 
-    term.current.loadAddon(fitAddon.current);
-    term.current.open(terminalRef.current);
+    // 2. Load Addons
+    const fitInstance = new FitAddon();
+    fitAddon.current = fitInstance;
+    terminalInstance.loadAddon(fitInstance);
 
-    // 2. Establish the WebSocket Connection.
+    try {
+      const webglInstance = new WebglAddon();
+      webglInstance.onContextLoss(() => webglInstance.dispose());
+      webglAddon.current = webglInstance;
+      terminalInstance.loadAddon(webglInstance);
+    } catch (e) {
+      console.warn('WebGL addon failed to load', e);
+    }
+
+    // 3. Mount
+    terminalInstance.open(terminalRef.current);
+    writeStatus(`${t('terminal.connecting') || 'Connecting...'}`, 'yellow');
+
+    // 4. WebSocket
     const wsUrl = `ws://${BASE_URL}/ws/exec?namespace=${encodeURIComponent(
       namespace,
     )}&pod=${encodeURIComponent(pod)}&container=${encodeURIComponent(
@@ -81,18 +116,24 @@ const TerminalPage: React.FC<TerminalProps> = ({
 
     socket.current = new WebSocket(wsUrl);
 
-    // 3. Handle WebSocket Events.
-    socket.current.onopen = () => {
-      term.current?.writeln(`\x1b[38;5;154m[${t('terminal.connected')}]\x1b[0m`);
+    socket.current.onopen = async () => {
+      writeStatus(`${t('terminal.connected') || 'Connected.'}`, 'green');
 
-      fitAddon.current.fit();
+      if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready;
+      }
 
-      const initialSize = {
-        type: 'resize',
-        cols: term.current?.cols,
-        rows: term.current?.rows,
-      };
-      socket.current?.send(JSON.stringify(initialSize));
+      if (term.current) {
+        fitInstance.fit();
+        socket.current?.send(
+          JSON.stringify({
+            type: 'resize',
+            cols: terminalInstance.cols,
+            rows: terminalInstance.rows,
+          }),
+        );
+        terminalInstance.focus();
+      }
     };
 
     socket.current.onmessage = (event) => {
@@ -102,58 +143,107 @@ const TerminalPage: React.FC<TerminalProps> = ({
           term.current?.write(msg.data);
         }
       } catch (e) {
-        console.error('Failed to parse websocket message', e);
+        console.error('WS Parse Error', e);
       }
     };
 
     socket.current.onerror = () => {
-      term.current?.writeln(`\x1b[31m[${t('terminal.websocketError')}]\x1b[0m`);
+      writeStatus(`${t('terminal.websocketError') || 'Connection Error'}`, 'red');
     };
 
-    socket.current.onclose = () => {
-      term.current?.writeln(`\n\x1b[38;5;220m[${t('terminal.disconnected')}]\x1b[0m`);
+    socket.current.onclose = (event) => {
+      // `setOption` may not be present in some xterm type definitions — use a safe cast
+      try {
+        (
+          term.current as unknown as { setOption?: (name: string, value: unknown) => void }
+        ).setOption?.('cursorBlink', false);
+      } catch (err) {
+        console.warn('Failed to set terminal option', err);
+      }
+
+      if (event.wasClean || event.code === 1000) {
+        writeStatus(`${t('terminal.disconnected') || 'Session ended.'}`, 'green');
+
+        if (onClosed) {
+          setTimeout(() => {
+            onClosed();
+          }, 800);
+        }
+      } else {
+        writeStatus(
+          `${t('terminal.disconnectedError') || 'Connection dropped unexpected.'}`,
+          'red',
+        );
+      }
     };
 
-    // 4. Handle xterm.js Events.
-    term.current.onData((data) => {
-      const stdinMessage: TerminalMessage = { type: 'stdin', data };
-      socket.current?.send(JSON.stringify(stdinMessage));
-    });
-
-    term.current.onResize(({ cols, rows }) => {
+    terminalInstance.onData((data) => {
       if (socket.current?.readyState === WebSocket.OPEN) {
-        const resizeMessage: TerminalMessage = { type: 'resize', cols, rows };
-        socket.current.send(JSON.stringify(resizeMessage));
+        socket.current.send(JSON.stringify({ type: 'stdin', data }));
       }
     });
 
-    // 5. Handle Browser Window Resize.
-    const handleResize = () => {
-      fitAddon.current.fit();
-    };
-    window.addEventListener('resize', handleResize);
+    terminalInstance.onResize(({ cols, rows }) => {
+      if (socket.current?.readyState === WebSocket.OPEN) {
+        socket.current.send(JSON.stringify({ type: 'resize', cols, rows }));
+      }
+    });
 
-    // 6. Cleanup function to prevent memory leaks.
+    // 5. ResizeObserver
+    resizeObserver.current = new ResizeObserver(() => {
+      requestAnimationFrame(() => {
+        if (term.current && fitAddon.current) {
+          try {
+            fitAddon.current.fit();
+          } catch (err) {
+            console.warn('fit failed', err);
+          }
+        }
+      });
+    });
+
+    if (terminalRef.current) {
+      resizeObserver.current.observe(terminalRef.current);
+    }
+
     return () => {
-      window.removeEventListener('resize', handleResize);
+      resizeObserver.current?.disconnect();
       socket.current?.close();
-      term.current?.dispose();
+      try {
+        webglAddon.current?.dispose();
+        webglAddon.current = null;
+      } catch (err) {
+        console.warn('webgl dispose failed', err);
+      }
+      try {
+        term.current?.dispose();
+        term.current = null;
+      } catch (err) {
+        console.warn('terminal dispose failed', err);
+      }
     };
-  }, [namespace, pod, container, command, tty, t]);
+  }, [namespace, pod, container, command, tty, t, onClosed]);
 
   return (
     <div
-      ref={terminalRef}
       className="
-        w-full 
-        h-[80vh] 
-        p-4 
-        bg-gray-800 
-        shadow-2xl 
-        rounded-lg 
+        terminal-wrapper
+        w-full
+        h-[80vh]
+        shadow-2xl
+        rounded-lg
         border border-gray-700
+        relative
+        overflow-hidden
       "
-    />
+      style={{
+        backgroundColor: '#101828',
+      }}
+    >
+      <div className="w-full h-full p-4 box-border">
+        <div ref={terminalRef} className="w-full h-full" style={{ overflow: 'hidden' }} />
+      </div>
+    </div>
   );
 };
 

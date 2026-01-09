@@ -34,4 +34,11 @@ export const misc = {
     newGroup: 'New Group',
     newProject: 'New Project',
   },
+  terminal: {
+    connecting: 'Connecting...',
+    connected: 'Connected.',
+    websocketError: 'Connection Error',
+    disconnected: 'Session ended.',
+    disconnectedError: 'Connection dropped unexpectedly.',
+  },
 } as const;

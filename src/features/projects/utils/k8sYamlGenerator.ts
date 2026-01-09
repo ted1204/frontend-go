@@ -3,7 +3,6 @@ import {
   WorkloadResource,
   ServiceResource,
   ConfigMapResource,
-  MountConfig,
 } from '@/core/interfaces/configFile';
 
 export const generateMultiDocYAML = (resources: ResourceItem[]): string => {
@@ -16,6 +15,14 @@ metadata:
   name: ${res.name}
 `;
 
+    // Emit metadata.annotations if present
+    if ('annotations' in res && res.annotations && res.annotations.length > 0) {
+      yaml += `  annotations:\n`;
+      res.annotations.forEach((a) => {
+        yaml += `    ${a.key}: "${String(a.value).replace(/"/g, '\\"')}"\n`;
+      });
+    }
+
     // --- WORKLOADS (Pod / Deployment) ---
     if (res.kind === 'Pod' || res.kind === 'Deployment') {
       const wl = res as WorkloadResource;
@@ -24,7 +31,7 @@ metadata:
       const indent = isDeploy ? '        ' : '    ';
       // Helper to serialize selectors into label blocks
       const serializeLabels = (
-        selectors: { id?: string; key?: string; value?: string }[],
+        selectors: { id?: string; key?: string; value?: string }[] | undefined,
         prefix: string,
       ) => {
         if (!selectors || selectors.length === 0) {
@@ -40,12 +47,26 @@ metadata:
       // 1. Header & Spec Structure
       if (isDeploy) {
         yaml = `apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: ${res.name}\n`;
+        // Deployment metadata annotations (if provided)
+        if ('annotations' in res && res.annotations && res.annotations.length > 0) {
+          yaml += `  annotations:\n`;
+          res.annotations.forEach((a) => {
+            yaml += `    ${a.key}: "${String(a.value).replace(/"/g, '\\"')}"\n`;
+          });
+        }
         // metadata.labels
         yaml += serializeLabels(wl.selectors, '  ');
         yaml += `spec:\n  replicas: ${wl.replicas || 1}\n  selector:\n    matchLabels:\n`;
         // selector.matchLabels (indent deeper)
         yaml += serializeLabels(wl.selectors, '  ').replace(/labels:\n/, '');
         yaml += `  template:\n    metadata:\n`;
+        // If annotations exist, emit them under the Pod template metadata as well
+        if ('annotations' in res && res.annotations && res.annotations.length > 0) {
+          yaml += `      annotations:\n`;
+          res.annotations.forEach((a) => {
+            yaml += `        ${a.key}: "${String(a.value).replace(/"/g, '\\"')}"\n`;
+          });
+        }
         // template.metadata.labels
         yaml += serializeLabels(wl.selectors, '      ');
         yaml += `    spec:\n`;
@@ -59,8 +80,15 @@ metadata:
       const containersHeader = isDeploy ? `      containers:\n` : `  containers:\n`;
       yaml += containersHeader;
 
-      // Collect all Container Mounts, define Volumes at Pod Level later
-      const allMounts: MountConfig[] = [];
+      // Collect all Container Mounts (expanded per-subpath), define Volumes at Pod Level later
+      type VolumeMountEntry = {
+        id?: string;
+        type: 'user-storage' | 'project-pvc' | string;
+        pvcName?: string;
+        mountPath: string;
+        subPath?: string;
+      };
+      const allMounts: VolumeMountEntry[] = [];
 
       wl.containers.forEach((c) => {
         yaml += `${indent}- name: ${c.name}
@@ -73,19 +101,20 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
           yaml += `${indent}  command: ${cmdStr}\n`;
         }
 
-        // Args (handle multiline text block | or JSON array)
+        // Args (handle multiline text -> multiple list entries, or JSON array)
         if (c.args) {
           if (c.args.includes('\n')) {
-            // Multiline block scalar
-            const indentedArgs = c.args
-              .split('\n')
-              .map((line) => `${indent}    ${line}`)
-              .join('\n');
-            yaml += `${indent}  args:\n${indent}    - |\n${indentedArgs}\n`;
+            const lines = c.args.split('\n');
+            yaml += `${indent}  args:\n`;
+            yaml += `${indent}    - |\n`;
+            lines.forEach((ln) => {
+              yaml += `${indent}      ${ln}\n`;
+            });
           } else if (c.args.trim().startsWith('[')) {
             yaml += `${indent}  args: ${c.args}\n`;
           } else {
-            yaml += `${indent}  args: ["${c.args}"]\n`;
+            const escaped = c.args.replace(/"/g, '\\"');
+            yaml += `${indent}  args: ["${escaped}"]\n`;
           }
         }
 
@@ -152,20 +181,23 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
           });
         }
 
-        // Volume Mounts (Container Level)
+        // Volume Mounts (Container Level) - support multiple subPaths per MountConfig
         if (c.mounts.length > 0) {
           yaml += `${indent}  volumeMounts:\n`;
           c.mounts.forEach((m) => {
-            allMounts.push(m);
-            // Determine Volume name: use fixed name for user-storage, PVC name for project storage
             const volName =
               m.type === 'user-storage'
                 ? 'user-home'
                 : (m.pvcName || 'vol').replace(/[^a-z0-9-]/g, '-').toLowerCase();
-            yaml += `${indent}    - name: ${volName}\n${indent}      mountPath: ${m.mountPath}\n`;
-            if (m.subPath) {
-              yaml += `${indent}      subPath: ${m.subPath}\n`;
-            }
+
+            (m.subPaths || []).forEach((sp) => {
+              // push an entry describing this specific mount-subpath
+              allMounts.push({ ...m, mountPath: sp.mountPath, subPath: sp.subPath });
+              yaml += `${indent}    - name: ${volName}\n${indent}      mountPath: ${sp.mountPath}\n`;
+              if (sp.subPath) {
+                yaml += `${indent}      subPath: ${sp.subPath}\n`;
+              }
+            });
           });
         }
       });
