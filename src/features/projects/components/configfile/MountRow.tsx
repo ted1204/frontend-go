@@ -46,7 +46,7 @@ const MountRow = ({
 
         {mount.type === 'user-storage' ? (
           <div className="flex items-center rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-700/50 dark:text-gray-400 cursor-not-allowed">
-            <span className="truncate">Home Drive ({'{{nfsServer}}'})</span>
+            <span className="truncate">Home Drive ({'{{userVolume}}'})</span>
           </div>
         ) : (
           <select

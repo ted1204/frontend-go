@@ -106,6 +106,7 @@ export const projects = {
     images: {
       title: '允許的映像檔',
       description: '管理此專案可使用的映像檔',
+      requestsTitle: '映像檔請求',
       add: '新增映像檔',
       addNew: '新增映像檔',
       name: '映像檔名稱',
@@ -134,6 +135,9 @@ export const projects = {
         accessible: '映像檔必須可從您的容器登錄檔存取',
         allowed: '只有允許的映像檔可用於工作和部署',
       },
+      createAsGlobal: '建立為全域',
+      requestSubmitted: '已送出，管理員將盡快審核。',
+      colStatus: '狀態',
     },
     members: {
       title: '成員',

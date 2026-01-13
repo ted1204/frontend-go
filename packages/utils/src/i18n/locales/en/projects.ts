@@ -106,6 +106,7 @@ export const projects = {
     images: {
       title: 'Allowed Images',
       description: 'Manage images that can be used in this project',
+      requestsTitle: 'Image Requests',
       add: 'Add Image',
       addNew: 'Add New Image',
       name: 'Image Name',
@@ -134,6 +135,9 @@ export const projects = {
         accessible: 'Images must be accessible from your container registry',
         allowed: 'Only allowed images can be used in jobs and deployments',
       },
+      createAsGlobal: 'Create as global',
+      requestSubmitted: 'Submitted successfully, admin will review soon.',
+      colStatus: 'Status',
     },
     members: {
       title: 'Members',

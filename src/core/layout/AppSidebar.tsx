@@ -35,6 +35,7 @@ const adminItems: NavItem[] = [
   { icon: <BoxIcon />, name: 'page.admin.forms', path: '/admin/forms' },
   { icon: <BoxIcon />, name: 'admin.storageManagement.title', path: '/admin/storage-management' },
   { icon: <BoxIcon />, name: 'sidebar.manageImages', path: '/admin/manage-images' },
+  { icon: <BoxIcon />, name: 'sidebar.imageRequests', path: '/admin/image-requests' },
 ];
 
 const AppSidebar: React.FC = () => {

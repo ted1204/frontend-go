@@ -3,11 +3,16 @@ import {
   getAllowedImages,
   addProjectImage,
   removeProjectImage,
+  requestImage,
+  approveImageRequest,
+  getProjectImageRequests,
   AllowedImage,
   AddProjectImageInput,
+  ImageRequest,
 } from '@/core/services/imageService';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from '@nthucscc/utils';
+import { isSuperAdmin, isAdminLike } from '@/shared/utils/permissions';
 
 interface ProjectImageManagementProps {
   projectId: number;
@@ -17,9 +22,13 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
   const { t } = useTranslation();
   const [images, setImages] = useState<AllowedImage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [requests, setRequests] = useState<ImageRequest[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [formData, setFormData] = useState<AddProjectImageInput>({ name: '', tag: '' });
+  type FormDataType = AddProjectImageInput & { createAsGlobal?: boolean };
+  const [formData, setFormData] = useState<FormDataType>({ name: '', tag: '' });
   const [adding, setAdding] = useState(false);
+  const [isSuperAdminFlag, setIsSuperAdminFlag] = useState(false);
+  const [isAdminLikeFlag, setIsAdminLikeFlag] = useState(false);
 
   const loadImages = async () => {
     try {
@@ -36,27 +45,83 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
     }
   };
 
+  const loadRequests = async () => {
+    try {
+      const data = await getProjectImageRequests(projectId);
+      setRequests(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Failed to load project image requests:', err);
+      setRequests([]);
+    }
+  };
+
   useEffect(() => {
     loadImages();
+    loadRequests();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
+
+  useEffect(() => {
+    setIsSuperAdminFlag(isSuperAdmin());
+    setIsAdminLikeFlag(isAdminLike());
+  }, []);
 
   const handleAddImage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.tag) return;
-
     try {
       setAdding(true);
-      const newImage = await addProjectImage(projectId, formData);
-      // Immediately update local state while reloading from server
-      setImages((prev) => [...prev, newImage]);
+      if (isSuperAdminFlag && formData.createAsGlobal) {
+        // Super-admin: create a request then immediately approve as global
+        const req = await requestImage({ name: formData.name, tag: formData.tag });
+        await approveImageRequest(req.ID, 'Created by super-admin as global', true);
+        await loadImages();
+        // Ensure the newly-approved image shows an approved status in the UI
+        setImages((prev) =>
+          prev.map((img) =>
+            img.Name === formData.name && img.Tag === formData.tag
+              ? { ...img, Status: 'approved' }
+              : img,
+          ),
+        );
+      } else if (isAdminLikeFlag) {
+        // Super-admin: add directly to project (allowed image)
+        const newImage = await addProjectImage(projectId, formData);
+        // Tentatively add with approved status for immediate feedback,
+        // then reload and ensure the approved status is set.
+        setImages((prev) => [...prev, { ...newImage, Status: 'approved' }]);
+        await loadImages();
+        setImages((prev) =>
+          prev.map((img) =>
+            img.Name === formData.name && img.Tag === formData.tag
+              ? { ...img, Status: 'approved' }
+              : img,
+          ),
+        );
+      } else {
+        // Project admins and regular users: always submit a request
+        await requestImage({ name: formData.name, tag: formData.tag, project_id: projectId });
+        // show a local pending entry
+        setImages((prev) => [
+          ...prev,
+          {
+            ID: -Date.now(),
+            Name: formData.name,
+            Tag: formData.tag,
+            ProjectID: projectId,
+            IsGlobal: false,
+            CreatedAt: new Date().toISOString(),
+            IsPulled: false,
+            // mark temporary status
+            Status: 'pending',
+          } as AllowedImage,
+        ]);
+        alert(t('project.images.requestSubmitted'));
+      }
       setFormData({ name: '', tag: '' });
       setShowAddForm(false);
-      // Reload to ensure consistency with server
-      await loadImages();
     } catch (err) {
       alert(t('project.images.addError') + (err instanceof Error ? err.message : String(err)));
-      // Reload to sync state with server on error
       await loadImages();
     } finally {
       setAdding(false);
@@ -130,6 +195,25 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
               />
             </div>
           </div>
+          {isSuperAdminFlag && (
+            <div className="mt-3">
+              <label className="inline-flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={formData.createAsGlobal === true}
+                  onChange={(e) =>
+                    setFormData((f: FormDataType) => ({
+                      ...(f || {}),
+                      createAsGlobal: e.target.checked,
+                    }))
+                  }
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  {t('project.images.createAsGlobal')}
+                </span>
+              </label>
+            </div>
+          )}
           <div className="flex gap-3 mt-4">
             <button
               type="submit"
@@ -154,22 +238,22 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
 
       {loading ? (
         <div className="text-center py-8 text-gray-500">{t('project.images.loading')}</div>
-      ) : (
+      ) : (<>
         <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
           <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
                 <th
                   scope="col"
-                  className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-white sm:pl-6"
+                  className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-white sm:pl-6 w-3/4"
                 >
                   {t('project.images.colImage')}
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white"
+                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white w-1/4"
                 >
-                  {t('project.images.colType')}
+                  {t('project.images.colStatus')}
                 </th>
                 <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
                   <span className="sr-only">{t('project.images.colActions')}</span>
@@ -189,27 +273,33 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
               ) : (
                 images.map((img) => (
                   <tr key={img.ID}>
-                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6 w-3/4">
                       <div className="font-medium text-gray-900 dark:text-white text-lg">
                         {img.Name}:{img.Tag}
                       </div>
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-                      {img.IsGlobal ? (
-                        <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 dark:bg-green-900/30 dark:text-green-400">
-                          {t('project.images.global')}
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 dark:bg-blue-900/30 dark:text-blue-400">
-                          {t('project.images.project')}
-                        </span>
-                      )}
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400 w-1/4">
+                      <span
+                        className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${
+                          img.Status === 'pending'
+                            ? 'bg-yellow-100 text-yellow-800 ring-1 ring-inset ring-yellow-600/20 dark:bg-yellow-900/30 dark:text-yellow-300'
+                            : img.Status === 'approved'
+                              ? 'bg-green-100 text-green-800 ring-1 ring-inset ring-green-600/20 dark:bg-green-900/30 dark:text-green-300'
+                              : img.Status === 'rejected'
+                                ? 'bg-red-100 text-red-800 ring-1 ring-inset ring-red-600/20 dark:bg-red-900/30 dark:text-red-300'
+                                : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
+                        {img.Status ||
+                          (img.IsGlobal ? t('project.images.global') : t('project.images.project'))}
+                      </span>
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                       {!img.IsGlobal && (
                         <button
                           className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                           title={t('project.images.remove')}
+                          aria-label={t('project.images.remove')}
                           onClick={() => handleRemoveImage(img.ID)}
                         >
                           <TrashIcon className="h-5 w-5" aria-hidden="true" />
@@ -222,7 +312,41 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
             </tbody>
           </table>
         </div>
-      )}
+        {/* Project Image Requests (separate) */}
+        <div className="mt-6">
+          <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">{t('project.images.requestsTitle') || 'Image Requests'}</h4>
+          <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+            <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-800">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">ID</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Image</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">User</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Created</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+                {requests.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">No image requests</td>
+                  </tr>
+                ) : (
+                  requests.map((r) => (
+                    <tr key={r.ID}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{r.ID}</td>
+                      <td className="px-6 py-4 whitespace-nowrap"><div className="text-lg font-medium text-gray-900 dark:text-white">{r.Name}:{r.Tag}</div></td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{r.UserID}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm"><span className={`px-2 py-1 text-xs font-medium rounded-full ${r.Status === 'pending' ? 'bg-yellow-100 text-yellow-800' : r.Status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{r.Status}</span></td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{new Date(r.CreatedAt).toLocaleDateString()}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </>) }
 
       <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
         <div className="flex items-start gap-2">

@@ -112,14 +112,26 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
           let pvcName = m.name || '';
 
           if (volumeDef?.persistentVolumeClaim) {
-            mountType = 'project-pvc';
-            pvcName = volumeDef.persistentVolumeClaim.claimName || m.name;
+            // Prefer PVC claimName placeholders to indicate user/project volumes
+            const claimName = String(volumeDef.persistentVolumeClaim.claimName || '');
+            if (claimName === '{{userVolume}}') {
+              mountType = 'user-storage';
+              pvcName = '';
+            } else if (claimName === '{{projectVolume}}') {
+              mountType = 'project-pvc';
+              pvcName = m.name || '';
+            } else {
+              // General PVC reference: treat as project PVC by default
+              mountType = 'project-pvc';
+              pvcName = claimName || m.name || '';
+            }
           } else if (volumeDef?.nfs) {
+            // Legacy fallback: if someone still emits NFS, map to PVC semantics conservatively
             const rawPath = String(volumeDef.nfs.path || '');
             const cleanedPath = rawPath.replace(/\/+$/, '');
             const serverHint = String(volumeDef.nfs.server || '');
 
-            if (serverHint === '{{nfsServer}}' && (cleanedPath === '' || cleanedPath === '/')) {
+            if (serverHint === '{{userVolume}}' && (cleanedPath === '' || cleanedPath === '/')) {
               mountType = 'user-storage';
               pvcName = '';
             } else if (serverHint === '{{projectNfsServer}}') {

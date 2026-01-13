@@ -185,10 +185,19 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
         if (c.mounts.length > 0) {
           yaml += `${indent}  volumeMounts:\n`;
           c.mounts.forEach((m) => {
-            const volName =
-              m.type === 'user-storage'
-                ? 'user-home'
-                : (m.pvcName || 'vol').replace(/[^a-z0-9-]/g, '-').toLowerCase();
+            // Compute stable volume name. If PVC is a template placeholder like
+            // "{{userVolume}}" / "{{projectVolume}}", map to fixed names instead
+            const rawPvc = m.pvcName || 'vol';
+            let volName: string;
+            if (m.type === 'user-storage') {
+              volName = 'user-home';
+            } else if (rawPvc.includes('{{') && rawPvc.includes('}}')) {
+              if (rawPvc.includes('userVolume')) volName = 'user-home';
+              else if (rawPvc.includes('projectVolume')) volName = 'project-volume';
+              else volName = 'vol';
+            } else {
+              volName = rawPvc.replace(/[^a-z0-9-]/g, '-').toLowerCase();
+            }
 
             (m.subPaths || []).forEach((sp) => {
               // push an entry describing this specific mount-subpath
@@ -213,20 +222,28 @@ ${indent}  imagePullPolicy: ${c.imagePullPolicy}
         const uniqueVols = new Set<string>();
 
         allMounts.forEach((m) => {
-          const volName =
-            m.type === 'user-storage'
-              ? 'user-home'
-              : (m.pvcName || 'vol').replace(/[^a-z0-9-]/g, '-').toLowerCase();
+          const rawPvc = m.pvcName || 'vol';
+          let volName: string;
+          if (m.type === 'user-storage') {
+            volName = 'user-home';
+          } else if (rawPvc.includes('{{') && rawPvc.includes('}}')) {
+            if (rawPvc.includes('userVolume')) volName = 'user-home';
+            else if (rawPvc.includes('projectVolume')) volName = 'project-volume';
+            else volName = 'vol';
+          } else {
+            volName = rawPvc.replace(/[^a-z0-9-]/g, '-').toLowerCase();
+          }
 
           if (uniqueVols.has(volName)) return; // Skip duplicates
           uniqueVols.add(volName);
 
           yaml += `${volItemPrefix}- name: ${volName}\n`;
           if (m.type === 'user-storage') {
-            yaml += `${volInnerPrefix}nfs:\n${volInnerInner}server: "{{nfsServer}}"\n${volInnerInner}path: /\n`;
+            // Use a PVC reference placeholder for the user's home volume
+            yaml += `${volInnerPrefix}persistentVolumeClaim:\n${volInnerInner}claimName: "{{userVolume}}"\n`;
           } else {
-            // Project storage: use project NFS server with root path
-            yaml += `${volInnerPrefix}nfs:\n${volInnerInner}server: "{{projectNfsServer}}"\n${volInnerInner}path: /\n`;
+            // Project storage: reference project PVC placeholder
+            yaml += `${volInnerPrefix}persistentVolumeClaim:\n${volInnerInner}claimName: "{{projectVolume}}"\n`;
           }
         });
       }

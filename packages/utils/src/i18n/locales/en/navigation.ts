@@ -19,6 +19,7 @@ export const navigation = {
     jobs: 'Jobs',
     ecommerce: 'E-commerce',
     manageImages: 'Manage Images',
+    imageRequests: 'Image Requests',
   },
   view: {
     toggleToAdmin: 'Switch to Admin',
