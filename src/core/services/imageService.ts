@@ -54,10 +54,9 @@ export const getAllowedImages = async (projectId?: number): Promise<AllowedImage
   return rawData.map((img) => {
     // Prefer a full_name field from the backend when available. Otherwise
     // construct from registry + image name, or fallback to the simple name.
-    const fullField = (img as any).FullName || (img as any).full_name || '';
-    const registryField = (img as any).Registry || (img as any).registry || '';
-    const imageNameField = (img as any).ImageName || (img as any).image_name || img.Name || img.name || '';
-    const explicitTag = (img as any).Tag || (img as any).tag || '';
+    const fullField = img.FullName || img.full_name || '';
+    const imageNameField = img.ImageName || img.image_name || img.Name || img.name || '';
+    const explicitTag = img.Tag || img.tag || '';
 
     let normalizedName = '';
     let normalizedTag = explicitTag || '';
@@ -97,9 +96,9 @@ export const getAllowedImages = async (projectId?: number): Promise<AllowedImage
       Name: normalizedName,
       Tag: normalizedTag || 'latest',
       ProjectID: img.ProjectID || img.project_id,
-      IsGlobal: img.IsGlobal ?? (img as any).is_global ?? false,
+      IsGlobal: img.IsGlobal ?? img.is_global ?? false,
       CreatedAt: img.CreatedAt || img.created_at || '',
-      IsPulled: img.IsPulled ?? (img as any).is_pulled ?? false,
+      IsPulled: img.IsPulled ?? img.is_pulled ?? false,
     } as AllowedImage;
   });
 };
@@ -111,6 +110,11 @@ interface RawAllowedImage {
   Name?: string;
   tag?: string;
   Tag?: string;
+  // backend may provide full name or alternate image name fields
+  full_name?: string;
+  FullName?: string;
+  image_name?: string;
+  ImageName?: string;
   project_id?: number;
   ProjectID?: number;
   is_global?: boolean;
@@ -190,23 +194,35 @@ export interface ImageRequest {
 
 // Backend response shape (loose typing to handle potential inconsistencies)
 interface BackendImageRequest {
-  ID?: number;       id?: number;
-  UserID?: number;   user_id?: number;
-  Name?: string;     name?: string;     ImageName?: string; image_name?: string;
-  Tag?: string;      tag?: string;
-  ProjectID?: number; project_id?: number;
-  Status?: string;   status?: string;
-  Note?: string;     note?: string;
-  CreatedAt?: string; created_at?: string;
+  ID?: number;
+  id?: number;
+  UserID?: number;
+  user_id?: number;
+  Name?: string;
+  name?: string;
+  ImageName?: string;
+  image_name?: string;
+  Tag?: string;
+  tag?: string;
+  ProjectID?: number;
+  project_id?: number;
+  Status?: string;
+  status?: string;
+  Note?: string;
+  note?: string;
+  CreatedAt?: string;
+  created_at?: string;
 }
 
 // Helper function to safely parse API response
-const parseResponse = (response: any): BackendImageRequest[] => {
+const parseResponse = (response: unknown): BackendImageRequest[] => {
   if (Array.isArray(response)) {
-    return response;
+    return response as BackendImageRequest[];
   }
-  if (response?.data && Array.isArray(response.data)) {
-    return response.data;
+  if (response && typeof response === 'object' && 'data' in response) {
+    const obj = response as Record<string, unknown>;
+    const data = obj['data'];
+    if (Array.isArray(data)) return data as BackendImageRequest[];
   }
   return [];
 };
@@ -241,7 +257,10 @@ export const getImageRequests = async (status?: string): Promise<ImageRequest[]>
 };
 
 // Get image requests for a specific project (Project Member)
-export const getProjectImageRequests = async (projectId: number, status?: string): Promise<ImageRequest[]> => {
+export const getProjectImageRequests = async (
+  projectId: number,
+  status?: string,
+): Promise<ImageRequest[]> => {
   const params = new URLSearchParams();
   if (status) params.append('status', status);
 
