@@ -238,115 +238,152 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
 
       {loading ? (
         <div className="text-center py-8 text-gray-500">{t('project.images.loading')}</div>
-      ) : (<>
-        <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
-          <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th
-                  scope="col"
-                  className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-white sm:pl-6 w-3/4"
-                >
-                  {t('project.images.colImage')}
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white w-1/4"
-                >
-                  {t('project.images.colStatus')}
-                </th>
-                <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                  <span className="sr-only">{t('project.images.colActions')}</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
-              {images.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={3}
-                    className="py-4 text-center text-sm text-gray-500 dark:text-gray-400"
-                  >
-                    {t('project.images.noImages')}
-                  </td>
-                </tr>
-              ) : (
-                images.map((img) => (
-                  <tr key={img.ID}>
-                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6 w-3/4">
-                      <div className="font-medium text-gray-900 dark:text-white text-lg">
-                        {img.Name}:{img.Tag}
-                      </div>
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400 w-1/4">
-                      <span
-                        className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${
-                          img.Status === 'pending'
-                            ? 'bg-yellow-100 text-yellow-800 ring-1 ring-inset ring-yellow-600/20 dark:bg-yellow-900/30 dark:text-yellow-300'
-                            : img.Status === 'approved'
-                              ? 'bg-green-100 text-green-800 ring-1 ring-inset ring-green-600/20 dark:bg-green-900/30 dark:text-green-300'
-                              : img.Status === 'rejected'
-                                ? 'bg-red-100 text-red-800 ring-1 ring-inset ring-red-600/20 dark:bg-red-900/30 dark:text-red-300'
-                                : 'bg-gray-100 text-gray-800'
-                        }`}
-                      >
-                        {img.Status ||
-                          (img.IsGlobal ? t('project.images.global') : t('project.images.project'))}
-                      </span>
-                    </td>
-                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                      {!img.IsGlobal && (
-                        <button
-                          className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                          title={t('project.images.remove')}
-                          aria-label={t('project.images.remove')}
-                          onClick={() => handleRemoveImage(img.ID)}
-                        >
-                          <TrashIcon className="h-5 w-5" aria-hidden="true" />
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-        {/* Project Image Requests (separate) */}
-        <div className="mt-6">
-          <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">{t('project.images.requestsTitle') || 'Image Requests'}</h4>
+      ) : (
+        <>
           <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
             <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Image</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">User</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Created</th>
+                  <th
+                    scope="col"
+                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-white sm:pl-6 w-3/4"
+                  >
+                    {t('project.images.colImage')}
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white w-1/4"
+                  >
+                    {t('project.images.colStatus')}
+                  </th>
+                  <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                    <span className="sr-only">{t('project.images.colActions')}</span>
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
-                {requests.length === 0 ? (
+                {images.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">No image requests</td>
+                    <td
+                      colSpan={3}
+                      className="py-4 text-center text-sm text-gray-500 dark:text-gray-400"
+                    >
+                      {t('project.images.noImages')}
+                    </td>
                   </tr>
                 ) : (
-                  requests.map((r) => (
-                    <tr key={r.ID}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{r.ID}</td>
-                      <td className="px-6 py-4 whitespace-nowrap"><div className="text-lg font-medium text-gray-900 dark:text-white">{r.Name}:{r.Tag}</div></td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{r.UserID}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm"><span className={`px-2 py-1 text-xs font-medium rounded-full ${r.Status === 'pending' ? 'bg-yellow-100 text-yellow-800' : r.Status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{r.Status}</span></td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{new Date(r.CreatedAt).toLocaleDateString()}</td>
+                  images.map((img) => (
+                    <tr key={img.ID}>
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6 w-3/4">
+                        <div className="font-medium text-gray-900 dark:text-white text-lg">
+                          {img.Name}:{img.Tag}
+                        </div>
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400 w-1/4">
+                        <span
+                          className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${
+                            img.Status === 'pending'
+                              ? 'bg-yellow-100 text-yellow-800 ring-1 ring-inset ring-yellow-600/20 dark:bg-yellow-900/30 dark:text-yellow-300'
+                              : img.Status === 'approved'
+                                ? 'bg-green-100 text-green-800 ring-1 ring-inset ring-green-600/20 dark:bg-green-900/30 dark:text-green-300'
+                                : img.Status === 'rejected'
+                                  ? 'bg-red-100 text-red-800 ring-1 ring-inset ring-red-600/20 dark:bg-red-900/30 dark:text-red-300'
+                                  : 'bg-gray-100 text-gray-800'
+                          }`}
+                        >
+                          {img.Status ||
+                            (img.IsGlobal
+                              ? t('project.images.global')
+                              : t('project.images.project'))}
+                        </span>
+                      </td>
+                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                        {!img.IsGlobal && (
+                          <button
+                            className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                            title={t('project.images.remove')}
+                            aria-label={t('project.images.remove')}
+                            onClick={() => handleRemoveImage(img.ID)}
+                          >
+                            <TrashIcon className="h-5 w-5" aria-hidden="true" />
+                          </button>
+                        )}
+                      </td>
                     </tr>
                   ))
                 )}
               </tbody>
             </table>
           </div>
-        </div>
-      </>) }
+          {/* Project Image Requests (separate) */}
+          <div className="mt-6">
+            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
+              {t('project.images.requestsTitle') || 'Image Requests'}
+            </h4>
+            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-800">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                      ID
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                      Image
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                      User
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                      Created
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+                  {requests.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={5}
+                        className="py-4 text-center text-sm text-gray-500 dark:text-gray-400"
+                      >
+                        No image requests
+                      </td>
+                    </tr>
+                  ) : (
+                    requests.map((r) => (
+                      <tr key={r.ID}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                          {r.ID}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-lg font-medium text-gray-900 dark:text-white">
+                            {r.Name}:{r.Tag}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          {r.UserID}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <span
+                            className={`px-2 py-1 text-xs font-medium rounded-full ${r.Status === 'pending' ? 'bg-yellow-100 text-yellow-800' : r.Status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                          >
+                            {r.Status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          {new Date(r.CreatedAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
         <div className="flex items-start gap-2">
