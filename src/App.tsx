@@ -20,6 +20,7 @@ import GroupDetail from './features/groups/components/GroupDetail';
 
 // Projects Pages
 import { Projects, ProjectDetail, UserImageRequests } from './features/projects/pages';
+import ProjectJobs from './features/projects/pages/ProjectJobs';
 
 // Forms Pages
 import { UserFormDashboard } from './features/forms/pages';
@@ -58,6 +59,7 @@ export default function App() {
               <Route path="/groups/:id" element={<GroupDetail />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/projects/:id" element={<ProjectDetail />} />
+              <Route path="/projects/:id/jobs" element={<ProjectJobs />} />
               <Route path="/image-requests" element={<UserImageRequests />} />
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/admin" element={<AdminDashboard />} />

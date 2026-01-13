@@ -14,6 +14,7 @@ import { Project } from '@/core/interfaces/project';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import MonitoringPanel from '@/features/monitoring/components/MonitoringPanel';
 import ConfigFilesTab from '../components/project/ConfigFilesTab';
+import ProjectJobs from './ProjectJobs';
 import { ProjectStorageManager } from '@/features/storage/components/storage/ProjectStorageManager';
 import ProjectImageManagement from '../components/ProjectImageManagement';
 // Remove ProjectMembers import
@@ -76,6 +77,7 @@ export default function ProjectDetail() {
             },
             { id: 'storage', label: t('project.detail.tab.storage'), icon: CubeIcon },
             { id: 'images', label: 'Images', icon: CubeIcon },
+            { id: 'jobs', label: 'Jobs', icon: CubeIcon },
             // Removed Members Tab
           ].map((tab) => (
             <button
@@ -107,12 +109,20 @@ export default function ProjectDetail() {
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                   {t('project.about')}
                 </h3>
-                <button
-                  onClick={() => setIsTicketModalOpen(true)}
-                  className="text-sm text-blue-600 hover:underline dark:text-blue-400"
-                >
-                  {t('project.requestSupport')}
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setActiveTab('jobs')}
+                    className="text-sm text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md"
+                  >
+                    Jobs
+                  </button>
+                  <button
+                    onClick={() => setIsTicketModalOpen(true)}
+                    className="text-sm text-blue-600 hover:underline dark:text-blue-400"
+                  >
+                    {t('project.requestSupport')}
+                  </button>
+                </div>
               </div>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
                 {project.Description || t('project.noDescription')}
@@ -180,6 +190,13 @@ export default function ProjectDetail() {
         {activeTab === 'images' && (
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <ProjectImageManagement projectId={project.PID} />
+          </div>
+        )}
+
+        {/* --- Jobs Tab --- */}
+        {activeTab === 'jobs' && (
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <ProjectJobs />
           </div>
         )}
       </div>

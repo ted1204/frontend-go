@@ -93,6 +93,7 @@ export const projects = {
         configurations: 'Configurations',
         storage: 'Storage',
         members: 'Members',
+        jobs: 'Jobs',
       },
       infoLabel: 'Project Information',
       createdAt: 'Created At',

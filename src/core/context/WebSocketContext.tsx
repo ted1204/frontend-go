@@ -1,6 +1,6 @@
 import React, { createContext, useState, useRef, useCallback, useEffect } from 'react';
 // Replace with your actual config path
-import { GET_NS_MONITORING_URL } from '../config/url';
+import { GET_NS_MONITORING_URL, JOBS_WS_URL } from '../config/url';
 
 // Define the structure of the resource message received from WebSocket
 export interface ResourceMessage {
@@ -158,6 +158,63 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     // Store the socket instance in the ref
     sockets.current[ns] = ws;
+
+    // Ensure we have a jobs socket running so Job resources are also captured
+    // This opens a single jobs socket (cluster-wide) and merges Job messages into `messages`.
+    const jobsKey = '__jobs__';
+    if (!sockets.current[jobsKey]) {
+      try {
+        const jobsWs = new WebSocket(JOBS_WS_URL());
+        jobsWs.onopen = () => {
+          // console.log('[WS Pool] Connected to jobs feed.');
+        };
+        jobsWs.onmessage = (event) => {
+          try {
+            const raw = JSON.parse(event.data);
+            const batch: ResourceMessage[] = Array.isArray(raw) ? raw : [raw];
+            if (batch.length === 0) return;
+
+            setMessages((prev) => {
+              const next = [...prev];
+              batch.forEach((msg) => {
+                // Only handle Job-kind messages (defensive)
+                if (!msg.kind || msg.kind.toLowerCase() !== 'job') return;
+
+                const key = `${msg.kind}-${msg.name}-${msg.ns}`;
+                const idx = next.findIndex((m) => `${m.kind}-${m.name}-${m.ns}` === key);
+
+                if (isDeletionEvent(msg)) {
+                  if (idx >= 0) next.splice(idx, 1);
+                  return;
+                }
+
+                if (idx >= 0) next[idx] = { ...next[idx], ...msg };
+                else next.push(msg);
+              });
+              return next.slice(-1000);
+            });
+          } catch (e) {
+            console.error('[WS Pool] Parse error on jobs feed:', e);
+          }
+        };
+        jobsWs.onclose = () => {
+          delete sockets.current[jobsKey];
+        };
+        jobsWs.onerror = (err) => {
+          console.error('[WS Pool] Jobs socket error:', err);
+          try {
+            jobsWs.close();
+          } catch {
+            // ignore close error
+          }
+          delete sockets.current[jobsKey];
+        };
+
+        sockets.current[jobsKey] = jobsWs;
+      } catch (e) {
+        console.error('[WS Pool] Failed to open jobs websocket', e);
+      }
+    }
   }, []);
 
   const getNamespaceMessages = useCallback(

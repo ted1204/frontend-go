@@ -49,9 +49,14 @@ const ChevronDownIcon: React.FC<{ className?: string }> = ({ className }) => (
 interface PodMonitoringTableProps {
   namespace: string;
   pods: Pod[];
+  fetchPodLogs: (podName: string, container: string) => void;
 }
 
-const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods }) => {
+const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({
+  namespace,
+  pods,
+  fetchPodLogs,
+}) => {
   const { t } = useTranslation();
   const [expandedPods, setExpandedPods] = useState<Record<string, boolean>>({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -75,19 +80,47 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  // pod logs UI state is lifted to parent `PodTablesPage` via `fetchPodLogs` prop
+
   const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
-    const isRunning = status === 'Running';
-    const colorClasses = isRunning
-      ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300'
-      : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300';
-    const dotClasses = isRunning ? 'bg-green-500' : 'bg-red-500';
+    const safeStatus = (status || 'Unknown').toString();
+    const normalized = safeStatus.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    let colorClasses = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+    let dotClasses = 'bg-gray-500';
+
+    if (normalized === 'terminating') {
+      colorClasses =
+        'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 animate-pulse border border-gray-300 dark:border-gray-600';
+      dotClasses = 'bg-gray-500';
+    } else if (
+      ['running', 'active', 'bound', 'succeeded', 'ready', 'completed'].includes(normalized)
+    ) {
+      colorClasses = 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300';
+      dotClasses = 'bg-green-500';
+    } else if (['pending', 'containercreating', 'containercreatinginit'].includes(normalized)) {
+      colorClasses = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300';
+      dotClasses = 'bg-yellow-500';
+    } else if (
+      [
+        'failed',
+        'error',
+        'crashloopbackoff',
+        'imagepullbackoff',
+        'errimagepull',
+        'backoff',
+      ].includes(normalized)
+    ) {
+      colorClasses = 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300';
+      dotClasses = 'bg-red-500';
+    }
 
     return (
       <span
         className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-medium ${colorClasses}`}
       >
         <span className={`h-1.5 w-1.5 rounded-full ${dotClasses}`}></span>
-        {status}
+        {safeStatus}
       </span>
     );
   };
@@ -141,16 +174,27 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
                   <td className="px-6 py-2"></td>
                   <td className="px-6 py-2"></td>
                   <td className="px-6 py-2 text-right">
-                    <button
-                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                        e.stopPropagation();
-                        handleConnectTerminal(podName, container);
-                      }}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors duration-150"
-                    >
-                      <TerminalIcon className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">{t('monitor.button.connect')}</span>
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                          e.stopPropagation();
+                          handleConnectTerminal(podName, container);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors duration-150"
+                      >
+                        <TerminalIcon className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">{t('monitor.button.connect')}</span>
+                      </button>
+                      <button
+                        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                          e.stopPropagation();
+                          fetchPodLogs(podName, container);
+                        }}
+                        className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-150"
+                      >
+                        {'Logs'}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );
@@ -195,11 +239,71 @@ const PodMonitoringTable: React.FC<PodMonitoringTableProps> = ({ namespace, pods
   );
 };
 
+// Simple modal for logs display (keeps in same file for convenience)
+const PodLogsModal: React.FC<{
+  open: boolean;
+  onClose: () => void;
+  content: string;
+  loading: boolean;
+  target?: { pod: string; container: string } | null;
+}> = ({ open, onClose, content, loading, target }) => {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose}></div>
+      <div className="relative max-w-3xl w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <div className="px-4 py-2 border-b dark:border-gray-700 flex items-center justify-between">
+          <div className="text-sm font-medium">
+            Logs: {target ? `${target.pod} / ${target.container}` : ''}
+          </div>
+          <div>
+            <button
+              onClick={onClose}
+              className="px-3 py-1 text-sm rounded bg-gray-100 dark:bg-gray-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <div className="p-4 h-80 overflow-auto bg-black text-green-200 font-mono text-sm whitespace-pre-wrap">
+          {loading ? 'Loading...' : content}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function PodTablesPage() {
   // English: Destructure functions from context pool
   const { messages, connectToNamespace } = useGlobalWebSocket();
   const [podsData, setPodsData] = useState<NamespacePods>({});
   const { t } = useTranslation();
+  const [logsOpen, setLogsOpen] = useState(false);
+  const [logsContent, setLogsContent] = useState<string>('');
+  const [logsLoading, setLogsLoading] = useState(false);
+  const [logsTarget, setLogsTarget] = useState<{ pod: string; container: string } | null>(null);
+
+  const fetchPodLogs = async (namespace: string, podName: string, container: string) => {
+    setLogsLoading(true);
+    setLogsOpen(true);
+    setLogsContent('');
+    setLogsTarget({ pod: podName, container });
+    try {
+      const url = `/k8s/namespaces/${encodeURIComponent(namespace)}/pods/${encodeURIComponent(podName)}/logs?container=${encodeURIComponent(container)}&tailLines=200`;
+      const resp = await fetch(url, { method: 'GET', credentials: 'include' });
+      if (!resp.ok) {
+        setLogsContent(`Error: ${resp.status} ${resp.statusText}`);
+        setLogsLoading(false);
+        return;
+      }
+      const text = await resp.text();
+      setLogsContent(text || '(no logs)');
+    } catch (err) {
+      setLogsContent(`Fetch error: ${String(err)}`);
+    } finally {
+      setLogsLoading(false);
+    }
+  };
 
   /**
    * English: Assuming this page needs to monitor specific namespaces or all user-related namespaces.
@@ -302,7 +406,13 @@ export default function PodTablesPage() {
                   </span>
                 </h2>
               </div>
-              <PodMonitoringTable namespace={ns} pods={podsData[ns]} />
+              <PodMonitoringTable
+                namespace={ns}
+                pods={podsData[ns]}
+                fetchPodLogs={(podName: string, container: string) =>
+                  fetchPodLogs(ns, podName, container)
+                }
+              />
             </div>
           ))
       ) : (
@@ -313,6 +423,13 @@ export default function PodTablesPage() {
           </p>
         </div>
       )}
+      <PodLogsModal
+        open={logsOpen}
+        onClose={() => setLogsOpen(false)}
+        content={logsContent}
+        loading={logsLoading}
+        target={logsTarget}
+      />
     </div>
   );
 }

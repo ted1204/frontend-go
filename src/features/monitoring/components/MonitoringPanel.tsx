@@ -354,6 +354,8 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
               currentResources.map((res) => {
                 const isTerminating = !!res.metadata?.deletionTimestamp;
                 const age = calculateAge(res.metadata?.creationTimestamp);
+                const displayStatus =
+                  (res.status as string) || (res as { Status?: string }).Status || undefined;
 
                 return (
                   <tr
@@ -420,7 +422,7 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
                     {/* Status */}
                     {visibleColumns.has('status') && (
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                        <StatusBadge status={res.status} isTerminating={isTerminating} />
+                        <StatusBadge status={displayStatus} isTerminating={isTerminating} />
                       </td>
                     )}
                   </tr>

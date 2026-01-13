@@ -93,6 +93,7 @@ export const projects = {
         configurations: '設定',
         storage: '儲存',
         members: '成員',
+        jobs: '工作',
       },
       infoLabel: '專案資訊',
       createdAt: '建立時間',

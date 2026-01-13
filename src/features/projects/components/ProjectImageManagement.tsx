@@ -100,22 +100,15 @@ export default function ProjectImageManagement({ projectId }: ProjectImageManage
         );
       } else {
         // Project admins and regular users: always submit a request
-        await requestImage({ name: formData.name, tag: formData.tag, project_id: projectId });
-        // show a local pending entry
-        setImages((prev) => [
-          ...prev,
-          {
-            ID: -Date.now(),
-            Name: formData.name,
-            Tag: formData.tag,
-            ProjectID: projectId,
-            IsGlobal: false,
-            CreatedAt: new Date().toISOString(),
-            IsPulled: false,
-            // mark temporary status
-            Status: 'pending',
-          } as AllowedImage,
-        ]);
+        const req = await requestImage({
+          name: formData.name,
+          tag: formData.tag,
+          project_id: projectId,
+        });
+        // add the request to the project requests table (not the allowed images list)
+        setRequests((prev) => [req, ...(prev || [])]);
+        // refresh server-side requests to keep in sync
+        await loadRequests();
         alert(t('project.images.requestSubmitted'));
       }
       setFormData({ name: '', tag: '' });
