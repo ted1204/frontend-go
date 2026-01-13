@@ -47,6 +47,8 @@ const ResourceItemForm = ({
         return 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400';
       case 'ConfigMap':
         return 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400';
+      case 'Job': // New Job Color (Orange/Amber)
+        return 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400';
       default:
         return 'bg-gray-100 text-gray-600';
     }
@@ -111,7 +113,9 @@ const ResourceItemForm = ({
       {isExpanded && (
         <div className="p-4 animate-in slide-in-from-top-2 duration-200">
           {/* Workloads (Pod / Deployment) */}
-          {(resource.kind === 'Pod' || resource.kind === 'Deployment') && (
+          {(resource.kind === 'Pod' ||
+            resource.kind === 'Deployment' ||
+            resource.kind === 'Job') && (
             <WorkloadForm
               resource={resource as WorkloadResource}
               projectPvcs={projectPvcs}

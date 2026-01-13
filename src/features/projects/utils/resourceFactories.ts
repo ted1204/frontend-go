@@ -5,6 +5,7 @@ import {
   ServiceResource,
   ConfigMapResource,
   ContainerConfig,
+  JobResource,
 } from '@/core/interfaces/configFile';
 
 export const createDefaultContainer = (id: string, index: number): ContainerConfig => {
@@ -48,7 +49,20 @@ export const createDefaultResource = (
         annotations: [],
         data: [],
       } as ConfigMapResource;
-
+    case 'Job':
+      return {
+        id,
+        kind: 'Job',
+        name: baseName,
+        annotations: [],
+        replicas: 1,
+        containers: [createDefaultContainer(`${id}-c1`, 1)],
+        selectors: [{ id: `${id}-s1`, key: 'app', value: baseName }],
+        completions: 1,
+        parallelism: 1,
+        backoffLimit: 4,
+        restartPolicy: 'OnFailure',
+      } as JobResource;
     case 'Pod':
     case 'Deployment':
       return {

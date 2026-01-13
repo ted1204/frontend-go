@@ -49,6 +49,12 @@ export default function ResourceWizard({
           + Deployment
         </button>
         <button
+          onClick={() => addResource('Job')}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-50 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300 transition-all font-medium text-sm"
+        >
+          + Job
+        </button>
+        <button
           onClick={() => addResource('Service')}
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-300 transition-all font-medium text-sm"
         >

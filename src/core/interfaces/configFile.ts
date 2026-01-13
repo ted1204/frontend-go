@@ -12,7 +12,7 @@ export interface FormData {
 }
 
 export type MountType = 'project-pvc' | 'user-storage';
-export type ResourceKind = 'Pod' | 'Deployment' | 'Service' | 'ConfigMap';
+export type ResourceKind = 'Pod' | 'Deployment' | 'Service' | 'ConfigMap' | 'Job';
 export type ImagePullPolicy = 'Always' | 'IfNotPresent' | 'Never';
 export type ServiceProtocol = 'TCP' | 'UDP'; // New
 
@@ -78,7 +78,7 @@ export interface ContainerConfig {
 
 // [Updated] Workload (Supports Multiple Containers)
 export interface WorkloadResource extends BaseResource {
-  kind: 'Pod' | 'Deployment';
+  kind: 'Pod' | 'Deployment' | 'Job';
   replicas: number;
   containers: ContainerConfig[]; // Array of containers
   selectors: KeyValuePair[]; // New: selectors (labels) for matching and metadata
@@ -103,8 +103,6 @@ export interface ConfigMapResource extends BaseResource {
   data: KeyValuePair[];
 }
 
-export type ResourceItem = WorkloadResource | ServiceResource | ConfigMapResource;
-
 export interface WizardData {
   image: string;
   gpu: number;
@@ -112,3 +110,14 @@ export interface WizardData {
   command: string;
   args: string;
 }
+
+export interface JobResource extends WorkloadResource {
+  kind: 'Job';
+  completions?: number;
+  parallelism?: number;
+  backoffLimit?: number;
+  activeDeadlineSeconds?: number;
+  restartPolicy: 'OnFailure' | 'Never';
+}
+
+export type ResourceItem = WorkloadResource | ServiceResource | ConfigMapResource | JobResource;

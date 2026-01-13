@@ -29,7 +29,8 @@ import { forms as zhForms } from './locales/zh/forms';
 import { members as zhMembers } from './locales/zh/members';
 import { pages as zhPages } from './locales/zh/pages';
 import { misc as zhMisc } from './locales/zh/misc';
-
+import { configFile as ZhConfigFile } from './locales/zh/configfile';
+import { configFile } from './locales/en/configfile';
 // Merge all English modules
 const en = {
   ...enCommon,
@@ -46,6 +47,7 @@ const en = {
   ...enMembers,
   ...enPages,
   ...enMisc,
+  ...configFile,
 } as const;
 
 // Merge all Chinese modules
@@ -64,6 +66,7 @@ const zh = {
   ...zhMembers,
   ...zhPages,
   ...zhMisc,
+  ...ZhConfigFile,
 } as const;
 
 // Define the resource map

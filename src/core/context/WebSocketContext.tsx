@@ -1,6 +1,6 @@
 import React, { createContext, useState, useRef, useCallback, useEffect } from 'react';
 // Replace with your actual config path
-import { GET_NS_MONITORING_URL, JOBS_WS_URL } from '../config/url';
+import { GET_NS_MONITORING_URL, JOBS_WS_URL, POD_LOGS_WS_URL } from '../config/url';
 
 // Define the structure of the resource message received from WebSocket
 export interface ResourceMessage {
@@ -28,6 +28,14 @@ interface WebSocketContextType {
   connectToNamespace: (namespace: string) => void;
   getNamespaceMessages: (namespace: string) => ResourceMessage[];
   clearMessages: () => void;
+  registerLogWindow: (key: string, win: Window | null) => void;
+  unregisterLogWindow: (key: string) => void;
+  subscribeToPodLogs: (
+    namespace: string,
+    pod: string,
+    container: string,
+    cb: (line: string) => void,
+  ) => () => void;
 }
 
 export const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined);
@@ -38,6 +46,11 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Registry to store active WebSocket instances.
   // Using useRef prevents re-renders when sockets change and keeps connections stable.
   const sockets = useRef<Record<string, WebSocket>>({});
+  // Registry for opened log windows (managed by parent window)
+  const logWindows = useRef<Record<string, Window | null>>({});
+  // Registry for pod-log websockets and subscribers
+  const podLogSockets = useRef<Record<string, WebSocket | undefined>>({});
+  const podLogSubscribers = useRef<Record<string, Array<(line: string) => void>>>({});
 
   /**
    * Helper function to determine if a message indicates a resource deletion.
@@ -231,15 +244,133 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Cleanup effect: Close all sockets when the provider unmounts (e.g., user navigates away or logs out)
   useEffect(() => {
     const currentSockets = sockets.current;
+    const currentLogWindows = logWindows.current;
     return () => {
       console.log('[WS Pool] Cleaning up all sockets...');
       Object.values(currentSockets).forEach((s) => s.close());
+      // Close any opened log windows
+      Object.values(currentLogWindows).forEach((w) => {
+        try {
+          w?.close();
+        } catch (err) {
+          console.debug('failed closing log window', err);
+        }
+      });
     };
   }, []);
 
+  const registerLogWindow = useCallback((key: string, win: Window | null) => {
+    logWindows.current[key] = win;
+
+    // Start a simple poll to detect when the window is closed and cleanup
+    const interval = setInterval(() => {
+      const w = logWindows.current[key];
+      if (!w || w.closed) {
+        delete logWindows.current[key];
+        clearInterval(interval);
+      }
+    }, 1000);
+  }, []);
+
+  const unregisterLogWindow = useCallback((key: string) => {
+    const w = logWindows.current[key];
+    if (w && !w.closed) {
+      try {
+        w.close();
+      } catch {
+        console.debug('error closing log window');
+      }
+    }
+    delete logWindows.current[key];
+  }, []);
+
+  const subscribeToPodLogs = useCallback(
+    (namespace: string, pod: string, container: string, cb: (line: string) => void) => {
+      const key = `podlogs-${namespace}-${pod}-${container}`;
+
+      if (!podLogSubscribers.current[key]) podLogSubscribers.current[key] = [];
+      podLogSubscribers.current[key].push(cb);
+
+      // open socket if not already
+      if (!podLogSockets.current[key]) {
+        try {
+          const wsUrl = POD_LOGS_WS_URL(namespace, pod, container);
+          const ws = new WebSocket(wsUrl);
+
+          ws.onmessage = (ev) => {
+            const data = ev.data;
+            try {
+              const parsed = JSON.parse(data);
+              if (Array.isArray(parsed)) {
+                parsed.forEach((p) => {
+                  const line = typeof p === 'string' ? p : JSON.stringify(p);
+                  (podLogSubscribers.current[key] || []).forEach((s) => s(line));
+                });
+              } else if (typeof parsed === 'object') {
+                const line = JSON.stringify(parsed);
+                (podLogSubscribers.current[key] || []).forEach((s) => s(line));
+              } else {
+                (podLogSubscribers.current[key] || []).forEach((s) => s(String(parsed)));
+              }
+            } catch (err) {
+              (podLogSubscribers.current[key] || []).forEach((s) => s(String(data)));
+              console.debug('[WS Pool] pod log parse error', err);
+            }
+          };
+
+          ws.onclose = () => {
+            delete podLogSockets.current[key];
+            delete podLogSubscribers.current[key];
+          };
+
+          ws.onerror = (err) => {
+            console.debug('[WS Pool] pod log socket error', err);
+            try {
+              ws.close();
+            } catch (errClose) {
+              console.debug('error closing ws', errClose);
+            }
+            delete podLogSockets.current[key];
+          };
+
+          podLogSockets.current[key] = ws;
+        } catch (err) {
+          console.debug('[WS Pool] failed to open pod logs ws', err);
+        }
+      }
+
+      // return unsubscribe
+      return () => {
+        const list = podLogSubscribers.current[key] || [];
+        podLogSubscribers.current[key] = list.filter((f) => f !== cb);
+        if ((podLogSubscribers.current[key] || []).length === 0) {
+          const ws = podLogSockets.current[key];
+          if (ws) {
+            try {
+              ws.close();
+            } catch (errClose) {
+              console.debug('error closing pod log ws', errClose);
+            }
+          }
+          delete podLogSockets.current[key];
+          delete podLogSubscribers.current[key];
+        }
+      };
+    },
+    [],
+  );
+
   return (
     <WebSocketContext.Provider
-      value={{ messages, connectToNamespace, getNamespaceMessages, clearMessages }}
+      value={{
+        messages,
+        connectToNamespace,
+        getNamespaceMessages,
+        clearMessages,
+        registerLogWindow,
+        unregisterLogWindow,
+        subscribeToPodLogs,
+      }}
     >
       {children}
     </WebSocketContext.Provider>

@@ -3,6 +3,7 @@ import { useTranslation } from '@nthucscc/utils';
 // Ensure you have this constant. If not, define it locally:
 // const SYSTEM_POD_PREFIXES = ['kube-', 'coredns', 'etcd', 'calico', 'ingress'];
 import { SYSTEM_POD_PREFIXES } from '@/core/config/constants';
+import { ArchiveBoxIcon, CubeIcon } from '@heroicons/react/24/outline'; // Icons for distinction
 
 // --- Type Definitions ---
 
@@ -32,6 +33,7 @@ export interface ResourceMessage {
     deletionTimestamp?: string | null;
     creationTimestamp?: string;
     labels?: Record<string, string>;
+    ownerReferences?: Array<{ kind: string; name: string }>; // Added ownerReferences type
   };
 }
 
@@ -45,6 +47,8 @@ const IGNORED_LABELS = [
   'pod-template-generation',
   'service.kubernetes.io/headless',
   'statefulset.kubernetes.io/pod-name',
+  'job-name', // Hide from labels column since we show it in name
+  'controller-uid',
 ];
 
 // --- Helper Functions ---
@@ -61,6 +65,19 @@ const calculateAge = (creationTimestamp?: string) => {
   if (hours > 0) return `${hours}h`;
   if (minutes > 0) return `${minutes}m`;
   return `${seconds}s`;
+};
+
+// Check if a resource is a Pod created by a Job
+const isJobPod = (res: ResourceMessage) => {
+  if (res.kind !== 'Pod') return false;
+
+  const labels = res.metadata?.labels || {};
+  // Common label for Job pods
+  if (labels['job-name']) return true;
+
+  // Check owner references
+  const owners = res.metadata?.ownerReferences || [];
+  return owners.some((owner) => owner.kind === 'Job');
 };
 
 // --- Sub-Components ---
@@ -149,7 +166,10 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
     });
 
     return Array.from(resourceMap.values()).sort((a, b) => {
+      // Sort priority: Kind -> IsJob -> CreationTime -> Name
       if (a.kind !== b.kind) return (a.kind || '').localeCompare(b.kind || '');
+
+      // Keep Jobs grouped together if desired, or just sort by time
       if (a.metadata?.creationTimestamp && b.metadata?.creationTimestamp) {
         return b.metadata.creationTimestamp.localeCompare(a.metadata.creationTimestamp);
       }
@@ -308,7 +328,7 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
               {visibleColumns.has('kind') && (
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
                   {t('monitor.table.kind')}
                 </th>
               )}
@@ -357,6 +377,8 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
                 const displayStatus =
                   (res.status as string) || (res as { Status?: string }).Status || undefined;
 
+                const isJob = isJobPod(res);
+
                 return (
                   <tr
                     key={`${res.kind}-${res.name}`}
@@ -365,7 +387,19 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
                     {/* Kind */}
                     {visibleColumns.has('kind') && (
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                        {res.kind}
+                        <div className="flex items-center gap-2">
+                          {isJob ? (
+                            <span className="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                              <ArchiveBoxIcon className="w-3.5 h-3.5" />
+                              Job Pod
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                              <CubeIcon className="w-3.5 h-3.5" />
+                              {res.kind}
+                            </span>
+                          )}
+                        </div>
                       </td>
                     )}
 

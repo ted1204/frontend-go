@@ -43,22 +43,6 @@ export const storage = {
     emptyFilter: 'No projects match "{term}".',
     emptyAssigned: 'No projects assigned to your groups.',
   },
-  configFile: {
-    editFile: 'Edit file',
-    destroyInstance: 'Destroy instance',
-    destroy: 'Destroy',
-    deleteFile: 'Delete file',
-    notFoundTitle: 'No config files found',
-    notFoundDesc: 'Click "Add Config" to get started.',
-    toggleResources: 'Toggle resources',
-    id: 'ID',
-    createdAt: 'Created At',
-    deployInstance: 'Deploy instance',
-    deploy: 'Deploy',
-    relatedResources: 'Related Resources',
-    noRelatedResources: 'No related resources',
-    notDeployed: 'This config file has not been deployed yet.',
-  },
   config: {
     error: {
       filenameRequired: 'Filename is required',

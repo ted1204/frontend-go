@@ -43,22 +43,6 @@ export const storage = {
     emptyFilter: '沒有符合 "{term}" 的專案。',
     emptyAssigned: '您的群組未被指派任何專案。',
   },
-  configFile: {
-    editFile: '編輯檔案',
-    destroyInstance: '銷毀實例',
-    destroy: '銷毀',
-    deleteFile: '刪除檔案',
-    notFoundTitle: '未找到設定檔',
-    notFoundDesc: '按一下「新增設定」開始使用。',
-    toggleResources: '切換資源',
-    id: 'ID',
-    createdAt: '建立時間',
-    deployInstance: '部署實例',
-    deploy: '部署',
-    relatedResources: '相關資源',
-    noRelatedResources: '沒有相關資源',
-    notDeployed: '此設定檔尚未部署。',
-  },
   config: {
     error: {
       filenameRequired: '檔案名稱為必填',

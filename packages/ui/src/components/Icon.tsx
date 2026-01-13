@@ -174,4 +174,5 @@ const Icon = {
   PencilIcon,
   TrashIcon,
 };
+
 export default Icon;

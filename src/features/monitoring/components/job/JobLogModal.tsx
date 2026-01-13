@@ -8,6 +8,9 @@ interface JobLogModalProps {
   open: boolean;
   onClose: () => void;
   onRefresh?: () => void;
+  // pods associated with this job (from global messages)
+  pods?: { namespace: string; name: string; containers: string[] }[];
+  onViewPodLog?: (namespace: string, pod: string, container: string) => void;
 }
 
 const JobLogModal: React.FC<JobLogModalProps> = ({
@@ -17,6 +20,8 @@ const JobLogModal: React.FC<JobLogModalProps> = ({
   open,
   onClose,
   onRefresh,
+  pods,
+  onViewPodLog,
 }) => {
   const [search, setSearch] = useState('');
   const [autoScroll, setAutoScroll] = useState(true);
@@ -87,6 +92,34 @@ const JobLogModal: React.FC<JobLogModalProps> = ({
             ))
           )}
         </pre>
+        {pods && pods.length > 0 && (
+          <div className="mt-4">
+            <h3 className="text-sm font-medium mb-2">Pods for this Job</h3>
+            <div className="space-y-2 max-h-40 overflow-auto">
+              {pods.map((p) => (
+                <div
+                  key={`${p.namespace}-${p.name}`}
+                  className="flex items-center justify-between gap-2"
+                >
+                  <div className="text-sm">
+                    {p.name} <span className="text-xs text-gray-500">({p.namespace})</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {p.containers.map((c) => (
+                      <button
+                        key={c}
+                        className="px-2 py-1 text-xs rounded bg-blue-600 text-white hover:bg-blue-700"
+                        onClick={() => onViewPodLog && onViewPodLog(p.namespace, p.name, c)}
+                      >
+                        Logs: {c}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

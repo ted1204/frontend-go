@@ -1,22 +1,22 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
-import { WorkloadResource, ContainerConfig } from '@/core/interfaces/configFile';
+import { WorkloadResource, ContainerConfig, JobResource } from '@/core/interfaces/configFile';
 import ConfigMapManager from './ConfigMapManager';
 import { PVC } from '@/core/interfaces/pvc';
 import ContainerForm from './ContainerForm';
 
 interface WorkloadFormProps {
-  resource: WorkloadResource;
+  resource: WorkloadResource | JobResource;
   projectPvcs: PVC[];
   hasUserStorage: boolean;
-  onChange: (updated: WorkloadResource) => void;
+  onChange: (updated: WorkloadResource | JobResource) => void;
 }
 
 const WorkloadForm = ({ resource, projectPvcs, hasUserStorage, onChange }: WorkloadFormProps) => {
   const updateField = (
-    field: keyof WorkloadResource,
+    field: keyof WorkloadResource | keyof JobResource,
     value: WorkloadResource[keyof WorkloadResource],
   ) => {
-    onChange({ ...resource, [field]: value });
+    onChange({ ...resource, [field]: value } as WorkloadResource | JobResource);
   };
 
   const addContainer = () => {
@@ -56,8 +56,9 @@ const WorkloadForm = ({ resource, projectPvcs, hasUserStorage, onChange }: Workl
 
   return (
     <div className="space-y-6">
-      {/* Pod Settings */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* Resource Specific Settings Block */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* 1. Deployment Specific: Replicas */}
         {resource.kind === 'Deployment' && (
           <div>
             <label className="text-xs font-bold text-gray-500 uppercase">Replicas</label>
@@ -70,12 +71,63 @@ const WorkloadForm = ({ resource, projectPvcs, hasUserStorage, onChange }: Workl
             />
           </div>
         )}
+
+        {/* 2. Job Specific Settings */}
+        {resource.kind === 'Job' && (
+          <>
+            <div>
+              <label className="text-xs font-bold text-gray-500 uppercase">Completions</label>
+              <input
+                type="number"
+                min="1"
+                value={(resource as JobResource).completions ?? 1}
+                onChange={(e) => updateField('completions', parseInt(e.target.value) || 1)}
+                className="block w-full rounded-md border-gray-300 py-1.5 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-bold text-gray-500 uppercase">Parallelism</label>
+              <input
+                type="number"
+                min="1"
+                value={(resource as JobResource).parallelism ?? 1}
+                onChange={(e) => updateField('parallelism', parseInt(e.target.value) || 1)}
+                className="block w-full rounded-md border-gray-300 py-1.5 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-bold text-gray-500 uppercase">
+                Backoff Limit (Retries)
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={(resource as JobResource).backoffLimit ?? 4}
+                onChange={(e) => updateField('backoffLimit', parseInt(e.target.value) || 0)}
+                className="block w-full rounded-md border-gray-300 py-1.5 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-bold text-gray-500 uppercase">Restart Policy</label>
+              <select
+                value={(resource as JobResource).restartPolicy || 'OnFailure'}
+                onChange={(e) => updateField('restartPolicy', e.target.value)}
+                className="block w-full rounded-md border-gray-300 py-1.5 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              >
+                <option value="OnFailure">OnFailure</option>
+                <option value="Never">Never</option>
+              </select>
+            </div>
+          </>
+        )}
       </div>
 
-      {/* Selectors (labels) */}
+      {/* Selectors (labels) - Job 也可能有 label，保留 */}
       <div>
-        <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Selectors</label>
-        <p className="text-xs text-gray-400">Key-value pairs used as labels and selectors</p>
+        <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
+          Selectors / Labels
+        </label>
+        <p className="text-xs text-gray-400">Key-value pairs used as labels</p>
         <div className="mt-2">
           <ConfigMapManager
             data={resource.selectors || []}
@@ -83,7 +135,8 @@ const WorkloadForm = ({ resource, projectPvcs, hasUserStorage, onChange }: Workl
           />
         </div>
       </div>
-      {/* Containers List */}
+
+      {/* Containers List (Shared by Pod, Deployment, Job) */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Containers</label>

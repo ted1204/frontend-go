@@ -64,6 +64,11 @@ export const JOB_BY_ID_URL = (id: number) => `${JOBS_URL}/${id}`;
 export const JOB_LOGS_URL = (id: number) => `${JOBS_URL}/${id}/logs`;
 export const JOBS_WS_URL = () => `${WS_PROTOCOL}//${WS_HOST}/ws/jobs`;
 export const JOB_LOGS_WS_URL = (id: number) => `${WS_PROTOCOL}//${WS_HOST}/ws/jobs/${id}/logs`;
+// Pod logs websocket URL (query params: namespace, pod, container)
+export const POD_LOGS_WS_URL = (namespace: string, pod: string, container: string) =>
+  `${WS_PROTOCOL}//${WS_HOST}/ws/logs?namespace=${encodeURIComponent(namespace)}&pod=${encodeURIComponent(
+    pod,
+  )}&container=${encodeURIComponent(container)}`;
 // users
 export const USERS_URL = `${API_BASE_URL}/users`;
 export const USER_BY_ID_URL = (id: number) => `${API_BASE_URL}/users/${id}`;
