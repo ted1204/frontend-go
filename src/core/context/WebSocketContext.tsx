@@ -103,7 +103,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
         // Skip empty updates (e.g., heartbeats)
         if (batchUpdates.length === 0) return;
-
+        console.log(rawData);
         setMessages((prev) => {
           // Create a shallow copy of the current state to mutate safely
           const nextMessages = [...prev];
@@ -290,8 +290,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
       if (!podLogSubscribers.current[key]) podLogSubscribers.current[key] = [];
       podLogSubscribers.current[key].push(cb);
-
-      // open socket if not already
       if (!podLogSockets.current[key]) {
         try {
           const wsUrl = POD_LOGS_WS_URL(namespace, pod, container);
@@ -299,8 +297,18 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
           ws.onmessage = (ev) => {
             const data = ev.data;
+
+            const isLikelyJson =
+              typeof data === 'string' && (data.startsWith('{') || data.startsWith('['));
+
+            if (!isLikelyJson) {
+              (podLogSubscribers.current[key] || []).forEach((s) => s(String(data)));
+              return;
+            }
+
             try {
               const parsed = JSON.parse(data);
+
               if (Array.isArray(parsed)) {
                 parsed.forEach((p) => {
                   const line = typeof p === 'string' ? p : JSON.stringify(p);
@@ -314,7 +322,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
               }
             } catch (err) {
               (podLogSubscribers.current[key] || []).forEach((s) => s(String(data)));
-              console.debug('[WS Pool] pod log parse error', err);
             }
           };
 

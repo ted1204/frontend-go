@@ -21,10 +21,10 @@ export const PodLogsModal: React.FC<PodLogsModalProps> = ({
   const logsEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (open && content) {
+    if (open) {
       logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [content, open]);
+  }, [open]);
 
   if (!open) return null;
 

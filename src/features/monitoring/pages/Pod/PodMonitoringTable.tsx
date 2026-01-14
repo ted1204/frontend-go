@@ -10,7 +10,7 @@ import { LuActivity, LuServer } from 'react-icons/lu';
 
 // Imports from local split files
 import { NamespacePods } from './types';
-import { PodList } from './PodList'; // 引用更名後的列表組件
+import { PodList } from './PodList';
 import { PodLogsModal } from './PodLogsModal';
 
 export default function PodTables() {
@@ -104,6 +104,7 @@ export default function PodTables() {
   }, [connectToNamespace, podsData]);
 
   // Process WebSocket Messages
+  // Rebuild state from messages (Source of Truth) to correctly handle additions, updates, and deletions
   useEffect(() => {
     const isJobPod = (msg: any) => {
       const labels = msg?.metadata?.labels;
@@ -114,36 +115,32 @@ export default function PodTables() {
       );
     };
 
-    setPodsData((prev) => {
-      const next = { ...prev };
-      let hasChanges = false;
+    // Create a fresh map based on current messages
+    const nextPodsData: NamespacePods = {};
 
-      messages.forEach((msg: any) => {
-        if (msg.kind !== 'Pod' || isJobPod(msg)) return;
+    messages.forEach((msg: any) => {
+      // Filter out non-Pods or Job-related Pods
+      if (msg.kind !== 'Pod' || isJobPod(msg)) return;
 
-        const ns = msg.ns;
-        if (!next[ns]) next[ns] = [];
+      const ns = msg.ns;
+      if (!nextPodsData[ns]) {
+        nextPodsData[ns] = [];
+      }
 
-        // Upsert logic
-        const existingIdx = next[ns].findIndex((p) => p.name === msg.name);
-        const newPod = {
-          name: msg.name,
-          containers: msg.containers || [],
-          status: msg.status || 'Unknown',
-        };
-
-        if (existingIdx > -1) {
-          if (JSON.stringify(next[ns][existingIdx]) !== JSON.stringify(newPod)) {
-            next[ns][existingIdx] = newPod;
-            hasChanges = true;
-          }
-        } else {
-          next[ns].push(newPod);
-          hasChanges = true;
-        }
+      // Map raw message to UI data structure
+      nextPodsData[ns].push({
+        name: msg.name,
+        containers: msg.containers || [],
+        status: msg.status || 'Unknown',
       });
+    });
 
-      return hasChanges ? next : prev;
+    // Update state with minimal re-renders
+    setPodsData((prev) => {
+      if (JSON.stringify(prev) === JSON.stringify(nextPodsData)) {
+        return prev;
+      }
+      return nextPodsData;
     });
   }, [messages]);
 
@@ -177,7 +174,7 @@ export default function PodTables() {
                 </span>
               </div>
 
-              {/* 使用新的 PodList 組件 */}
+              {/* Use new PodList component */}
               <PodList
                 namespace={ns}
                 pods={podsData[ns]}
