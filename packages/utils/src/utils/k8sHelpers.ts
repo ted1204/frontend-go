@@ -13,6 +13,13 @@ export const calculateAge = (creationTimestamp?: string): string => {
   return `${seconds}s`;
 };
 
+export const sanitizeK8sName = (name: string): string => {
+  if (!name) return '';
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
 // Format bytes to human-readable size
 export const formatBytes = (bytes: number, decimals = 2): string => {
   if (bytes === 0) return '0 Bytes';

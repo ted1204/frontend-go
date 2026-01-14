@@ -1,7 +1,7 @@
 import React, { createContext, useState, useRef, useCallback, useEffect } from 'react';
 // Replace with your actual config path
 import { GET_NS_MONITORING_URL, JOBS_WS_URL, POD_LOGS_WS_URL } from '../config/url';
-
+import { sanitizeK8sName } from '@nthucscc/utils';
 // Define the structure of the resource message received from WebSocket
 export interface ResourceMessage {
   type: string;
@@ -46,8 +46,10 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Registry to store active WebSocket instances.
   // Using useRef prevents re-renders when sockets change and keeps connections stable.
   const sockets = useRef<Record<string, WebSocket>>({});
+
   // Registry for opened log windows (managed by parent window)
   const logWindows = useRef<Record<string, Window | null>>({});
+
   // Registry for pod-log websockets and subscribers
   const podLogSockets = useRef<Record<string, WebSocket | undefined>>({});
   const podLogSubscribers = useRef<Record<string, Array<(line: string) => void>>>({});
@@ -65,33 +67,32 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     // Resource is marked for deletion (Terminating)
     if (msg.metadata?.deletionTimestamp) return true;
 
-    // Optional: Logic to remove completed jobs/pods if desired.
-    // Currently, we usually keep them to show status logs.
-    // if (msg.phase === 'Succeeded' || msg.phase === 'Failed') return false;
-
     return false;
   };
 
-  const connectToNamespace = useCallback((ns: string) => {
+  const connectToNamespace = useCallback((rawNs: string) => {
+    // Sanitize the namespace before processing
+    const ns = sanitizeK8sName(rawNs);
+
+    if (!ns) {
+      console.warn('[WS Pool] Attempted to connect to invalid or empty namespace.');
+      return;
+    }
+
     // Check if a healthy connection already exists for this namespace to avoid duplicates
     if (
       sockets.current[ns] &&
       (sockets.current[ns].readyState === WebSocket.OPEN ||
         sockets.current[ns].readyState === WebSocket.CONNECTING)
     ) {
-      // console.log(`[WS Pool] Already connected to ${ns}, skipping.`);
       return;
     }
 
     const url = GET_NS_MONITORING_URL(ns);
-    // console.log(`%c[WS Pool] Opening Connection: ${ns}`, 'color: #10b981; font-weight: bold;');
-
     const ws = new WebSocket(url);
 
     ws.onopen = () => {
-      // console.log(`[WS Pool] Connected to ${ns}.`);
-      // If backend requires a subscription signal, send it here.
-      // ws.send(JSON.stringify({ action: 'subscribe', namespace: ns }));
+      // Connection opened
     };
 
     ws.onmessage = (event) => {
@@ -103,7 +104,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
         // Skip empty updates (e.g., heartbeats)
         if (batchUpdates.length === 0) return;
+
         console.log(rawData);
+
         setMessages((prev) => {
           // Create a shallow copy of the current state to mutate safely
           const nextMessages = [...prev];
@@ -126,7 +129,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
               if (existingIndex >= 0) {
                 // Remove the resource from the list
                 nextMessages.splice(existingIndex, 1);
-                // console.log(`[WS Pool] Deleted: ${msg.name}`);
               }
               return; // Move to next message
             }
@@ -154,7 +156,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
 
     ws.onclose = () => {
-      // console.log(`[WS Pool] Closed ${ns} (Code: ${e.code})`);
       delete sockets.current[ns];
     };
 
@@ -178,9 +179,11 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (!sockets.current[jobsKey]) {
       try {
         const jobsWs = new WebSocket(JOBS_WS_URL());
+
         jobsWs.onopen = () => {
-          // console.log('[WS Pool] Connected to jobs feed.');
+          // Jobs connection opened
         };
+
         jobsWs.onmessage = (event) => {
           try {
             const raw = JSON.parse(event.data);
@@ -210,9 +213,11 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             console.error('[WS Pool] Parse error on jobs feed:', e);
           }
         };
+
         jobsWs.onclose = () => {
           delete sockets.current[jobsKey];
         };
+
         jobsWs.onerror = (err) => {
           console.error('[WS Pool] Jobs socket error:', err);
           try {
@@ -231,8 +236,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, []);
 
   const getNamespaceMessages = useCallback(
-    (namespace: string) => {
-      return messages.filter((m) => m.ns === namespace);
+    (rawNs: string) => {
+      const ns = sanitizeK8sName(rawNs);
+      return messages.filter((m) => m.ns === ns);
     },
     [messages],
   );
@@ -241,7 +247,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setMessages([]);
   }, []);
 
-  // Cleanup effect: Close all sockets when the provider unmounts (e.g., user navigates away or logs out)
+  // Cleanup effect: Close all sockets when the provider unmounts
   useEffect(() => {
     const currentSockets = sockets.current;
     const currentLogWindows = logWindows.current;
@@ -285,11 +291,14 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, []);
 
   const subscribeToPodLogs = useCallback(
-    (namespace: string, pod: string, container: string, cb: (line: string) => void) => {
+    (rawNamespace: string, pod: string, container: string, cb: (line: string) => void) => {
+      // Ensure namespace is safe before using it in keys or URLs
+      const namespace = sanitizeK8sName(rawNamespace);
       const key = `podlogs-${namespace}-${pod}-${container}`;
 
       if (!podLogSubscribers.current[key]) podLogSubscribers.current[key] = [];
       podLogSubscribers.current[key].push(cb);
+
       if (!podLogSockets.current[key]) {
         try {
           const wsUrl = POD_LOGS_WS_URL(namespace, pod, container);
@@ -321,6 +330,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 (podLogSubscribers.current[key] || []).forEach((s) => s(String(parsed)));
               }
             } catch (err) {
+              console.log('[WS Pool] pod log parse error', err);
               (podLogSubscribers.current[key] || []).forEach((s) => s(String(data)));
             }
           };
@@ -346,7 +356,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
       }
 
-      // return unsubscribe
+      // Return unsubscribe function
       return () => {
         const list = podLogSubscribers.current[key] || [];
         podLogSubscribers.current[key] = list.filter((f) => f !== cb);

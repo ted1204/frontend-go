@@ -19,11 +19,11 @@ const navItems: NavItem[] = [
   { icon: <GroupIcon />, name: 'sidebar.groups', path: '/groups' },
   { icon: <BoxIcon />, name: 'sidebar.pods', path: '/pod-tables' },
   { icon: <TaskIcon />, name: 'sidebar.fileBrowser', path: '/file-browser' },
-  {
-    icon: <GridIcon />,
-    name: 'sidebar.dashboard',
-    subItems: [{ name: 'sidebar.ecommerce', path: '/', pro: false }],
-  },
+  // {
+  //   icon: <GridIcon />,
+  //   name: 'sidebar.dashboard',
+  //   subItems: [{ name: 'sidebar.ecommerce', path: '/', pro: false }],
+  // },
   { icon: <BoxIcon />, name: 'sidebar.forms', path: '/my-forms' },
 ];
 

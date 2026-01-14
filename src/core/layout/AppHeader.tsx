@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useSidebar } from '../context/useSidebar';
 import { useTranslation } from '@nthucscc/utils';
 import { ThemeToggleButton } from '@nthucscc/components-shared';
-import NotificationDropdown from '@/shared/components/header/NotificationDropdown';
+// import NotificationDropdown from '@/shared/components/header/NotificationDropdown';
 import UserDropdown from '@/shared/components/header/UserDropdown';
 
 const LanguageButton: React.FC = () => {
@@ -186,7 +186,7 @@ const AppHeader: React.FC = () => {
             {/* Language button (single, notification-style) */}
             <LanguageButton />
             {/* Notification dropdown */}
-            <NotificationDropdown />
+            {/* <NotificationDropdown /> */}
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* Display username */}

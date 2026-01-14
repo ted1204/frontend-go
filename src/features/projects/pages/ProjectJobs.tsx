@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useGlobalWebSocket } from '@/core/context/useGlobalWebSocket';
 import { getUsername } from '@/core/services/authService'; // Needed to construct namespace
 import { LuRefreshCw, LuActivity } from 'react-icons/lu';
-import { useTranslation } from '@nthucscc/utils';
+import { useTranslation, sanitizeK8sName } from '@nthucscc/utils';
 
 // Imports from your file structure
 import { InferredJob, JobPodMap, JobPod } from '../../monitoring/pages/Jobs/types';
@@ -38,7 +38,10 @@ export default function ProjectJobs({ projectId }: ProjectJobsProps) {
   // Ideally, this matches the logic in ProjectDetail.tsx
   const targetNamespace = useMemo(() => {
     if (!projectId || !currentUsername) return '';
-    return `proj-${projectId}-${currentUsername}`;
+
+    const rawName = `proj-${projectId}-${currentUsername}`;
+
+    return sanitizeK8sName(rawName);
   }, [projectId, currentUsername]);
 
   // 2. Core Logic: Infer Jobs from WebSocket Pods
