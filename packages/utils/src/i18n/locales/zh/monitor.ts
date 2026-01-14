@@ -34,12 +34,17 @@ export const monitor = {
     empty: {
       noPods: '找不到 Pod。',
       waitingForData: '等待叢集資料串流...',
+      waitingTitle: '等待資料串流',
     },
     button: {
       connect: '連線',
     },
     agePrefix: '存在時間',
     waiting: '等待叢集資料串流...',
+    podMonitoring: {
+      title: 'Pod Monitoring',
+      description: '應用程式 workloads 的即時檢視。',
+    },
     websocketError: 'WebSocket 錯誤',
     connected: '已連線',
     disconnected: '已斷線',

@@ -30,6 +30,18 @@ export const pages = {
     projects: {
       title: '專案列表',
       description: '查看可存取的專案。',
+      jobs: {
+        activeJobsTitle: 'Active Jobs',
+        liveViewFromNamespace: '來自命名空間：{namespace}',
+        forceRerender: '強制重新渲染',
+      },
+    },
+    jobs: {
+      title: 'Jobs 監控',
+      description: '基於專案 Job Pods 的即時檢視。',
+      activeJobsTitle: '活動 Jobs',
+      searchPlaceholder: '搜尋 Jobs...',
+      breadcrumb: 'Jobs 監控',
     },
     manageGroups: {
       title: '群組管理',

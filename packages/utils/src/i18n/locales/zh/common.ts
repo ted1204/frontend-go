@@ -36,6 +36,8 @@ export const common = {
     live: '即時',
     reset: '重設',
     apply: '套用篩選',
+    createSuccess: '建立成功',
+    updateSuccess: '更新成功',
   },
   deleteConfirmation: {
     title: '刪除 {itemType}',

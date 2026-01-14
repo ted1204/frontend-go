@@ -29,6 +29,18 @@ export const pages = {
     projects: {
       title: 'Projects',
       description: 'List of accessible projects.',
+      jobs: {
+        activeJobsTitle: 'Active Jobs',
+        liveViewFromNamespace: 'Live view from namespace: {namespace}',
+        forceRerender: 'Force Re-render',
+      },
+    },
+    jobs: {
+      title: 'Job Monitor',
+      description: 'Real-time view based on project pods.',
+      activeJobsTitle: 'Active Jobs',
+      searchPlaceholder: 'Search jobs...',
+      breadcrumb: 'Job Monitor',
     },
     manageGroups: {
       title: 'Manage Groups',

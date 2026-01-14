@@ -154,9 +154,9 @@ export default function PodTables() {
       <div className="flex flex-col gap-1 mb-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
           <LuActivity className="text-blue-600" />
-          Pod Monitoring
+          {t('monitor.podMonitoring.title')}
         </h1>
-        <p className="text-sm text-gray-500">Real-time view of your application workloads.</p>
+        <p className="text-sm text-gray-500">{t('monitor.podMonitoring.description')}</p>
       </div>
 
       {hasPods ? (
@@ -170,7 +170,7 @@ export default function PodTables() {
               <div className="px-6 py-3 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 flex items-center gap-3">
                 <LuServer className="text-gray-400" />
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
-                  Namespace
+                  {t('monitor.table.namespace')}
                 </span>
                 <span className="px-2.5 py-0.5 rounded-md bg-white border border-gray-200 text-sm font-mono text-gray-800 shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
                   {ns}
@@ -194,10 +194,10 @@ export default function PodTables() {
             </div>
           </div>
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">
-            Waiting for data stream
+            {t('monitor.empty.waitingTitle')}
           </h3>
           <p className="text-gray-500 dark:text-gray-400 text-sm max-w-sm text-center">
-            {t('monitor.empty.waitingForData') || 'Connecting to Kubernetes cluster...'}
+            {t('monitor.empty.waitingForData')}
           </p>
         </div>
       )}

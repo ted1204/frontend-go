@@ -16,7 +16,7 @@ export const navigation = {
     fileBrowser: '雲端檔案管理員',
     forms: '我的表單',
     menu: '菜單',
-    jobs: '工作',
+    jobs: 'Jobs',
     ecommerce: '電子商務',
     manageImages: '管理映像檔',
   },

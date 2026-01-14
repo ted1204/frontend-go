@@ -36,6 +36,7 @@ export default function EditConfigModal({
   // Custom Hook managing synchronization and state
   const {
     filename,
+    setFilename,
     rawYaml,
     updateRawYaml,
     resources,
@@ -128,6 +129,18 @@ export default function EditConfigModal({
       maxWidth="max-w-7xl"
     >
       {/* Tabs */}
+      {/* Filename input */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          {t('config.filename.label')}
+        </label>
+        <input
+          value={filename}
+          onChange={(e) => setFilename(e.target.value)}
+          className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+        />
+      </div>
+
       <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
         <nav className="-mb-px flex space-x-8">
           <button

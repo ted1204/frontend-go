@@ -3,6 +3,7 @@ import { useGlobalWebSocket } from '@/core/context/useGlobalWebSocket';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import { SearchInput } from '@nthucscc/components-shared';
 import { LuActivity } from 'react-icons/lu';
+import { useTranslation } from '@nthucscc/utils';
 
 // Auth & Project Services (與 PodTable 一致)
 import { getUsername } from '@/core/services/authService';
@@ -30,6 +31,7 @@ const JobsLivePage: React.FC = () => {
   const { messages, connectToNamespace, subscribeToPodLogs } = useGlobalWebSocket();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const { t } = useTranslation();
 
   // --- 1. Namespace Connection Logic (完全復刻 PodTable) ---
   useEffect(() => {
@@ -199,7 +201,7 @@ const JobsLivePage: React.FC = () => {
 
   return (
     <div className="space-y-6 p-6 max-w-[1600px] mx-auto">
-      <PageBreadcrumb pageTitle="Job Monitor" />
+      <PageBreadcrumb pageTitle={t('page.jobs.title')} />
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
         <div className="flex items-center gap-2">
@@ -207,13 +209,19 @@ const JobsLivePage: React.FC = () => {
             <LuActivity className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Active Jobs</h2>
-            <p className="text-xs text-gray-500">Real-time view based on project pods.</p>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              {t('page.jobs.activeJobsTitle')}
+            </h2>
+            <p className="text-xs text-gray-500">{t('page.jobs.description')}</p>
           </div>
         </div>
 
         <div className="w-64">
-          <SearchInput value={search} onChange={setSearch} placeholder="Search jobs..." />
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+            placeholder={t('page.jobs.searchPlaceholder')}
+          />
         </div>
       </div>
 

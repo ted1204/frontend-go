@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@nthucscc/utils';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { useGroupPermissions } from '@/shared/hooks/useGroupPermissions';
+import { toast, Toaster } from 'react-hot-toast';
 
 // Services
 import {
@@ -38,12 +39,16 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
   const [configFiles, setConfigFiles] = useState<ConfigFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   // Modal States
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedConfig, setSelectedConfig] = useState<ConfigFile | null>(null);
+
+  // --- Helper: Error Extractor ---
+  const getErrorMessage = (err: any) => {
+    return err?.response?.data?.message || err?.message || 'An unexpected error occurred';
+  };
 
   // --- Data Fetching ---
   const fetchConfigs = useCallback(async () => {
@@ -51,10 +56,9 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
       setLoading(true);
       const data = await getConfigFilesByProjectId(projectId);
       setConfigFiles(data);
-      setError(null);
     } catch (err) {
       console.error('Failed to load configs', err);
-      setError(t('project.detail.fetchError') || 'Failed to load configurations');
+      toast.error(t('project.detail.fetchError') || 'Failed to load configurations');
     } finally {
       setLoading(false);
     }
@@ -70,17 +74,13 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
   const handleCreate = async (data: { filename: string; raw_yaml: string }) => {
     setActionLoading(true);
     try {
-      // console.log('Creating config file with data:', { ...data, project_id: projectId });
       await createConfigFile({ ...data, project_id: projectId });
+      toast.success(t('common.createSuccess') || 'Configuration created successfully');
       setIsCreateModalOpen(false);
-      await fetchConfigs(); // Refresh list
+      await fetchConfigs();
     } catch (err) {
       console.error('Error creating config file:', err);
-      const errorMessage =
-        err instanceof Error ? err.message : t('project.detail.createConfigError');
-      console.error('Error message:', errorMessage);
-      setError(errorMessage);
-      alert('Failed to create config file: ' + errorMessage); // Temporary alert to ensure error is visible
+      toast.error(getErrorMessage(err));
     } finally {
       setActionLoading(false);
     }
@@ -94,10 +94,11 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
         filename: data.filename || selectedConfig.Filename,
         raw_yaml: data.raw_yaml || selectedConfig.Content,
       });
+      toast.success(t('common.updateSuccess') || 'Configuration updated successfully');
       setIsEditModalOpen(false);
-      await fetchConfigs(); // Refresh list
+      await fetchConfigs();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('project.detail.updateConfigError'));
+      toast.error(getErrorMessage(err));
     } finally {
       setActionLoading(false);
     }
@@ -107,11 +108,17 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
     if (!window.confirm(t('common.confirmDelete'))) return;
 
     setActionLoading(true);
+    const deletePromise = deleteConfigFile(configId);
+
     try {
-      await deleteConfigFile(configId);
-      await fetchConfigs(); // Refresh list
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t('project.detail.deleteConfigError'));
+      await toast.promise(deletePromise, {
+        loading: 'Deleting...',
+        success: 'Configuration deleted',
+        error: (err) => getErrorMessage(err),
+      });
+      await fetchConfigs();
+    } catch {
+      // error handled by toast.promise
     } finally {
       setActionLoading(false);
     }
@@ -121,9 +128,9 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
     setActionLoading(true);
     try {
       await createInstance(id);
-      alert(t('project.detail.instanceCreateSent'));
+      toast.success(t('project.detail.instanceCreateSent'));
     } catch (err) {
-      alert(err instanceof Error ? err.message : t('project.detail.createInstanceError'));
+      toast.error(getErrorMessage(err));
     } finally {
       setActionLoading(false);
     }
@@ -135,11 +142,10 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
     setActionLoading(true);
     try {
       await deleteInstance(id);
-      alert(t('project.detail.instanceDeleteSent'));
-      // Refresh the config files list to update instance counts
+      toast.success(t('project.detail.instanceDeleteSent'));
       await fetchConfigs();
     } catch (err) {
-      alert(err instanceof Error ? err.message : t('project.detail.deleteInstanceError'));
+      toast.error(getErrorMessage(err));
     } finally {
       setActionLoading(false);
     }
@@ -152,6 +158,13 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
 
   return (
     <>
+      <Toaster
+        position="top-center"
+        containerStyle={{
+          zIndex: 99999,
+        }}
+      />
+
       <div className="rounded-xl border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 p-4 sm:p-6 dark:border-gray-600">
@@ -177,12 +190,6 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
 
         {/* Content */}
         <div className="p-4 sm:p-6">
-          {error && (
-            <div className="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-500 dark:bg-red-900/20">
-              {error}
-            </div>
-          )}
-
           {loading ? (
             <div className="py-10 text-center text-gray-500">
               <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent mb-2"></div>
@@ -190,6 +197,7 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
             </div>
           ) : (
             <ConfigFileList
+              projectId={projectId}
               configFiles={configFiles}
               onDelete={handleDelete}
               onEdit={openEditModal}

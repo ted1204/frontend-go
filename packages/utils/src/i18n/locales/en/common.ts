@@ -36,6 +36,8 @@ export const common = {
     live: 'Live',
     reset: 'Reset',
     apply: 'Apply Filters',
+    createSuccess: 'Created successfully',
+    updateSuccess: 'Updated successfully',
   },
   deleteConfirmation: {
     title: 'Delete {itemType}',

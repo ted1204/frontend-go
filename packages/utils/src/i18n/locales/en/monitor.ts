@@ -34,12 +34,17 @@ export const monitor = {
     empty: {
       noPods: 'No pods found.',
       waitingForData: 'Waiting for cluster data stream...',
+      waitingTitle: 'Waiting for data stream',
     },
     button: {
       connect: 'Connect',
     },
     agePrefix: 'Age',
     waiting: 'Waiting for cluster data stream...',
+    podMonitoring: {
+      title: 'Pod Monitoring',
+      description: 'Real-time view of your application workloads.',
+    },
     websocketError: 'WebSocket Error',
     connected: 'Connected',
     disconnected: 'Disconnected',

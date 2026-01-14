@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from '@nthucscc/utils';
 import { ConfigFile } from '@/core/interfaces/configFile';
 import { ConfigFileItem } from './configfile/ConfigFileItem';
@@ -14,6 +14,7 @@ interface ConfigFileListProps {
   onDeleteInstance: (id: number) => void;
   actionLoading: boolean;
   canManage?: boolean;
+  projectId?: number;
 }
 
 type TabType = 'general' | 'job';
@@ -26,9 +27,29 @@ export default function ConfigFileList({
   onDeleteInstance,
   actionLoading,
   canManage = true,
+  projectId,
 }: ConfigFileListProps) {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<TabType>('general');
+
+  // Persist active tab per-project so re-renders (loading states) keep selection
+  const storageKey = `configfiles_tab_${projectId ?? 'global'}`;
+  const [activeTab, setActiveTab] = useState<TabType>(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      return saved === 'job' ? 'job' : 'general';
+    } catch {
+      return 'general';
+    }
+  });
+
+  // keep storage in sync
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageKey, activeTab);
+    } catch {
+      // ignore storage errors
+    }
+  }, [storageKey, activeTab]);
 
   const { generalFiles, jobFiles } = useMemo(() => {
     const general: ConfigFile[] = [];
@@ -120,7 +141,7 @@ export default function ConfigFileList({
       </div>
 
       {/* --- List Content --- */}
-      <div className="overflow-hidden rounded-b-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <div className="overflow-visible rounded-b-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
         {displayFiles.length === 0 ? (
           <EmptyState type={activeTab} />
         ) : (

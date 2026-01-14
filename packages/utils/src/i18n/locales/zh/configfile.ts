@@ -14,7 +14,7 @@ export const configFile = {
     relatedResources: '相關資源',
     noRelatedResources: '沒有相關資源',
     notDeployed: '此設定檔尚未部署。',
-    noGeneralConfigs: '找不到一般工作負載',
-    noJobConfigs: '找不到工作負載',
+    noGeneralConfigs: '找不到一般Jobs負載',
+    noJobConfigs: '找不到Jobs負載',
   },
 };

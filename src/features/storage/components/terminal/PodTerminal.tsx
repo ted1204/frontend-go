@@ -54,6 +54,11 @@ const TerminalPage: React.FC<TerminalProps> = ({
 
   useEffect(() => {
     if (!terminalRef.current) return;
+    // Avoid creating websocket when required params are missing — prevents transient error messages
+    if (!namespace || !pod || !container) {
+      writeStatus(`${t('terminal.connecting') || 'Waiting for terminal target...'}`, 'yellow');
+      return;
+    }
 
     // 1. Initialize Terminal
     const terminalInstance = new Terminal({
@@ -208,7 +213,15 @@ const TerminalPage: React.FC<TerminalProps> = ({
 
     return () => {
       resizeObserver.current?.disconnect();
-      socket.current?.close();
+      if (socket.current) {
+        socket.current.onclose = null;
+        socket.current.onerror = null;
+        socket.current.onmessage = null;
+        socket.current.onopen = null;
+
+        socket.current.close();
+        socket.current = null;
+      }
       try {
         webglAddon.current?.dispose();
         webglAddon.current = null;

@@ -60,11 +60,18 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
     return svc;
   }
 
-  if (kind === 'Pod' || kind === 'Deployment') {
+  if (kind === 'Pod' || kind === 'Deployment' || kind === 'Job' || kind === 'CronJob') {
     const workload = res as WorkloadResource;
     const spec = docObj.spec || {};
-    // Deployment structure is different, need to find template spec
-    const templateSpec = spec.template?.spec || spec;
+    // Many controllers place the PodSpec under different keys:
+    // - Pod: spec
+    // - Deployment: spec.template.spec
+    // - Job: spec.template.spec
+    // - CronJob: spec.jobTemplate.spec.template.spec
+    let templateSpec: any = spec.template?.spec || spec;
+    if (!templateSpec?.containers) {
+      templateSpec = spec.jobTemplate?.spec?.template?.spec || templateSpec;
+    }
     const containers = templateSpec.containers || [];
 
     workload.containers = containers.map((c: any, ci: number) => ({
@@ -188,6 +195,17 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
     }));
 
     workload.replicas = spec.replicas || workload.replicas;
+
+    // Job specific fields
+    if (kind === 'Job') {
+      (workload as any).completions = spec.completions ?? (workload as any).completions;
+      (workload as any).parallelism = spec.parallelism ?? (workload as any).parallelism;
+      (workload as any).backoffLimit = spec.backoffLimit ?? (workload as any).backoffLimit;
+      (workload as any).activeDeadlineSeconds =
+        spec.activeDeadlineSeconds ?? (workload as any).activeDeadlineSeconds;
+      (workload as any).restartPolicy =
+        templateSpec.restartPolicy || (workload as any).restartPolicy;
+    }
 
     // Parse Labels/Selectors
     workload.selectors = [];

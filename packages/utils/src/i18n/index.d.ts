@@ -717,7 +717,7 @@ declare const resources: {
       readonly fileBrowser: '雲端檔案管理員';
       readonly forms: '我的表單';
       readonly menu: '菜單';
-      readonly jobs: '工作';
+      readonly jobs: 'Jobs';
       readonly ecommerce: '電子商務';
     };
     readonly error: {

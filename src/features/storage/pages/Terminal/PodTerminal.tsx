@@ -48,6 +48,13 @@ const TerminalPage: React.FC<TerminalProps> = ({
   useEffect(() => {
     // t is used inside websocket event handlers below
     if (!terminalRef.current) return;
+    // Avoid creating websocket when required params are missing — prevents transient error messages
+    if (!namespace || !pod || !container) {
+      term.current?.writeln(
+        `\x1b[1;33m➜ ${t('terminal.connecting') || 'Waiting for terminal target...'}\x1b[0m`,
+      );
+      return;
+    }
     // 1. Initialize the Terminal with a modern, dark theme.
     term.current = new Terminal({
       cursorBlink: true,

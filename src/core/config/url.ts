@@ -50,6 +50,8 @@ export const PROJECT_RESOURCES_URL = (id: number) => `${API_BASE_URL}/projects/$
 export const PVC_CREATE_URL = `${API_BASE_URL}/k8s/pvc`;
 export const PVC_EXPAND_URL = `${API_BASE_URL}/k8s/pvc/expand`;
 export const PVC_LIST_URL = (namespace: string) => `${API_BASE_URL}/k8s/pvc/list/${namespace}`;
+// Deprecated: per-project PVC listing removed; use /k8s/storage/projects or /k8s/storage/projects/my-storages via service helpers.
+// Keep a deprecated alias for compatibility with older frontend modules that still import it.
 export const PVC_LIST_BY_PROJECT_URL = (pid: number) => `${API_BASE_URL}/k8s/pvc/by-project/${pid}`;
 export const PVC_GET_URL = (namespace: string, name: string) =>
   `${API_BASE_URL}/k8s/pvc/${namespace}/${name}`;

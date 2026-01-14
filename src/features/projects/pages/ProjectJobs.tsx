@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useGlobalWebSocket } from '@/core/context/useGlobalWebSocket';
 import { getUsername } from '@/core/services/authService'; // Needed to construct namespace
 import { LuRefreshCw, LuActivity } from 'react-icons/lu';
+import { useTranslation } from '@nthucscc/utils';
 
 // Imports from your file structure
 import { InferredJob, JobPodMap, JobPod } from '../../monitoring/pages/Jobs/types';
@@ -13,6 +14,7 @@ interface ProjectJobsProps {
 }
 
 export default function ProjectJobs({ projectId }: ProjectJobsProps) {
+  const { t } = useTranslation();
   // UI State
   const [, setRefreshKey] = useState(0); // Used to trigger UI re-renders if needed, though WS updates automatically
 
@@ -165,12 +167,11 @@ export default function ProjectJobs({ projectId }: ProjectJobsProps) {
             <LuActivity className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Active Jobs</h2>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              {t('page.projects.jobs.activeJobsTitle')}
+            </h2>
             <p className="text-xs text-gray-500">
-              Live view from namespace:{' '}
-              <span className="font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">
-                {targetNamespace}
-              </span>
+              {t('page.projects.jobs.liveViewFromNamespace', { namespace: targetNamespace })}
             </p>
           </div>
         </div>
@@ -178,7 +179,7 @@ export default function ProjectJobs({ projectId }: ProjectJobsProps) {
         <button
           onClick={() => setRefreshKey((k) => k + 1)}
           className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-          title="Force Re-render"
+          title={t('page.projects.jobs.forceRerender')}
         >
           <LuRefreshCw className="h-5 w-5" />
         </button>

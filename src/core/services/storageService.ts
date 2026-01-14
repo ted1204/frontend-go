@@ -2,7 +2,6 @@ import {
   PVC_CREATE_URL,
   PVC_EXPAND_URL,
   PVC_LIST_URL,
-  PVC_LIST_BY_PROJECT_URL,
   PVC_GET_URL,
   PVC_DELETE_URL,
   PVC_FILEBROWSER_START_URL,
@@ -86,10 +85,23 @@ export const getPVCList = async (namespace: string): Promise<PVC[]> => {
 
 export const getPVCListByProject = async (pid: number): Promise<PVC[]> => {
   try {
-    const response = await fetchWithAuth(PVC_LIST_BY_PROJECT_URL(pid), {
-      method: 'GET',
-    });
-    return response.data as PVC[];
+    // New backend exposes project storages via /k8s/storage/projects/my-storages (user-scoped)
+    // and /k8s/storage/projects (admin). The per-project endpoint was removed.
+    // We'll fetch the user's accessible project storages and filter by project id.
+    const allMy = await getMyProjectStorages();
+    const filtered = (allMy || []).filter(
+      (s) => String(s.id) === String(pid) || String(s.id) === String(pid),
+    );
+
+    // Map ProjectPVC -> PVC shape expected by callers
+    const mapped: PVC[] = filtered.map((p) => ({
+      name: p.pvcName || '',
+      namespace: p.namespace || '',
+      size: p.capacity || '',
+      status: p.status || '',
+    }));
+
+    return mapped;
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : 'Failed to fetch PVC list.');
   }
