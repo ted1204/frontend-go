@@ -35,6 +35,24 @@ Useful scripts
 - `npm run lint` / `npm run lint:fix` — eslint
 - `npm run format` — prettier
 
+## Kubernetes deployment notes (frontend)
+
+- Development (local): Run the frontend dev server on the host for fast iteration. Using `tmux` or a process manager is recommended for long-running sessions:
+
+  ```bash
+  cd frontend
+  tmux new -s frontend
+  npm run dev
+  ```
+
+- Container and deploy to Kubernetes: To deploy the frontend to a cluster:
+  1.  Run `npm run build` in the monorepo root or `packages/frontend-app` to produce static files.
+  2.  Build a Docker image using the project Dockerfile or a custom Dockerfile.
+  3.  Set the image name to your registry (e.g. `registry:5000/namespace/frontend:tag`).
+  4.  Push the image to your registry and update the frontend manifest image, then run `kubectl apply -f <frontend-manifest>.yaml`.
+
+- Note: For development, the host dev server is convenient. For cluster deployment, ensure static files and environment variables (API endpoint) point to the cluster backend.
+
 Workspace packages overview
 
 - `packages/frontend-app` — the application; run with `npm run dev:app`.
@@ -58,4 +76,4 @@ Notes
 - This repo uses TypeScript project references; building packages before the app is recommended in CI.
 - Check `packages/*/package.json` for package-specific scripts.
 
-If you want a tailored README for `packages/frontend-app` or CI steps, I can add them next.
+For package-specific documentation or CI instructions, see the package folders or add dedicated README files under `packages/frontend-app`.

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import yaml from 'js-yaml';
 import { createDefaultResource } from '@/features/projects/utils/resourceFactories'; // Assume existing
 import {
@@ -115,8 +114,11 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
         vm.forEach((m: any, mi: number) => {
           const volumeDef = volumes.find((v: any) => v.name === m.name);
 
-          let mountType: 'project-pvc' | 'user-storage' = 'project-pvc';
+          let mountType: 'project-pvc' | 'user-storage' | 'emptyDir' | 'configMap' = 'project-pvc';
           let pvcName = m.name || '';
+          let configMapName: string | undefined = undefined;
+          let medium: string | undefined = undefined;
+          let sizeLimit: string | undefined = undefined;
 
           if (volumeDef?.persistentVolumeClaim) {
             // Prefer PVC claimName placeholders to indicate user/project volumes
@@ -154,6 +156,13 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
                 pvcName = m.name || cleanedPath;
               }
             }
+          } else if (volumeDef?.emptyDir) {
+            mountType = 'emptyDir';
+            medium = volumeDef.emptyDir.medium || undefined;
+            sizeLimit = volumeDef.emptyDir.sizeLimit || undefined;
+          } else if (volumeDef?.configMap) {
+            mountType = 'configMap';
+            configMapName = volumeDef.configMap.name || m.name || undefined;
           }
 
           if (!grouped[m.name]) {
@@ -161,6 +170,9 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
               id: `${id}-c-${ci}-m-${mi}`,
               pvcName,
               type: mountType,
+              configMapName,
+              medium,
+              sizeLimit,
               subPaths: [],
             };
           }

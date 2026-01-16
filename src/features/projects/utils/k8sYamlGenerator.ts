@@ -157,24 +157,40 @@ const generateVolumesBlock = (mounts: any[], indent: string): string => {
   if (mounts.length === 0) return '';
 
   let yaml = `${indent}volumes:\n`;
-  const uniqueVols = new Set<string>();
 
+  // Collect first-seen volume descriptor per volName
+  const seen = new Map<string, any>();
   mounts.forEach((m) => {
-    if (uniqueVols.has(m.volName)) return;
-    uniqueVols.add(m.volName);
+    if (!m || !m.volName) return;
+    if (!seen.has(m.volName)) seen.set(m.volName, m);
+  });
 
+  seen.forEach((m) => {
     yaml += `${indent}${INDENT}- name: ${m.volName}\n`;
-    const claimName =
-      m.type === 'user-storage'
-        ? '"{{userVolume}}"'
-        : m.pvcName
-          ? m.pvcName
-          : '"{{projectVolume}}"';
 
-    const finalClaim = claimName.includes('{{') || m.pvcName ? claimName : '"{{projectVolume}}"';
+    // User storage -> PVC with template variable
+    if (m.type === 'user-storage') {
+      yaml += `${indent}${INDENT}${INDENT}persistentVolumeClaim:\n`;
+      yaml += `${indent}${INDENT}${INDENT}${INDENT}claimName: "{{userVolume}}"\n`;
 
-    yaml += `${indent}${INDENT}${INDENT}persistentVolumeClaim:\n`;
-    yaml += `${indent}${INDENT}${INDENT}${INDENT}claimName: ${finalClaim}\n`;
+      // emptyDir volume
+    } else if (m.type === 'emptyDir') {
+      yaml += `${indent}${INDENT}${INDENT}emptyDir:\n`;
+      if (m.medium) yaml += `${indent}${INDENT}${INDENT}${INDENT}medium: ${m.medium}\n`;
+      if (m.sizeLimit) yaml += `${indent}${INDENT}${INDENT}${INDENT}sizeLimit: ${m.sizeLimit}\n`;
+
+      // ConfigMap-backed volume
+    } else if (m.type === 'configMap') {
+      const cmName = m.configMapName || m.pvcName || m.volName;
+      yaml += `${indent}${INDENT}${INDENT}configMap:\n`;
+      yaml += `${indent}${INDENT}${INDENT}${INDENT}name: ${cmName}\n`;
+
+      // Default -> persistentVolumeClaim (use provided pvcName or projectVolume template)
+    } else {
+      const claim = m.pvcName ? m.pvcName : '"{{projectVolume}}"';
+      yaml += `${indent}${INDENT}${INDENT}persistentVolumeClaim:\n`;
+      yaml += `${indent}${INDENT}${INDENT}${INDENT}claimName: ${claim}\n`;
+    }
   });
 
   return yaml;
@@ -229,7 +245,19 @@ const generateConfigMapYAML = (res: ConfigMapResource): string => {
     yaml += `  # No data added\n`;
   } else {
     res.data.forEach((d) => {
-      if (d.key) yaml += `  ${d.key}: "${d.value}"\n`;
+      if (!d.key) return;
+      const val = d.value ?? '';
+
+      // If the value contains newlines, use a block scalar to preserve formatting (e.g. XML)
+      if (typeof val === 'string' && val.includes('\n')) {
+        yaml += `  ${d.key}: |\n`;
+        val.split('\n').forEach((ln) => {
+          yaml += `${INDENT}${INDENT}${ln}\n`;
+        });
+      } else {
+        const safe = String(val).replace(/"/g, '\\"');
+        yaml += `  ${d.key}: "${safe}"\n`;
+      }
     });
   }
   return yaml;

@@ -11,7 +11,7 @@ export interface FormData {
   raw_yaml: string;
 }
 
-export type MountType = 'project-pvc' | 'user-storage';
+export type MountType = 'project-pvc' | 'user-storage' | 'emptyDir' | 'configMap';
 export type ResourceKind = 'Pod' | 'Deployment' | 'Service' | 'ConfigMap' | 'Job';
 export type ImagePullPolicy = 'Always' | 'IfNotPresent' | 'Never';
 export type ServiceProtocol = 'TCP' | 'UDP'; // New
@@ -22,6 +22,10 @@ export interface MountConfig {
   pvcName?: string;
   // Support multiple subPath -> mountPath pairs for the same volume
   subPaths: { id: string; subPath: string; mountPath: string }[];
+  // optional fields for other mount types
+  configMapName?: string;
+  medium?: string; // for emptyDir
+  sizeLimit?: string; // for emptyDir
 }
 
 export interface EnvVar {

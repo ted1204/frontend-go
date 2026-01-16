@@ -29,26 +29,46 @@ const MountRow = ({
         </label>
         <select
           value={mount.type}
-          onChange={(e) => onChange(mount.id, 'type', e.target.value)}
+          onChange={(e) => {
+            // Debug logging to help diagnose UI selection issues
+            console.debug('MountRow: type change', {
+              id: mount.id,
+              newValue: e.target.value,
+              hasUserStorage,
+              hasProjectStorage,
+            });
+            onChange(mount.id, 'type', e.target.value as any);
+          }}
+          onClick={() => {
+            console.debug('MountRow: select clicked', { id: mount.id, current: mount.type });
+          }}
           className="block w-full rounded-md border-gray-300 bg-gray-50 py-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
         >
           {/* Conditionally render options based on availability */}
           {hasUserStorage && <option value="user-storage">Personal Storage</option>}
           {hasProjectStorage && <option value="project-pvc">Project Storage</option>}
+          <option value="emptyDir">emptyDir (in-memory)</option>
+          <option value="configMap">ConfigMap</option>
         </select>
       </div>
 
       {/* 2. Source Selection */}
       <div className="flex-[1.5] space-y-1 min-w-[160px]">
         <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-          {mount.type === 'user-storage' ? 'Source' : 'Select PVC'}
+          {mount.type === 'user-storage'
+            ? 'Source'
+            : mount.type === 'project-pvc'
+              ? 'Select PVC'
+              : mount.type === 'configMap'
+                ? 'ConfigMap'
+                : 'emptyDir'}
         </label>
 
         {mount.type === 'user-storage' ? (
           <div className="flex items-center rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-700/50 dark:text-gray-400 cursor-not-allowed">
             <span className="truncate">Home Drive ({'{{userVolume}}'})</span>
           </div>
-        ) : (
+        ) : mount.type === 'project-pvc' ? (
           <select
             value={mount.pvcName || ''}
             onChange={(e) => onChange(mount.id, 'pvcName', e.target.value)}
@@ -61,7 +81,19 @@ const MountRow = ({
               </option>
             ))}
           </select>
-        )}
+        ) : mount.type === 'configMap' ? (
+          <input
+            type="text"
+            value={(mount as any).configMapName || ''}
+            onChange={(e) => onChange(mount.id, 'configMapName' as any, e.target.value)}
+            placeholder="ConfigMap name"
+            className="block w-full rounded-md border-gray-300 bg-white py-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+          />
+        ) : mount.type === 'emptyDir' ? (
+          <div className="flex items-center gap-2">
+            <div className="text-sm text-gray-600 dark:text-gray-300">emptyDir (in-memory)</div>
+          </div>
+        ) : null}
         {mount.type === 'project-pvc' && mount.pvcName && (
           <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
             <p>Gateway exports /exports/{mount.pvcName}; mounting the root directory.</p>
@@ -69,6 +101,38 @@ const MountRow = ({
               ⚠️ PVC must support ReadWriteMany for multiple Pods (e.g., FileBrowser + your
               workload) to access simultaneously.
             </p>
+          </div>
+        )}
+
+        {mount.type === 'configMap' && (mount as any).configMapName && (
+          <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+            <p>
+              Using ConfigMap <strong>{(mount as any).configMapName}</strong> as the volume source.
+            </p>
+            <p className="text-xs text-gray-400">
+              Use the subPath to mount a single file (e.g. fastdds.xml).
+            </p>
+          </div>
+        )}
+        {mount.type === 'emptyDir' && (
+          <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+            <p>emptyDir will mount a tmpfs-backed directory inside the Pod.</p>
+            <div className="flex gap-2 mt-1">
+              <input
+                type="text"
+                placeholder="medium (e.g. Memory)"
+                value={(mount as any).medium || ''}
+                onChange={(e) => onChange(mount.id, 'medium' as any, e.target.value)}
+                className="block w-1/2 rounded-md border-gray-300 py-1 px-2 text-sm"
+              />
+              <input
+                type="text"
+                placeholder="sizeLimit (e.g. 1Gi)"
+                value={(mount as any).sizeLimit || ''}
+                onChange={(e) => onChange(mount.id, 'sizeLimit' as any, e.target.value)}
+                className="block w-1/2 rounded-md border-gray-300 py-1 px-2 text-sm"
+              />
+            </div>
           </div>
         )}
       </div>

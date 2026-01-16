@@ -29,8 +29,8 @@ const MountManager = ({
     } else if (hasProjectStorage) {
       defaultType = 'project-pvc';
     } else {
-      // Should not happen if button is disabled, but safety check
-      return;
+      // fallback to emptyDir when no persistent storage exists
+      defaultType = 'emptyDir';
     }
 
     const defaultPVC =
@@ -67,6 +67,28 @@ const MountManager = ({
             subPaths: [{ id: Date.now().toString() + '-s', subPath: '', mountPath: '/' }],
           };
         }
+        // Handle switching to emptyDir
+        if (field === 'type' && value === 'emptyDir') {
+          return {
+            ...m,
+            type: value as MountType,
+            pvcName: undefined,
+            configMapName: undefined,
+            medium: undefined,
+            sizeLimit: undefined,
+            subPaths: [{ id: Date.now().toString() + '-s', subPath: '', mountPath: '/' }],
+          };
+        }
+        // Handle switching to configMap
+        if (field === 'type' && value === 'configMap') {
+          return {
+            ...m,
+            type: value as MountType,
+            pvcName: undefined,
+            configMapName: m.configMapName || '',
+            subPaths: [{ id: Date.now().toString() + '-s', subPath: '', mountPath: '/' }],
+          };
+        }
         // Auto-select first PVC if switching to project-pvc
         if (field === 'type' && value === 'project-pvc' && !m.pvcName && projectPvcs.length > 0) {
           const first = projectPvcs[0].name;
@@ -82,6 +104,13 @@ const MountManager = ({
           return {
             ...m,
             pvcName: value as string,
+            subPaths: [{ id: Date.now().toString() + '-s', subPath: '', mountPath: '/' }],
+          };
+        }
+        if (field === 'configMapName') {
+          return {
+            ...m,
+            configMapName: value as string,
             subPaths: [{ id: Date.now().toString() + '-s', subPath: '', mountPath: '/' }],
           };
         }

@@ -1,8 +1,19 @@
 // types.ts
+export interface PodEvent {
+  type?: string;
+  reason?: string;
+  message?: string;
+  count?: number;
+  firstTimestamp?: string;
+  lastTimestamp?: string;
+  source?: string;
+}
+
 export interface Pod {
   name: string;
   containers: string[];
   status: string;
+  events?: PodEvent[];
 }
 
 export interface NamespacePods {

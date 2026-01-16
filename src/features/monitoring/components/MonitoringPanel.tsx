@@ -149,6 +149,9 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
   const currentResources = useMemo(() => {
     const safeMessages = Array.isArray(messages) ? messages : [];
     const resourceMap = new Map<string, ResourceMessage>();
+    // Keep terminating/deleted resources visible for a short grace period so users can see
+    // that a resource is terminating instead of disappearing immediately.
+    const GRACE_MS = 30 * 1000; // 30 seconds
 
     safeMessages.forEach((msg) => {
       // Filter out system pods (noisy data)
@@ -157,13 +160,48 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
       }
 
       const key = `${msg.kind}/${msg.name}`;
+
       if (msg.type === 'DELETED') {
-        resourceMap.delete(key);
+        // If we already know this resource, mark it terminating and set an expiry
+        const existing = resourceMap.get(key);
+        if (existing) {
+          existing.metadata = existing.metadata || {};
+          existing.metadata.deletionTimestamp =
+            msg.metadata?.deletionTimestamp || new Date().toISOString();
+          existing.status = 'Terminating';
+          // store a private expire marker (not part of public interface)
+          (existing as any).__expireAt = Date.now() + GRACE_MS;
+          resourceMap.set(key, existing);
+        } else {
+          // If we haven't seen it yet, create a terminating placeholder so user still sees it
+          const placeholder: ResourceMessage = {
+            type: 'DELETED',
+            name: msg.name,
+            ns: msg.ns,
+            kind: msg.kind,
+            status: 'Terminating',
+            metadata: {
+              deletionTimestamp: msg.metadata?.deletionTimestamp || new Date().toISOString(),
+              creationTimestamp: msg.metadata?.creationTimestamp,
+            },
+          } as ResourceMessage;
+          (placeholder as any).__expireAt = Date.now() + GRACE_MS;
+          resourceMap.set(key, placeholder);
+        }
       } else {
-        // Upsert: newer messages overwrite older ones
-        resourceMap.set(key, msg);
+        // Upsert: newer messages overwrite older ones. Also clear any expire marker when updated.
+        const m = { ...msg } as any;
+        if ((m as any).__expireAt) delete (m as any).__expireAt;
+        resourceMap.set(key, m as ResourceMessage);
       }
     });
+
+    // Remove any items that have expired past their grace window
+    const now = Date.now();
+    for (const [k, v] of resourceMap.entries()) {
+      const exp = (v as any).__expireAt;
+      if (exp && exp < now) resourceMap.delete(k);
+    }
 
     return Array.from(resourceMap.values()).sort((a, b) => {
       // Sort priority: Kind -> IsJob -> CreationTime -> Name
