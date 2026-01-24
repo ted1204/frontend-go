@@ -6,9 +6,10 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 IMAGE_NAME="frontend-go"
+PROJECT="library"
 IMAGE_TAG="${1:-latest}"
-REGISTRY="${2:-localhost:5000}"
-FULL_IMAGE="${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
+REGISTRY="${2:-10.121.124.21:30003}"
+FULL_IMAGE="${REGISTRY}/${PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}"
 
 echo -e "${YELLOW}=== Frontend Build & Deploy ===${NC}"
 echo -e "Image: ${FULL_IMAGE}"
@@ -26,7 +27,8 @@ echo ""
 
 # Step 2: Build Docker image
 echo -e "${YELLOW}Step 2: Building Docker image...${NC}"
-docker build -t ${FULL_IMAGE} .
+docker build -t ${FULL_IMAGE} -f Dockerfile ..
+
 if [ $? -ne 0 ]; then
     echo -e "${RED}Docker build failed!${NC}"
     exit 1
@@ -44,13 +46,18 @@ fi
 echo -e "${GREEN}Image pushed successfully!${NC}"
 echo ""
 
-# Step 4: Deploy to Kubernetes
+# Step 4: Create/Update Kubernetes Deployment
 echo -e "${YELLOW}Step 4: Deploying to Kubernetes...${NC}"
+kubectl apply -f k8s-deployment.yaml
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Kubernetes deployment apply failed!${NC}"
+    exit 1
+fi
 
+echo -e "${YELLOW}Updating image in deployment...${NC}"
 kubectl set image deployment/frontend-app \
   frontend=${FULL_IMAGE} \
-  -n frontend \
-  --record
+  -n frontend
 if [ $? -ne 0 ]; then
     echo -e "${RED}Kubernetes deployment failed!${NC}"
     exit 1
