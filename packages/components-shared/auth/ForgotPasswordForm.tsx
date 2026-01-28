@@ -59,9 +59,7 @@ export default function ForgotPasswordForm() {
 
   return (
     <div className="flex flex-col flex-1">
-      <div className="w-full max-w-md pt-10 mx-auto">
-        {/* Back button if needed */}
-      </div>
+      <div className="w-full max-w-md pt-10 mx-auto">{/* Back button if needed */}</div>
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
@@ -153,12 +151,7 @@ export default function ForgotPasswordForm() {
                 </div>
 
                 <div>
-                  <Button
-                    className="w-full"
-                    size="sm"
-                    type="submit"
-                    disabled={loading}
-                  >
+                  <Button className="w-full" size="sm" type="submit" disabled={loading}>
                     {loading ? 'Resetting Password...' : 'Reset Password'}
                   </Button>
                 </div>
