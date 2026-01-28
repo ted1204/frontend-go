@@ -159,6 +159,14 @@ export default function SignInForm() {
                     {t('auth.login.forgotPassword')}
                   </Link>
                 </div> */}
+                <div className="flex items-center justify-between">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                  >
+                    {t('auth.login.forgotPassword')}
+                  </Link>
+                </div>
                 <div>
                   <Button className="w-full" size="sm" type="submit">
                     {t('auth.login.submit')}

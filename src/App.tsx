@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 // React import not needed with automatic JSX runtime
 
 // Auth Pages
-import { SignIn, SignUp } from './features/auth/pages';
+import { SignIn, SignUp, ForgotPassword } from './features/auth/pages';
 
 // Admin Pages
 import {
@@ -52,6 +52,7 @@ export default function App() {
             <Route element={<PublicRoute />}>
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
             </Route>
 
             {/* Protected Routes */}

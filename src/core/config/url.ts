@@ -21,6 +21,7 @@ export const GET_NS_MONITORING_URL = (ns: string) => {
 export const LOGIN_URL = `${API_BASE_URL}/login`;
 export const REGISTER_URL = `${API_BASE_URL}/register`;
 export const LOGOUT_URL = `${API_BASE_URL}/logout`;
+export const FORGOT_PASSWORD_URL = `${API_BASE_URL}/forgot-password`;
 //groups
 export const GROUPS_URL = `${API_BASE_URL}/groups`;
 export const GROUP_BY_ID_URL = (id: number) => `${API_BASE_URL}/groups/${id}`;

@@ -16,3 +16,4 @@ export { default as PageMeta } from './PageMeta';
 // Auth forms
 export * from './auth/SignInForm';
 export * from './auth/SignUpForm';
+export * from './auth/ForgotPasswordForm';
