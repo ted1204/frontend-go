@@ -240,10 +240,10 @@ const EditProjectForm: React.FC<EditProjectFormProps> = ({
                 {loading ? (
                   <span className="flex items-center justify-center animate-pulse">
                     <SpinnerIcon className="w-4 h-4 mr-2 text-white" />
-                    {t('project.create.creating')}
+                    {t('project.edit.updating')}
                   </span>
                 ) : (
-                  t('project.create.submit')
+                  t('project.edit.submit')
                 )}
               </Button>
             </div>

@@ -68,6 +68,8 @@ export const projects = {
     },
     edit: {
       title: '編輯專案',
+      submit: '更新專案',
+      updating: '更新中...',
     },
     detail: {
       overview: '概覽',

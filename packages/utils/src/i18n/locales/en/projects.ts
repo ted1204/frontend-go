@@ -68,6 +68,8 @@ export const projects = {
     },
     edit: {
       title: 'Edit Project',
+      submit: 'Update Project',
+      updating: 'Updating...',
     },
     detail: {
       overview: 'Overview',
