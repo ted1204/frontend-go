@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { Terminal } from 'xterm';
-import { FitAddon } from 'xterm-addon-fit';
-import { WebglAddon } from 'xterm-addon-webgl';
+import { Terminal } from '@xterm/xterm';
+import { FitAddon } from '@xterm/addon-fit';
+import { WebglAddon } from '@xterm/addon-webgl';
 import { BASE_URL } from '@/core/config/url';
-import 'xterm/css/xterm.css';
+import '@xterm/xterm/css/xterm.css';
 import { useTranslation } from '@nthucscc/utils';
 
 interface TerminalMessage {

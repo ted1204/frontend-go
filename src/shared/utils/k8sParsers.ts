@@ -234,8 +234,10 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
 
 export const parseK8sYaml = (yamlContent: string): ResourceItem[] => {
   try {
-    const docs = yaml.loadAll(yamlContent);
-    return docs.filter((d) => d && typeof d === 'object').map((doc, i) => parseResourceDoc(doc, i));
+    const docs = yaml.loadAll(yamlContent) as unknown[];
+    return docs
+      .filter((d): d is Record<string, unknown> => Boolean(d && typeof d === 'object'))
+      .map((doc, i) => parseResourceDoc(doc, i));
   } catch (e) {
     console.error('YAML Parse Error:', e);
     return [];

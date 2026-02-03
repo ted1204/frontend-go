@@ -20,7 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "types": ["vite/client", "node", "vitest"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
@@ -32,5 +31,6 @@
       "@nthucscc/utils/*": ["packages/utils/src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.spec.ts", "src/**/*.spec.tsx"]
 }
