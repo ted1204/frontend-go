@@ -1,6 +1,6 @@
 // PodMonitoringTable.tsx
 import { useEffect, useState, useCallback } from 'react';
-import { useGlobalWebSocket } from '@/core/context/useGlobalWebSocket';
+import { useGlobalWebSocket } from '@/core/context/hooks/useGlobalWebSocket';
 import { getUsername } from '@/core/services/authService';
 import { getProjectListByUser, getProjects } from '@/core/services/projectService';
 import { getGroupsByUser } from '@/core/services/userGroupService';

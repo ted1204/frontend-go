@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useGlobalWebSocket } from '@/core/context/useGlobalWebSocket';
+import { useGlobalWebSocket } from '@/core/context/hooks/useGlobalWebSocket';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import { SearchInput } from '@nthucscc/components-shared';
 import { LuActivity } from 'react-icons/lu';
 import { useTranslation } from '@nthucscc/utils';
 
-// Auth & Project Services (與 PodTable 一致)
+// Auth and project services
 import { getUsername } from '@/core/services/authService';
 import { getProjectListByUser, getProjects } from '@/core/services/projectService';
 import { getGroupsByUser } from '@/core/services/userGroupService';
@@ -33,7 +33,7 @@ const JobsLivePage: React.FC = () => {
   const itemsPerPage = 10;
   const { t } = useTranslation();
 
-  // --- 1. Namespace Connection Logic (完全復刻 PodTable) ---
+  // Namespace connection logic
   useEffect(() => {
     const connectUserNamespaces = async () => {
       const username = getUsername();
@@ -44,7 +44,7 @@ const JobsLivePage: React.FC = () => {
 
       try {
         if (userDataStr) {
-          // 方法 A: 從 LocalStorage 快取與 UserGroup 推算
+          // Use cached user data and groups
           const { user_id: userId } = JSON.parse(userDataStr);
           const [allProjects, userGroups] = await Promise.all([
             getProjects(),
@@ -53,14 +53,13 @@ const JobsLivePage: React.FC = () => {
           const userGroupIds = userGroups.map((g: { GID: any }) => g.GID);
           projects = (allProjects || []).filter((p: Project) => userGroupIds.includes(p.GID));
         } else {
-          // 方法 B: 直接呼叫 API
+          // Fallback to API
           projects = await getProjectListByUser();
         }
 
-        // 建立連線: 格式通常是 proj-{PID}-{username} 或系統定義的格式
+        // Connect to project namespaces
         projects.forEach((p) => {
-          // 請確認這裡的 Namespace 格式與您的後端一致
-          // 假設格式為: proj-{PID}-{username}
+          // Namespace format must match backend
           const ns = `proj-${p.PID}-${username}`;
           connectToNamespace(ns);
         });
@@ -72,19 +71,19 @@ const JobsLivePage: React.FC = () => {
     connectUserNamespaces();
   }, [connectToNamespace]);
 
-  // --- 2. 核心邏輯：從 Pods 訊息反推 Jobs (Inferred Jobs) ---
+  // Infer jobs from pod messages
   const { jobPodMap, inferredJobs } = useMemo(() => {
     const map: JobPodMap = {};
     const jobs: InferredJob[] = [];
 
     messages.forEach((m: any) => {
-      // 只處理 Pod 類型
+      // Only process pods
       if (m.kind !== 'Pod') return;
 
       const labels = m?.metadata?.labels || {};
       const ownerRefs = m?.metadata?.ownerReferences || [];
 
-      // 嘗試找出 Job Name (從 Label 或 OwnerReference)
+      // Resolve job name from labels or owner references
       let jobName = labels['job-name'] || labels['job'];
 
       if (!jobName && Array.isArray(ownerRefs)) {
@@ -94,11 +93,11 @@ const JobsLivePage: React.FC = () => {
         if (jobOwner) jobName = jobOwner.name;
       }
 
-      // 如果確認這個 Pod 屬於某個 Job
+      // Add pod to job mapping
       if (jobName) {
         if (!map[jobName]) map[jobName] = [];
 
-        // 解析 Pod 資訊
+        // Map pod info
         const podInfo: JobPod = {
           name: m.name,
           namespace: m.ns,
@@ -108,21 +107,21 @@ const JobsLivePage: React.FC = () => {
           image: m.containers && m.containers.length > 0 ? 'container-image' : '',
         };
 
-        // 避免重複加入 Map
+        // Avoid duplicates
         if (!map[jobName].find((p) => p.name === m.name)) {
           map[jobName].push(podInfo);
         }
       }
     });
 
-    // 將 Map 轉換為 InferredJob 列表
+    // Convert map to list
     Object.keys(map).forEach((jobName) => {
       const pods = map[jobName];
       if (pods.length === 0) return;
 
       const firstPod = pods[0];
 
-      // 簡單的 Job 狀態判斷邏輯
+      // Derive job status
       let derivedStatus = 'Running';
       if (pods.every((p) => p.status === 'Succeeded' || p.status === 'Completed'))
         derivedStatus = 'Completed';
@@ -136,13 +135,13 @@ const JobsLivePage: React.FC = () => {
         name: jobName,
         namespace: firstPod.namespace,
         status: derivedStatus,
-        image: firstPod.image || 'Unknown', // 若 WS 沒送 image 資訊，這裡可能需要調整
+        image: firstPod.image || 'Unknown',
         createdAt: firstPod.startTime,
         podCount: pods.length,
       });
     });
 
-    // 排序：最新的 Job 排前面
+    // Sort newest first
     jobs.sort((a, b) => {
       const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
       const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
@@ -152,7 +151,7 @@ const JobsLivePage: React.FC = () => {
     return { jobPodMap: map, inferredJobs: jobs };
   }, [messages]);
 
-  // --- 3. Log 訂閱邏輯 ---
+  // Log subscription
   const handleViewPodLog = useCallback((namespace: string, pod: string, container: string) => {
     setPodLogsState({
       open: true,
@@ -182,7 +181,7 @@ const JobsLivePage: React.FC = () => {
     };
   }, [podLogsState.open, podLogsState.target, subscribeToPodLogs]);
 
-  // --- 4. 搜尋與分頁 ---
+  // Search and pagination
   const filteredJobs = useMemo(
     () =>
       inferredJobs.filter(

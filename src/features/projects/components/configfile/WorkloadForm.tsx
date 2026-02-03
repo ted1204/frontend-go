@@ -122,7 +122,7 @@ const WorkloadForm = ({ resource, projectPvcs, hasUserStorage, onChange }: Workl
         )}
       </div>
 
-      {/* Selectors (labels) - Job 也可能有 label，保留 */}
+      {/* Selectors (labels) */}
       <div>
         <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
           Selectors / Labels

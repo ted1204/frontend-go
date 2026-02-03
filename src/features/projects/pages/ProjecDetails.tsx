@@ -7,7 +7,7 @@ import { ChartBarIcon, Cog6ToothIcon, CubeIcon, UsersIcon } from '@heroicons/rea
 // Services & Context
 import { getProjectById } from '@/core/services/projectService';
 import { getUsername } from '@/core/services/authService';
-import { useGlobalWebSocket } from '@/core/context/useGlobalWebSocket';
+import { useGlobalWebSocket } from '@/core/context/hooks/useGlobalWebSocket';
 import { Project } from '@/core/interfaces/project';
 
 // Components

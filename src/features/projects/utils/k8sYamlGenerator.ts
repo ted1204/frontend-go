@@ -3,7 +3,7 @@ import {
   WorkloadResource,
   ServiceResource,
   ConfigMapResource,
-  JobResource, // 假設你已經加入了這個 interface
+  JobResource,
   ContainerConfig,
   KeyValuePair,
 } from '@/core/interfaces/configFile';

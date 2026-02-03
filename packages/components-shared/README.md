@@ -1,21 +1,21 @@
 # @nthucscc/components-shared
 
-共享 React UI 元件庫，供 monorepo 內各前端專案共用。
+Shared React UI components for monorepo frontend apps.
 
-## 目前元件
+## Components
 
 - Pagination
 - SearchInput
 - PageMeta
 - ThemeToggleButton
 
-## 使用方式
+## Usage
 
 ```tsx
 import { Pagination, SearchInput, PageMeta, ThemeToggleButton } from '@nthucscc/components-shared';
 ```
 
-## 開發
+## Development
 
-- 請將可重用的 UI 元件搬移至本目錄，並於 `index.ts` 匯出。
-- 執行 `npm run build` 產生型別與 dist 輸出。
+- Move reusable UI components into this package and export them from `index.ts`.
+- Run `npm run build` to generate types and dist output.

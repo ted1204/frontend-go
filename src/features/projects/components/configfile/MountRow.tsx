@@ -98,7 +98,7 @@ const MountRow = ({
           <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
             <p>Gateway exports /exports/{mount.pvcName}; mounting the root directory.</p>
             <p className="text-amber-600 dark:text-amber-400">
-              ⚠️ PVC must support ReadWriteMany for multiple Pods (e.g., FileBrowser + your
+              Warning: PVC must support ReadWriteMany for multiple Pods (e.g., FileBrowser + your
               workload) to access simultaneously.
             </p>
           </div>

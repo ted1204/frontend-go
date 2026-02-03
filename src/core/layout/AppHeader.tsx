@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@nthucscc/utils';
 import { Link } from 'react-router-dom';
-import { useSidebar } from '../context/useSidebar';
+import { useSidebar } from '../context/hooks/useSidebar';
 import { useTranslation } from '@nthucscc/utils';
 import { ThemeToggleButton } from '@nthucscc/components-shared';
 // import NotificationDropdown from '@/shared/components/header/NotificationDropdown';

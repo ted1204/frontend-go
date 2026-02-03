@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { JOBS_URL, JOB_BY_ID_URL, JOB_LOGS_URL } from '../config/url';
+import { JOBS_URL, JOB_BY_ID_URL, JOB_LOGS_URL } from '@/core/config/url';
 import { getJob, getJobLogs, getJobs } from './jobService';
 import { fetchWithAuth } from '@/shared/utils/api';
 

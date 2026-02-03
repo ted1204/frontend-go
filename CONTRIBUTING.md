@@ -1,24 +1,24 @@
-# 貢獻指南
+# Contributing Guide
 
-## Monorepo 結構
+## Monorepo Structure
 
-- 共用元件請放於 `packages/components-shared`
-- 共用 hooks/i18n 請放於 `packages/utils`
-- UI 元件請放於 `packages/ui`
-- app 端專案請放於 `packages/frontend-app`
+- Shared components: `packages/components-shared`
+- Shared hooks and i18n: `packages/utils`
+- UI components: `packages/ui`
+- App package: `packages/frontend-app`
 
-## 開發流程
+## Development Workflow
 
-1. 請先拉取最新 main 分支
-2. 新增/搬移共用元件時，請於對應 package 目錄下開發
-3. 執行 `npm run lint`、`npm run format`、`npx tsc -b` 確認無誤
-4. 提交 PR 前請確保 CI 通過
+1. Pull the latest `main` branch.
+2. Add or move shared components within the appropriate package.
+3. Run `npm run lint`, `npm run format`, and `npx tsc -b`.
+4. Ensure CI passes before opening a PR.
 
 ## CI/CD
 
-- PR 及 main push 會自動執行格式檢查、Linter、TypeScript build 及各 package build
+- PRs and `main` pushes run formatting, linting, TypeScript builds, and package builds.
 
-## 其他
+## Notes
 
-- 如需新增 package，請同步更新根目錄 `package.json` 的 workspaces 設定
-- 有任何問題請於 PR 或 issue 中說明
+- Update `package.json` workspaces when adding a new package.
+- Use PRs or issues for questions.

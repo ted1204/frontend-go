@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { useGlobalWebSocket } from '@/core/context/useGlobalWebSocket';
+import { useGlobalWebSocket } from '@/core/context/hooks/useGlobalWebSocket';
 import { getUsername } from '@/core/services/authService'; // Needed to construct namespace
 import { LuRefreshCw, LuActivity } from 'react-icons/lu';
 import { useTranslation, sanitizeK8sName } from '@nthucscc/utils';

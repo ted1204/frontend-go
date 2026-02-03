@@ -18,15 +18,15 @@ if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
     echo -e "${BLUE}Stopping container: ${CONTAINER_NAME}${NC}"
     docker stop ${CONTAINER_NAME}
     docker rm ${CONTAINER_NAME}
-    echo -e "${GREEN}✓ Container removed${NC}"
+    echo -e "${GREEN}Container removed${NC}"
 fi
 
 # Remove image
 if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${IMAGE_NAME}:${IMAGE_TAG}$"; then
     echo -e "${BLUE}Removing image: ${IMAGE_NAME}:${IMAGE_TAG}${NC}"
     docker rmi ${IMAGE_NAME}:${IMAGE_TAG}
-    echo -e "${GREEN}✓ Image removed${NC}"
+    echo -e "${GREEN}Image removed${NC}"
 fi
 
 echo ""
-echo -e "${GREEN}✓ Cleanup complete!${NC}"
+echo -e "${GREEN}Cleanup complete${NC}"

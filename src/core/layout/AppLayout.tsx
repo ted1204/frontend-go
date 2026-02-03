@@ -1,5 +1,5 @@
 import { SidebarProvider } from '../context/SidebarContext';
-import { useSidebar } from '../context/useSidebar';
+import { useSidebar } from '../context/hooks/useSidebar';
 import { Outlet } from 'react-router';
 import AppHeader from './AppHeader';
 import Backdrop from './Backdrop';
