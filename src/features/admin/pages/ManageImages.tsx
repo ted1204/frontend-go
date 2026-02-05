@@ -65,7 +65,9 @@ export default function ManageImages() {
         setPullJobStatuses(activeMap);
       }
     } catch (err) {
-      console.error('Failed to load images:', err);
+      if (import.meta.env.DEV) {
+        console.error('Failed to load images:', err);
+      }
     } finally {
       setLoading(false);
     }
@@ -100,7 +102,9 @@ export default function ManageImages() {
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
-      console.log(`WebSocket connected for job ${jobId}`);
+      if (import.meta.env.DEV) {
+        console.log(`WebSocket connected for job ${jobId}`);
+      }
     };
 
     ws.onmessage = (event) => {
@@ -120,16 +124,22 @@ export default function ManageImages() {
           wsConnectionsRef.current.delete(jobId);
         }
       } catch (err) {
-        console.error('Error parsing WebSocket message:', err);
+        if (import.meta.env.DEV) {
+          console.error('Error parsing WebSocket message:', err);
+        }
       }
     };
 
     ws.onerror = (err) => {
-      console.error(`WebSocket error for job ${jobId}:`, err);
+      if (import.meta.env.DEV) {
+        console.error(`WebSocket error for job ${jobId}:`, err);
+      }
     };
 
     ws.onclose = () => {
-      console.log(`WebSocket closed for job ${jobId}`);
+      if (import.meta.env.DEV) {
+        console.log(`WebSocket closed for job ${jobId}`);
+      }
       wsConnectionsRef.current.delete(jobId);
     };
 

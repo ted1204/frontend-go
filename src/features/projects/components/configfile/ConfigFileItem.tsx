@@ -52,7 +52,7 @@ export const ConfigFileItem = ({
         const res = await getResourcesByConfigFile(configFile.CFID);
         setResources(res);
         setHasFetched(true);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Error fetching resources:', error);
       } finally {
         setIsLoadingResources(false);

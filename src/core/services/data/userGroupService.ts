@@ -19,7 +19,7 @@ export const getUserGroup = async (u_id: number, g_id: number): Promise<UserGrou
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     });
     return extractData<UserGroup>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to fetch user-group.');
   }
 };
@@ -43,7 +43,7 @@ export const createUserGroup = async (input: UserGroupInputDTO): Promise<UserGro
       body: payload.toString(),
     });
     return extractData<UserGroup>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to create.');
   }
 };
@@ -61,7 +61,7 @@ export const updateUserGroup = async (input: UserGroupInputDTO): Promise<UserGro
       body: payload.toString(),
     });
     return extractData<UserGroup>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to update user-group.');
   }
 };
@@ -90,7 +90,7 @@ export const deleteUserGroup = async (input: UserGroupDeleteDTO): Promise<Messag
     }
 
     return extractData<MessageResponse>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to delete user-group.');
   }
 };
@@ -104,14 +104,12 @@ export const getUsersByGroup = async (g_id: number): Promise<UserGroupUser[]> =>
     const dataMap = extractData<Record<string, unknown>>(response);
 
     if (!dataMap || typeof dataMap !== 'object') {
-      console.warn('getUsersByGroup: Invalid response format');
       return [];
     }
 
     const groupData = dataMap[g_id.toString()] || dataMap[g_id];
     return (groupData as { Users?: UserGroupUser[] })?.Users ?? [];
-  } catch (error) {
-    console.error('Fetch users by group error:', error);
+  } catch (error: unknown) {
     return [];
   }
 };
@@ -125,7 +123,6 @@ export const getGroupsByUser = async (u_id: number): Promise<UserGroupGroup[]> =
     const data = extractData<UserGroup[]>(response);
 
     if (!data || !Array.isArray(data)) {
-      console.warn('getGroupsByUser: Expected array response');
       return [];
     }
 
@@ -136,8 +133,7 @@ export const getGroupsByUser = async (u_id: number): Promise<UserGroupGroup[]> =
     }));
 
     return groups;
-  } catch (error) {
-    console.error('Fetch groups by user error:', error);
+  } catch (error: unknown) {
     return [];
   }
 };

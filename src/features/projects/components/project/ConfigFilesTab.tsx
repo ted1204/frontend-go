@@ -117,7 +117,7 @@ const ConfigFilesTab: React.FC<ConfigFilesTabProps> = ({ project }) => {
         error: (err) => getErrorMessage(err),
       });
       await fetchConfigs();
-    } catch {
+    } catch (_error: unknown) {
       // error handled by toast.promise
     } finally {
       setActionLoading(false);

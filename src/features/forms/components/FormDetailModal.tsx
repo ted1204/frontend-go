@@ -40,7 +40,7 @@ export default function FormDetailModal({
     try {
       const msgs = await getFormMessages(form.ID);
       setMessages(msgs);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to load messages:', error);
     } finally {
       setLoadingMessages(false);
@@ -54,7 +54,7 @@ export default function FormDetailModal({
       const msg = await createFormMessage(form.ID, { content: newMessage.trim() });
       setMessages((prev) => [...prev, msg]);
       setNewMessage('');
-    } catch (error) {
+    } catch (error: unknown) {
       alert('Failed to send message: ' + (error instanceof Error ? error.message : String(error)));
     } finally {
       setLoading(false);

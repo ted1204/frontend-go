@@ -30,6 +30,7 @@ export const navigation = {
   search: {
     projectsPlaceholder: 'Search projects...',
     placeholder: 'Search...',
+    groupStoragePlaceholder: 'Search group storages...',
   },
   pagination: {
     prev: 'Previous',

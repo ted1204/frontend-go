@@ -6,6 +6,7 @@ import {
   JobResource,
   ContainerConfig,
   KeyValuePair,
+  MountConfig,
 } from '@/core/interfaces/configFile';
 
 const INDENT = '  ';
@@ -48,7 +49,7 @@ const generateLabels = (
 const generateSingleContainer = (
   c: ContainerConfig,
   indent: string,
-  collectedMounts: any[],
+  collectedMounts: Array<MountConfig & { volName: string }>,
 ): string => {
   let yaml = `${indent}- name: ${c.name}\n`;
   yaml += `${indent}${INDENT}image: "${c.image || 'ubuntu:latest'}"\n`;
@@ -153,7 +154,10 @@ const generateSingleContainer = (
   return yaml;
 };
 
-const generateVolumesBlock = (mounts: any[], indent: string): string => {
+const generateVolumesBlock = (
+  mounts: Array<MountConfig & { volName: string }>,
+  indent: string,
+): string => {
   if (mounts.length === 0) return '';
 
   let yaml = `${indent}volumes:\n`;
@@ -197,7 +201,7 @@ const generateVolumesBlock = (mounts: any[], indent: string): string => {
 };
 
 const generatePodSpecContent = (containers: ContainerConfig[], indent: string): string => {
-  const allMounts: any[] = [];
+  const allMounts: Array<MountConfig & { volName: string }> = [];
   let yaml = `${indent}containers:\n`;
 
   containers.forEach((c) => {

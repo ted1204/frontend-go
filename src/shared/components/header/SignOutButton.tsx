@@ -19,7 +19,7 @@ export const SignOutButton = ({ className = '', onClick }: SignOutButtonProps) =
       setIsAuthenticated(false);
       if (onClick) onClick();
       navigate('/signin');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Logout failed:', error);
       localStorage.clear();
       sessionStorage.clear();

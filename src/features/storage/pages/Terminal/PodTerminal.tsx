@@ -120,7 +120,9 @@ const TerminalPage: React.FC<TerminalProps> = ({
           term.current?.write(msg.data);
         }
       } catch (e) {
-        console.error('Failed to parse websocket message', e);
+        if (import.meta.env.DEV) {
+          console.error('Failed to parse websocket message', e);
+        }
       }
     };
 

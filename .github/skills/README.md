@@ -70,7 +70,37 @@ npm run check:lines
 
 ---
 
-### 3. GitHub Actions Code Optimization
+### 3. Frontend Production Readiness
+
+**Location**: `.github/skills/frontend-production-readiness/`
+
+Ensures production readiness with build validation, error handling, performance, accessibility, and security checks.
+
+**Key Topics**:
+
+- Build and type-safety validation
+- Error handling and loading states
+- Performance and UX stability
+- Accessibility requirements
+- Secure configuration practices
+- Reusability and clean code
+
+**Use Cases**:
+
+- Final validation before release
+- Refactors with new hooks or services
+- Permission-based UI changes
+- Performance-sensitive UI updates
+
+**Related Files**:
+
+- `src/`
+- `packages/utils/src/i18n/`
+- `src/core/services/`
+
+---
+
+### 4. GitHub Actions Code Optimization
 
 **Location**: `.github/skills/github-actions-code-optimization/`
 

@@ -105,7 +105,9 @@ const TerminalPage: React.FC<TerminalProps> = ({
       webglAddon.current = webglInstance;
       terminalInstance.loadAddon(webglInstance);
     } catch (e) {
-      console.warn('WebGL addon failed to load', e);
+      if (import.meta.env.DEV) {
+        console.warn('WebGL addon failed to load', e);
+      }
     }
 
     // 3. Mount
@@ -148,7 +150,9 @@ const TerminalPage: React.FC<TerminalProps> = ({
           term.current?.write(msg.data);
         }
       } catch (e) {
-        console.error('WS Parse Error', e);
+        if (import.meta.env.DEV) {
+          console.error('WS Parse Error', e);
+        }
       }
     };
 
@@ -163,7 +167,9 @@ const TerminalPage: React.FC<TerminalProps> = ({
           term.current as unknown as { setOption?: (name: string, value: unknown) => void }
         ).setOption?.('cursorBlink', false);
       } catch (err) {
-        console.warn('Failed to set terminal option', err);
+        if (import.meta.env.DEV) {
+          console.warn('Failed to set terminal option', err);
+        }
       }
 
       if (event.wasClean || event.code === 1000) {
@@ -201,7 +207,9 @@ const TerminalPage: React.FC<TerminalProps> = ({
           try {
             fitAddon.current.fit();
           } catch (err) {
-            console.warn('fit failed', err);
+            if (import.meta.env.DEV) {
+              console.warn('fit failed', err);
+            }
           }
         }
       });
@@ -226,13 +234,17 @@ const TerminalPage: React.FC<TerminalProps> = ({
         webglAddon.current?.dispose();
         webglAddon.current = null;
       } catch (err) {
-        console.warn('webgl dispose failed', err);
+        if (import.meta.env.DEV) {
+          console.warn('webgl dispose failed', err);
+        }
       }
       try {
         term.current?.dispose();
         term.current = null;
       } catch (err) {
-        console.warn('terminal dispose failed', err);
+        if (import.meta.env.DEV) {
+          console.warn('terminal dispose failed', err);
+        }
       }
     };
   }, [namespace, pod, container, command, tty, t, onClosed]);

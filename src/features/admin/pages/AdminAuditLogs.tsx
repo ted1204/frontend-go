@@ -191,7 +191,7 @@ const safePrettyJSON = (data: unknown): string | null => {
       return null;
     }
     return JSON.stringify(obj, null, 2);
-  } catch {
+  } catch (_error: unknown) {
     return String(data);
   }
 };
@@ -247,7 +247,6 @@ export default function AdminAuditLogs() {
       if (filters.limit) query.limit = Number(filters.limit);
 
       const fetched = await getAuditLogs(query);
-      console.log(fetched);
       setLogs(fetched);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to retrieve logs');

@@ -15,5 +15,10 @@ export const errors = {
     createProject: '建立專案失敗',
     deleteProject: '刪除專案失敗',
     userNotLogged: '使用者未登入',
+    application_error: '應用程式錯誤',
+    application_error_description: '發生了問題。我們為此不便向您致歉。',
+    component_stack: '組件堆棧',
+    try_again: '重試',
+    go_home: '返回首頁',
   },
 } as const;

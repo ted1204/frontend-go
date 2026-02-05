@@ -2,17 +2,18 @@ import { useState } from 'react';
 import { useTranslation } from '@nthucscc/utils';
 import { PageBreadcrumb } from '@nthucscc/ui';
 import { PageMeta } from '@nthucscc/components-shared';
-import { UserCircleIcon, CubeIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 
-// Import the decoupled components
 import { PersonalHub } from '../components/storage/PersonalHub';
-import { ProjectStorageManager } from '@/features/storage/components/storage/ProjectStorageManager';
+import { GroupStorageManager } from '@/features/storage/components/storage/GroupStorageManager';
 
-// --- Main Page Component ---
-// Acts as a shell to switch between Personal and Project storage views.
+/**
+ * BrowserPage - Main storage management interface
+ * Provides unified access to Personal Hub and Group Storage
+ */
 function BrowserPage() {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<'personal' | 'project'>('personal');
+  const [activeTab, setActiveTab] = useState<'personal' | 'group'>('personal');
 
   return (
     <>
@@ -20,7 +21,7 @@ function BrowserPage() {
       <PageBreadcrumb pageTitle={t('storage.breadcrumb')} />
 
       <div className="space-y-6 max-w-7xl mx-auto">
-        {/* --- Tab Navigation --- */}
+        {/* Tab Navigation */}
         <div className="bg-white dark:bg-gray-800 p-1.5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 inline-flex">
           <button
             onClick={() => setActiveTab('personal')}
@@ -33,20 +34,21 @@ function BrowserPage() {
             <UserCircleIcon className="h-5 w-5" /> {t('storage.tab.personal')}
           </button>
           <button
-            onClick={() => setActiveTab('project')}
+            onClick={() => setActiveTab('group')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${
-              activeTab === 'project'
+              activeTab === 'group'
                 ? 'bg-blue-50 text-blue-600 dark:bg-gray-700 dark:text-white shadow-sm ring-1 ring-black/5'
                 : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50'
             }`}
           >
-            <CubeIcon className="h-5 w-5" /> {t('storage.tab.project')}
+            <UserGroupIcon className="h-5 w-5" /> {t('storage.tab.group')}
           </button>
         </div>
 
-        {/* --- Content Area --- */}
+        {/* Content Area */}
         <div className="min-h-[500px] animate-in fade-in slide-in-from-bottom-2 duration-300">
-          {activeTab === 'personal' ? <PersonalHub /> : <ProjectStorageManager />}
+          {activeTab === 'personal' && <PersonalHub />}
+          {activeTab === 'group' && <GroupStorageManager />}
         </div>
       </div>
     </>

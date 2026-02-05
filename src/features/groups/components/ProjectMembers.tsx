@@ -39,7 +39,7 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
           setCanManage(true);
         }
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to fetch members:', error);
     } finally {
       setLoading(false);
@@ -53,7 +53,7 @@ const ProjectMembers: React.FC<ProjectMembersProps> = ({ groupId }) => {
       const memberIds = members.map((m) => m.UID);
       const filtered = allUsers.filter((u) => !memberIds.includes(u.UID));
       setAvailableUsers(filtered);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to fetch users:', error);
     }
   }, [members]);

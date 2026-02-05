@@ -38,6 +38,7 @@ export const groups = {
     tab: {
       overview: 'Overview',
       members: 'Members',
+      storage: 'Storage',
       info: 'Info',
     },
     form: {

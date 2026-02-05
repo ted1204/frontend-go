@@ -37,7 +37,7 @@ export default function ConfigFileList({
     try {
       const saved = localStorage.getItem(storageKey);
       return saved === 'job' ? 'job' : 'general';
-    } catch {
+    } catch (_error: unknown) {
       return 'general';
     }
   });
@@ -46,7 +46,7 @@ export default function ConfigFileList({
   useEffect(() => {
     try {
       localStorage.setItem(storageKey, activeTab);
-    } catch {
+    } catch (_error: unknown) {
       // ignore storage errors
     }
   }, [storageKey, activeTab]);

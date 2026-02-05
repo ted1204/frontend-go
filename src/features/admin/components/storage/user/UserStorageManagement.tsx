@@ -48,7 +48,7 @@ const UserStorageManagement: React.FC = () => {
       const exists = await checkUserStorageStatus(targetUser);
       setStorageStatus(exists ? 'exists' : 'missing');
       setMessage(null); // Clear previous messages
-    } catch {
+    } catch (_error: unknown) {
       setStorageStatus('unknown');
     } finally {
       setLoading(false);

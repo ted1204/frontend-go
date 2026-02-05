@@ -41,11 +41,9 @@ export const getAllowedImages = async (projectId?: number): Promise<AllowedImage
     const response = await fetchWithAuth(url, {
       method: 'GET',
     });
-    console.log('getAllowedImages response:', response);
 
     const rawData = extractData<RawAllowedImage[]>(response);
     if (!Array.isArray(rawData)) {
-      console.warn('getAllowedImages: Expected array response');
       return [];
     }
 
@@ -100,8 +98,7 @@ export const getAllowedImages = async (projectId?: number): Promise<AllowedImage
         IsPulled: img.IsPulled ?? img.is_pulled ?? false,
       } as AllowedImage;
     });
-  } catch (error) {
-    console.error('Failed to fetch allowed images:', error);
+  } catch (error: unknown) {
     return [];
   }
 };
@@ -142,7 +139,7 @@ export const addProjectImage = async (
       body: JSON.stringify(input),
     });
     return extractData<AllowedImage>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to add project image.');
   }
 };
@@ -153,7 +150,7 @@ export const removeProjectImage = async (projectId: number, imageId: number): Pr
     await fetchWithAuth(`${API_BASE_URL}/projects/${projectId}/images/${imageId}`, {
       method: 'DELETE',
     });
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to remove project image.');
   }
 };
@@ -164,7 +161,7 @@ export const deleteAllowedImage = async (id: number): Promise<void> => {
     await fetchWithAuth(`${API_BASE_URL}/images/allowed/${id}`, {
       method: 'DELETE',
     });
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to delete image.');
   }
 };
@@ -179,7 +176,7 @@ export const pullImage = async (name: string, tag: string): Promise<void> => {
       },
       body: JSON.stringify({ name, tag }),
     });
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to pull image.');
   }
 };
@@ -195,7 +192,7 @@ export const requestImage = async (input: CreateImageRequestInput): Promise<Imag
       body: JSON.stringify(input),
     });
     return extractData<ImageRequest>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to request image.');
   }
 };
@@ -266,8 +263,7 @@ export const getImageRequests = async (status?: string): Promise<ImageRequest[]>
     const response = await fetchWithAuth(url, { method: 'GET' });
     const rawData = parseResponse(response);
     return rawData.map((r) => mapToImageRequest(r));
-  } catch (error) {
-    console.error('Failed to fetch all image requests:', error);
+  } catch (error: unknown) {
     return [];
   }
 };
@@ -286,8 +282,7 @@ export const getProjectImageRequests = async (
     const response = await fetchWithAuth(url, { method: 'GET' });
     const rawData = parseResponse(response);
     return rawData.map((r) => mapToImageRequest(r, projectId));
-  } catch (error) {
-    console.error(`Failed to fetch requests for project ${projectId}:`, error);
+  } catch (error: unknown) {
     return [];
   }
 };
@@ -306,7 +301,7 @@ export const approveImageRequest = async (
       },
       body: JSON.stringify({ note, is_global: isGlobal }),
     });
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to approve image request.');
   }
 };
@@ -321,7 +316,7 @@ export const rejectImageRequest = async (id: number, note: string): Promise<void
       },
       body: JSON.stringify({ note }),
     });
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to reject image request.');
   }
 };
@@ -353,8 +348,7 @@ export const getFailedPullJobs = async (limit: number = 10): Promise<FailedPullJ
     });
     const data = extractData<FailedPullJob[]>(response);
     return Array.isArray(data) ? data : [];
-  } catch (error) {
-    console.error('Failed to fetch pull jobs:', error);
+  } catch (error: unknown) {
     return [];
   }
 };
@@ -367,8 +361,7 @@ export const getActivePullJobs = async (): Promise<ActivePullJob[]> => {
     });
     const data = extractData<ActivePullJob[]>(response);
     return Array.isArray(data) ? data : [];
-  } catch (error) {
-    console.error('Failed to fetch active pull jobs:', error);
+  } catch (error: unknown) {
     return [];
   }
 };

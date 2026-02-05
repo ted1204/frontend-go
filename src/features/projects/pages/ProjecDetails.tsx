@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from '@nthucscc/utils';
 import { PageMeta } from '@nthucscc/components-shared';
-import { ChartBarIcon, Cog6ToothIcon, CubeIcon, UsersIcon } from '@heroicons/react/24/outline';
+import { ChartBarIcon, Cog6ToothIcon, UsersIcon } from '@heroicons/react/24/outline';
 
 // Services & Context
 import { getProjectById } from '@/core/services/projectService';
@@ -15,7 +15,6 @@ import { PageBreadcrumb } from '@nthucscc/ui';
 import MonitoringPanel from '@/features/monitoring/components/MonitoringPanel';
 import ConfigFilesTab from '../components/project/ConfigFilesTab';
 import ProjectJobs from './ProjectJobs';
-import { ProjectStorageManager } from '@/features/storage/components/storage/ProjectStorageManager';
 import ProjectImageManagement from '../components/ProjectImageManagement';
 import CreateFormModal from '@/features/forms/components/CreateFormModal';
 
@@ -74,10 +73,8 @@ export default function ProjectDetail() {
               label: t('project.detail.tab.configurations'),
               icon: Cog6ToothIcon,
             },
-            // Moved Jobs tab here (right after configurations)
-            { id: 'jobs', label: 'Jobs', icon: CubeIcon },
-            { id: 'storage', label: t('project.detail.tab.storage'), icon: CubeIcon },
-            { id: 'images', label: 'Images', icon: CubeIcon },
+            { id: 'jobs', label: 'Jobs', icon: ChartBarIcon },
+            { id: 'images', label: 'Images', icon: ChartBarIcon },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -164,17 +161,10 @@ export default function ProjectDetail() {
         {/* --- Config Tab --- */}
         {activeTab === 'configurations' && <ConfigFilesTab project={project} />}
 
-        {/* --- Jobs Tab (Moved order in logic, rendering logic stays here) --- */}
+        {/* --- Jobs Tab --- */}
         {activeTab === 'jobs' && (
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <ProjectJobs projectId={project.PID} />
-          </div>
-        )}
-
-        {/* --- Storage Tab --- */}
-        {activeTab === 'storage' && (
-          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-            <ProjectStorageManager />
           </div>
         )}
 

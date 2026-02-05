@@ -18,7 +18,7 @@ export const getResourceById = async (id: number): Promise<Resource> => {
       method: 'GET',
     });
     return extractData<Resource>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to fetch resource.');
   }
 };
@@ -43,7 +43,7 @@ export const updateResource = async (id: number, input: UpdateResourceInput): Pr
       body: formData,
     });
     return extractData<Resource>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to update resource.');
   }
 };
@@ -54,7 +54,7 @@ export const deleteResource = async (id: number): Promise<MessageResponse> => {
       method: 'DELETE',
     });
     return extractData<MessageResponse>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to delete resource.');
   }
 };
@@ -65,7 +65,7 @@ export const getResources = async (): Promise<Resource[]> => {
       method: 'GET',
     });
     return response as Resource[];
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to fetch resources.');
   }
 };
@@ -77,7 +77,7 @@ export const getResourcesByConfigFile = async (cfId: number): Promise<Resource[]
       method: 'GET',
     });
     return response as Resource[];
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(
       error instanceof Error ? error.message : 'Failed to fetch resources by config file.',
     );

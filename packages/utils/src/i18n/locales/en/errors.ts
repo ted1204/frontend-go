@@ -15,5 +15,10 @@ export const errors = {
     createProject: 'Failed to create project',
     deleteProject: 'Failed to delete project',
     userNotLogged: 'User not logged in',
+    application_error: 'Application Error',
+    application_error_description: 'Something went wrong. We apologize for the inconvenience.',
+    component_stack: 'Component Stack',
+    try_again: 'Try Again',
+    go_home: 'Go Home',
   },
 } as const;

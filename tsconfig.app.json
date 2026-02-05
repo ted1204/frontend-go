@@ -23,6 +23,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
+      "@/pkg/*": ["src/pkg/*"],
+      "@/internal/*": ["src/internal/*"],
       "@nthucscc/ui": ["packages/ui/src"],
       "@nthucscc/ui/*": ["packages/ui/src/*"],
       "@nthucscc/components-shared": ["packages/components-shared/src"],

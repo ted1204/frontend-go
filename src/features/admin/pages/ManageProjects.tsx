@@ -243,7 +243,6 @@ export default function ManageProjects() {
         setAllProjects((prev) => prev.filter((p) => p.PID !== projectId));
       } else {
         setError(res.message || t('error.deleteProject'));
-        console.error('Deletion failed:', res.message);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : t('error.deleteFailed'));

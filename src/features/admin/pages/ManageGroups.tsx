@@ -179,7 +179,6 @@ export default function ManageGroups() {
       } else {
         // Display error from API response
         setError(res.message || t('error.deleteGroup'));
-        console.error('Deletion failed:', res.message);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : t('error.deleteFailed'));

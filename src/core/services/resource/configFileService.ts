@@ -9,6 +9,7 @@ import { MessageResponse } from '@/core/response/response';
 import { ConfigFile } from '@/core/interfaces/configFile';
 import { Resource } from '@/core/interfaces/resource';
 import { fetchWithAuth } from '@/shared/utils/api';
+import { NetworkError, ServerError } from '@/pkg/errors';
 
 type ApiResponse<T> = { data?: T } | T;
 
@@ -25,8 +26,16 @@ export const getConfigFiles = async (): Promise<ConfigFile[]> => {
       method: 'GET',
     });
     return extractData<ConfigFile[]>(response);
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to fetch config files.');
+  } catch (error: unknown) {
+    if (error instanceof Error && error.message === 'Network error') {
+      throw new NetworkError('Failed to fetch config files: network issue');
+    }
+    throw new ServerError(
+      error instanceof Error
+        ? `Failed to fetch config files: ${error.message}`
+        : 'Failed to fetch config files.',
+      error instanceof Error && error.message.includes('401') ? 401 : 500,
+    );
   }
 };
 
@@ -48,8 +57,15 @@ export const createConfigFile = async (input: CreateConfigFileInput): Promise<Co
       body: formData,
     });
     return extractData<ConfigFile>(response);
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to create config file.');
+  } catch (error: unknown) {
+    if (error instanceof Error && error.message === 'Network error') {
+      throw new NetworkError('Failed to create config file: network issue');
+    }
+    throw new ServerError(
+      error instanceof Error
+        ? `Failed to create config file: ${error.message}`
+        : 'Failed to create config file.',
+    );
   }
 };
 
@@ -59,8 +75,12 @@ export const getConfigFileById = async (id: number): Promise<ConfigFile> => {
       method: 'GET',
     });
     return extractData<ConfigFile>(response);
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to fetch config file.');
+  } catch (error: unknown) {
+    throw new ServerError(
+      error instanceof Error
+        ? `Failed to fetch config file: ${error.message}`
+        : 'Failed to fetch config file.',
+    );
   }
 };
 
@@ -83,8 +103,12 @@ export const updateConfigFile = async (
       body: formData,
     });
     return extractData<ConfigFile>(response);
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to update config file.');
+  } catch (error: unknown) {
+    throw new ServerError(
+      error instanceof Error
+        ? `Failed to update config file: ${error.message}`
+        : 'Failed to update config file.',
+    );
   }
 };
 
@@ -102,8 +126,12 @@ export const deleteConfigFile = async (id: number): Promise<MessageResponse> => 
       return { message: '204' } as MessageResponse;
     }
     return extractData<MessageResponse>(response);
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to delete config file.');
+  } catch (error: unknown) {
+    throw new ServerError(
+      error instanceof Error
+        ? `Failed to delete config file: ${error.message}`
+        : 'Failed to delete config file.',
+    );
   }
 };
 
@@ -113,8 +141,12 @@ export const getResourcesByConfigFile = async (id: number): Promise<Resource[]> 
       method: 'GET',
     });
     return extractData<Resource[]>(response);
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to fetch resources.');
+  } catch (error: unknown) {
+    throw new ServerError(
+      error instanceof Error
+        ? `Failed to fetch resources: ${error.message}`
+        : 'Failed to fetch resources.',
+    );
   }
 };
 
@@ -124,9 +156,11 @@ export const getConfigFilesByProjectId = async (projectId: number): Promise<Conf
       method: 'GET',
     });
     return extractData<ConfigFile[]>(response);
-  } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch config files by project ID.',
+  } catch (error: unknown) {
+    throw new ServerError(
+      error instanceof Error
+        ? `Failed to fetch project config files: ${error.message}`
+        : 'Failed to fetch config files by project ID.',
     );
   }
 };
@@ -135,15 +169,23 @@ export const createInstance = async (id: number): Promise<MessageResponse> => {
   try {
     const response = await fetchWithAuth(INSTANCE_BY_ID_URL(id), { method: 'POST' });
     return extractData<MessageResponse>(response);
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to create instance.');
+  } catch (error: unknown) {
+    throw new ServerError(
+      error instanceof Error
+        ? `Failed to create instance: ${error.message}`
+        : 'Failed to create instance.',
+    );
   }
 };
 
 export const deleteInstance = async (id: number): Promise<void> => {
   try {
     await fetchWithAuth(INSTANCE_BY_ID_URL(id), { method: 'DELETE' });
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to delete instance.');
+  } catch (error: unknown) {
+    throw new ServerError(
+      error instanceof Error
+        ? `Failed to delete instance: ${error.message}`
+        : 'Failed to delete instance.',
+    );
   }
 };

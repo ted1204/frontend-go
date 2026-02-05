@@ -10,12 +10,6 @@ import {
   API_BASE_URL,
 } from '@/core/config/url';
 import { PVC, PVCRequest } from '@/core/interfaces/pvc';
-
-import {
-  ProjectPVC,
-  CreateProjectStoragePayload,
-  CreateStorageResponse,
-} from '@/core/interfaces/projectStorage';
 import { fetchWithAuth } from '@/shared/utils/api';
 
 type ApiResponse<T> = { data?: T } | T;
@@ -43,7 +37,7 @@ export const createPVC = async (input: PVCRequest): Promise<{ [key: string]: str
       body: formData,
     });
     return extractData<{ [key: string]: string }>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to create PVC.');
   }
 };
@@ -62,7 +56,7 @@ export const expandPVC = async (input: PVCRequest): Promise<{ [key: string]: str
       body: formData,
     });
     return extractData<{ [key: string]: string }>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to expand PVC.');
   }
 };
@@ -73,31 +67,7 @@ export const getPVCList = async (namespace: string): Promise<PVC[]> => {
       method: 'GET',
     });
     return extractData<PVC[]>(response);
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to fetch PVC list.');
-  }
-};
-
-export const getPVCListByProject = async (pid: number): Promise<PVC[]> => {
-  try {
-    // New backend exposes project storages via /k8s/storage/projects/my-storages (user-scoped)
-    // and /k8s/storage/projects (admin). The per-project endpoint was removed.
-    // We'll fetch the user's accessible project storages and filter by project id.
-    const allMy = await getMyProjectStorages();
-    const filtered = (allMy || []).filter(
-      (s) => String(s.id) === String(pid) || String(s.id) === String(pid),
-    );
-
-    // Map ProjectPVC -> PVC shape expected by callers
-    const mapped: PVC[] = filtered.map((p) => ({
-      name: p.pvcName || '',
-      namespace: p.namespace || '',
-      size: p.capacity || '',
-      status: p.status || '',
-    }));
-
-    return mapped;
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to fetch PVC list.');
   }
 };
@@ -108,7 +78,7 @@ export const getPVC = async (namespace: string, name: string): Promise<PVC> => {
       method: 'GET',
     });
     return extractData<PVC>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to fetch PVC.');
   }
 };
@@ -123,7 +93,7 @@ export const deletePVC = async (
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     });
     return extractData<{ [key: string]: string }>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to delete PVC.');
   }
 };
@@ -139,7 +109,7 @@ export const startFileBrowser = async (
       body: JSON.stringify({ namespace, pvc_name: pvcName }),
     });
     return extractData<{ nodePort: number }>(response);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to start file browser.');
   }
 };
@@ -151,7 +121,7 @@ export const stopFileBrowser = async (namespace: string, pvcName: string): Promi
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ namespace, pvc_name: pvcName }),
     });
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to stop file browser.');
   }
 };
@@ -165,7 +135,7 @@ export const expandUserStorage = async (username: string, newSize: string): Prom
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ new_size: newSize }),
     });
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to expand user storage.');
   }
 };
@@ -175,7 +145,7 @@ export const initUserStorage = async (username: string): Promise<void> => {
     await fetchWithAuth(`${API_BASE_URL}/k8s/users/${username}/storage/init`, {
       method: 'POST',
     });
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to initialize user storage.');
   }
 };
@@ -185,18 +155,8 @@ export const deleteUserStorage = async (username: string): Promise<void> => {
     await fetchWithAuth(`${API_BASE_URL}/k8s/users/${username}/storage`, {
       method: 'DELETE',
     });
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to delete user storage.');
-  }
-};
-
-export const deleteProjectStorage = async (pid: string): Promise<void> => {
-  try {
-    await fetchWithAuth(`${API_BASE_URL}/k8s/storage/projects/${pid}`, {
-      method: 'DELETE',
-    });
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Failed to delete project storage.');
   }
 };
 
@@ -206,8 +166,7 @@ export const checkUserStorageStatus = async (username: string): Promise<boolean>
       method: 'GET',
     });
     return response.exists;
-  } catch (error) {
-    console.error('Failed to check status', error);
+  } catch (error: unknown) {
     return false;
   }
 };
@@ -218,14 +177,8 @@ export const openUserDrive = async (): Promise<{ nodePort: number }> => {
       method: 'POST',
     });
     const data = extractData<{ nodePort?: number }>(response);
-
-    if (!data.nodePort) {
-      // In Ingress mode, nodePort might not be returned/needed
-    }
-
     return { nodePort: Number(data.nodePort) };
-  } catch (error) {
-    console.error('Failed to open drive:', error);
+  } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Failed to open user drive.');
   }
 };
@@ -235,105 +188,45 @@ export const stopUserDrive = async (): Promise<void> => {
     await fetchWithAuth(USER_DRIVE_URL, {
       method: 'DELETE',
     });
-  } catch (error) {
-    console.warn('Failed to stop user drive:', error);
-  }
-};
-
-// --- [NEW] Project Storage Operations ---
-
-const PROJECT_STORAGE_BASE_URL = `${API_BASE_URL}/k8s/storage/projects`;
-
-/**
- * Fetch all project storages (PVCs) via Admin API.
- * GET /k8s/storage/projects
- */
-export const getProjectStorages = async (): Promise<ProjectPVC[]> => {
-  try {
-    const response = await fetchWithAuth(PROJECT_STORAGE_BASE_URL, {
-      method: 'GET',
-    });
-
-    if (!response) {
-      console.warn('getProjectStorages: Received null/undefined response from API.');
-      return [];
-    }
-
-    const result = extractData<unknown>(response);
-    const list = Array.isArray(result) ? (result as Record<string, unknown>[]) : [];
-
-    // Normalize fields to ProjectPVC shape
-    return list.map((item) => {
-      const capacityRaw = item.capacity ?? item.Capacity ?? '';
-      const capacity = typeof capacityRaw === 'number' ? `${capacityRaw}Gi` : capacityRaw;
-      return {
-        id: String(item.id ?? item.ID ?? item.project_id ?? item.projectId ?? ''),
-        pvcName: item.pvcName ?? item.pvc_name ?? item.name ?? '',
-        projectName: item.projectName ?? item.project_name ?? '',
-        namespace: item.namespace ?? '',
-        capacity,
-        status: item.status ?? '',
-        accessMode: item.accessMode ?? item.access_mode ?? '',
-        createdAt: item.createdAt ?? item.created_at ?? '',
-        role: item.role ?? item.Role ?? '',
-      } as ProjectPVC;
-    });
-  } catch (error) {
-    console.error('getProjectStorages error:', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to fetch project storages.');
-  }
-};
-
-/**
- * Provision a new storage for a project.
- * POST /k8s/storage/projects
- */
-export const createProjectStorage = async (
-  payload: CreateProjectStoragePayload,
-): Promise<CreateStorageResponse> => {
-  try {
-    // Convert camelCase to snake_case for backend compatibility
-    const backendPayload = {
-      project_id: payload.projectId,
-      project_name: payload.projectName,
-      name: payload.name,
-      capacity: payload.capacity,
-    };
-    const response = await fetchWithAuth(PROJECT_STORAGE_BASE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(backendPayload),
-    });
-    return extractData<CreateStorageResponse>(response);
   } catch (error: unknown) {
-    const err = error as {
-      response?: { status?: number; data?: { error?: string } };
-      message?: string;
-    };
+    // Silent failure - drive stop may fail without affecting user experience
+  }
+};
+// --- Project Storage Operations ---
 
-    if (err.response?.status === 409) {
-      throw new Error('Project storage already exists (duplicate name).');
-    }
+export interface ProjectPVC {
+  id: string;
+  pvcName?: string;
+  namespace?: string;
+  capacity?: string;
+  status?: 'Bound' | 'Pending' | 'Lost' | 'Terminating';
+}
 
-    const msg = err.response?.data?.error || err.message || 'Failed to create project storage.';
-    throw new Error(msg);
+/**
+ * Get PVCs for a specific project (filter from all accessible project storages)
+ */
+export const getPVCListByProject = async (pid: number): Promise<PVC[]> => {
+  try {
+    const allMy = await getMyProjectStorages();
+    const filtered = (allMy || []).filter((s) => String(s.id) === String(pid));
+
+    const mapped: PVC[] = filtered.map((p) => ({
+      name: p.pvcName || '',
+      namespace: p.namespace || '',
+      size: p.capacity || '',
+      status: p.status || '',
+    }));
+
+    return mapped;
+  } catch (error: unknown) {
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed to fetch PVC list by project.',
+    );
   }
 };
 
 /**
- * Helper to get the Proxy URL for opening the project file browser.
- * Note: This URL requires the user to be a member of the project.
- */
-export const getProjectStorageProxyUrl = (projectId: number | string): string => {
-  return `${PROJECT_STORAGE_BASE_URL}/${projectId}/proxy/`;
-};
-
-export const getUserHubProxyUrl = (): string => {
-  return `${API_BASE_URL}/k8s/users/proxy/`;
-};
-
-/**
- * Fetch project storages for the current logged-in user.
+ * Fetch project storages for the current logged-in user
  * GET /k8s/storage/projects/my-storages
  */
 export const getMyProjectStorages = async (): Promise<ProjectPVC[]> => {
@@ -346,51 +239,30 @@ export const getMyProjectStorages = async (): Promise<ProjectPVC[]> => {
     const rawList = Array.isArray(result) ? (result as Record<string, unknown>[]) : [];
 
     // Normalize backend fields to frontend interface
-    const pvcs: ProjectPVC[] = rawList.map((item) => {
-      const capacityRaw = item.capacity ?? item.Capacity ?? '';
-      const capacity = typeof capacityRaw === 'number' ? `${capacityRaw}Gi` : String(capacityRaw);
-      const statusValue = String(item.status ?? '');
+    return rawList.map((item) => {
+      const statusStr = String(item.status ?? '');
       const status = (
-        ['Bound', 'Pending', 'Lost', 'Terminating'].includes(statusValue) ? statusValue : 'Pending'
+        ['Bound', 'Pending', 'Lost', 'Terminating'].includes(statusStr) ? statusStr : 'Pending'
       ) as 'Bound' | 'Pending' | 'Lost' | 'Terminating';
+
       return {
-        id: String(item.id ?? item.ID ?? item.project_id ?? item.projectId ?? ''),
+        id: String(item.id ?? item.ID ?? item.project_id ?? ''),
         pvcName: String(item.pvcName ?? item.pvc_name ?? item.name ?? ''),
-        projectName: String(item.projectName ?? item.project_name ?? ''),
         namespace: String(item.namespace ?? ''),
-        capacity,
+        capacity: String(item.capacity ?? item.Capacity ?? ''),
         status,
-        accessMode: String(item.accessMode ?? item.access_mode ?? ''),
-        createdAt: String(item.createdAt ?? item.created_at ?? ''),
-        role: String(item.role ?? item.Role ?? ''),
       };
     });
-
-    return pvcs;
-  } catch (error) {
-    console.error('getMyProjectStorages error:', error);
-    throw new Error('Failed to fetch your project storages.');
+  } catch (error: unknown) {
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed to fetch my project storages.',
+    );
   }
 };
 
-// storageService.ts
-
 /**
- * Start project file browser with RBAC consideration on backend.
- * POST /k8s/storage/projects/:id/start
+ * Get proxy URL for user hub file browser
  */
-export const startProjectFileBrowser = async (projectId: string | number): Promise<void> => {
-  await fetchWithAuth(`${API_BASE_URL}/k8s/storage/projects/${projectId}/start`, {
-    method: 'POST',
-  });
-};
-
-/**
- * Stop project file browser for a specific project.
- * DELETE /k8s/storage/projects/:id/stop
- */
-export const stopProjectFileBrowser = async (projectId: string | number): Promise<void> => {
-  await fetchWithAuth(`${API_BASE_URL}/k8s/storage/projects/${projectId}/stop`, {
-    method: 'DELETE',
-  });
+export const getUserHubProxyUrl = (): string => {
+  return `${API_BASE_URL}/k8s/users/proxy/`;
 };

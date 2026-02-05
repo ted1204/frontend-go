@@ -75,8 +75,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const ns = sanitizeK8sName(rawNs);
 
     if (!ns) {
-      console.warn('[WS Pool] Attempted to connect to invalid or empty namespace.');
-      return;
+      throw new Error('[WS Pool] Attempted to connect to invalid or empty namespace');
     }
 
     // Check if a healthy connection already exists for this namespace to avoid duplicates
@@ -105,7 +104,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         // Skip empty updates (e.g., heartbeats)
         if (batchUpdates.length === 0) return;
 
-        console.log(rawData);
+        if (import.meta.env.DEV) {
+          console.log('[WS Pool] Received batch update:', rawData);
+        }
 
         setMessages((prev) => {
           // Create a shallow copy of the current state to mutate safely
@@ -151,7 +152,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           return nextMessages.slice(-1000);
         });
       } catch (e) {
-        console.error(`[WS Pool] Parse error for ${ns}:`, e);
+        if (import.meta.env.DEV) {
+          console.error(`[WS Pool] Parse error for ${ns}:`, e);
+        }
       }
     };
 
@@ -160,11 +163,13 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
 
     ws.onerror = (err) => {
-      console.error(`[WS Pool] Error on ${ns}:`, err);
+      if (import.meta.env.DEV) {
+        console.error(`[WS Pool] Error on ${ns}:`, err);
+      }
       // Ensure the socket is closed and removed from the pool
       try {
         ws.close();
-      } catch {
+      } catch (_error: unknown) {
         /* intentionally ignore close errors */
       }
       delete sockets.current[ns];
@@ -210,7 +215,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
               return next.slice(-1000);
             });
           } catch (e) {
-            console.error('[WS Pool] Parse error on jobs feed:', e);
+            if (import.meta.env.DEV) {
+              console.error('[WS Pool] Parse error on jobs feed:', e);
+            }
           }
         };
 
@@ -219,10 +226,12 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         };
 
         jobsWs.onerror = (err) => {
-          console.error('[WS Pool] Jobs socket error:', err);
+          if (import.meta.env.DEV) {
+            console.error('[WS Pool] Jobs socket error:', err);
+          }
           try {
             jobsWs.close();
-          } catch {
+          } catch (_error: unknown) {
             // ignore close error
           }
           delete sockets.current[jobsKey];
@@ -230,7 +239,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
         sockets.current[jobsKey] = jobsWs;
       } catch (e) {
-        console.error('[WS Pool] Failed to open jobs websocket', e);
+        if (import.meta.env.DEV) {
+          console.error('[WS Pool] Failed to open jobs websocket', e);
+        }
       }
     }
   }, []);
@@ -252,14 +263,18 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const currentSockets = sockets.current;
     const currentLogWindows = logWindows.current;
     return () => {
-      console.log('[WS Pool] Cleaning up all sockets...');
+      if (import.meta.env.DEV) {
+        console.log('[WS Pool] Cleaning up all sockets...');
+      }
       Object.values(currentSockets).forEach((s) => s.close());
       // Close any opened log windows
       Object.values(currentLogWindows).forEach((w) => {
         try {
           w?.close();
         } catch (err) {
-          console.debug('failed closing log window', err);
+          if (import.meta.env.DEV) {
+            console.debug('failed closing log window', err);
+          }
         }
       });
     };
@@ -283,8 +298,10 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (w && !w.closed) {
       try {
         w.close();
-      } catch {
-        console.debug('error closing log window');
+      } catch (_error: unknown) {
+        if (import.meta.env.DEV) {
+          console.debug('error closing log window');
+        }
       }
     }
     delete logWindows.current[key];
@@ -330,7 +347,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 (podLogSubscribers.current[key] || []).forEach((s) => s(String(parsed)));
               }
             } catch (err) {
-              console.log('[WS Pool] pod log parse error', err);
+              if (import.meta.env.DEV) {
+                console.log('[WS Pool] pod log parse error', err);
+              }
               (podLogSubscribers.current[key] || []).forEach((s) => s(String(data)));
             }
           };
@@ -341,18 +360,24 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           };
 
           ws.onerror = (err) => {
-            console.debug('[WS Pool] pod log socket error', err);
+            if (import.meta.env.DEV) {
+              console.debug('[WS Pool] pod log socket error', err);
+            }
             try {
               ws.close();
             } catch (errClose) {
-              console.debug('error closing ws', errClose);
+              if (import.meta.env.DEV) {
+                console.debug('error closing ws', errClose);
+              }
             }
             delete podLogSockets.current[key];
           };
 
           podLogSockets.current[key] = ws;
         } catch (err) {
-          console.debug('[WS Pool] failed to open pod logs ws', err);
+          if (import.meta.env.DEV) {
+            console.debug('[WS Pool] failed to open pod logs ws', err);
+          }
         }
       }
 
@@ -366,7 +391,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             try {
               ws.close();
             } catch (errClose) {
-              console.debug('error closing pod log ws', errClose);
+              if (import.meta.env.DEV) {
+                console.debug('error closing pod log ws', errClose);
+              }
             }
           }
           delete podLogSockets.current[key];

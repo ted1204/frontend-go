@@ -29,6 +29,7 @@ export const navigation = {
   search: {
     projectsPlaceholder: '搜尋專案...',
     placeholder: '搜尋...',
+    groupStoragePlaceholder: '搜尋群組儲存...',
   },
   pagination: {
     prev: '上一頁',

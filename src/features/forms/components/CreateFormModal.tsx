@@ -48,7 +48,7 @@ export default function CreateFormModal({ isOpen, onClose, projectId }: CreateFo
       setDescription('');
       setTag('');
       setType('general');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Create form failed:', error);
       alert(t('form.createFailed') + (error instanceof Error ? error.message : String(error)));
     } finally {

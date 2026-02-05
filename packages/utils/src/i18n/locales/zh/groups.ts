@@ -38,6 +38,7 @@ export const groups = {
     tab: {
       overview: '概覽',
       members: '成員',
+      storage: '儲存空間',
       info: '資訊',
     },
     form: {
