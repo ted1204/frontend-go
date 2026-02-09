@@ -2,9 +2,9 @@ name: Code Quality & Optimization
 
 on:
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, develop, dev ]
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, dev ]
 
 jobs:
   file-size-check:
