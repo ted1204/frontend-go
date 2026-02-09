@@ -10,8 +10,9 @@ import {
   API_BASE_URL,
 } from '@/core/config/url';
 import { PVC, PVCRequest } from '@/core/interfaces/pvc';
-import type { ProjectPVC } from '@/pkg/types/projectStorage';
+// canonical types are in '@/pkg/types/groupStorage'
 import { fetchWithAuth } from '@/shared/utils/api';
+import { getMyGroupStorages as fetchMyGroupStorages } from './groupStorageService';
 
 type ApiResponse<T> = { data?: T } | T;
 
@@ -200,13 +201,13 @@ export const stopUserDrive = async (): Promise<void> => {
  */
 export const getPVCListByProject = async (pid: number): Promise<PVC[]> => {
   try {
-    const allMy = await getMyProjectStorages();
+    const allMy = await fetchMyGroupStorages();
     const filtered = (allMy || []).filter((s) => String(s.id) === String(pid));
 
     const mapped: PVC[] = filtered.map((p) => ({
       name: p.pvcName || '',
       namespace: p.namespace || '',
-      size: p.capacity || '',
+      size: String(p.capacity ?? ''),
       status: p.status || '',
     }));
 
@@ -222,39 +223,11 @@ export const getPVCListByProject = async (pid: number): Promise<PVC[]> => {
  * Fetch project storages for the current logged-in user
  * GET /k8s/storage/projects/my-storages
  */
-export const getMyProjectStorages = async (): Promise<ProjectPVC[]> => {
-  try {
-    const response = await fetchWithAuth(`${API_BASE_URL}/k8s/storage/projects/my-storages`, {
-      method: 'GET',
-    });
-
-    const result = extractData<unknown>(response);
-    const rawList = Array.isArray(result) ? (result as Record<string, unknown>[]) : [];
-
-    // Normalize backend fields to frontend interface
-    return rawList.map((item) => {
-      const statusStr = String(item.status ?? '');
-      const status = (
-        ['Bound', 'Pending', 'Lost', 'Terminating'].includes(statusStr) ? statusStr : 'Pending'
-      ) as 'Bound' | 'Pending' | 'Lost' | 'Terminating';
-
-      return {
-        id: String(item.id ?? item.ID ?? item.project_id ?? ''),
-        pvcName: String(item.pvcName ?? item.pvc_name ?? item.name ?? ''),
-        projectName: String(item.projectName ?? item.project_name ?? ''),
-        namespace: String(item.namespace ?? ''),
-        capacity: String(item.capacity ?? item.Capacity ?? ''),
-        status,
-        accessMode: String(item.accessMode ?? item.access_mode ?? ''),
-        createdAt: String(item.createdAt ?? item.created_at ?? ''),
-      };
-    });
-  } catch (error: unknown) {
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch my project storages.',
-    );
-  }
-};
+/**
+ * New canonical accessor: fetch group-level storages available to the user.
+ * Keep the old `getMyProjectStorages` as a compatibility alias for now.
+ */
+// Removed legacy `getMyProjectStorages` alias — use `groupStorageService.getMyGroupStorages` instead.
 
 /**
  * Get proxy URL for user hub file browser

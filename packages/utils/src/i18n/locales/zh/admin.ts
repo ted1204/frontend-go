@@ -80,7 +80,7 @@ export const admin = {
         newSizePlaceholder: '例如：50',
         expandBtn: '擴充儲存',
       },
-      projectStorage: {
+      groupStorage: {
         projectPlaceholder: '選擇專案...',
         createSuccess: '專案儲存建立成功',
         createGuideTitle: '建立專案儲存',

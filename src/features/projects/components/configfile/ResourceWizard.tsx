@@ -6,14 +6,14 @@ import { PVC } from '@/core/interfaces/pvc';
 interface ResourceWizardProps {
   resources: ResourceItem[];
   setResources: (res: ResourceItem[]) => void;
-  projectPvcs: PVC[];
+  groupPvcs: PVC[];
   hasUserStorage: boolean;
 }
 
 export default function ResourceWizard({
   resources,
   setResources,
-  projectPvcs,
+  groupPvcs,
   hasUserStorage,
 }: ResourceWizardProps) {
   const addResource = (kind: ResourceKind) => {
@@ -78,7 +78,7 @@ export default function ResourceWizard({
               key={res.id}
               index={idx}
               resource={res}
-              projectPvcs={projectPvcs}
+              groupPvcs={groupPvcs}
               hasUserStorage={hasUserStorage}
               onUpdate={updateResource}
               onRemove={removeResource}

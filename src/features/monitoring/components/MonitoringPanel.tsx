@@ -1,109 +1,17 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from '@nthucscc/utils';
-// Ensure you have this constant. If not, define it locally:
-
-import { SYSTEM_POD_PREFIXES } from '@/core/config/constants';
 import type { ResourceMessage } from '@/pkg/types/resource';
 import { ArchiveBoxIcon, CubeIcon } from '@heroicons/react/24/outline'; // Icons for distinction
-
-// --- Type Definitions ---
-
-// Definition for dynamic columns
-type ColumnKey = 'kind' | 'name' | 'details' | 'age' | 'status' | 'images' | 'restarts' | 'labels';
-
-// List of Kubernetes system labels to ignore in the UI to reduce noise
-const IGNORED_LABELS = [
-  'pod-template-hash',
-  'controller-revision-hash',
-  'pod-template-generation',
-  'service.kubernetes.io/headless',
-  'statefulset.kubernetes.io/pod-name',
-  'job-name', // Hide from labels column since we show it in name
-  'controller-uid',
-];
-
-// --- Helper Functions ---
-
-const calculateAge = (creationTimestamp?: string) => {
-  if (!creationTimestamp) return '-';
-  const diff = Date.now() - new Date(creationTimestamp).getTime();
-  const seconds = Math.floor(diff / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  if (days > 0) return `${days}d`;
-  if (hours > 0) return `${hours}h`;
-  if (minutes > 0) return `${minutes}m`;
-  return `${seconds}s`;
-};
-
-// Check if a resource is a Pod created by a Job
-const isJobPod = (res: ResourceMessage) => {
-  if (res.kind !== 'Pod') return false;
-
-  const labels = res.metadata?.labels || {};
-  // Common label for Job pods
-  if (labels['job-name']) return true;
-
-  // Check owner references
-  const owners = res.metadata?.ownerReferences || [];
-  return owners.some((owner) => owner.kind === 'Job');
-};
-
-// --- Sub-Components ---
-
-const StatusBadge = ({
-  status,
-  isTerminating,
-}: {
-  status: string | undefined;
-  isTerminating?: boolean;
-}) => {
-  // Priority: If deletionTimestamp exists, show Terminating regardless of status
-  if (isTerminating) {
-    return (
-      <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 animate-pulse border border-gray-300 dark:border-gray-600">
-        Terminating
-      </span>
-    );
-  }
-
-  const safeStatus = status?.toLowerCase() || 'unknown';
-  let colorClasses = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-
-  switch (safeStatus) {
-    case 'running':
-    case 'active':
-    case 'bound':
-    case 'succeeded':
-    case 'ready':
-      colorClasses =
-        'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 border border-green-200 dark:border-green-800';
-      break;
-    case 'pending':
-    case 'containercreating':
-      colorClasses =
-        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800';
-      break;
-    case 'failed':
-    case 'error':
-    case 'crashloopbackoff':
-    case 'errimagepull':
-    case 'imagepullbackoff':
-      colorClasses =
-        'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300 border border-red-200 dark:border-red-800';
-      break;
-  }
-
-  return (
-    <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors ${colorClasses}`}
-    >
-      {status || 'Unknown'}
-    </span>
-  );
-};
+import { SYSTEM_POD_PREFIXES } from '@/core/config/constants';
+import {
+  calculateAge,
+  isJobPod,
+  renderDetails,
+  renderLabels,
+  availableColumns,
+  ColumnKey,
+} from './MonitoringPanel.helpers';
+import { StatusBadge } from './MonitoringPanel.widgets';
 
 // --- Main Component ---
 
@@ -202,104 +110,7 @@ const MonitoringPanel = ({ messages }: { messages: ResourceMessage[] }) => {
     setVisibleColumns(newSet);
   };
 
-  // Render Network Details (IPs, Ports)
-  const renderDetails = (res: ResourceMessage) => {
-    if (res.kind === 'Service') {
-      return (
-        <div className="flex flex-col gap-1.5 text-xs">
-          {/* NodePorts */}
-          {res.nodePorts && res.nodePorts.length > 0 && (
-            <div className="flex flex-wrap items-center gap-1">
-              <span className="font-semibold text-gray-500">Node:</span>
-              {res.nodePorts.map((port) => (
-                <span
-                  key={port}
-                  className="font-mono bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800"
-                >
-                  {port}
-                </span>
-              ))}
-            </div>
-          )}
-          {/* Standard Ports */}
-          {res.ports && res.ports.length > 0 && (
-            <div className="flex flex-wrap items-center gap-1">
-              <span className="font-semibold text-gray-500">Port:</span>
-              {res.ports.map((port) => (
-                <span
-                  key={port}
-                  className="font-mono text-gray-700 dark:text-gray-300 bg-gray-100 px-1.5 py-0.5 rounded dark:bg-gray-700 border border-gray-200 dark:border-gray-600"
-                >
-                  {port}
-                </span>
-              ))}
-            </div>
-          )}
-          {/* External IPs */}
-          {res.externalIPs && res.externalIPs.length > 0 && (
-            <div className="flex gap-1 items-center">
-              <span className="font-semibold text-gray-500">Ext:</span>
-              <span className="font-mono text-gray-700 dark:text-gray-300">
-                {res.externalIPs.join(', ')}
-              </span>
-            </div>
-          )}
-          {/* Cluster IP */}
-          {res.clusterIP && res.clusterIP !== 'None' && (
-            <div className="flex gap-1 items-center text-gray-400">
-              <span>IP:</span>
-              <span className="font-mono">{res.clusterIP}</span>
-            </div>
-          )}
-        </div>
-      );
-    }
-    // Simple fallback for Pod IPs if needed
-    if (res.kind === 'Pod' && res.clusterIP) {
-      return <span className="text-xs font-mono text-gray-500">{res.clusterIP}</span>;
-    }
-    return <span className="text-gray-400">-</span>;
-  };
-
-  // Render Labels (Filtered)
-  const renderLabels = (labels?: Record<string, string>) => {
-    if (!labels) return <span className="text-gray-400">-</span>;
-
-    // Filter out unimportant system labels
-    const filteredLabels = Object.entries(labels).filter(([key]) => {
-      return !IGNORED_LABELS.includes(key);
-    });
-
-    if (filteredLabels.length === 0) return <span className="text-gray-400">-</span>;
-
-    return (
-      <div className="flex flex-wrap gap-1 max-w-[200px]">
-        {filteredLabels.slice(0, 3).map(([k, v]) => (
-          <span
-            key={k}
-            className="px-1.5 py-0.5 text-[10px] bg-gray-100 rounded border dark:bg-gray-800 dark:border-gray-700 truncate max-w-full"
-            title={`${k}=${v}`}
-          >
-            {k}={v}
-          </span>
-        ))}
-        {filteredLabels.length > 3 && (
-          <span className="text-[10px] text-gray-400">+{filteredLabels.length - 3}</span>
-        )}
-      </div>
-    );
-  };
-
-  const availableColumns: ColumnKey[] = [
-    'kind',
-    'name',
-    'details',
-    'status',
-    'age',
-    'images',
-    'restarts',
-    'labels',
-  ];
+  // availableColumns imported from helpers
 
   return (
     <div className="mt-4 flow-root">

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useTranslation, LocaleKey } from '@nthucscc/utils';
-import { BoxIcon, ChevronDownIcon, GridIcon, GroupIcon, TaskIcon } from '../../shared/icons';
+import { BoxIcon, GridIcon, GroupIcon, TaskIcon } from '../../shared/icons';
 import { useSidebar } from '../context/hooks/useSidebar';
+import SidebarMenu from './SidebarMenu';
 
 // --- Types ---
 type NavItem = {
@@ -163,115 +164,7 @@ const AppSidebar: React.FC = () => {
   };
 
   // --- Render Helpers ---
-  const renderMenuItems = (items: NavItem[], menuType: 'main' | 'admin') => (
-    <ul className="flex flex-col gap-2">
-      {items.map((nav, index) => {
-        const isMenuOpen = openSubmenu?.type === menuType && openSubmenu?.index === index;
-        const active = nav.path ? isActive(nav.path) : isMenuOpen;
-
-        return (
-          <li key={nav.name}>
-            {nav.subItems ? (
-              // Parent Item with Submenu
-              <button
-                onClick={() => handleSubmenuToggle(index, menuType)}
-                className={`group flex items-center w-full rounded-xl px-3 py-3 text-sm font-semibold transition-all duration-200
-                  ${active ? currentTheme.itemActive : currentTheme.itemHover}
-                  ${!isExpanded && !isHovered ? 'lg:justify-center' : 'lg:justify-start'}
-                `}
-              >
-                {/* Icon Wrapper: 24px Size */}
-                <span
-                  className={`shrink-0 transition-colors duration-200 [&>svg]:w-6 [&>svg]:h-6 
-                    ${active ? currentTheme.iconActive : currentTheme.iconInactive}`}
-                >
-                  {nav.icon}
-                </span>
-
-                {(isExpanded || isHovered || isMobileOpen) && (
-                  <>
-                    <span className="ml-3 flex-1 text-left whitespace-nowrap">{t(nav.name)}</span>
-                    <ChevronDownIcon
-                      className={`h-5 w-5 transition-transform duration-200 ${
-                        isMenuOpen ? `rotate-180 ${currentTheme.iconActive}` : 'text-gray-400'
-                      }`}
-                    />
-                  </>
-                )}
-              </button>
-            ) : (
-              // Standard Link Item
-              nav.path && (
-                <Link
-                  to={nav.path}
-                  className={`group flex items-center w-full rounded-xl px-3 py-3 text-sm font-semibold transition-all duration-200
-                    ${active ? currentTheme.itemActive : currentTheme.itemHover}
-                    ${!isExpanded && !isHovered ? 'lg:justify-center' : 'lg:justify-start'}
-                  `}
-                >
-                  <span
-                    className={`shrink-0 transition-colors duration-200 [&>svg]:w-6 [&>svg]:h-6
-                      ${active ? currentTheme.iconActive : currentTheme.iconInactive}`}
-                  >
-                    {nav.icon}
-                  </span>
-                  {(isExpanded || isHovered || isMobileOpen) && (
-                    <span className="ml-3 whitespace-nowrap">{t(nav.name)}</span>
-                  )}
-                </Link>
-              )
-            )}
-
-            {/* Dropdown Content */}
-            {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
-              <div
-                ref={(el) => {
-                  subMenuRefs.current[`${menuType}-${index}`] = el;
-                }}
-                className="overflow-hidden transition-all duration-300 ease-in-out"
-                style={{
-                  height: isMenuOpen ? `${subMenuHeight[`${menuType}-${index}`]}px` : '0px',
-                }}
-              >
-                <ul className="mt-1 space-y-1 pl-10 pr-2">
-                  {nav.subItems.map((subItem) => {
-                    const isSubActive = isActive(subItem.path);
-                    return (
-                      <li key={subItem.name}>
-                        <Link
-                          to={subItem.path}
-                          className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-200
-                            ${
-                              isSubActive
-                                ? currentTheme.itemActive
-                                : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
-                            }
-                          `}
-                        >
-                          <span className="truncate">{t(subItem.name)}</span>
-
-                          {/* Badges */}
-                          <div className="ml-auto flex items-center gap-1.5">
-                            {subItem.new && (
-                              <span
-                                className={`inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold uppercase ${currentTheme.badgeBg}`}
-                              >
-                                {t('badge.new')}
-                              </span>
-                            )}
-                          </div>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
-          </li>
-        );
-      })}
-    </ul>
-  );
+  // Moved menu rendering into SidebarMenu to keep this file focused.
 
   return (
     <aside
@@ -318,7 +211,19 @@ const AppSidebar: React.FC = () => {
               >
                 {t('sidebar.menu')}
               </div>
-              {renderMenuItems(navItems, 'main')}
+              <SidebarMenu
+                items={navItems}
+                menuType="main"
+                openSubmenu={openSubmenu}
+                subMenuHeight={subMenuHeight}
+                subMenuRefs={subMenuRefs}
+                isExpanded={isExpanded}
+                isHovered={isHovered}
+                isMobileOpen={isMobileOpen}
+                handleSubmenuToggle={handleSubmenuToggle}
+                isActive={isActive}
+                currentTheme={currentTheme}
+              />
             </div>
           )}
 
@@ -329,7 +234,19 @@ const AppSidebar: React.FC = () => {
               >
                 {t('sidebar.admin')}
               </div>
-              {renderMenuItems(adminItems, 'admin')}
+              <SidebarMenu
+                items={adminItems}
+                menuType="admin"
+                openSubmenu={openSubmenu}
+                subMenuHeight={subMenuHeight}
+                subMenuRefs={subMenuRefs}
+                isExpanded={isExpanded}
+                isHovered={isHovered}
+                isMobileOpen={isMobileOpen}
+                handleSubmenuToggle={handleSubmenuToggle}
+                isActive={isActive}
+                currentTheme={currentTheme}
+              />
             </div>
           )}
         </nav>

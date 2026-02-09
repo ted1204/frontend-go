@@ -6,12 +6,12 @@ import ContainerForm from './ContainerForm';
 
 interface WorkloadFormProps {
   resource: WorkloadResource | JobResource;
-  projectPvcs: PVC[];
+  groupPvcs: PVC[];
   hasUserStorage: boolean;
   onChange: (updated: WorkloadResource | JobResource) => void;
 }
 
-const WorkloadForm = ({ resource, projectPvcs, hasUserStorage, onChange }: WorkloadFormProps) => {
+const WorkloadForm = ({ resource, onChange }: WorkloadFormProps) => {
   const updateField = (
     field: keyof WorkloadResource | keyof JobResource,
     value: WorkloadResource[keyof WorkloadResource],
@@ -153,8 +153,6 @@ const WorkloadForm = ({ resource, projectPvcs, hasUserStorage, onChange }: Workl
             key={container.id}
             index={idx}
             container={container}
-            projectPvcs={projectPvcs}
-            hasUserStorage={hasUserStorage}
             onUpdate={(updated) => updateContainer(container.id, updated)}
             onRemove={() => removeContainer(container.id)}
             onDuplicate={() => duplicateContainer(container)}

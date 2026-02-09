@@ -6,18 +6,13 @@ import MountRow from './MountRow';
 
 interface MountManagerProps {
   mounts: MountConfig[];
-  projectPvcs: PVC[];
+  groupPvcs: PVC[];
   hasUserStorage: boolean; // NEW
   setWizardData: React.Dispatch<React.SetStateAction<WizardData>>;
 }
 
-const MountManager = ({
-  mounts,
-  projectPvcs,
-  hasUserStorage,
-  setWizardData,
-}: MountManagerProps) => {
-  const hasProjectStorage = projectPvcs.length > 0;
+const MountManager = ({ mounts, groupPvcs, hasUserStorage, setWizardData }: MountManagerProps) => {
+  const hasProjectStorage = groupPvcs.length > 0;
   const isAnyStorageAvailable = hasUserStorage || hasProjectStorage;
 
   const addMount = () => {
@@ -34,7 +29,7 @@ const MountManager = ({
     }
 
     const defaultPVC =
-      defaultType === 'project-pvc' && projectPvcs.length > 0 ? projectPvcs[0].name : undefined;
+      defaultType === 'project-pvc' && groupPvcs.length > 0 ? groupPvcs[0].name : undefined;
 
     const newMount: MountConfig = {
       id: Date.now().toString(),
@@ -90,8 +85,8 @@ const MountManager = ({
           };
         }
         // Auto-select first PVC if switching to project-pvc
-        if (field === 'type' && value === 'project-pvc' && !m.pvcName && projectPvcs.length > 0) {
-          const first = projectPvcs[0].name;
+        if (field === 'type' && value === 'project-pvc' && !m.pvcName && groupPvcs.length > 0) {
+          const first = groupPvcs[0].name;
           return {
             ...m,
             type: value as MountType,
@@ -162,7 +157,7 @@ const MountManager = ({
             <MountRow
               key={mount.id}
               mount={mount}
-              projectPvcs={projectPvcs}
+              groupPvcs={groupPvcs}
               hasUserStorage={hasUserStorage}
               hasProjectStorage={hasProjectStorage}
               onChange={updateMount}

@@ -20,6 +20,8 @@ npm install
 npm run dev:app   # runs the frontend app (workspace)
 ```
 
+References: This repository uses per-folder `REFERENCES.md` files plus a root `REFERENCES.md` index at the project root. Before editing components, check the nearest `REFERENCES.md` for implementation notes and add a short entry describing your change and rationale when you modify files.
+
 Build (production)
 
 ```bash

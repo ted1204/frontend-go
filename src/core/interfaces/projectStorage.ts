@@ -1,1 +1,1 @@
-export * from '@/pkg/types/projectStorage';
+export * from '@/pkg/types/groupStorage';

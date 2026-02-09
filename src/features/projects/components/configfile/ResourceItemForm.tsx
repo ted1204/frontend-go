@@ -18,7 +18,7 @@ import ServiceForm from './ServiceForm'; // Imported the dedicated ServiceForm
 interface ResourceItemFormProps {
   resource: ResourceItem;
   index: number;
-  projectPvcs: PVC[];
+  groupPvcs: PVC[];
   hasUserStorage: boolean;
   onUpdate: (id: string, updated: ResourceItem) => void;
   onRemove: (id: string) => void;
@@ -27,7 +27,7 @@ interface ResourceItemFormProps {
 const ResourceItemForm = ({
   resource,
   index,
-  projectPvcs,
+  groupPvcs,
   hasUserStorage,
   onUpdate,
   onRemove,
@@ -118,7 +118,7 @@ const ResourceItemForm = ({
             resource.kind === 'Job') && (
             <WorkloadForm
               resource={resource as WorkloadResource}
-              projectPvcs={projectPvcs}
+              groupPvcs={groupPvcs}
               hasUserStorage={hasUserStorage}
               onChange={(updated) => onUpdate(resource.id, updated)}
             />

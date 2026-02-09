@@ -5,7 +5,7 @@ import { PVC } from '@/core/interfaces/pvc';
 
 interface MountRowProps {
   mount: MountConfig;
-  projectPvcs: PVC[];
+  groupPvcs: PVC[];
   hasUserStorage: boolean; // NEW: Status of user storage
   hasProjectStorage: boolean; // NEW: Status of project storage
   onChange: (id: string, field: keyof MountConfig, value: unknown) => void;
@@ -14,7 +14,7 @@ interface MountRowProps {
 
 const MountRow = ({
   mount,
-  projectPvcs,
+  groupPvcs,
   hasUserStorage,
   hasProjectStorage,
   onChange,
@@ -75,7 +75,7 @@ const MountRow = ({
             className="block w-full rounded-md border-gray-300 bg-white py-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
           >
             <option value="">-- Select PVC --</option>
-            {projectPvcs.map((p, idx) => (
+            {groupPvcs.map((p, idx) => (
               <option key={`pvc-${idx}-${p.name}`} value={p.name}>
                 {p.name} ({p.size})
               </option>

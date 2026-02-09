@@ -3,11 +3,8 @@ import MonacoEditor from 'react-monaco-editor';
 import { useTranslation } from '@nthucscc/utils'; // Assumed path
 import { Project } from '@/core/interfaces/project';
 import { PVC } from '@/core/interfaces/pvc';
-import {
-  getPVCListByProject,
-  checkUserStorageStatus,
-  getMyProjectStorages,
-} from '@/core/services/storageService';
+import { getPVCListByProject, checkUserStorageStatus } from '@/core/services/storageService';
+import { getMyGroupStorages } from '@/core/services/resource/groupStorageService';
 import { getUsername } from '@/core/services/authService';
 import { generateMultiDocYAML } from '@/features/projects/utils/k8sYamlGenerator';
 
@@ -57,7 +54,7 @@ export default function AddConfigModal({
   } = useConfigForm(null, isOpen);
 
   // External data state
-  const [projectPvcs, setProjectPvcs] = useState<PVC[]>([]);
+  const [groupPvcs, setGroupPvcs] = useState<PVC[]>([]);
   const [hasUserStorage, setHasUserStorage] = useState(false);
   const [editorTheme, setEditorTheme] = useState('vs-light');
 
@@ -74,54 +71,46 @@ export default function AddConfigModal({
       Promise.all([
         // Get PVCs for this specific project
         getPVCListByProject(pid).catch(() => []),
-        // Get all project storages the user has access to
-        getMyProjectStorages().catch(() => []),
+        // Get all project/group storages the user has access to
+        getMyGroupStorages().catch(() => []),
         // Check user storage
         getUsername() ? checkUserStorageStatus(getUsername()!) : Promise.resolve(false),
-      ]).then(([projectPvcs, allMyPvcs, storage]) => {
+      ]).then(([projectStorages, allMyPvcs, storage]) => {
         // Ensure both are arrays
-        const projectPvcsArray = Array.isArray(projectPvcs) ? projectPvcs : [];
+        const projectStoragesArray = Array.isArray(projectStorages) ? projectStorages : [];
         const pvcsArray = Array.isArray(allMyPvcs) ? allMyPvcs : [];
 
-        // console.log('[AddConfigModal] Project PVCs:', projectPvcsArray);
-        // console.log('[AddConfigModal] My Project Storages:', pvcsArray);
+        // console.log('[AddConfigModal] Project Storages:', projectStoragesArray);
+        // console.log('[AddConfigModal] My Project/Group Storages:', pvcsArray);
 
         // Convert ProjectPVC to PVC format and merge
         const convertedAllMyPvcs = pvcsArray
-          .map(
-            (proj: {
-              name?: string;
-              pvcName?: string;
-              pvc_name?: string;
-              namespace?: string;
-              capacity?: string;
-              Capacity?: string;
-              status?: string;
-            }) => {
-              const name =
-                proj.name ||
-                proj.pvcName ||
-                proj.pvc_name ||
-                (proj.namespace ? `pvc-${proj.namespace}` : '');
-              const size = proj.capacity || proj.Capacity || '';
-              return {
-                name,
-                namespace: proj.namespace || '',
-                size,
-                status: proj.status || '',
-              };
-            },
-          )
+          .map((proj: any) => {
+            const name =
+              proj.name ||
+              proj.pvcName ||
+              proj.pvc_name ||
+              (proj.namespace ? `pvc-${proj.namespace}` : '');
+            const size = String(proj.capacity ?? proj.Capacity ?? '');
+            return {
+              name,
+              namespace: proj.namespace || '',
+              size,
+              status: proj.status || '',
+            };
+          })
           .filter((pvc: { name: string }) => pvc.name);
 
         // console.log('[AddConfigModal] Converted PVCs:', convertedAllMyPvcs);
 
         const merged = [
-          ...projectPvcsArray.filter((p) => p.name),
-          ...convertedAllMyPvcs.filter((pvc) => !projectPvcsArray.some((p) => p.name === pvc.name)),
+          ...projectStoragesArray.filter((p) => p.name),
+          ...convertedAllMyPvcs.filter(
+            (pvc) => !projectStoragesArray.some((p) => p.name === pvc.name),
+          ),
         ];
         // console.log('[AddConfigModal] Merged PVCs:', merged);
-        setProjectPvcs(merged);
+        setGroupPvcs(merged);
         setHasUserStorage(!!storage);
       });
     }
@@ -208,7 +197,7 @@ export default function AddConfigModal({
               <ResourceWizard
                 resources={resources}
                 setResources={setResources}
-                projectPvcs={projectPvcs}
+                groupPvcs={groupPvcs}
                 hasUserStorage={hasUserStorage}
               />
             </div>

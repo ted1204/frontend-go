@@ -2,11 +2,8 @@ import { useEffect, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import { useTranslation } from '@nthucscc/utils';
 import { ConfigFile } from '@/core/interfaces/configFile';
-import {
-  getPVCListByProject,
-  checkUserStorageStatus,
-  getMyProjectStorages,
-} from '@/core/services/storageService';
+import { getPVCListByProject, checkUserStorageStatus } from '@/core/services/storageService';
+import { getMyGroupStorages } from '@/core/services/resource/groupStorageService';
 import { getUsername } from '@/core/services/authService';
 import { generateMultiDocYAML } from '@/features/projects/utils/k8sYamlGenerator';
 
@@ -21,7 +18,7 @@ interface EditConfigModalProps {
   onClose: () => void;
   onSave: (data: { filename: string; raw_yaml: string }) => void;
   selectedConfig: ConfigFile | null;
-  actionLoading: boolean;
+  actionLoading?: boolean;
 }
 
 export default function EditConfigModal({
@@ -29,11 +26,10 @@ export default function EditConfigModal({
   onClose,
   onSave,
   selectedConfig,
-  actionLoading,
+  actionLoading = false,
 }: EditConfigModalProps) {
   const { t } = useTranslation();
 
-  // Custom Hook managing synchronization and state
   const {
     filename,
     setFilename,
@@ -48,7 +44,7 @@ export default function EditConfigModal({
   } = useConfigForm(selectedConfig, isOpen);
 
   // External Data State
-  const [projectPvcs, setProjectPvcs] = useState<PVC[]>([]);
+  const [groupPvcs, setGroupPvcs] = useState<PVC[]>([]);
   const [hasUserStorage, setHasUserStorage] = useState(false);
   const [editorTheme, setEditorTheme] = useState('vs-light');
 
@@ -56,51 +52,34 @@ export default function EditConfigModal({
   useEffect(() => {
     if (isOpen && selectedConfig) {
       Promise.all([
-        // Get PVCs for this specific project
         getPVCListByProject(selectedConfig.ProjectID).catch(() => []),
-        // Get all project storages the user has access to
-        getMyProjectStorages().catch(() => []),
-        // Check user storage
+        getMyGroupStorages().catch(() => []),
         getUsername() ? checkUserStorageStatus(getUsername()!) : Promise.resolve(false),
-      ]).then(([projectPvcs, allMyPvcs, storage]) => {
-        // Ensure both are arrays
-        const projectPvcsArray = Array.isArray(projectPvcs) ? projectPvcs : [];
+      ]).then(([projectStorages, allMyPvcs, storage]) => {
+        const projectStoragesArray = Array.isArray(projectStorages) ? projectStorages : [];
         const pvcsArray = Array.isArray(allMyPvcs) ? allMyPvcs : [];
 
-        // console.log('[EditConfigModal] Project PVCs:', projectPvcsArray);
-        // console.log('[EditConfigModal] My Project Storages:', pvcsArray);
-
-        // Convert ProjectPVC to PVC format and merge
-        const convertedAllMyPvcs = pvcsArray.map(
-          (proj: {
-            name?: string;
-            pvcName?: string;
-            namespace?: string;
-            capacity?: string;
-            Capacity?: string;
-            status?: string;
-          }) => ({
-            name: proj.name || proj.pvcName || '',
-            namespace: proj.namespace || '',
-            size: proj.capacity || proj.Capacity || '',
-            status: proj.status || '',
-          }),
-        );
-
-        // console.log('[EditConfigModal] Converted PVCs:', convertedAllMyPvcs);
+        const convertedAllMyPvcs = pvcsArray.map((proj: any) => ({
+          name: proj.name || proj.pvcName || '',
+          namespace: proj.namespace || '',
+          size: String(proj.capacity ?? proj.Capacity ?? ''),
+          status: proj.status || '',
+        }));
 
         const merged = [
-          ...projectPvcsArray,
-          ...convertedAllMyPvcs.filter((pvc) => !projectPvcsArray.some((p) => p.name === pvc.name)),
+          ...projectStoragesArray,
+          ...convertedAllMyPvcs.filter(
+            (pvc) => !projectStoragesArray.some((p) => p.name === pvc.name),
+          ),
         ];
-        // console.log('[EditConfigModal] Merged PVCs:', merged);
-        setProjectPvcs(merged);
+
+        setGroupPvcs(merged);
         setHasUserStorage(!!storage);
       });
     }
   }, [isOpen, selectedConfig]);
 
-  // Handle Theme
+  // Theme observer
   useEffect(() => {
     const updateTheme = () =>
       setEditorTheme(document.documentElement.classList.contains('dark') ? 'vs-dark' : 'vs-light');
@@ -111,12 +90,11 @@ export default function EditConfigModal({
   }, []);
 
   const handleSave = () => {
-    if (!filename.trim()) return setError('Filename is required.');
-
-    // Ensure we send the latest data regardless of current tab
+    if (!filename.trim())
+      return setError(t('config.error.filenameRequired') || 'Filename is required.');
     const finalYaml = activeTab === 'wizard' ? generateMultiDocYAML(resources) : rawYaml;
-
-    if (!finalYaml.trim()) return setError('YAML content cannot be empty.');
+    if (!finalYaml.trim())
+      return setError(t('config.error.yamlEmpty') || 'YAML content cannot be empty.');
     onSave({ filename, raw_yaml: finalYaml });
   };
 
@@ -128,8 +106,6 @@ export default function EditConfigModal({
       subtitle={t('config.editSubtitle') || 'Modify configuration using wizard or YAML editor.'}
       maxWidth="max-w-7xl"
     >
-      {/* Tabs */}
-      {/* Filename input */}
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           {t('config.filename.label')}
@@ -166,13 +142,12 @@ export default function EditConfigModal({
         </nav>
       </div>
 
-      {/* Content Area */}
       <div className="h-[60vh] overflow-y-auto mb-6">
         {activeTab === 'wizard' ? (
           <ResourceWizard
             resources={resources}
             setResources={setResources}
-            projectPvcs={projectPvcs}
+            groupPvcs={groupPvcs}
             hasUserStorage={hasUserStorage}
           />
         ) : (
@@ -190,7 +165,6 @@ export default function EditConfigModal({
         )}
       </div>
 
-      {/* Footer Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
         <span className="text-sm text-red-600 dark:text-red-400">{error && `Error: ${error}`}</span>
         <div className="flex gap-3 w-full sm:w-auto">
