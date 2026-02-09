@@ -40,8 +40,9 @@ export default function PodTables() {
   }, []);
 
   // Subscribe to logs when modal opens
+  const { open, target } = logsState;
+
   useEffect(() => {
-    const { open, target } = logsState;
     if (!open || !target) return;
 
     let unsub: (() => void) | null = null;
@@ -65,7 +66,7 @@ export default function PodTables() {
     return () => {
       if (unsub) unsub();
     };
-  }, [logsState.open, logsState.target, subscribeToPodLogs]);
+  }, [open, target, subscribeToPodLogs]);
 
   // Namespace Connection Logic
   useEffect(() => {

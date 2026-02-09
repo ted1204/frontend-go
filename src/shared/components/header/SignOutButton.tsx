@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router';
-import { logout } from '../../../core/services/authService';
-import { useAuth } from '../../../core/context/AuthContext';
-import { useTranslation } from '../../../../packages/utils/src/hooks/useTranslation';
+import { logout } from '@/core/services/authService';
+import { useAuth } from '@/core/context/useAuth';
+import { useTranslation } from '@nthucscc/utils/hooks/useTranslation';
 
 interface SignOutButtonProps {
   className?: string;

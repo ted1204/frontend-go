@@ -1,19 +1,27 @@
-export class ApiError extends Error {
-  public status: number;
-  public data: any;
-
-  constructor(status: number, message: string, data?: any) {
-    super(message);
-    this.name = 'ApiError';
-    this.status = status;
-    this.data = data;
-  }
-}
+import { ApiError } from '@/pkg/types/error';
+export { ApiError } from '@/pkg/types/error';
+import cfg from '@/core/config/config';
 
 export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-  const headers = {
-    ...options.headers,
+  // Normalize headers to a plain object so we can safely merge defaults
+  const providedHeaders = (options.headers as Record<string, string>) || {};
+  const headers: Record<string, string> = {
+    ...providedHeaders,
   };
+
+  // Prefer explicit API key from centralized config; fall back to localStorage
+  const apiKey = (cfg && cfg.API_KEY) || localStorage.getItem('apiKey') || '';
+
+  // If an API key is provided, prefer X-API-Key header (service-to-service)
+  if (apiKey) {
+    headers['X-API-Key'] = apiKey;
+  } else {
+    // Otherwise, include Bearer token if present and Authorization not already provided
+    const token = localStorage.getItem('token') || localStorage.getItem('accessToken');
+    if (token && !headers['Authorization'] && !headers['authorization']) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+  }
 
   let response: Response;
 
@@ -31,9 +39,8 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
     });
   }
   if (response.status === 401) {
-    localStorage.removeItem('userData');
-    localStorage.removeItem('username');
-    window.location.href = '/signin';
+    // Don't perform a navigation here; let the Auth layer decide how to handle 401
+    // (e.g. single redirect to /signin). Keep throwing so callers can react.
     throw new ApiError(401, 'Session expired. Please log in again.');
   }
 

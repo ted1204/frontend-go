@@ -1,6 +1,7 @@
 import { LOGIN_URL, REGISTER_URL, LOGOUT_URL } from '@/core/config/url';
-import { ErrorResponse, MessageResponse, LoginResponse } from '@/core/response/response';
+import { MessageResponse, LoginResponse } from '@/core/response/response';
 import { RegisterInput } from '@/core/interfaces/auth';
+import { fetchWithAuth } from '@/pkg/utils/api';
 
 const appendIfPresent = (formData: URLSearchParams, key: string, value: string | undefined) => {
   if (value !== undefined && value !== null && value !== '') {
@@ -14,7 +15,9 @@ export const login = async (username: string, password: string): Promise<LoginRe
   formData.append('password', password);
   // console.log('in logging');
   try {
-    const response = await fetch(LOGIN_URL, {
+    // `fetchWithAuth` returns parsed JSON for successful responses and
+    // throws an `ApiError` for HTTP errors, so we can treat the result as data.
+    const data: LoginResponse = await fetchWithAuth(LOGIN_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -23,11 +26,6 @@ export const login = async (username: string, password: string): Promise<LoginRe
       credentials: 'include',
     });
 
-    if (!response.ok) {
-      const errorData: ErrorResponse = await response.json();
-      throw new Error(errorData.error || `Login failed with status ${response.status}`);
-    }
-    const data: LoginResponse = await response.json();
     localStorage.setItem('username', data.username);
     return data;
   } catch (error: unknown) {
@@ -37,15 +35,10 @@ export const login = async (username: string, password: string): Promise<LoginRe
 
 export const logout = async (): Promise<void> => {
   try {
-    const response = await fetch(LOGOUT_URL, {
+    await fetchWithAuth(LOGOUT_URL, {
       method: 'POST',
       credentials: 'include',
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `Logout failed with status ${response.status}`);
-    }
 
     localStorage.clear();
     sessionStorage.clear();
@@ -74,7 +67,7 @@ export const register = async (input: RegisterInput): Promise<MessageResponse> =
   appendIfPresent(formData, 'status', input.status);
 
   try {
-    const response = await fetch(REGISTER_URL, {
+    const data: MessageResponse = await fetchWithAuth(REGISTER_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -82,12 +75,6 @@ export const register = async (input: RegisterInput): Promise<MessageResponse> =
       body: formData.toString(),
       credentials: 'include',
     });
-    if (!response.ok) {
-      const errorData: ErrorResponse = await response.json();
-      throw new Error(errorData.error || `Registration failed with status ${response.status}`);
-    }
-
-    const data: MessageResponse = await response.json();
     return data;
   } catch (error: unknown) {
     throw new Error(

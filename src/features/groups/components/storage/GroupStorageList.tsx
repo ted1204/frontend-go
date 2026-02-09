@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from '@nthucscc/utils';
 import { GroupPVC } from '@/core/interfaces/groupStorage';
 import { groupStorageService } from '@/core/services/resource/groupStorageService';
@@ -17,11 +17,7 @@ export default function GroupStorageList({ groupId, canManage }: GroupStorageLis
   const [error, setError] = useState<string | null>(null);
   const [expandedStorage, setExpandedStorage] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchStorages();
-  }, [groupId]);
-
-  const fetchStorages = async () => {
+  const fetchStorages = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -32,7 +28,11 @@ export default function GroupStorageList({ groupId, canManage }: GroupStorageLis
     } finally {
       setLoading(false);
     }
-  };
+  }, [groupId, t]);
+
+  useEffect(() => {
+    fetchStorages();
+  }, [fetchStorages]);
 
   if (loading) {
     return (

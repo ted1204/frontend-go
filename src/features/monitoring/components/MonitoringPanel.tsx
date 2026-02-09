@@ -3,39 +3,10 @@ import { useTranslation } from '@nthucscc/utils';
 // Ensure you have this constant. If not, define it locally:
 
 import { SYSTEM_POD_PREFIXES } from '@/core/config/constants';
+import type { ResourceMessage } from '@/pkg/types/resource';
 import { ArchiveBoxIcon, CubeIcon } from '@heroicons/react/24/outline'; // Icons for distinction
 
 // --- Type Definitions ---
-
-export interface ResourceMessage {
-  type: string;
-  name: string;
-  ns: string;
-  status?: string;
-  kind?: string;
-  age?: string;
-
-  // Network related
-  clusterIP?: string;
-  externalIP?: string;
-  externalIPs?: string[];
-  nodePorts?: number[];
-  ports?: string[]; // Standard Service Ports (e.g., "80/TCP")
-  serviceType?: string;
-
-  // Pod related
-  containers?: string[];
-  images?: string[];
-  restartCount?: number;
-
-  // Metadata
-  metadata?: {
-    deletionTimestamp?: string | null;
-    creationTimestamp?: string;
-    labels?: Record<string, string>;
-    ownerReferences?: Array<{ kind: string; name: string }>; // Added ownerReferences type
-  };
-}
 
 // Definition for dynamic columns
 type ColumnKey = 'kind' | 'name' | 'details' | 'age' | 'status' | 'images' | 'restarts' | 'labels';

@@ -1,9 +1,5 @@
-export interface ErrorResponse {
-  error: string;
-}
-export interface MessageResponse {
-  message: string;
-}
+export type { ErrorResponse, MessageResponse } from '@/pkg/types/error';
+
 export interface LoginResponse {
   user_id: number;
   username: string;

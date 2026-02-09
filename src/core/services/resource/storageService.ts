@@ -10,6 +10,7 @@ import {
   API_BASE_URL,
 } from '@/core/config/url';
 import { PVC, PVCRequest } from '@/core/interfaces/pvc';
+import type { ProjectPVC } from '@/pkg/types/projectStorage';
 import { fetchWithAuth } from '@/shared/utils/api';
 
 type ApiResponse<T> = { data?: T } | T;
@@ -194,14 +195,6 @@ export const stopUserDrive = async (): Promise<void> => {
 };
 // --- Project Storage Operations ---
 
-export interface ProjectPVC {
-  id: string;
-  pvcName?: string;
-  namespace?: string;
-  capacity?: string;
-  status?: 'Bound' | 'Pending' | 'Lost' | 'Terminating';
-}
-
 /**
  * Get PVCs for a specific project (filter from all accessible project storages)
  */
@@ -248,9 +241,12 @@ export const getMyProjectStorages = async (): Promise<ProjectPVC[]> => {
       return {
         id: String(item.id ?? item.ID ?? item.project_id ?? ''),
         pvcName: String(item.pvcName ?? item.pvc_name ?? item.name ?? ''),
+        projectName: String(item.projectName ?? item.project_name ?? ''),
         namespace: String(item.namespace ?? ''),
         capacity: String(item.capacity ?? item.Capacity ?? ''),
         status,
+        accessMode: String(item.accessMode ?? item.access_mode ?? ''),
+        createdAt: String(item.createdAt ?? item.created_at ?? ''),
       };
     });
   } catch (error: unknown) {

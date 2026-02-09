@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { EyeCloseIcon, EyeIcon } from '../../../src/shared/icons';
-import Label from '../../../src/features/forms/components/form/Label';
-import Input from '../../../src/features/forms/components/form/input/InputFieldDefault';
-import Button from '../../ui/src/components/button/Button';
-import { forgotPassword } from '../../../src/core/services/forgotPasswordService';
+import { EyeCloseIcon, EyeIcon } from '@/shared/icons';
+import Label from '@/features/forms/components/form/Label';
+import Input from '@/features/forms/components/form/input/InputFieldDefault';
+import Button from '@nthucscc/ui/components/button/Button';
+import { forgotPassword } from '@/core/services/forgotPasswordService';
 
 export default function ForgotPasswordForm() {
   const [username, setUsername] = useState('');

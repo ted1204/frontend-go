@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { BaseModal } from '@nthucscc/ui';
 import { useTranslation } from '@nthucscc/utils';
 import { Form, FormMessage } from '@/core/interfaces/form';
@@ -27,14 +27,7 @@ export default function FormDetailModal({
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
-
-  useEffect(() => {
-    if (form && isOpen) {
-      loadMessages();
-    }
-  }, [form, isOpen]);
-
-  const loadMessages = async () => {
+  const loadMessages = useCallback(async () => {
     if (!form) return;
     setLoadingMessages(true);
     try {
@@ -45,7 +38,13 @@ export default function FormDetailModal({
     } finally {
       setLoadingMessages(false);
     }
-  };
+  }, [form]);
+
+  useEffect(() => {
+    if (isOpen) {
+      loadMessages();
+    }
+  }, [isOpen, loadMessages]);
 
   const handleSendMessage = async () => {
     if (!form || !newMessage.trim()) return;

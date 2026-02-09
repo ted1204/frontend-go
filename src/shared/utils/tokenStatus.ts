@@ -1,5 +1,6 @@
 // Utility to check token status and auto-logout if expired
 import { API_BASE_URL } from '@/core/config/url';
+import { fetchWithAuth } from '@/pkg/utils/api';
 
 export async function checkTokenStatus() {
   try {
@@ -9,7 +10,7 @@ export async function checkTokenStatus() {
       ? { headers: { Authorization: `Bearer ${token}` } }
       : { credentials: 'include' };
 
-    const res = await fetch(url, options);
+    const res = await fetchWithAuth(url, options as RequestInit);
     if (res.status === 401) {
       localStorage.removeItem('userData');
       localStorage.removeItem('username');

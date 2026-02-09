@@ -16,3 +16,10 @@ export interface UserRequest {
   email: string;
   role?: 'admin' | 'user';
 }
+
+export interface UserData {
+  user_id: number;
+  username: string;
+  is_super_admin: boolean;
+  role?: string;
+}

@@ -1,5 +1,6 @@
 import { FORGOT_PASSWORD_URL } from '@/core/config/url';
 import { ErrorResponse, MessageResponse } from '@/core/response/response';
+import { fetchWithAuth } from '@/pkg/utils/api';
 
 export const forgotPassword = async (
   username: string,
@@ -10,7 +11,7 @@ export const forgotPassword = async (
   formData.append('new_password', newPassword);
 
   try {
-    const response = await fetch(FORGOT_PASSWORD_URL, {
+    const response = await fetchWithAuth(FORGOT_PASSWORD_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',

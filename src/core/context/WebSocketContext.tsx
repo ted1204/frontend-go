@@ -1,44 +1,12 @@
-import React, { createContext, useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 // Replace with your actual config path
 import { GET_NS_MONITORING_URL, JOBS_WS_URL, POD_LOGS_WS_URL } from '../config/url';
+import type { ResourceMessage } from './ws-types';
+import { WebSocketContext } from './websocket-context';
+export { WebSocketContext } from './websocket-context';
 import { sanitizeK8sName } from '@nthucscc/utils';
 // Define the structure of the resource message received from WebSocket
-export interface ResourceMessage {
-  type: string;
-  name: string;
-  ns: string;
-  status?: string;
-  kind?: string;
-  age?: string;
-  clusterIP?: string;
-  externalIP?: string;
-  externalIPs?: string[];
-  nodePorts?: number[];
-  serviceType?: string;
-  containers?: string[];
-  metadata?: {
-    deletionTimestamp?: string | null;
-    creationTimestamp?: string;
-    labels?: Record<string, string>;
-  };
-}
-
-interface WebSocketContextType {
-  messages: ResourceMessage[];
-  connectToNamespace: (namespace: string) => void;
-  getNamespaceMessages: (namespace: string) => ResourceMessage[];
-  clearMessages: () => void;
-  registerLogWindow: (key: string, win: Window | null) => void;
-  unregisterLogWindow: (key: string) => void;
-  subscribeToPodLogs: (
-    namespace: string,
-    pod: string,
-    container: string,
-    cb: (line: string) => void,
-  ) => () => void;
-}
-
-export const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined);
+// ResourceMessage type moved to ./ws-types to avoid exporting non-components
 
 export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [messages, setMessages] = useState<ResourceMessage[]>([]);

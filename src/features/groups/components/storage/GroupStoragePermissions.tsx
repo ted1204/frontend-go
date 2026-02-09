@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@nthucscc/utils';
 import { Button } from '@nthucscc/ui';
 import { PlusIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
@@ -27,11 +27,7 @@ export default function GroupStoragePermissions({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
 
-  useEffect(() => {
-    fetchPermissions();
-  }, [groupId, pvcId]);
-
-  const fetchPermissions = async () => {
+  const fetchPermissions = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -42,7 +38,11 @@ export default function GroupStoragePermissions({
     } finally {
       setLoading(false);
     }
-  };
+  }, [groupId, pvcId, t]);
+
+  useEffect(() => {
+    fetchPermissions();
+  }, [fetchPermissions]);
 
   const handleSetPermission = async (userId: number, permission: 'none' | 'read' | 'write') => {
     try {

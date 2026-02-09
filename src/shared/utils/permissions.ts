@@ -3,12 +3,7 @@
  * Provides helper functions to check user permissions based on userData stored in localStorage
  */
 
-export interface UserData {
-  user_id: number;
-  username: string;
-  is_super_admin: boolean;
-  role?: string;
-}
+import type { UserData } from '@/pkg/types/user';
 
 /**
  * Get user data from localStorage

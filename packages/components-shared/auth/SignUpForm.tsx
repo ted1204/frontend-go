@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from '../../../src/shared/icons';
-import Label from '../../../src/features/forms/components/form/Label';
-import Input from '../../../src/features/forms/components/form/input/InputFieldDefault';
-import Button from '../../ui/src/components/button/Button';
-import { register } from '../../../src/core/services/authService';
-import { useTranslation } from '../../utils/src/hooks/useTranslation';
+import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from '@/shared/icons';
+import Label from '@/features/forms/components/form/Label';
+import Input from '@/features/forms/components/form/input/InputFieldDefault';
+import Button from '@nthucscc/ui/components/button/Button';
+import { register } from '@/core/services/authService';
+import { useTranslation } from '@nthucscc/utils/hooks/useTranslation';
 
 export default function SignUpForm() {
   const [username, setUsername] = useState('');

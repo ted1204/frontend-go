@@ -415,4 +415,15 @@ For questions about skills:
 **Last Updated**: February 3, 2026
 **Maintainer**: Development Team
 
+## API Key Integration (Frontend)
+
+- **Header supported**: `X-API-Key` (preferred for service-to-service) and `Authorization: Bearer <token>`.
+- **How the frontend sends keys**:
+  - If `VITE_API_KEY` is set at build time, the runtime helper will attach `X-API-Key` to requests.
+  - If `VITE_API_KEY` is not present, the helper falls back to `localStorage.getItem('apiKey')`.
+  - If neither API key is present, the helper will attach `Authorization: Bearer <token>` using `localStorage.token` or `localStorage.accessToken` when available.
+- **Files changed**: `src/pkg/utils/api.ts` and `src/shared/utils/api.ts` now automatically inject these headers in `fetchWithAuth`.
+
+Security note: prefer build-time `VITE_API_KEY` for non-browser-exposed service usage; do not commit secret keys to source control. For browser-based usage, prefer short-lived tokens and secure storage patterns.
+
 For more information about implementing skills, see the [Agent Skills Documentation](https://vscode.com.tw/docs/copilot/customization/agent-skills).

@@ -161,25 +161,31 @@ const JobsLivePage: React.FC = () => {
     });
   }, []);
 
+  const { open: podOpen, target: podTarget } = podLogsState;
+
   useEffect(() => {
-    const { open, target } = podLogsState;
-    if (!open || !target) return;
+    if (!podOpen || !podTarget) return;
     let unsub: (() => void) | null = null;
     try {
-      unsub = subscribeToPodLogs(target.namespace, target.pod, target.container, (line: string) => {
-        setPodLogsState((prev) => ({
-          ...prev,
-          loading: false,
-          content: prev.content ? prev.content + '\n' + line : line,
-        }));
-      });
+      unsub = subscribeToPodLogs(
+        podTarget.namespace,
+        podTarget.pod,
+        podTarget.container,
+        (line: string) => {
+          setPodLogsState((prev) => ({
+            ...prev,
+            loading: false,
+            content: prev.content ? prev.content + '\n' + line : line,
+          }));
+        },
+      );
     } catch (e) {
       setPodLogsState((prev) => ({ ...prev, loading: false, content: `Error: ${String(e)}` }));
     }
     return () => {
       if (unsub) unsub();
     };
-  }, [podLogsState.open, podLogsState.target, subscribeToPodLogs]);
+  }, [podOpen, podTarget, subscribeToPodLogs]);
 
   // Search and pagination
   const filteredJobs = useMemo(

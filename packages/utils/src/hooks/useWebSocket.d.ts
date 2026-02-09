@@ -1,23 +1,3 @@
-export interface ResourceMessage {
-  type: string;
-  name: string;
-  ns: string;
-  status?: string;
-  kind?: string;
-  age?: string;
-  clusterIP?: string;
-  externalIP?: string;
-  externalIPs?: string[];
-  nodePorts?: number[];
-  serviceType?: string;
-  containers?: string[];
-  images?: string[];
-  restartCount?: number;
-  metadata?: {
-    deletionTimestamp?: string | null;
-    creationTimestamp?: string;
-    labels?: Record<string, string>;
-  };
-}
+export type { ResourceMessage } from '@/pkg/types/resource';
 export default function useWebSocket(): ResourceMessage[];
 //# sourceMappingURL=useWebSocket.d.ts.map

@@ -1,27 +1,8 @@
-export interface ResourceMessage {
-  type: string;
-  name: string;
-  ns: string;
-  status?: string;
-  kind?: string;
-  age?: string;
-  clusterIP?: string;
-  externalIP?: string;
-  externalIPs?: string[];
-  nodePorts?: number[];
-  serviceType?: string;
-  containers?: string[];
-  images?: string[]; // [New]
-  restartCount?: number; // [New]
-  metadata?: {
-    deletionTimestamp?: string | null;
-    creationTimestamp?: string;
-    labels?: Record<string, string>; // [New]
-  };
-}
+import type { ResourceMessage } from '@/pkg/types/resource';
+export type { ResourceMessage } from '@/pkg/types/resource';
 
-// Placeholder: the real implementation lives in the app.
-// This file provides the type and a lightweight default for package builds.
+// Placeholder implementation: the real hook in the app provides runtime behavior.
+// Keep the default export so package consumers still get a usable stub.
 export default function useWebSocket(): ResourceMessage[] {
   return [];
 }

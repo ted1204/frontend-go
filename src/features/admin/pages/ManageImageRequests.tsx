@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   getImageRequests,
   approveImageRequest,
@@ -18,7 +18,7 @@ export default function ManageImageRequests() {
   const [isGlobal, setIsGlobal] = useState(false);
   const [processing, setProcessing] = useState(false);
 
-  const loadRequests = async () => {
+  const loadRequests = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getImageRequests(filter || undefined);
@@ -28,11 +28,11 @@ export default function ManageImageRequests() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter]);
 
   useEffect(() => {
     loadRequests();
-  }, [filter]);
+  }, [loadRequests]);
 
   const handleApprove = async () => {
     if (!selectedRequest) return;

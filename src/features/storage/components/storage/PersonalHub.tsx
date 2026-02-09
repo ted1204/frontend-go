@@ -11,7 +11,8 @@ import {
 } from '@heroicons/react/24/outline';
 
 // Fix 1: Import ResourceMessage type interface
-import { WebSocketContext, ResourceMessage } from '@/core/context/WebSocketContext';
+import { WebSocketContext } from '@/core/context/WebSocketContext';
+import type { ResourceMessage } from '@/core/context/ws-types';
 import { getUsername } from '@/core/services/authService';
 import {
   openUserDrive,

@@ -1,16 +1,11 @@
 // Consolidate common API response/error handling patterns
+import type { ApiErrorResponse } from '@/pkg/types/error';
 
 export interface ApiResponse<T = unknown> {
   message?: string;
   error?: string;
   data?: T;
   status?: 'success' | 'error' | number;
-}
-
-export interface ApiErrorResponse {
-  message: string;
-  statusCode?: number;
-  details?: unknown;
 }
 
 export const handleApiError = (error: unknown): ApiErrorResponse => {

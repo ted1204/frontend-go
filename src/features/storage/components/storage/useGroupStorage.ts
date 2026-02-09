@@ -2,7 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { useTranslation } from '@nthucscc/utils';
 import { toast } from 'react-hot-toast';
 import { GroupPVCWithPermissions } from '@/core/interfaces/groupStorage';
-import { WebSocketContext, ResourceMessage } from '@/core/context/WebSocketContext';
+import { WebSocketContext } from '@/core/context/WebSocketContext';
+import type { ResourceMessage } from '@/core/context/ws-types';
 import {
   getMyGroupStorages,
   startGroupFileBrowser,

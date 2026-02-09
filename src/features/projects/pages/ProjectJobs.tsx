@@ -137,8 +137,9 @@ export default function ProjectJobs({ projectId }: ProjectJobsProps) {
   }, []);
 
   // 4. WebSocket Log Subscription
+  const { open, target } = podLogsState;
+
   useEffect(() => {
-    const { open, target } = podLogsState;
     if (!open || !target) return;
     let unsub: (() => void) | null = null;
     try {
@@ -155,7 +156,7 @@ export default function ProjectJobs({ projectId }: ProjectJobsProps) {
     return () => {
       if (unsub) unsub();
     };
-  }, [podLogsState.open, podLogsState.target, subscribeToPodLogs]);
+  }, [open, target, subscribeToPodLogs]);
 
   // 5. Pagination Logic
   const totalPages = Math.ceil(tableJobs.length / itemsPerPage);

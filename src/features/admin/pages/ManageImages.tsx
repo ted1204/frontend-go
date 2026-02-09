@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   getAllowedImages,
   deleteAllowedImage,
@@ -36,7 +36,73 @@ export default function ManageImages() {
   const [failedJobs, setFailedJobs] = useState<FailedPullJob[]>([]);
   const wsConnectionsRef = useRef<Map<string, WebSocket>>(new Map());
 
-  const loadImages = async () => {
+  const loadImagesRef = useRef<() => void | Promise<void> | undefined>(undefined);
+
+  const connectWebSocket = (jobId: string) => {
+    // Avoid duplicate connections
+    if (wsConnectionsRef.current.has(jobId)) {
+      return;
+    }
+
+    // Construct WebSocket URL
+    const protocol = BASE_URL.startsWith('https') ? 'wss:' : 'ws:';
+    const host = BASE_URL.replace(/^https?:\/\//, '');
+    const wsUrl = `${protocol}//${host}/ws/image-pull/${jobId}`;
+
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+      if (import.meta.env.DEV) {
+        console.log(`WebSocket connected for job ${jobId}`);
+      }
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const status: PullJobStatus = JSON.parse(event.data);
+        setPullJobStatuses((prev) => new Map(prev).set(jobId, status));
+
+        // If job is completed or failed, reload images
+        if (status.status === 'completed') {
+          setTimeout(() => {
+            try {
+              if (loadImagesRef.current) {
+                loadImagesRef.current();
+              }
+            } catch (_e) {
+              // ignore
+            }
+            ws.close();
+            wsConnectionsRef.current.delete(jobId);
+          }, 1000);
+        } else if (status.status === 'failed') {
+          ws.close();
+          wsConnectionsRef.current.delete(jobId);
+        }
+      } catch (err) {
+        if (import.meta.env.DEV) {
+          console.error('Error parsing WebSocket message:', err);
+        }
+      }
+    };
+
+    ws.onerror = (err) => {
+      if (import.meta.env.DEV) {
+        console.error(`WebSocket error for job ${jobId}:`, err);
+      }
+    };
+
+    ws.onclose = () => {
+      if (import.meta.env.DEV) {
+        console.log(`WebSocket closed for job ${jobId}`);
+      }
+      wsConnectionsRef.current.delete(jobId);
+    };
+
+    wsConnectionsRef.current.set(jobId, ws);
+  };
+
+  const loadImages = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getAllowedImages();
@@ -71,80 +137,29 @@ export default function ManageImages() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Keep a ref to the latest loadImages so sockets can call it without causing
+  // circular dependencies between connectWebSocket and loadImages.
+  useEffect(() => {
+    loadImagesRef.current = loadImages;
+  }, [loadImages]);
 
   useEffect(() => {
     loadImages();
-  }, []);
+  }, [loadImages]);
 
   useEffect(() => {
+    const currentSockets = wsConnectionsRef.current;
     return () => {
       // Close all WebSocket connections on unmount
-      wsConnectionsRef.current.forEach((ws) => {
+      currentSockets.forEach((ws) => {
         if (ws.readyState === WebSocket.OPEN) {
           ws.close();
         }
       });
     };
   }, []);
-
-  const connectWebSocket = (jobId: string) => {
-    // Avoid duplicate connections
-    if (wsConnectionsRef.current.has(jobId)) {
-      return;
-    }
-
-    // Construct WebSocket URL
-    const protocol = BASE_URL.startsWith('https') ? 'wss:' : 'ws:';
-    const host = BASE_URL.replace(/^https?:\/\//, '');
-    const wsUrl = `${protocol}//${host}/ws/image-pull/${jobId}`;
-
-    const ws = new WebSocket(wsUrl);
-
-    ws.onopen = () => {
-      if (import.meta.env.DEV) {
-        console.log(`WebSocket connected for job ${jobId}`);
-      }
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const status: PullJobStatus = JSON.parse(event.data);
-        setPullJobStatuses((prev) => new Map(prev).set(jobId, status));
-
-        // If job is completed or failed, reload images
-        if (status.status === 'completed') {
-          setTimeout(() => {
-            loadImages();
-            ws.close();
-            wsConnectionsRef.current.delete(jobId);
-          }, 1000);
-        } else if (status.status === 'failed') {
-          ws.close();
-          wsConnectionsRef.current.delete(jobId);
-        }
-      } catch (err) {
-        if (import.meta.env.DEV) {
-          console.error('Error parsing WebSocket message:', err);
-        }
-      }
-    };
-
-    ws.onerror = (err) => {
-      if (import.meta.env.DEV) {
-        console.error(`WebSocket error for job ${jobId}:`, err);
-      }
-    };
-
-    ws.onclose = () => {
-      if (import.meta.env.DEV) {
-        console.log(`WebSocket closed for job ${jobId}`);
-      }
-      wsConnectionsRef.current.delete(jobId);
-    };
-
-    wsConnectionsRef.current.set(jobId, ws);
-  };
 
   const toggleImageSelect = (imageId: number) => {
     const newSelected = new Set(selectedImages);

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from '@nthucscc/utils';
-import { EyeCloseIcon, EyeIcon } from '../../../src/shared/icons';
-import Label from '../../../src/features/forms/components/form/Label';
-import Input from '../../../src/features/forms/components/form/input/InputFieldDefault';
-import Button from '../../ui/src/components/button/Button';
-import { login } from '../../../src/core/services/authService';
-import { useAuth } from '../../../src/core/context/AuthContext';
+import { EyeCloseIcon, EyeIcon } from '@/shared/icons';
+import Label from '@/features/forms/components/form/Label';
+import Input from '@/features/forms/components/form/input/InputFieldDefault';
+import Button from '@nthucscc/ui/components/button/Button';
+import { login } from '@/core/services/authService';
+import { useAuth } from '@/core/context/useAuth';
 
 export default function SignInForm() {
   const { t } = useTranslation();
