@@ -11,7 +11,7 @@ export interface FormData {
   raw_yaml: string;
 }
 
-export type MountType = 'project-pvc' | 'user-storage' | 'emptyDir' | 'configMap';
+export type MountType = 'group-pvc' | 'user-storage' | 'emptyDir' | 'configMap';
 export type ResourceKind = 'Pod' | 'Deployment' | 'Service' | 'ConfigMap' | 'Job';
 export type ImagePullPolicy = 'Always' | 'IfNotPresent' | 'Never';
 export type ServiceProtocol = 'TCP' | 'UDP'; // New

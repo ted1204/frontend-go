@@ -61,12 +61,22 @@ export const useGroupStorage = () => {
     }
   };
 
-  const handleOpen = (storage: GroupPVCWithPermissions) => {
+  const handleOpen = async (storage: GroupPVCWithPermissions) => {
     if (!storage.canAccess) {
       toast.error(t('storage.noPermission'));
       return;
     }
-    window.open(getGroupStorageProxyUrl(storage.groupId, storage.id), '_blank');
+    try {
+      const url = await getGroupStorageProxyUrl(storage.groupId, storage.id);
+      if (!url) {
+        toast.error(t('storage.actionFailed'));
+        return;
+      }
+      window.open(url, '_blank');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      toast.error(msg || t('storage.actionFailed'));
+    }
   };
 
   const getFileBrowserStatus = (namespace: string): 'online' | 'offline' => {
