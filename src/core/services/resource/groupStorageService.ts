@@ -20,6 +20,7 @@ import {
   CreateGroupStorageRequest,
   CreateGroupStorageResponse,
 } from '@/core/interfaces/groupStorage';
+import { getUserId } from '@/pkg/utils/permissions';
 
 type ApiResponse<T> = { data?: T } | T;
 
@@ -222,15 +223,22 @@ export const listPVCPermissions = async (
 
 /**
  * Get FileBrowser access for group storage
- * GET /k8s/filebrowser/access
+ * POST /k8s/filebrowser/access
  */
-export const getFileBrowserAccess = async (): Promise<FileBrowserAccessResponse> => {
+export const getFileBrowserAccess = async (
+  groupId: string | number,
+  pvcId: string,
+): Promise<FileBrowserAccessResponse> => {
   try {
+    const userId = getUserId();
     const response = await fetchWithAuth(`${K8S_BASE_URL}/filebrowser/access`, {
-      method: 'GET',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      // Pass as query params or body based on backend implementation
-      // Assuming it's a GET with query params:
+      body: JSON.stringify({
+        group_id: String(groupId),
+        pvc_id: pvcId,
+        user_id: userId ? String(userId) : '',
+      }),
     });
     return extractData<FileBrowserAccessResponse>(response);
   } catch (error: unknown) {
@@ -241,8 +249,12 @@ export const getFileBrowserAccess = async (): Promise<FileBrowserAccessResponse>
 /**
  * Get proxy URL for group storage FileBrowser
  */
-export const getGroupStorageProxyUrl = (groupId: number, pvcId: string): string => {
-  return `${GROUP_STORAGE_BASE_URL}/${groupId}/storage/${pvcId}/proxy/`;
+/**
+ * Request FileBrowser access and return the URL
+ */
+export const getGroupStorageProxyUrl = async (groupId: number, pvcId: string): Promise<string> => {
+  const resp = await getFileBrowserAccess(groupId, pvcId);
+  return (resp.URL || resp.url || '') as string;
 };
 
 /**

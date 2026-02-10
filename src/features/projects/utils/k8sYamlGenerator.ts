@@ -138,7 +138,7 @@ const generateSingleContainer = (
       if (m.type === 'user-storage') volName = 'user-home';
       else if (rawPvc.includes('{{') && rawPvc.includes('}}')) {
         if (rawPvc.includes('userVolume')) volName = 'user-home';
-        else if (rawPvc.includes('projectVolume')) volName = 'project-volume';
+        else if (rawPvc.includes('groupVolume')) volName = 'group-volume';
         else volName = 'vol';
       }
 
@@ -191,7 +191,7 @@ const generateVolumesBlock = (
 
       // Default -> persistentVolumeClaim (use provided pvcName or projectVolume template)
     } else {
-      const claim = m.pvcName ? m.pvcName : '"{{projectVolume}}"';
+      const claim = m.pvcName ? m.pvcName : '"{{groupVolume}}"';
       yaml += `${indent}${INDENT}${INDENT}persistentVolumeClaim:\n`;
       yaml += `${indent}${INDENT}${INDENT}${INDENT}claimName: ${claim}\n`;
     }

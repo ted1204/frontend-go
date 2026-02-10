@@ -7,7 +7,7 @@ interface MountRowProps {
   mount: MountConfig;
   groupPvcs: PVC[];
   hasUserStorage: boolean; // NEW: Status of user storage
-  hasProjectStorage: boolean; // NEW: Status of project storage
+    hasGroupStorage: boolean; // NEW: Status of group storage
   onChange: (id: string, field: keyof MountConfig, value: unknown) => void;
   onRemove: (id: string) => void;
 }
@@ -16,7 +16,7 @@ const MountRow = ({
   mount,
   groupPvcs,
   hasUserStorage,
-  hasProjectStorage,
+    hasGroupStorage,
   onChange,
   onRemove,
 }: MountRowProps) => {
@@ -35,7 +35,7 @@ const MountRow = ({
               id: mount.id,
               newValue: e.target.value,
               hasUserStorage,
-              hasProjectStorage,
+              hasGroupStorage,
             });
             onChange(mount.id, 'type', e.target.value as any);
           }}
@@ -46,7 +46,7 @@ const MountRow = ({
         >
           {/* Conditionally render options based on availability */}
           {hasUserStorage && <option value="user-storage">Personal Storage</option>}
-          {hasProjectStorage && <option value="project-pvc">Project Storage</option>}
+          {hasGroupStorage && <option value="group-pvc">Group Storage</option>}
           <option value="emptyDir">emptyDir (in-memory)</option>
           <option value="configMap">ConfigMap</option>
         </select>
@@ -57,7 +57,7 @@ const MountRow = ({
         <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
           {mount.type === 'user-storage'
             ? 'Source'
-            : mount.type === 'project-pvc'
+            : mount.type === 'group-pvc'
               ? 'Select PVC'
               : mount.type === 'configMap'
                 ? 'ConfigMap'
@@ -68,7 +68,7 @@ const MountRow = ({
           <div className="flex items-center rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-700/50 dark:text-gray-400 cursor-not-allowed">
             <span className="truncate">Home Drive ({'{{userVolume}}'})</span>
           </div>
-        ) : mount.type === 'project-pvc' ? (
+        ) : mount.type === 'group-pvc' ? (
           <select
             value={mount.pvcName || ''}
             onChange={(e) => onChange(mount.id, 'pvcName', e.target.value)}
@@ -94,7 +94,7 @@ const MountRow = ({
             <div className="text-sm text-gray-600 dark:text-gray-300">emptyDir (in-memory)</div>
           </div>
         ) : null}
-        {mount.type === 'project-pvc' && mount.pvcName && (
+        {mount.type === 'group-pvc' && mount.pvcName && (
           <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
             <p>Gateway exports /exports/{mount.pvcName}; mounting the root directory.</p>
             <p className="text-amber-600 dark:text-amber-400">

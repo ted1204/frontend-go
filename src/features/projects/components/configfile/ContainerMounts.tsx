@@ -51,7 +51,7 @@ export default function ContainerMounts({ mounts, onChange }: Props) {
                 >
                   <option value="emptyDir">emptyDir</option>
                   <option value="user-storage">Personal Storage</option>
-                  <option value="project-pvc">Project PVC</option>
+                  <option value="group-pvc">Group PVC</option>
                   <option value="configMap">ConfigMap</option>
                 </select>
                 <button

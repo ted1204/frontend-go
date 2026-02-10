@@ -114,7 +114,7 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
         vm.forEach((m: any, mi: number) => {
           const volumeDef = volumes.find((v: any) => v.name === m.name);
 
-          let mountType: 'project-pvc' | 'user-storage' | 'emptyDir' | 'configMap' = 'project-pvc';
+          let mountType: 'group-pvc' | 'user-storage' | 'emptyDir' | 'configMap' = 'group-pvc';
           let pvcName = m.name || '';
           let configMapName: string | undefined = undefined;
           let medium: string | undefined = undefined;
@@ -126,12 +126,12 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
             if (claimName === '{{userVolume}}') {
               mountType = 'user-storage';
               pvcName = '';
-            } else if (claimName === '{{projectVolume}}') {
-              mountType = 'project-pvc';
+            } else if (claimName === '{{groupVolume}}') {
+              mountType = 'group-pvc';
               pvcName = m.name || '';
             } else {
               // General PVC reference: treat as project PVC by default
-              mountType = 'project-pvc';
+              mountType = 'group-pvc';
               pvcName = claimName || m.name || '';
             }
           } else if (volumeDef?.nfs) {
@@ -143,16 +143,16 @@ const parseResourceDoc = (docObj: any, idx: number): ResourceItem => {
             if (serverHint === '{{userVolume}}' && (cleanedPath === '' || cleanedPath === '/')) {
               mountType = 'user-storage';
               pvcName = '';
-            } else if (serverHint === '{{projectNfsServer}}') {
-              mountType = 'project-pvc';
+            } else if (serverHint === '{{groupNfsServer}}') {
+              mountType = 'group-pvc';
               pvcName = m.name || '';
             } else {
               const projectMatch = cleanedPath.match(/^\/?(?:exports|srv)\/(.+)$/);
               if (projectMatch) {
-                mountType = 'project-pvc';
+                mountType = 'group-pvc';
                 pvcName = projectMatch[1];
               } else {
-                mountType = 'project-pvc';
+                mountType = 'group-pvc';
                 pvcName = m.name || cleanedPath;
               }
             }

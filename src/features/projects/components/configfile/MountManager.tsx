@@ -12,8 +12,8 @@ interface MountManagerProps {
 }
 
 const MountManager = ({ mounts, groupPvcs, hasUserStorage, setWizardData }: MountManagerProps) => {
-  const hasProjectStorage = groupPvcs.length > 0;
-  const isAnyStorageAvailable = hasUserStorage || hasProjectStorage;
+  const hasGroupStorage = groupPvcs.length > 0;
+  const isAnyStorageAvailable = hasUserStorage || hasGroupStorage;
 
   const addMount = () => {
     // Determine a valid default type
@@ -21,15 +21,15 @@ const MountManager = ({ mounts, groupPvcs, hasUserStorage, setWizardData }: Moun
 
     if (hasUserStorage) {
       defaultType = 'user-storage';
-    } else if (hasProjectStorage) {
-      defaultType = 'project-pvc';
+    } else if (hasGroupStorage) {
+      defaultType = 'group-pvc';
     } else {
       // fallback to emptyDir when no persistent storage exists
       defaultType = 'emptyDir';
     }
 
     const defaultPVC =
-      defaultType === 'project-pvc' && groupPvcs.length > 0 ? groupPvcs[0].name : undefined;
+      defaultType === 'group-pvc' && groupPvcs.length > 0 ? groupPvcs[0].name : undefined;
 
     const newMount: MountConfig = {
       id: Date.now().toString(),
@@ -84,8 +84,8 @@ const MountManager = ({ mounts, groupPvcs, hasUserStorage, setWizardData }: Moun
             subPaths: [{ id: Date.now().toString() + '-s', subPath: '', mountPath: '/' }],
           };
         }
-        // Auto-select first PVC if switching to project-pvc
-        if (field === 'type' && value === 'project-pvc' && !m.pvcName && groupPvcs.length > 0) {
+        // Auto-select first PVC if switching to group-pvc
+        if (field === 'type' && value === 'group-pvc' && !m.pvcName && groupPvcs.length > 0) {
           const first = groupPvcs[0].name;
           return {
             ...m,
@@ -148,18 +148,18 @@ const MountManager = ({ mounts, groupPvcs, hasUserStorage, setWizardData }: Moun
           <p className="text-xs text-gray-400">
             {isAnyStorageAvailable
               ? 'Click "Add Volume" to mount storage to your Pod.'
-              : 'Initialize Personal Storage or create Project Storage to enable mounts.'}
+              : 'Initialize Personal Storage or create Group Storage to enable mounts.'}
           </p>
         </div>
       ) : (
         <div className="space-y-3">
           {mounts.map((mount) => (
-            <MountRow
+              <MountRow
               key={mount.id}
               mount={mount}
               groupPvcs={groupPvcs}
               hasUserStorage={hasUserStorage}
-              hasProjectStorage={hasProjectStorage}
+                hasGroupStorage={hasGroupStorage}
               onChange={updateMount}
               onRemove={removeMount}
             />

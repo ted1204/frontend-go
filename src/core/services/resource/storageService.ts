@@ -194,10 +194,10 @@ export const stopUserDrive = async (): Promise<void> => {
     // Silent failure - drive stop may fail without affecting user experience
   }
 };
-// --- Project Storage Operations ---
+// --- Group Storage (project -> group) Operations ---
 
 /**
- * Get PVCs for a specific project (filter from all accessible project storages)
+ * Get PVCs for a specific project (filter from all accessible group storages)
  */
 export const getPVCListByProject = async (pid: number): Promise<PVC[]> => {
   try {
@@ -220,8 +220,8 @@ export const getPVCListByProject = async (pid: number): Promise<PVC[]> => {
 };
 
 /**
- * Fetch project storages for the current logged-in user
- * GET /k8s/storage/projects/my-storages
+ * Fetch group storages for the current logged-in user
+ * GET /groups/my-storages
  */
 /**
  * New canonical accessor: fetch group-level storages available to the user.
